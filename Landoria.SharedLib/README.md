@@ -1,0 +1,19 @@
+# Plugin SharedLib
+
+`Landoria.SharedLib` contains the common runtime infrastructure used by every Landoria plugin.
+
+| Component | Purpose |
+|---|---|
+| `LandoriaPlugin` | Initializes and removes Harmony patches belonging to the concrete plugin namespace. |
+| `ModLog` | Routes plugin diagnostics through the BepInEx logger and the debugger output. |
+| `ILRepack.targets` | Embeds this library into each standalone plugin DLL. |
+
+The library is a build-time project dependency. Players and server operators do not install a separate `Landoria.SharedLib.dll`; every player-facing Landoria DLL contains the required code through ILRepack.
+
+## Development
+
+All plugin projects receive the project reference and ILRepack package through the repository-level `Directory.Build.props`. Each standalone plugin embeds its own copy of SharedLib.
+
+## Contact
+
+Report bugs through [GitHub Issues](https://github.com/end3rbyte/LandoriaMods/issues). For other conversations, use [GitHub Discussions](https://github.com/end3rbyte/LandoriaMods/discussions).

@@ -1,0 +1,17 @@
+{
+  "name": "Moderator",
+  "version_number": "1.0.4",
+  "website_url": "https://github.com/end3rbyte/LandoriaMods/tree/main/Landoria.Moderator",
+  "description": "Adds multiplayer moderation, teleportation, spawning, map, and player commands.",
+  "dependencies": [
+    "denikson-BepInExPack_Valheim-5.4.2333"
+  ],
+  "categories": [
+    "ai-generated",
+    "mods",
+    "tweaks",
+    "server-side",
+    "client-side",
+    "utility"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "ExpandedServer",
+  "version_number": "1.0.1",
+  "website_url": "https://github.com/end3rbyte/LandoriaMods/tree/main/Landoria.ExpandedServer",
+  "description": "Increases server capacity to up to 100 players",
+  "dependencies": [
+    "denikson-BepInExPack_Valheim-5.4.2333"
+  ],
+  "categories": [
+    "ai-generated",
+    "mods",
+    "server-side",
+    "client-side",
+    "utility",
+    "pvp"
+  ]
+}

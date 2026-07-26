@@ -1,0 +1,16 @@
+{
+  "name": "GetMyTrophyBack",
+  "version_number": "1.0.3",
+  "website_url": "https://github.com/end3rbyte/LandoriaMods/tree/main/Landoria.GetMyTrophyBack",
+  "description": "Returns a boss trophy from its Sacrificial Stone five seconds after selecting the associated power.",
+  "dependencies": [
+    "denikson-BepInExPack_Valheim-5.4.2333"
+  ],
+  "categories": [
+    "ai-generated",
+    "mods",
+    "gear",
+    "client-side",
+    "server-side"
+  ]
+}

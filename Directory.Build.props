@@ -2,11 +2,11 @@
   <PropertyGroup>
     <LangVersion>10</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(MSBuildProjectName)' != 'IronLabs.SharedLib' and '$(MSBuildProjectName)' != 'IronLabs.Build'">
-    <ILRepackTargetsFile>$(MSBuildThisFileDirectory)IronLabs.SharedLib\ILRepack.targets</ILRepackTargetsFile>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' != 'Landoria.SharedLib' and '$(MSBuildProjectName)' != 'Landoria.Build'">
+    <ILRepackTargetsFile>$(MSBuildThisFileDirectory)Landoria.SharedLib\ILRepack.targets</ILRepackTargetsFile>
   </PropertyGroup>
-  <ItemGroup Condition="'$(MSBuildProjectName)' != 'IronLabs.SharedLib' and '$(MSBuildProjectName)' != 'IronLabs.Build'">
-    <ProjectReference Include="$(MSBuildThisFileDirectory)IronLabs.SharedLib\IronLabs.SharedLib.csproj">
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'Landoria.SharedLib' and '$(MSBuildProjectName)' != 'Landoria.Build'">
+    <ProjectReference Include="$(MSBuildThisFileDirectory)Landoria.SharedLib\Landoria.SharedLib.csproj">
       <Private>false</Private>
     </ProjectReference>
     <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.44">

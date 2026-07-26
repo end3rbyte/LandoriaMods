@@ -1,0 +1,25 @@
+<Project>
+  <PropertyGroup>
+    <EmbedLandoriaSharedLib Condition="'$(EmbedLandoriaSharedLib)' == ''">true</EmbedLandoriaSharedLib>
+    <LandoriaSharedLibAssembly Condition="'$(LandoriaSharedLibAssembly)' == ''">$(MSBuildProjectDirectory)\..\Landoria.SharedLib\bin\$(Configuration)\Landoria.SharedLib.dll</LandoriaSharedLibAssembly>
+  </PropertyGroup>
+  <Target Name="MergeLandoriaSharedLib"
+          AfterTargets="Build"
+          Condition="'$(EmbedLandoriaSharedLib)' == 'true'">
+    <PropertyGroup>
+      <LandoriaMergedAssembly>$(IntermediateOutputPath)$(TargetName).shared$(TargetExt)</LandoriaMergedAssembly>
+    </PropertyGroup>
+    <ItemGroup>
+      <LandoriaAssembliesToMerge Include="$(TargetPath)" />
+      <LandoriaAssembliesToMerge Include="$(LandoriaSharedLibAssembly)" />
+      <LandoriaAssembliesToMerge Include="@(LandoriaAdditionalAssembliesToMerge)" />
+    </ItemGroup>
+    <ILRepack InputAssemblies="@(LandoriaAssembliesToMerge)"
+              OutputFile="$(LandoriaMergedAssembly)"
+              TargetKind="SameAsPrimaryAssembly"
+              LibraryPath="$(BepInExPath)\core;$(ValheimGamePath)\valheim_Data\Managed"
+              DebugInfo="true"
+              Parallel="true" />
+    <Copy SourceFiles="$(LandoriaMergedAssembly)" DestinationFiles="$(TargetPath)" />
+  </Target>
+</Project>
