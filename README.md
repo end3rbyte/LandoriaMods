@@ -13,7 +13,6 @@ concise player-oriented overview.
 | [ExpandedServer](Landoria.ExpandedServer/) | Both | Raises the server player limit. |
 | [NoServerPassword](Landoria.NoServerPassword/) | Server-only | Allows public and crossplay servers to start without a password. |
 | [SealedTombstone](Landoria.SealedTombstone/) | Both | Protects tombstones and lets their owners approve access. |
-| [ServerGateway](Landoria.ServerGateway/) | Server-only | Exposes live server information and authenticated local commands. |
 
 ## Shared library
 
