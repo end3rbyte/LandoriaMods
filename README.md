@@ -10,7 +10,6 @@ concise player-oriented overview.
 | [GetMyTrophyBack](Landoria.GetMyTrophyBack/) | Both | Drops a mounted boss trophy five seconds after its guardian power is selected. |
 | [Moderator](Landoria.Moderator/) | Both | Adds multiplayer moderation commands gated by server-validated administrator access. |
 | [QuickLaunch](Landoria.QuickLaunch/) | Client-only | Automatically resumes the last local or multiplayer session by default. |
-| [CharacterVault](Landoria.CharacterVault/) | Both | Saves connected ServerCharacters profiles before a dedicated server stops. |
 | [ExpandedServer](Landoria.ExpandedServer/) | Both | Raises the server player limit. |
 | [NoServerPassword](Landoria.NoServerPassword/) | Server-only | Allows public and crossplay servers to start without a password. |
 | [SealedTombstone](Landoria.SealedTombstone/) | Both | Protects tombstones and lets their owners approve access. |
