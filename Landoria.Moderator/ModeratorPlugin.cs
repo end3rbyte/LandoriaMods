@@ -11,10 +11,12 @@ namespace Landoria.Moderator
             new HashSet<string>
             {
                 "exploremap", "goto", "itemset", "playerlist", "summon",
-                "resetmap", "spawn"
+                "resetmap", "spawn", "moderator"
             };
 
         internal static ModLog ModLogger { get; private set; }
+        internal static bool IsEnabled => FeaturePolicy?.IsEnabled == true;
+        private static ServerFeaturePolicy FeaturePolicy { get; set; }
         private const string PluginGuid = "Landoria.Moderator";
         private const string PluginName = "Landoria.Moderator";
         private const string PluginVersion = "1.0.0";
@@ -22,6 +24,7 @@ namespace Landoria.Moderator
         private void Awake()
         {
             ModLogger = InitializePlugin(PluginGuid);
+            FeaturePolicy = InitializeServerFeaturePolicy(PluginGuid, PluginVersion, ModLogger);
             RegisterCommands();
             ModLogger.LogInfo($"{PluginName} {PluginVersion} is loaded.");
         }
@@ -30,13 +33,21 @@ namespace Landoria.Moderator
         {
             ModeratorMapSharing.Disable();
             ShutdownPlugin();
+            FeaturePolicy = null;
             ModLogger = null;
         }
 
         private void Update()
         {
-            PlayerPositionRpc.Update();
-            ModeratorMapSharing.Update();
+            if (IsEnabled)
+            {
+                PlayerPositionRpc.Update();
+                ModeratorMapSharing.Update();
+            }
+            else if (ModeratorState.IsActive)
+            {
+                ModeratorState.SetEnabled(false);
+            }
         }
 
         internal static void RegisterCommands()

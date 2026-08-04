@@ -27,6 +27,14 @@ Provides server-authorized commands and tools for Valheim administrators.
 
 `itemset` supports `meadows`, `blackforest`, `swamp`, `mountain`, and `plains`. Existing items are placed in a tombstone.
 
+## Server-controlled activation
+
+| Setting | Default | Purpose |
+|---|---:|---|
+| `General.Enabled` | Dedicated: `true`; otherwise: `false` | Enables moderation features on the server and connected clients. |
+
+Set the value to `true` in the server configuration and restart the server.
+
 ## Installation
 
 | Client required | Server required |

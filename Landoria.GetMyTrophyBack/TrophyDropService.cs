@@ -28,7 +28,8 @@ namespace Landoria.GetMyTrophyBack
 
         internal static void HandleDropRequest(ItemStand itemStand, ZNetView netView, long sender)
         {
-            if (!netView.IsOwner() || !itemStand.HaveAttachment())
+            if (!GetMyTrophyBackPlugin.IsEnabled || !netView.IsOwner() ||
+                !itemStand.HaveAttachment())
             {
                 return;
             }

@@ -24,6 +24,14 @@ Protects recent tombstones from unauthorized players while allowing owner-approv
 
 Tombstones created before a lock day was recorded remain protected until their owner approves access.
 
+## Server-controlled activation
+
+| Setting | Default | Purpose |
+|---|---:|---|
+| `General.Enabled` | Dedicated: `true`; otherwise: `false` | Enables sealed tombstones on the server and connected clients. |
+
+Set the value to `true` in the server configuration and restart the server.
+
 ## Installation
 
 | Client required | Server required |

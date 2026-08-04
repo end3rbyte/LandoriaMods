@@ -120,6 +120,11 @@ namespace Landoria.SealedTombstone
             ZDOID tombstoneId,
             long ownerId)
         {
+            if (!SealedTombstonePlugin.IsEnabled)
+            {
+                return;
+            }
+
             Player owner = Player.m_localPlayer;
             ZDO tombstone = ZDOMan.instance?.GetZDO(tombstoneId);
             if (owner == null || owner.GetPlayerID() != ownerId || _pendingRequest != null ||
@@ -189,6 +194,11 @@ namespace Landoria.SealedTombstone
             bool accepted,
             string ownerName)
         {
+            if (!SealedTombstonePlugin.IsEnabled)
+            {
+                return;
+            }
+
             Player requester = Player.m_localPlayer;
             if (requester == null || requester.GetPlayerID() != requesterId)
             {

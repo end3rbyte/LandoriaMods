@@ -19,6 +19,14 @@ Raises Valheim's server capacity to a configurable player limit.
 - Larger populations increase server, network, and simulation load.
 - PlayFab Party may impose a lower backend capacity.
 
+## Server-controlled activation
+
+| Setting | Default |
+|---|---:|
+| `General.Enabled` | Dedicated: `true`; otherwise: `false` |
+
+The server synchronizes this value to connected clients after restart.
+
 ## Installation
 
 | Client required | Server required |

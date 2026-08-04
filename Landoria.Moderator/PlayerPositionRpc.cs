@@ -40,7 +40,7 @@ namespace Landoria.Moderator
 
         internal static bool Request(string playerName, Action<Vector3> callback)
         {
-            if (!PlayerCommandUtility.TryFindPlayer(
+            if (!ModeratorPlugin.IsEnabled || !PlayerCommandUtility.TryFindPlayer(
                     playerName, out _, out ZDOID characterId) || ZRoutedRpc.instance == null)
             {
                 return false;
@@ -53,7 +53,8 @@ namespace Landoria.Moderator
             ZDOID characterId, string playerName, Action<Vector3> callback,
             bool logRequest = false)
         {
-            if (characterId.IsNone() || ZRoutedRpc.instance == null)
+            if (!ModeratorPlugin.IsEnabled || characterId.IsNone() ||
+                ZRoutedRpc.instance == null)
             {
                 return false;
             }
@@ -99,7 +100,8 @@ namespace Landoria.Moderator
 
         private static void SendResponse(Player player, long sender, int requestId)
         {
-            if (player == null || ZRoutedRpc.instance == null)
+            if (!ModeratorPlugin.IsEnabled || player == null ||
+                ZRoutedRpc.instance == null)
             {
                 return;
             }
@@ -110,7 +112,8 @@ namespace Landoria.Moderator
 
         private static void ReceiveResponse(long sender, int requestId, Vector3 position)
         {
-            if (!PendingRequests.TryGetValue(requestId, out PendingRequest request))
+            if (!ModeratorPlugin.IsEnabled ||
+                !PendingRequests.TryGetValue(requestId, out PendingRequest request))
             {
                 return;
             }

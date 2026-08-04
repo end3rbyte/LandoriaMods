@@ -25,6 +25,7 @@ namespace Landoria.Moderator
         private static bool CanTeleport()
         {
             return Player.m_localPlayer != null &&
+                   ModeratorPlugin.IsEnabled &&
                    WorldGenerator.instance != null &&
                    ModeratorState.IsActive &&
                    ZInput.GetKey(KeyCode.LeftShift);

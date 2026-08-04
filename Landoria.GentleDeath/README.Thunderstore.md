@@ -10,6 +10,14 @@ Keeps equipable items after death while moving other inventory items to the tomb
 - Safely retains items when the tombstone has no room.
 - Replaces the world's vanilla inventory death penalty.
 
+## Server-controlled activation
+
+| Setting | Default |
+|---|---:|
+| `General.Enabled` | Dedicated: `true`; otherwise: `false` |
+
+The server synchronizes this value to connected clients after restart.
+
 ## Installation
 
 | Client required | Server required |

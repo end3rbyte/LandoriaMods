@@ -7,6 +7,11 @@ namespace Landoria.GentleDeath
     {
         private static bool Prefix(Player __instance)
         {
+            if (!GentleDeathPlugin.IsEnabled)
+            {
+                return true;
+            }
+
             DeathInventory.CreateTombstone(__instance);
             return false;
         }

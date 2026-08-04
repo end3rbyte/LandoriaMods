@@ -16,7 +16,10 @@ namespace Landoria.SealedTombstone
     {
         private static void Postfix(TombStone __instance, long ownerUID)
         {
-            TombstoneAccess.RecordLockDay(__instance, ownerUID);
+            if (SealedTombstonePlugin.IsEnabled)
+            {
+                TombstoneAccess.RecordLockDay(__instance, ownerUID);
+            }
         }
     }
 
@@ -25,7 +28,8 @@ namespace Landoria.SealedTombstone
     {
         private static bool Prefix(TombStone __instance, Humanoid character)
         {
-            return TombstoneAccess.AllowInteraction(__instance, character);
+            return !SealedTombstonePlugin.IsEnabled ||
+                   TombstoneAccess.AllowInteraction(__instance, character);
         }
     }
 
@@ -34,7 +38,10 @@ namespace Landoria.SealedTombstone
     {
         private static void Postfix(Player __instance, HitData hit)
         {
-            RecentAttackers.Record(__instance, hit);
+            if (SealedTombstonePlugin.IsEnabled)
+            {
+                RecentAttackers.Record(__instance, hit);
+            }
         }
     }
 
@@ -43,7 +50,10 @@ namespace Landoria.SealedTombstone
     {
         private static void Prefix(Player __instance)
         {
-            RecentAttackers.SnapshotForDeath(__instance);
+            if (SealedTombstonePlugin.IsEnabled)
+            {
+                RecentAttackers.SnapshotForDeath(__instance);
+            }
         }
     }
 }
