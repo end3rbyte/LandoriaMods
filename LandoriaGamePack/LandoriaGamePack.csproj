@@ -7,8 +7,8 @@
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <ProjectGuid>{88745306-66D4-48B4-99A1-856F835F0707}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Landoria.Build</RootNamespace>
-    <AssemblyName>Landoria.Build</AssemblyName>
+    <RootNamespace>LandoriaGamePack</RootNamespace>
+    <AssemblyName>LandoriaGamePack</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
@@ -26,8 +26,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="LICENSE" />
     <Content Include="README.md" />
   </ItemGroup>

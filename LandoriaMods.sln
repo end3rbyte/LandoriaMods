@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.GetMyTrophyBack", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.SharedLib", "Landoria.SharedLib\Landoria.SharedLib.csproj", "{223C38C3-C1FD-48B8-BDC8-23414AA56617}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.Build", "Landoria.Build\Landoria.Build.csproj", "{88745306-66D4-48B4-99A1-856F835F0707}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LandoriaGamePack", "LandoriaGamePack\LandoriaGamePack.csproj", "{88745306-66D4-48B4-99A1-856F835F0707}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.Moderator", "Landoria.Moderator\Landoria.Moderator.csproj", "{CA2ABD79-CB95-41E2-999B-52AE9310670C}"
 EndProject
