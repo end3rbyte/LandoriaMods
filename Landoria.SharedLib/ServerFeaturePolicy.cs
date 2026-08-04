@@ -16,7 +16,11 @@ namespace Landoria.SharedLib
         private readonly string _pluginGuid;
         private readonly string _pluginVersion;
         private readonly ModLog _log;
+        private readonly Dictionary<long, float> _pendingPeers =
+            new Dictionary<long, float>();
+        private readonly HashSet<long> _validatedPeers = new HashSet<long>();
         private ZRoutedRpc _registeredRpc;
+        private float _nextPeerScan;
         private bool _receivedServerState;
         private bool _serverEnabled;
 
@@ -77,6 +81,14 @@ namespace Landoria.SharedLib
             }
         }
 
+        internal static void ValidateServerPeers()
+        {
+            foreach (ServerFeaturePolicy policy in Policies)
+            {
+                policy.ValidatePeers();
+            }
+        }
+
         private void RegisterRpcs()
         {
             ZRoutedRpc rpc = ZRoutedRpc.instance;
@@ -127,7 +139,65 @@ namespace Landoria.SharedLib
                 return;
             }
 
+            if (enabled)
+            {
+                _pendingPeers.Remove(sender);
+                _validatedPeers.Add(sender);
+            }
+
             _log.LogDebug($"Sent server feature policy to peer {sender}: {enabled}.");
+        }
+
+        private void ValidatePeers()
+        {
+            if (!ShouldScanPeers())
+            {
+                return;
+            }
+
+            RegisterRpcs();
+            foreach (ZNetPeer peer in new List<ZNetPeer>(ZNet.instance.GetPeers()))
+            {
+                ValidatePeer(peer);
+            }
+        }
+
+        private bool ShouldScanPeers()
+        {
+            if (ZNet.instance == null || !ZNet.instance.IsServer() ||
+                !_configuredEnabled.Value || UnityEngine.Time.realtimeSinceStartup < _nextPeerScan)
+            {
+                return false;
+            }
+
+            _nextPeerScan = UnityEngine.Time.realtimeSinceStartup + 1f;
+            return true;
+        }
+
+        private void ValidatePeer(ZNetPeer peer)
+        {
+            if (peer == null || _validatedPeers.Contains(peer.m_uid))
+            {
+                return;
+            }
+
+            float now = UnityEngine.Time.realtimeSinceStartup;
+            if (!_pendingPeers.TryGetValue(peer.m_uid, out float deadline))
+            {
+                _pendingPeers[peer.m_uid] = now + 30f;
+                return;
+            }
+
+            if (now < deadline)
+            {
+                return;
+            }
+
+            _pendingPeers.Remove(peer.m_uid);
+            _log.LogError(
+                $"Disconnecting peer {peer.m_uid}: required enabled plugin " +
+                $"'{_pluginGuid}' version '{_pluginVersion}' did not complete its handshake.");
+            ZNet.instance.Disconnect(peer);
         }
 
         private void ReceiveResponse(long sender, bool enabled, string serverVersion)
@@ -170,6 +240,9 @@ namespace Landoria.SharedLib
             _registeredRpc = null;
             _receivedServerState = false;
             _serverEnabled = false;
+            _pendingPeers.Clear();
+            _validatedPeers.Clear();
+            _nextPeerScan = 0f;
         }
     }
 
@@ -179,7 +252,9 @@ namespace Landoria.SharedLib
         {
             Harmony harmony = new Harmony(pluginGuid + ".FeaturePolicy");
             harmony.CreateClassProcessor(typeof(FeaturePolicyGameStartPatch)).Patch();
+            harmony.CreateClassProcessor(typeof(FeaturePolicyPeerInfoPatch)).Patch();
             harmony.CreateClassProcessor(typeof(FeaturePolicyLocalPlayerPatch)).Patch();
+            harmony.CreateClassProcessor(typeof(FeaturePolicyServerUpdatePatch)).Patch();
             harmony.CreateClassProcessor(typeof(FeaturePolicyDisconnectPatch)).Patch();
             return harmony;
         }
@@ -192,11 +267,24 @@ namespace Landoria.SharedLib
             ServerFeaturePolicy.RegisterAndSynchronizeAll();
     }
 
+    [HarmonyPatch(typeof(ZNet), "RPC_PeerInfo")]
+    internal static class FeaturePolicyPeerInfoPatch
+    {
+        private static void Postfix() =>
+            ServerFeaturePolicy.RegisterAndSynchronizeAll();
+    }
+
     [HarmonyPatch(typeof(Player), "SetLocalPlayer")]
     internal static class FeaturePolicyLocalPlayerPatch
     {
         private static void Postfix() =>
             ServerFeaturePolicy.RegisterAndSynchronizeAll();
+    }
+
+    [HarmonyPatch(typeof(ZNet), "Update")]
+    internal static class FeaturePolicyServerUpdatePatch
+    {
+        private static void Postfix() => ServerFeaturePolicy.ValidateServerPeers();
     }
 
     [HarmonyPatch(typeof(ZNet), "OnDestroy")]

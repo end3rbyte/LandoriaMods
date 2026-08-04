@@ -13,6 +13,8 @@ The library is a build-time project dependency. Players and server operators do 
 
 An enabled server feature requires an exact client/server plugin version match. A mismatch is logged with the plugin identifier and both versions before the peer is disconnected. Disabled features do not enforce version equality.
 
+The server also requires every connected peer to complete the enabled plugin handshake within 30 seconds. A missing or unloaded client plugin therefore causes a server-side log entry and disconnection.
+
 `General.Enabled` defaults to `true` in dedicated server batch mode and `false` otherwise. An existing configuration value always takes precedence over this generated default.
 
 ## Development
