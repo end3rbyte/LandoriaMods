@@ -24,3 +24,10 @@ plugin DLL and is never installed separately.
 
 Report bugs through [GitHub Issues](https://github.com/end3rbyte/LandoriaMods/issues).
 For questions, feedback, and other discussions, use [GitHub Discussions](https://github.com/end3rbyte/LandoriaMods/discussions).
+
+## Automated test packages
+
+Changes merged into `main` automatically build and publish a new draft version
+of each affected mod to Landoria's package repository. The workflow can also be
+started manually to publish selected mods or retry an existing version after a
+failed upload.

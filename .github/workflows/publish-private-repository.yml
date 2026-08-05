@@ -1,0 +1,84 @@
+---
+name: Publish public mods
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - Directory.Build.props
+      - Landoria.SharedLib/**
+      - Landoria.ExpandedServer/**
+      - Landoria.GentleDeath/**
+      - Landoria.GetMyTrophyBack/**
+      - Landoria.Moderator/**
+      - Landoria.NoServerPassword/**
+      - Landoria.QuickLaunch/**
+      - Landoria.SealedTombstone/**
+  workflow_dispatch:
+    inputs:
+      mods:
+        description: Comma-separated mod names
+        required: true
+        type: string
+      bump_version:
+        description: Increment patch versions before publishing
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-public-mods
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: "${{ !contains(github.event.head_commit.message || '', 'Release-Version-Bump: true') }}"
+    runs-on: [self-hosted, Linux, X64, dev, public-mods]
+    timeout-minutes: 45
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Select mods
+        id: mods
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BEFORE_SHA: ${{ github.event.before }}
+          AFTER_SHA: ${{ github.sha }}
+          REQUESTED_MODS: ${{ inputs.mods }}
+        run: |
+          set -euo pipefail
+          if [[ "$EVENT_NAME" == workflow_dispatch ]]; then
+              mods="$(tr ',' '\n' <<< "$REQUESTED_MODS" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | sed '/^$/d' | sort -u | paste -sd' ' -)"
+          else
+              mods="$(scripts/ci/changed-mods.sh "$BEFORE_SHA" "$AFTER_SHA" | paste -sd' ' -)"
+          fi
+          [[ -n "$mods" ]] || { echo "No publishable mod changed."; exit 0; }
+          echo "mods=$mods" >> "$GITHUB_OUTPUT"
+
+      - name: Configure release commit identity
+        if: ${{ steps.mods.outputs.mods != '' }}
+        shell: bash
+        run: |
+          git config user.name landoria-release-bot
+          git config user.email landoria-release-bot@users.noreply.github.com
+
+      - name: Build and publish drafts
+        if: ${{ steps.mods.outputs.mods != '' }}
+        shell: bash
+        env:
+          BUMP_VERSION: ${{ github.event_name == 'push' || inputs.bump_version }}
+        run: |
+          set -euo pipefail
+          read -r -a mods <<< "${{ steps.mods.outputs.mods }}"
+          if [[ "$BUMP_VERSION" == true ]]; then
+              scripts/ci/publish-mods.sh "${mods[@]}"
+          else
+              scripts/ci/publish-mods.sh --no-version-bump "${mods[@]}"
+          fi
