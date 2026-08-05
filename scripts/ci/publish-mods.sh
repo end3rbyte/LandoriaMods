@@ -136,17 +136,26 @@ for mod in "$@"; do
 done
 
 if [[ "$bump_versions" == true ]]; then
+    versions_changed=false
     for index in "${!mods[@]}"; do
         package="$(jq -r '.name' "${directories[$index]}/manifest.json")"
         current="$(read_plugin_version "${plugins[$index]}")"
         published="$(latest_repository_version "$package")"
+        if [[ -n "$published" && "$current" != "$published" ]] && \
+            [[ "$(printf '%s\n%s\n' "$current" "$published" | sort -V | tail -n 1)" == "$current" ]]; then
+            echo "$package $current is already versioned and awaiting publication."
+            continue
+        fi
         version="$(next_version "$current" "$published")"
         replace_version "${directories[$index]}" "${plugins[$index]}" "$version"
         validate_metadata "${mods[$index]}" "${directories[$index]}" "${plugins[$index]}"
         git -C "$repository_root" add -- "Landoria.${mods[$index]}"
+        versions_changed=true
     done
-    git -C "$repository_root" commit -m "Release updated public mods" -m 'Release-Version-Bump: true'
-    git -C "$repository_root" push origin HEAD:main
+    if [[ "$versions_changed" == true ]]; then
+        git -C "$repository_root" commit -m "Release updated public mods" -m 'Release-Version-Bump: true'
+        git -C "$repository_root" push origin HEAD:main
+    fi
 fi
 
 mkdir -p -- "$output"
