@@ -47,7 +47,7 @@ install_steamcmd
     +force_install_dir "$valheim_root" \
     +login anonymous \
     +app_update 896660 validate \
-    +quit
+    +quit >&2
 if [[ ! -e "$valheim_root/valheim_Data" ]]; then
     ln -s valheim_server_Data "$valheim_root/valheim_Data"
 fi
