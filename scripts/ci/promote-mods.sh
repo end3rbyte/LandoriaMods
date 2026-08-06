@@ -72,26 +72,30 @@ has_package_changes() {
     tag="thunderstore/$mod/$latest"
     git -C "$repository_root" rev-parse --verify --quiet "refs/tags/$tag" >/dev/null || return 0
     ! git -C "$repository_root" diff --quiet "$tag" -- \
-        Directory.Build.props CHANGELOG.md scripts/ci/publish-mods.sh \
+        Directory.Build.props scripts/ci/publish-mods.sh \
         scripts/ci/prepare-build-dependencies.sh Landoria.SharedLib "Landoria.$mod" \
         ":(exclude)Landoria.SharedLib/README.md" ":(exclude)Landoria.SharedLib/LICENSE" \
         ":(exclude)Landoria.$mod/README.md" ":(exclude)Landoria.$mod/LICENSE"
 }
 
 append_changelog() {
-    local mod="$1" version="$2" previous="$3" range subject tag
+    local mod="$1" version="$2" previous="$3" range subject tag changelog temporary
     range="HEAD"
     tag="thunderstore/$mod/$previous"
+    changelog="$repository_root/Landoria.$mod/CHANGELOG.md"
     if [[ -n "$previous" ]] && git -C "$repository_root" rev-parse --verify --quiet "refs/tags/$tag" >/dev/null; then
         range="$tag..HEAD"
     fi
+    temporary="$changelog.tmp"
     {
-        printf '## %s %s - %s\n\n' "$mod" "$version" "$(date -u +%Y-%m-%d)"
+        printf '# Changelog\n\n## %s - %s\n\n' "$version" "$(date -u +%Y-%m-%d)"
         while IFS= read -r subject; do
             [[ -n "$subject" ]] && printf -- '- %s\n' "$subject"
         done < <(git -C "$repository_root" log --format='%s' --no-merges "$range" -- "Landoria.$mod")
         printf '\n'
-    } >> "$repository_root/CHANGELOG.md"
+        tail -n +3 "$changelog"
+    } > "$temporary"
+    mv -- "$temporary" "$changelog"
 }
 
 write_tcli_config() {
@@ -168,7 +172,7 @@ for mod in "$@"; do
     version="$(next_patch "$latest")"
     replace_version "$repository_root/Landoria.$mod" "$version"
     append_changelog "$mod" "$version" "$latest"
-    git -C "$repository_root" add -- "Landoria.$mod" CHANGELOG.md
+    git -C "$repository_root" add -- "Landoria.$mod"
     mods+=("$mod")
     next_versions+=("$version")
 done

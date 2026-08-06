@@ -41,8 +41,8 @@ Production publication is handled by the manual **Promote mods to Thunderstore**
 workflow on the self-hosted `dev` runner. It compares each selected mod with its
 latest tagged Thunderstore release, skips unchanged package inputs (including
 the shared library and packaging files), increments the patch version from the
-version currently published on Thunderstore, updates this repository's
-`CHANGELOG.md`, and includes that changelog in the package.
+version currently published on Thunderstore, updates the selected mod's
+`CHANGELOG.md`, and includes that mod-specific changelog in the package.
 After Thunderstore exposes the new version, the workflow marks the matching
 package version as released in Landoria's package repository and creates a
 `thunderstore/<mod>/<version>` Git tag.

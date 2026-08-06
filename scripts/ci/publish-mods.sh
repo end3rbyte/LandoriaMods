@@ -113,6 +113,7 @@ validate_metadata() {
     local expected_website valid_categories
     for file in "$directory/manifest.json" "$plugin" "$directory/Properties/AssemblyInfo.cs" \
         "$directory/icon.png" "$directory/LICENSE" "$directory/README.md" \
+        "$directory/CHANGELOG.md" \
         "$directory/README.Thunderstore.md"; do
         [[ -f "$file" ]] || { echo "Required file not found: $file" >&2; return 1; }
     done
@@ -163,7 +164,7 @@ create_archive() {
     cp -- "$directory/bin/Release/Landoria.$mod.dll" "$directory/icon.png" "$staging/"
     jq --arg commit "$commit" '. + {commit_id: $commit}' "$directory/manifest.json" > "$staging/manifest.json"
     cp -- "$directory/README.Thunderstore.md" "$staging/README.md"
-    cp -- "$repository_root/CHANGELOG.md" "$staging/CHANGELOG.md"
+    cp -- "$directory/CHANGELOG.md" "$staging/CHANGELOG.md"
     (cd -- "$staging" && zip -q "$archive" ./*)
     rm -rf -- "$staging"
     printf '%s\n' "$archive"
