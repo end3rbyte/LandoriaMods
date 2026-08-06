@@ -52,3 +52,9 @@ The persistent Vault Agent on `dev` must render the Thunderstore API token as
 `/var/lib/landoria-secrets/thunderstore-publish.env`. The existing internal
 repository API key remains in
 `/var/lib/landoria-secrets/mod-repository-upload.env`.
+
+Install or refresh the Thunderstore Vault Agent template on `dev` with:
+
+```bash
+sudo ./deploy/dev/install-publish-credential.sh
+```
