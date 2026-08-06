@@ -24,7 +24,7 @@ Set the value to `true` in the server configuration and restart the server.
 
 | Client required | Server required |
 |---|---|
-| Yes | No |
+| Yes | Yes |
 
 ## Contact
 
