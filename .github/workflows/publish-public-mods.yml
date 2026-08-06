@@ -1,23 +1,13 @@
 ---
 name: Publish public mods
 
-on:
+'on':
   push:
     branches: [main]
     paths:
       - Directory.Build.props
       - scripts/ci/**
-      - Landoria.SharedLib/**
-      - Landoria.ExpandedServer/**
-      - Landoria.CharacterVault/**
-      - Landoria.GentleDeath/**
-      - Landoria.GetMyTrophyBack/**
-      - Landoria.Moderator/**
-      - Landoria.NoServerPassword/**
-      - Landoria.QuickLaunch/**
-      - Landoria.SealedTombstone/**
-      - Landoria.ServerGateway/**
-      - Landoria.Socialize/**
+      - Landoria.*/**
   workflow_dispatch:
     inputs:
       mods:
@@ -39,7 +29,9 @@ concurrency:
 
 jobs:
   publish:
-    if: "${{ !contains(github.event.head_commit.message || '', 'Release-Version-Bump: true') }}"
+    if: >-
+      ${{ !contains(github.event.head_commit.message || '',
+      'Release-Version-Bump: true') }}
     runs-on: [self-hosted, Linux, X64, dev, public-mods]
     timeout-minutes: 45
     steps:
@@ -59,9 +51,12 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "$EVENT_NAME" == workflow_dispatch ]]; then
-              mods="$(tr ',' '\n' <<< "$REQUESTED_MODS" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | sed '/^$/d' | sort -u | paste -sd' ' -)"
+              mods="$(tr ',' '\n' <<< "$REQUESTED_MODS" |
+                  sed 's/^[[:space:]]*//;s/[[:space:]]*$//' |
+                  sed '/^$/d' | sort -u | paste -sd' ' -)"
           else
-              mods="$(scripts/ci/changed-mods.sh "$BEFORE_SHA" "$AFTER_SHA" | paste -sd' ' -)"
+              mods="$(scripts/ci/changed-mods.sh "$BEFORE_SHA" "$AFTER_SHA" |
+                  paste -sd' ' -)"
           fi
           [[ -n "$mods" ]] || { echo "No publishable mod changed."; exit 0; }
           echo "mods=$mods" >> "$GITHUB_OUTPUT"
@@ -77,7 +72,8 @@ jobs:
         if: ${{ steps.mods.outputs.mods != '' }}
         shell: bash
         env:
-          BUMP_VERSION: ${{ github.event_name == 'push' || inputs.bump_version }}
+          BUMP_VERSION: >-
+            ${{ github.event_name == 'push' || inputs.bump_version }}
         run: |
           set -euo pipefail
           read -r -a mods <<< "${{ steps.mods.outputs.mods }}"

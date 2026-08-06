@@ -22,11 +22,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.Socialize", "Lando
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.CharacterVault", "Landoria.CharacterVault\Landoria.CharacterVault.csproj", "{70BCF48B-1C23-4B2A-8A4F-F01CC21E3EC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.Launcher", "..\Landoria-Private\launcher\Landoria.Launcher\Landoria.Launcher.csproj", "{069099BE-EAAB-4D9D-B4D8-1AC2613915FA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.ServerGateway", "Landoria.ServerGateway\Landoria.ServerGateway.csproj", "{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.LandoriaModPack", "..\Landoria-Private\Landoria.LandoriaModPack\Landoria.LandoriaModPack.csproj", "{BD9DB129-FFA6-414E-95AD-10EA8CE362C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.LandoriaModPack", "Landoria.LandoriaModPack\Landoria.LandoriaModPack.csproj", "{BD9DB129-FFA6-414E-95AD-10EA8CE362C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -168,18 +166,6 @@ Global
 		{70BCF48B-1C23-4B2A-8A4F-F01CC21E3EC5}.Release|x64.Build.0 = Release|Any CPU
 		{70BCF48B-1C23-4B2A-8A4F-F01CC21E3EC5}.Release|x86.ActiveCfg = Release|Any CPU
 		{70BCF48B-1C23-4B2A-8A4F-F01CC21E3EC5}.Release|x86.Build.0 = Release|Any CPU
-		{069099BE-EAAB-4D9D-B4D8-1AC2613915FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{069099BE-EAAB-4D9D-B4D8-1AC2613915FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{069099BE-EAAB-4D9D-B4D8-1AC2613915FA}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{069099BE-EAAB-4D9D-B4D8-1AC2613915FA}.Debug|x64.Build.0 = Debug|Any CPU
-		{069099BE-EAAB-4D9D-B4D8-1AC2613915FA}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{069099BE-EAAB-4D9D-B4D8-1AC2613915FA}.Debug|x86.Build.0 = Debug|Any CPU
-		{069099BE-EAAB-4D9D-B4D8-1AC2613915FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{069099BE-EAAB-4D9D-B4D8-1AC2613915FA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{069099BE-EAAB-4D9D-B4D8-1AC2613915FA}.Release|x64.ActiveCfg = Release|Any CPU
-		{069099BE-EAAB-4D9D-B4D8-1AC2613915FA}.Release|x64.Build.0 = Release|Any CPU
-		{069099BE-EAAB-4D9D-B4D8-1AC2613915FA}.Release|x86.ActiveCfg = Release|Any CPU
-		{069099BE-EAAB-4D9D-B4D8-1AC2613915FA}.Release|x86.Build.0 = Release|Any CPU
 		{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}.Debug|x64.ActiveCfg = Debug|Any CPU

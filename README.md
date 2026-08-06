@@ -9,6 +9,7 @@ concise player-oriented overview.
 | [CharacterVault](Landoria.CharacterVault/) | Both | Saves connected ServerCharacters profiles before a dedicated server stops. |
 | [GentleDeath](Landoria.GentleDeath/) | Client; server when required by a game mode | Keeps equipable gear on the player after death and moves other items to the tombstone. |
 | [GetMyTrophyBack](Landoria.GetMyTrophyBack/) | Both | Drops a mounted boss trophy five seconds after its guardian power is selected. |
+| [LandoriaModPack](Landoria.LandoriaModPack/) | Both | Installs the mods required to join the Landoria Valheim server. |
 | [Moderator](Landoria.Moderator/) | Both | Adds multiplayer moderation commands gated by server-validated administrator access. |
 | [QuickLaunch](Landoria.QuickLaunch/) | Client-only | Automatically resumes the last local or multiplayer session by default. |
 | [ExpandedServer](Landoria.ExpandedServer/) | Both | Raises the server player limit. |

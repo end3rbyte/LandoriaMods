@@ -29,7 +29,10 @@ for path in "${paths[@]}"; do
         Landoria.*/*)
             project="${path%%/*}"
             mod="${project#Landoria.}"
-            [[ "$mod" == SharedLib ]] || selected["$mod"]=1
+            if [[ "$mod" != SharedLib ]] &&
+                [[ -f "$repository_root/$project/manifest.json" ]]; then
+                selected["$mod"]=1
+            fi
             ;;
     esac
 done

@@ -36,7 +36,7 @@
     <ProjectReference Include="..\Landoria.GetMyTrophyBack\Landoria.GetMyTrophyBack.csproj"><Private>false</Private></ProjectReference>
     <ProjectReference Include="..\Landoria.ExpandedServer\Landoria.ExpandedServer.csproj"><Private>false</Private></ProjectReference>
     <ProjectReference Include="..\Landoria.NoServerPassword\Landoria.NoServerPassword.csproj"><Private>false</Private></ProjectReference>
-    <ProjectReference Include="..\..\Landoria-Private\Landoria.LandoriaModPack\Landoria.LandoriaModPack.csproj"><Private>false</Private></ProjectReference>
+    <ProjectReference Include="..\Landoria.LandoriaModPack\Landoria.LandoriaModPack.csproj"><Private>false</Private></ProjectReference>
     <ProjectReference Include="..\Landoria.Socialize\Landoria.Socialize.csproj"><Private>false</Private></ProjectReference>
     <ProjectReference Include="..\Landoria.SealedTombstone\Landoria.SealedTombstone.csproj"><Private>false</Private></ProjectReference>
     <ProjectReference Include="..\Landoria.CharacterVault\Landoria.CharacterVault.csproj"><Private>false</Private></ProjectReference>
