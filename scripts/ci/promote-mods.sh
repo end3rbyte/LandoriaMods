@@ -9,6 +9,9 @@ usage() {
 [[ $# -gt 0 ]] || usage
 
 repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
+# shellcheck source-path=SCRIPTDIR
+# shellcheck source=changelog.sh
+source "$repository_root/scripts/ci/changelog.sh"
 thunderstore_url="${THUNDERSTORE_URL:-https://thunderstore.io}"
 internal_url="${LANDORIA_MOD_REPOSITORY_URL:-https://test.landoria-gaming.com:8443/api/v1/packages}"
 thunderstore_environment="${THUNDERSTORE_SECRET_ENVIRONMENT:-/var/lib/landoria-secrets/thunderstore-publish.env}"
@@ -72,30 +75,10 @@ has_package_changes() {
     tag="thunderstore/$mod/$latest"
     git -C "$repository_root" rev-parse --verify --quiet "refs/tags/$tag" >/dev/null || return 0
     ! git -C "$repository_root" diff --quiet "$tag" -- \
-        Directory.Build.props scripts/ci/publish-mods.sh \
+        Directory.Build.props scripts/ci/changelog.sh scripts/ci/publish-mods.sh \
         scripts/ci/prepare-build-dependencies.sh Landoria.SharedLib "Landoria.$mod" \
         ":(exclude)Landoria.SharedLib/README.md" ":(exclude)Landoria.SharedLib/LICENSE" \
         ":(exclude)Landoria.$mod/README.md" ":(exclude)Landoria.$mod/LICENSE"
-}
-
-append_changelog() {
-    local mod="$1" version="$2" previous="$3" range subject tag changelog temporary
-    range="HEAD"
-    tag="thunderstore/$mod/$previous"
-    changelog="$repository_root/Landoria.$mod/CHANGELOG.md"
-    if [[ -n "$previous" ]] && git -C "$repository_root" rev-parse --verify --quiet "refs/tags/$tag" >/dev/null; then
-        range="$tag..HEAD"
-    fi
-    temporary="$changelog.tmp"
-    {
-        printf '# Changelog\n\n## %s - %s\n\n' "$version" "$(date -u +%Y-%m-%d)"
-        while IFS= read -r subject; do
-            [[ -n "$subject" ]] && printf -- '- %s\n' "$subject"
-        done < <(git -C "$repository_root" log --format='%s' --no-merges "$range" -- "Landoria.$mod")
-        printf '\n'
-        tail -n +3 "$changelog"
-    } > "$temporary"
-    mv -- "$temporary" "$changelog"
 }
 
 write_tcli_config() {
@@ -174,8 +157,8 @@ for mod in "$@"; do
         continue
     fi
     version="$(next_patch "$latest")"
+    validate_release_changelog "$repository_root/Landoria.$mod/CHANGELOG.md" "$version"
     replace_version "$repository_root/Landoria.$mod" "$version"
-    append_changelog "$mod" "$version" "$latest"
     git -C "$repository_root" add -- "Landoria.$mod"
     mods+=("$mod")
     next_versions+=("$version")
@@ -186,9 +169,11 @@ if [[ ${#mods[@]} -eq 0 ]]; then
     exit 0
 fi
 
-git -C "$repository_root" commit -m "Prepare Thunderstore releases" \
-    -m 'Thunderstore-Release: true' -m 'Release-Version-Bump: true'
-git -C "$repository_root" push origin HEAD:main
+if ! git -C "$repository_root" diff --cached --quiet; then
+    git -C "$repository_root" commit -m "Prepare Thunderstore releases" \
+        -m 'Thunderstore-Release: true' -m 'Release-Version-Bump: true'
+    git -C "$repository_root" push origin HEAD:main
+fi
 "$repository_root/scripts/ci/publish-mods.sh" --no-version-bump "${mods[@]}"
 
 export TCLI_AUTH_TOKEN

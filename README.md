@@ -36,13 +36,19 @@ of each affected mod to Landoria's package repository. The workflow can also be
 started manually to publish selected mods or retry an existing version after a
 failed upload. When a tracked dependency changes version, the workflow updates
 and republishes `LandoriaModPack` with the matching dependency version.
+Until a changelog section matching the draft version exists, each build creates
+or refreshes `Unreleased` from the mod's commit history. Once a matching version
+section is present, builds leave the changelog unchanged.
 
 Production publication is handled by the manual **Promote mods to Thunderstore**
 workflow on the self-hosted `dev` runner. It compares each selected mod with its
 latest tagged Thunderstore release, skips unchanged package inputs (including
 the shared library and packaging files), increments the patch version from the
-version currently published on Thunderstore, updates the selected mod's
-`CHANGELOG.md`, and includes that mod-specific changelog in the package.
+version currently published on Thunderstore, and includes the selected mod's
+existing `CHANGELOG.md` unchanged in the package. Changelog entries must be
+prepared and reviewed before starting the promotion workflow. Promotion fails
+if `Unreleased` is still present or if the changelog has no section matching the
+version being released.
 After Thunderstore exposes the new version, the workflow marks the matching
 package version as released in Landoria's package repository and creates a
 `thunderstore/<mod>/<version>` Git tag.

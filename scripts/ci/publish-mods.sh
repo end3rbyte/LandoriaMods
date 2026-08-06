@@ -14,6 +14,9 @@ fi
 [[ $# -gt 0 ]] || usage
 
 repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
+# shellcheck source-path=SCRIPTDIR
+# shellcheck source=changelog.sh
+source "$repository_root/scripts/ci/changelog.sh"
 dependency_script="$repository_root/scripts/ci/prepare-build-dependencies.sh"
 output="$repository_root/artifacts/thunderstore"
 modpack_directory="$repository_root/Landoria.LandoriaModPack"
@@ -241,6 +244,11 @@ if [[ "$bump_versions" == true ]]; then
             replace_version "${directories[$index]}" "${plugins[$index]}" "$version"
             validate_metadata "${mods[$index]}" "${directories[$index]}" "${plugins[$index]}"
             git -C "$repository_root" add -- "Landoria.${mods[$index]}"
+            versions_changed=true
+        fi
+        update_unreleased_changelog "$repository_root" "${mods[$index]}" "$version"
+        if ! git -C "$repository_root" diff --quiet -- "Landoria.${mods[$index]}/CHANGELOG.md"; then
+            git -C "$repository_root" add -- "Landoria.${mods[$index]}/CHANGELOG.md"
             versions_changed=true
         fi
         if [[ "${mods[$index]}" != LandoriaModPack ]] &&

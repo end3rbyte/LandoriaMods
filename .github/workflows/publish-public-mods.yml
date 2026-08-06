@@ -40,6 +40,10 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Test changelog automation
+        shell: bash
+        run: scripts/ci/test-changelog.sh
+
       - name: Select mods
         id: mods
         shell: bash
