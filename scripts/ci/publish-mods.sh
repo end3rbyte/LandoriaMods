@@ -43,7 +43,8 @@ read_plugin_version() {
 
 repository_state() {
     local package="$1" response status body
-    response="$(curl --silent --show-error --write-out $'\n%{http_code}' "$api_url/Landoria/$package")"
+    response="$(curl --retry 5 --retry-all-errors --retry-delay 2 \
+        --silent --show-error --write-out $'\n%{http_code}' "$api_url/Landoria/$package")"
     status="${response##*$'\n'}"
     body="${response%$'\n'*}"
     if [[ "$status" == 404 ]]; then
@@ -118,8 +119,9 @@ upload_archive() {
     api_key="$(sed -n 's/^Authentication__ApiKey=//p' "$secret_environment")"
     [[ -n "$api_key" ]] || { echo "Authentication__ApiKey is missing." >&2; return 1; }
     categories="$(jq -r '.categories | join(",")' "$directory/manifest.json")"
-    result="$(printf 'header = "X-Api-Key: %s"\n' "$api_key" | curl --fail-with-body --silent --show-error \
-        --config - --form 'namespace=Landoria' --form "categories=$categories" \
+    result="$(printf 'header = "X-Api-Key: %s"\n' "$api_key" | curl --fail-with-body \
+        --retry 5 --retry-all-errors --retry-delay 2 --silent --show-error --config - \
+        --form 'namespace=Landoria' --form "categories=$categories" \
         --form "package=@$archive;type=application/zip" "$api_url")"
     released="$(jq -r '.released' <<< "$result")"
     [[ "$released" == false ]] || { echo "The uploaded version was unexpectedly released." >&2; return 1; }
