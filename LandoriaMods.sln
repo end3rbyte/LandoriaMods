@@ -18,13 +18,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LandoriaGamePack", "Landori
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.Moderator", "Landoria.Moderator\Landoria.Moderator.csproj", "{CA2ABD79-CB95-41E2-999B-52AE9310670C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.Socialize", "..\Landoria-Private\Landoria.Socialize\Landoria.Socialize.csproj", "{DA5DE9DF-7727-4D5F-8274-896B8EB80ED3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.Socialize", "Landoria.Socialize\Landoria.Socialize.csproj", "{DA5DE9DF-7727-4D5F-8274-896B8EB80ED3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.CharacterVault", "..\Landoria-Private\Landoria.CharacterVault\Landoria.CharacterVault.csproj", "{70BCF48B-1C23-4B2A-8A4F-F01CC21E3EC5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.CharacterVault", "Landoria.CharacterVault\Landoria.CharacterVault.csproj", "{70BCF48B-1C23-4B2A-8A4F-F01CC21E3EC5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.Launcher", "..\Landoria-Private\launcher\Landoria.Launcher\Landoria.Launcher.csproj", "{069099BE-EAAB-4D9D-B4D8-1AC2613915FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.ServerGateway", "..\Landoria-Private\Landoria.ServerGateway\Landoria.ServerGateway.csproj", "{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.ServerGateway", "Landoria.ServerGateway\Landoria.ServerGateway.csproj", "{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.LandoriaModPack", "..\Landoria-Private\Landoria.LandoriaModPack\Landoria.LandoriaModPack.csproj", "{BD9DB129-FFA6-414E-95AD-10EA8CE362C4}"
 EndProject

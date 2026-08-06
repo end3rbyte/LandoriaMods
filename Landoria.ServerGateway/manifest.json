@@ -1,0 +1,16 @@
+{
+  "name": "ServerGateway",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/end3rbyte/LandoriaMods/tree/main/Landoria.ServerGateway",
+  "description": "Exposes live server status and authenticated local commands for Valheim.",
+  "dependencies": [
+    "denikson-BepInExPack_Valheim-5.4.2333"
+  ],
+  "categories": [
+    "ai-generated",
+    "mods",
+    "server-side",
+    "tools",
+    "utility"
+  ]
+}

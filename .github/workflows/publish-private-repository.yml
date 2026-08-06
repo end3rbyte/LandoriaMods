@@ -9,12 +9,15 @@ on:
       - scripts/ci/**
       - Landoria.SharedLib/**
       - Landoria.ExpandedServer/**
+      - Landoria.CharacterVault/**
       - Landoria.GentleDeath/**
       - Landoria.GetMyTrophyBack/**
       - Landoria.Moderator/**
       - Landoria.NoServerPassword/**
       - Landoria.QuickLaunch/**
       - Landoria.SealedTombstone/**
+      - Landoria.ServerGateway/**
+      - Landoria.Socialize/**
   workflow_dispatch:
     inputs:
       mods:

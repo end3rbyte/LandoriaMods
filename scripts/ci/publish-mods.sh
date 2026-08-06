@@ -41,10 +41,20 @@ read_plugin_version() {
         head -n 1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+'
 }
 
-latest_repository_version() {
-    local package="$1"
-    curl --fail --silent --show-error "$api_url/Landoria/$package" |
-        jq -r '.[].versionNumber' | sort -V | tail -n 1
+repository_state() {
+    local package="$1" response status body
+    response="$(curl --silent --show-error --write-out $'\n%{http_code}' "$api_url/Landoria/$package")"
+    status="${response##*$'\n'}"
+    body="${response%$'\n'*}"
+    if [[ "$status" == 404 ]]; then
+        printf '\t\n'
+        return
+    fi
+    [[ "$status" =~ ^2 ]] || {
+        echo "Package repository lookup failed for $package ($status)." >&2
+        return 1
+    }
+    jq -r 'sort_by(.versionNumber) | last | [.versionNumber, (.released | tostring)] | @tsv' <<< "$body"
 }
 
 next_version() {
@@ -140,10 +150,11 @@ if [[ "$bump_versions" == true ]]; then
     for index in "${!mods[@]}"; do
         package="$(jq -r '.name' "${directories[$index]}/manifest.json")"
         current="$(read_plugin_version "${plugins[$index]}")"
-        published="$(latest_repository_version "$package")"
-        if [[ -n "$published" && "$current" != "$published" ]] && \
-            [[ "$(printf '%s\n%s\n' "$current" "$published" | sort -V | tail -n 1)" == "$current" ]]; then
-            echo "$package $current is already versioned and awaiting publication."
+        IFS=$'\t' read -r published released < <(repository_state "$package")
+        if [[ -z "$published" ]] || \
+            { [[ "$current" != "$published" ]] && [[ "$(printf '%s\n%s\n' "$current" "$published" | sort -V | tail -n 1)" == "$current" ]]; } || \
+            { [[ "$current" == "$published" ]] && [[ "$released" == false ]]; }; then
+            echo "$package $current can be published without a new version."
             continue
         fi
         version="$(next_version "$current" "$published")"
