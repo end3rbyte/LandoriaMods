@@ -119,7 +119,7 @@ upload_archive() {
     api_key="$(sed -n 's/^Authentication__ApiKey=//p' "$secret_environment")"
     [[ -n "$api_key" ]] || { echo "Authentication__ApiKey is missing." >&2; return 1; }
     categories="$(jq -r '.categories | join(",")' "$directory/manifest.json")"
-    result="$(printf 'header = "X-Api-Key: %s"\n' "$api_key" | curl --fail-with-body \
+    result="$(printf 'header = "X-Api-Key: %s"\n' "$api_key" | curl --fail \
         --retry 5 --retry-all-errors --retry-delay 2 --silent --show-error --config - \
         --form 'namespace=Landoria' --form "categories=$categories" \
         --form "package=@$archive;type=application/zip" "$api_url")"
