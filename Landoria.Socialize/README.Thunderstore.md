@@ -50,7 +50,7 @@ The server synchronizes this value to connected clients after restart.
 |---|---|
 | Yes | Yes |
 
-See the [full documentation](https://github.com/end3rbyte/LandoriaMods/tree/main/Landoria.Socialize/README.md).
+See the [full documentation](https://github.com/end3rbyte/LandoriaMods/blob/main/Landoria.Socialize/README.md).
 
 ## Contact
 

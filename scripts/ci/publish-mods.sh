@@ -16,6 +16,8 @@ fi
 repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
 dependency_script="$repository_root/scripts/ci/prepare-build-dependencies.sh"
 output="$repository_root/artifacts/thunderstore"
+modpack_directory="$repository_root/Landoria.LandoriaModPack"
+modpack_manifest="$modpack_directory/manifest.json"
 api_url="${LANDORIA_MOD_REPOSITORY_URL:-https://test.landoria-gaming.com:8443/api/v1/packages}"
 secret_environment="${LANDORIA_MOD_REPOSITORY_SECRET_ENVIRONMENT:-/var/lib/landoria-secrets/mod-repository-upload.env}"
 
@@ -55,7 +57,8 @@ repository_state() {
         echo "Package repository lookup failed for $package ($status)." >&2
         return 1
     }
-    jq -r 'sort_by(.versionNumber) | last | [.versionNumber, (.released | tostring)] | @tsv' <<< "$body"
+    jq -r 'sort_by(.versionNumber | split(".") | map(tonumber)) | last |
+        [.versionNumber, (.released | tostring)] | @tsv' <<< "$body"
 }
 
 next_version() {
@@ -78,12 +81,67 @@ replace_version() {
         "$directory/Properties/AssemblyInfo.cs"
 }
 
+modpack_tracks_package() {
+    local package="$1"
+    jq -e --arg prefix "Landoria-$package-" \
+        '.dependencies[]? | select(startswith($prefix))' "$modpack_manifest" >/dev/null
+}
+
+sync_modpack_dependency() {
+    local package="$1" version="$2" prefix dependency current temporary
+    prefix="Landoria-$package-"
+    dependency="Landoria-$package-$version"
+    current="$(jq -r --arg prefix "$prefix" \
+        '.dependencies[]? | select(startswith($prefix))' "$modpack_manifest")"
+    [[ -n "$current" ]] || return 1
+    [[ "$current" != *$'\n'* ]] || {
+        echo "Duplicate LandoriaModPack dependency for $package." >&2
+        exit 1
+    }
+    [[ "$current" != "$dependency" ]] || return 1
+    temporary="$modpack_manifest.tmp"
+    jq --arg prefix "$prefix" --arg dependency "$dependency" \
+        '.dependencies |= map(if startswith($prefix) then $dependency else . end)' \
+        "$modpack_manifest" > "$temporary"
+    mv -- "$temporary" "$modpack_manifest"
+    git -C "$repository_root" add -- Landoria.LandoriaModPack/manifest.json
+    echo "Updated LandoriaModPack dependency to $dependency."
+}
+
 validate_metadata() {
     local mod="$1" directory="$2" plugin="$3" version plugin_version assembly_version file_version
+    local expected_website valid_categories
     for file in "$directory/manifest.json" "$plugin" "$directory/Properties/AssemblyInfo.cs" \
-        "$directory/icon.png" "$directory/README.Thunderstore.md"; do
+        "$directory/icon.png" "$directory/LICENSE" "$directory/README.md" \
+        "$directory/README.Thunderstore.md"; do
         [[ -f "$file" ]] || { echo "Required file not found: $file" >&2; return 1; }
     done
+    expected_website="https://github.com/end3rbyte/LandoriaMods/tree/main/Landoria.$mod"
+    valid_categories='["ai-generated","ashlands-update","audio","bog-witch-update","building","client-side","crafting","enemies","gear","hildirs-request-update","language","libraries","misc","mistlands-update","modpacks","mods","npcs","pvp","server-side","skins","tools","transportation","tweaks","utility","vehicles","world-generation"]'
+    jq -e --arg website "$expected_website" --argjson valid "$valid_categories" '
+        (.name | test("^[A-Za-z0-9_]+$")) and
+        (.website_url == $website) and
+        (.description | length > 0 and length < 150) and
+        (.categories | type == "array" and length > 0 and
+            index("ai-generated") != null and length == (unique | length)) and
+        all(.categories[]; . as $category | $valid | index($category) != null) and
+        (.dependencies | type == "array" and length > 0 and
+            length == (unique | length)) and
+        all(.dependencies[]; test("^[A-Za-z0-9_]+-[A-Za-z0-9_]+-[0-9]+\\.[0-9]+\\.[0-9]+$")) and
+        (.dependencies | index("denikson-BepInExPack_Valheim-5.4.2333") != null)
+    ' "$directory/manifest.json" >/dev/null || {
+        echo "Manifest metadata is invalid for $mod." >&2
+        return 1
+    }
+    grep -Fq "https://github.com/end3rbyte/LandoriaMods/blob/main/Landoria.$mod/README.md" \
+        "$directory/README.Thunderstore.md" || {
+        echo "The Thunderstore README has no valid full-documentation link for $mod." >&2
+        return 1
+    }
+    file "$directory/icon.png" | grep -Fq 'PNG image data, 256 x 256' || {
+        echo "The icon must be a 256 by 256 PNG for $mod." >&2
+        return 1
+    }
     version="$(jq -r '.version_number' "$directory/manifest.json")"
     plugin_version="$(read_plugin_version "$plugin")"
     assembly_version="$(grep -Eo 'AssemblyVersion\("[0-9]+\.[0-9]+\.[0-9]+\.(\*|[0-9]+)"' "$directory/Properties/AssemblyInfo.cs" | head -1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+')"
@@ -127,7 +185,7 @@ upload_archive() {
     [[ "$released" == false ]] || { echo "The uploaded version was unexpectedly released." >&2; return 1; }
 }
 
-for command in curl dotnet find git jq perl sed sort unzip zip; do
+for command in curl dotnet file find git jq perl sed sort unzip zip; do
     require_command "$command"
 done
 [[ -z "$(git -C "$repository_root" status --porcelain)" ]] || {
@@ -135,11 +193,29 @@ done
     exit 1
 }
 
-declare -a mods directories plugins
+declare -a requested_mods mods directories plugins
+declare -A seen_mods=()
+include_modpack=false
 for mod in "$@"; do
     [[ "$mod" =~ ^[A-Za-z0-9]+$ ]] || usage
     directory="$repository_root/Landoria.$mod"
     [[ -d "$directory" ]] || { echo "Unknown public mod: $mod" >&2; exit 1; }
+    [[ -z "${seen_mods[$mod]:-}" ]] || continue
+    seen_mods["$mod"]=1
+    requested_mods+=("$mod")
+    if [[ "$mod" == LandoriaModPack ]]; then
+        include_modpack=true
+        continue
+    fi
+    package="$(jq -r '.name' "$directory/manifest.json")"
+    modpack_tracks_package "$package" && include_modpack=true
+done
+if [[ "$include_modpack" == true && -z "${seen_mods[LandoriaModPack]:-}" ]]; then
+    requested_mods+=(LandoriaModPack)
+fi
+
+for mod in "${requested_mods[@]}"; do
+    directory="$repository_root/Landoria.$mod"
     plugin="$(plugin_file "$directory")"
     validate_metadata "$mod" "$directory" "$plugin"
     mods+=("$mod")
@@ -153,17 +229,22 @@ if [[ "$bump_versions" == true ]]; then
         package="$(jq -r '.name' "${directories[$index]}/manifest.json")"
         current="$(read_plugin_version "${plugins[$index]}")"
         IFS=$'\t' read -r published released < <(repository_state "$package")
+        version="$current"
         if [[ -z "$published" ]] || \
             { [[ "$current" != "$published" ]] && [[ "$(printf '%s\n%s\n' "$current" "$published" | sort -V | tail -n 1)" == "$current" ]]; } || \
             { [[ "$current" == "$published" ]] && [[ "$released" == false ]]; }; then
             echo "$package $current can be published without a new version."
-            continue
+        else
+            version="$(next_version "$current" "$published")"
+            replace_version "${directories[$index]}" "${plugins[$index]}" "$version"
+            validate_metadata "${mods[$index]}" "${directories[$index]}" "${plugins[$index]}"
+            git -C "$repository_root" add -- "Landoria.${mods[$index]}"
+            versions_changed=true
         fi
-        version="$(next_version "$current" "$published")"
-        replace_version "${directories[$index]}" "${plugins[$index]}" "$version"
-        validate_metadata "${mods[$index]}" "${directories[$index]}" "${plugins[$index]}"
-        git -C "$repository_root" add -- "Landoria.${mods[$index]}"
-        versions_changed=true
+        if [[ "${mods[$index]}" != LandoriaModPack ]] &&
+            sync_modpack_dependency "$package" "$version"; then
+            versions_changed=true
+        fi
     done
     if [[ "$versions_changed" == true ]]; then
         git -C "$repository_root" commit -m "Release updated public mods" -m 'Release-Version-Bump: true'

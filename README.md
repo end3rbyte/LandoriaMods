@@ -34,4 +34,5 @@ For questions, feedback, and other discussions, use [GitHub Discussions](https:/
 Changes merged into `main` automatically build and publish a new draft version
 of each affected mod to Landoria's package repository. The workflow can also be
 started manually to publish selected mods or retry an existing version after a
-failed upload.
+failed upload. When a tracked dependency changes version, the workflow updates
+and republishes `LandoriaModPack` with the matching dependency version.

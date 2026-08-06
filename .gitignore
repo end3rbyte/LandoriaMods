@@ -3,6 +3,7 @@
 /**/bin/
 /**/obj/
 dist/
+/artifacts/
 /scripts/deploy/logs/
 /launcher/*.log
 tmp/

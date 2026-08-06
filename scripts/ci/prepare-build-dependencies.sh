@@ -17,7 +17,8 @@ require_command() {
 install_steamcmd() {
     [[ -x "$steamcmd_root/steamcmd.sh" ]] && return
     mkdir -p "$steamcmd_root"
-    curl --fail --location --silent --show-error \
+    curl --fail --retry 5 --retry-all-errors --retry-delay 2 \
+        --location --silent --show-error \
         https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz |
         tar -xz -C "$steamcmd_root"
 }
@@ -26,7 +27,8 @@ install_bepinex() {
     [[ -f "$bepinex_install_root/BepInEx/core/BepInEx.dll" ]] && return
     local temporary
     temporary="$(mktemp -d)"
-    curl --fail --location --silent --show-error \
+    curl --fail --retry 5 --retry-all-errors --retry-delay 2 \
+        --location --silent --show-error \
         "https://thunderstore.io/package/download/denikson/BepInExPack_Valheim/${bepinex_version}/" \
         --output "$temporary/bepinex.zip"
     rm -rf -- "$bepinex_install_root"

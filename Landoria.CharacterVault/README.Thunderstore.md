@@ -20,7 +20,7 @@ This mod is an extension for [ServerCharacters](https://thunderstore.io/c/valhei
 |---|---|
 | Yes | Yes |
 
-See the [full documentation](https://github.com/end3rbyte/LandoriaMods/tree/main/Landoria.CharacterVault/README.md).
+See the [full documentation](https://github.com/end3rbyte/LandoriaMods/blob/main/Landoria.CharacterVault/README.md).
 
 ## Contact
 
