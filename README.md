@@ -36,3 +36,19 @@ of each affected mod to Landoria's package repository. The workflow can also be
 started manually to publish selected mods or retry an existing version after a
 failed upload. When a tracked dependency changes version, the workflow updates
 and republishes `LandoriaModPack` with the matching dependency version.
+
+Production publication is handled by the manual **Promote mods to Thunderstore**
+workflow on the self-hosted `dev` runner. It compares each selected mod with its
+latest tagged Thunderstore release, skips unchanged package inputs (including
+the shared library and packaging files), increments the patch version from the
+version currently published on Thunderstore, updates this repository's
+`CHANGELOG.md`, and includes that changelog in the package.
+After Thunderstore exposes the new version, the workflow marks the matching
+package version as released in Landoria's package repository and creates a
+`thunderstore/<mod>/<version>` Git tag.
+
+The persistent Vault Agent on `dev` must render the Thunderstore API token as
+`TCLI_AUTH_TOKEN` in
+`/var/lib/landoria-secrets/thunderstore-publish.env`. The existing internal
+repository API key remains in
+`/var/lib/landoria-secrets/mod-repository-upload.env`.

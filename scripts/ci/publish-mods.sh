@@ -163,6 +163,7 @@ create_archive() {
     cp -- "$directory/bin/Release/Landoria.$mod.dll" "$directory/icon.png" "$staging/"
     jq --arg commit "$commit" '. + {commit_id: $commit}' "$directory/manifest.json" > "$staging/manifest.json"
     cp -- "$directory/README.Thunderstore.md" "$staging/README.md"
+    cp -- "$repository_root/CHANGELOG.md" "$staging/CHANGELOG.md"
     (cd -- "$staging" && zip -q "$archive" ./*)
     rm -rf -- "$staging"
     printf '%s\n' "$archive"

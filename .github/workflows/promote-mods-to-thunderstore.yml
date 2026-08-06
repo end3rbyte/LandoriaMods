@@ -1,0 +1,78 @@
+---
+name: Promote mods to Thunderstore
+
+'on':
+  workflow_dispatch:
+    inputs:
+      mods:
+        description: Comma-separated mod names to promote
+        required: true
+        type: string
+      confirmation:
+        description: Type PROMOTE to confirm the production publication
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: promote-mods-to-thunderstore
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    if: ${{ inputs.confirmation == 'PROMOTE' }}
+    runs-on: [self-hosted, Linux, X64, dev, public-mods]
+    timeout-minutes: 60
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Select mods
+        id: mods
+        shell: bash
+        env:
+          REQUESTED_MODS: ${{ inputs.mods }}
+        run: |
+          set -euo pipefail
+          mods="$(tr ',' '\n' <<< "$REQUESTED_MODS" |
+              sed 's/^[[:space:]]*//;s/[[:space:]]*$//' |
+              sed '/^$/d' | sort -u | paste -sd' ' -)"
+          [[ -n "$mods" ]] || { echo "At least one mod is required." >&2; exit 1; }
+          echo "mods=$mods" >> "$GITHUB_OUTPUT"
+
+      - name: Install the pinned Thunderstore CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts/tools
+          dotnet tool update tcli --tool-path artifacts/tools --version 0.2.4 ||
+              dotnet tool install tcli --tool-path artifacts/tools --version 0.2.4
+
+      - name: Configure release identity
+        shell: bash
+        run: |
+          git config user.name landoria-release-bot
+          git config user.email landoria-release-bot@users.noreply.github.com
+
+      - name: Promote changed packages
+        shell: bash
+        env:
+          SELECTED_MODS: ${{ steps.mods.outputs.mods }}
+        run: |
+          set -euo pipefail
+          read -r -a mods <<< "$SELECTED_MODS"
+          scripts/ci/promote-mods.sh "${mods[@]}"
+
+      - name: Archive generated packages
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: thunderstore-promotion-packages
+          path: artifacts/thunderstore/*.zip
+          if-no-files-found: ignore
+          retention-days: 14
