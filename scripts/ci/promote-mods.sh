@@ -114,14 +114,19 @@ write_tcli_config() {
     } > "$target"
 }
 
+thunderstore_release_exists() {
+    local package="$1" version="$2"
+    curl --fail --location --silent --output /dev/null \
+        "$thunderstore_url/package/download/Landoria/$package/$version/"
+}
+
 confirm_thunderstore_release() {
-    local package="$1" version="$2" latest
+    local package="$1" version="$2"
     for _ in {1..12}; do
-        latest="$(thunderstore_latest "$package")"
-        [[ "$latest" == "$version" ]] && return 0
+        thunderstore_release_exists "$package" "$version" && return 0
         sleep 5
     done
-    echo "Thunderstore did not expose Landoria-$package-$version after publication." >&2
+    echo "Thunderstore did not expose the Landoria-$package-$version archive after publication." >&2
     return 1
 }
 
@@ -155,13 +160,12 @@ for mod in "$@"; do
     latest="$(thunderstore_latest "$package")"
     current="$(jq -r '.version_number' "$repository_root/Landoria.$mod/manifest.json")"
 
-    if [[ -n "$latest" && "$current" == "$latest" ]] && \
-       ! git -C "$repository_root" rev-parse --verify --quiet "refs/tags/thunderstore/$mod/$latest" >/dev/null; then
-        confirm_thunderstore_release "$package" "$latest"
-        mark_internal_release "$package" "$latest"
-        git -C "$repository_root" tag "thunderstore/$mod/$latest"
-        git -C "$repository_root" push origin "refs/tags/thunderstore/$mod/$latest"
-        echo "Reconciled the existing Thunderstore release Landoria-$package-$latest."
+    if ! git -C "$repository_root" rev-parse --verify --quiet "refs/tags/thunderstore/$mod/$current" >/dev/null && \
+       thunderstore_release_exists "$package" "$current"; then
+        mark_internal_release "$package" "$current"
+        git -C "$repository_root" tag "thunderstore/$mod/$current"
+        git -C "$repository_root" push origin "refs/tags/thunderstore/$mod/$current"
+        echo "Reconciled the existing Thunderstore release Landoria-$package-$current."
         continue
     fi
 
