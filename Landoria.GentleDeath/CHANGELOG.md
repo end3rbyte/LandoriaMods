@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.2 - 2026-08-06
+
+- Correct GentleDeath changelog history
+- Release updated public mods
+- Correct GentleDeath server requirements
+
 ## Unreleased
 
 - Correct the installation documentation to require GentleDeath on both the server and clients.
