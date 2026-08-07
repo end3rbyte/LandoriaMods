@@ -8,7 +8,7 @@ namespace Landoria.Socialize
     {
         private const string PluginGuid = "Landoria.Socialize";
         private const string PluginName = "Landoria.Socialize";
-        private const string PluginVersion = "1.0.2";
+        private const string PluginVersion = "1.0.3";
 
         internal static ModLog Log { get; private set; }
         internal static bool IsEnabled => FeaturePolicy?.IsEnabled == true;

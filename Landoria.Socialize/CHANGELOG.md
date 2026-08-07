@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Restore missing group invite feedback
+
 ## 1.0.2
 
 - Add server-controlled client mod activation
