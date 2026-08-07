@@ -6,8 +6,8 @@
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333",
     "Landoria-Moderator-1.0.2",
-    "Landoria-GetMyTrophyBack-1.0.1",
-    "Landoria-ExpandedServer-1.0.1",
+    "Landoria-GetMyTrophyBack-1.0.2",
+    "Landoria-ExpandedServer-1.0.2",
     "Azumatt-AzuAntiCheat-4.3.11",
     "Smoothbrain-ServerCharacters-1.4.16",
     "Landoria-CharacterVault-1.0.1",

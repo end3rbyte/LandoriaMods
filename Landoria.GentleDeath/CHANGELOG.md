@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Restore mod versions and changelogs
+- Revert mods to pre-activation state
+
 ## 1.0.3
 
 - Correct the installation documentation to require GentleDeath on both the server and clients.

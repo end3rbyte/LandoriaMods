@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Restore mod versions and changelogs
+- Revert mods to pre-activation state
 - Fix moderator mode activation command
 
 ## 1.0.1

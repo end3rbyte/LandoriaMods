@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Restore current package publication metadata
+- Restore mod versions and changelogs
+- Revert mods to pre-activation state
 - Restore missing group invite feedback
 
 ## 1.0.2
