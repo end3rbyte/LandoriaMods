@@ -1,3 +1,5 @@
+using System;
+
 namespace Landoria.Socialize
 {
     internal static class GroupCommands
@@ -28,7 +30,28 @@ namespace Landoria.Socialize
                 ShowHelp(args.Context);
                 return;
             }
+            if (action == "invite" && !IsConnectedPlayer(argument))
+            {
+                args.Context.AddString("No connected player named \"" + argument + "\" was found.");
+                return;
+            }
             GroupService.SendRequest(action, argument);
+        }
+
+        private static bool IsConnectedPlayer(string playerName)
+        {
+            if (ZNet.instance == null)
+            {
+                return false;
+            }
+            foreach (ZNet.PlayerInfo player in ZNet.instance.GetPlayerList())
+            {
+                if (string.Equals(player.m_name, playerName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private static void HandleGroupChat(Terminal.ConsoleEventArgs args)
