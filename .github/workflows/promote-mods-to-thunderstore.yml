@@ -23,7 +23,7 @@ concurrency:
 jobs:
   promote:
     if: ${{ inputs.confirmation == 'PROMOTE' }}
-    runs-on: [self-hosted, Linux, X64, dev, public-mods]
+    runs-on: [self-hosted, Linux, X64, public-mods]
     timeout-minutes: 60
     steps:
       - name: Check out source
