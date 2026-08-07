@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Remove unintended mod rollback side effects
 - Restore mod versions and changelogs
 - Revert mods to pre-activation state
 
