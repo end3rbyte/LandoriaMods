@@ -1,15 +1,8 @@
 # Changelog
 
-## Unreleased
+## 1.0.2
 
-- Remove unintended mod rollback side effects
-- Restore mod versions and changelogs
-- Revert mods to pre-activation state
-- Fix moderator mode activation command
-
-## 1.0.1
-
-- Add server-controlled client mod activation
+- minor fix
 
 ## 1.0.0
 
