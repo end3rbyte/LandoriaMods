@@ -1,6 +1,6 @@
 {
   "name": "CharacterVault",
-  "version_number": "1.0.0",
+  "version_number": "1.0.1",
   "website_url": "https://discord.com/users/1227584616634781808",
   "description": "CharacterVault saves character profiles on the server to prevent item duplication.",
   "dependencies": [
