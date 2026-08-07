@@ -11,7 +11,7 @@ namespace Landoria.Moderator
             new HashSet<string>
             {
                 "exploremap", "goto", "itemset", "playerlist", "summon",
-                "resetmap", "spawn", "moderator"
+                "resetmap", "spawn"
             };
 
         internal static ModLog ModLogger { get; private set; }
