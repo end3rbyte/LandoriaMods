@@ -20,3 +20,6 @@ Install with r2modman and launch the profile with **Start modded**.
 
 Report bugs through [GitHub Issues](https://github.com/end3rbyte/LandoriaMods/issues).
 For other conversations, use [GitHub Discussions](https://github.com/end3rbyte/LandoriaMods/discussions).
+## Documentation
+
+[Read the full documentation](https://github.com/end3rbyte/LandoriaMods/blob/main/Landoria.LandoriaModPack/README.md).

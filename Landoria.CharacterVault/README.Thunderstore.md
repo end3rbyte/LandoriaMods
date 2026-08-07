@@ -24,3 +24,6 @@ This mod is an extension for [ServerCharacters](https://thunderstore.io/c/valhei
 
 - Report bugs through [GitHub Issues](https://github.com/end3rbyte/LandoriaMods/issues).
 - For questions, feedback, and other discussions, use [GitHub Discussions](https://github.com/end3rbyte/LandoriaMods/discussions).
+## Documentation
+
+[Read the full documentation](https://github.com/end3rbyte/LandoriaMods/blob/main/Landoria.CharacterVault/README.md).

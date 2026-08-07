@@ -36,3 +36,6 @@ The JSON response contains server and world information plus `players` and `play
 
 Report bugs through [GitHub Issues](https://github.com/end3rbyte/LandoriaMods/issues).
 For questions, feedback, and other discussions, use [GitHub Discussions](https://github.com/end3rbyte/LandoriaMods/discussions).
+## Documentation
+
+[Read the full documentation](https://github.com/end3rbyte/LandoriaMods/blob/main/Landoria.ServerGateway/README.md).
