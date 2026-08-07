@@ -36,21 +36,11 @@ Adds persistent player groups, private messaging, map sharing, and expanded chat
 - Invitations use Valheim's Yes/No popup.
 - Friendly-fire rules, permissions, and teleportation are not included.
 
-## Server-controlled activation
-
-| Setting | Default |
-|---|---:|
-| `General.Enabled` | Dedicated: `true`; otherwise: `false` |
-
-The server synchronizes this value to connected clients after restart.
-
 ## Installation
 
 | Client required | Server required |
 |---|---|
 | Yes | Yes |
-
-See the [full documentation](https://github.com/end3rbyte/LandoriaMods/blob/main/Landoria.Socialize/README.md).
 
 ## Contact
 

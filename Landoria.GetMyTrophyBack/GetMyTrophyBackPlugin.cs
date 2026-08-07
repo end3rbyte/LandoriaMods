@@ -8,23 +8,19 @@ namespace Landoria.GetMyTrophyBack
     {
         private const string PluginGuid = "Landoria.GetMyTrophyBack";
         private const string PluginName = "Landoria.GetMyTrophyBack";
-        private const string PluginVersion = "1.0.1";
+        private const string PluginVersion = "1.0.0";
 
         internal static ModLog Log { get; private set; }
-        internal static bool IsEnabled => FeaturePolicy?.IsEnabled == true;
-        private static ServerFeaturePolicy FeaturePolicy { get; set; }
 
         private void Awake()
         {
             Log = InitializePlugin(PluginGuid);
-            FeaturePolicy = InitializeServerFeaturePolicy(PluginGuid, PluginVersion, Log);
             Log.LogInfo($"{PluginName} {PluginVersion} is loaded.");
         }
 
         private void OnDestroy()
         {
             ShutdownPlugin();
-            FeaturePolicy = null;
             Log = null;
         }
     }

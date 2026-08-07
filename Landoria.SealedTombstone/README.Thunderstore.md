@@ -20,14 +20,6 @@ Protects recent tombstones from unauthorized players while allowing owner-approv
 | Tombstone reaches ten days | Tombstone becomes public. |
 | Requester attacked the owner before death | The request is blocked. |
 
-## Server-controlled activation
-
-| Setting | Default |
-|---|---:|
-| `General.Enabled` | Dedicated: `true`; otherwise: `false` |
-
-The server synchronizes this value to connected clients after restart.
-
 ## Installation
 
 | Client required | Server required |

@@ -32,8 +32,6 @@ The JSON response contains server and world information plus `players` and `play
 | `GET` | `/status` | Bearer token | Returns the current server and player snapshot. |
 | `POST` | `/commands/save` | Bearer token | Queues an immediate vanilla world and player-profile save. |
 
-See the [full documentation](https://github.com/end3rbyte/LandoriaMods/blob/main/Landoria.ServerGateway/README.md).
-
 ## Contact
 
 Report bugs through [GitHub Issues](https://github.com/end3rbyte/LandoriaMods/issues).

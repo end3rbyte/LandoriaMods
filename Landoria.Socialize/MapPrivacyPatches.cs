@@ -10,10 +10,7 @@ namespace Landoria.Socialize
     {
         private static void Postfix(Minimap __instance)
         {
-            if (SocializePlugin.IsEnabled)
-            {
-                HidePublicPositionTogglePatch.UpdatePingVisibility(__instance);
-            }
+            HidePublicPositionTogglePatch.UpdatePingVisibility(__instance);
         }
     }
 
@@ -22,10 +19,7 @@ namespace Landoria.Socialize
     {
         private static void Prefix(ref bool pub)
         {
-            if (SocializePlugin.IsEnabled)
-            {
-                pub = false;
-            }
+            pub = false;
         }
     }
 
@@ -34,10 +28,7 @@ namespace Landoria.Socialize
     {
         private static void Postfix(List<ZNet.PlayerInfo> playerList)
         {
-            if (SocializePlugin.IsEnabled)
-            {
-                GroupMapSharing.AddGroupMembers(playerList);
-            }
+            GroupMapSharing.AddGroupMembers(playerList);
         }
     }
 
@@ -46,11 +37,6 @@ namespace Landoria.Socialize
     {
         private static void Postfix(Minimap __instance)
         {
-            if (!SocializePlugin.IsEnabled)
-            {
-                return;
-            }
-
             Toggle toggle = __instance.m_publicPosition;
             if (toggle != null)
             {

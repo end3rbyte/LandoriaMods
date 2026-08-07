@@ -45,14 +45,6 @@ Groups with fewer than two members are disbanded automatically. Invitations use 
 
 Group data is serialized in a persistent server-owned ZDO stored with the world. No separate configuration or group file is created.
 
-## Server-controlled activation
-
-| Setting | Default | Purpose |
-|---|---:|---|
-| `General.Enabled` | Dedicated: `true`; otherwise: `false` | Enables social features on the server and connected clients. |
-
-Set the value to `true` in the server configuration and restart the server.
-
 ## Installation
 
 | Client required | Server required |

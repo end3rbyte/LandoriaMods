@@ -7,11 +7,6 @@ namespace Landoria.GetMyTrophyBack
     {
         private static void Postfix(ItemStand __instance)
         {
-            if (!GetMyTrophyBackPlugin.IsEnabled)
-            {
-                return;
-            }
-
             Player player = Player.m_localPlayer;
             if (player == null || __instance.m_guardianPower == null)
             {

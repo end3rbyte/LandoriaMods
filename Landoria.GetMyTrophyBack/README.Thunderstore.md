@@ -12,14 +12,6 @@ Returns a boss trophy after its Sacrificial Stone power is selected.
 
 Install the same version everywhere so the peer owning the stone can perform the synchronized drop.
 
-## Server-controlled activation
-
-| Setting | Default |
-|---|---:|
-| `General.Enabled` | Dedicated: `true`; otherwise: `false` |
-
-The server synchronizes this value to connected clients after restart.
-
 ## Installation
 
 | Client required | Server required |

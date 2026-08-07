@@ -45,10 +45,6 @@
             <HintPath>$(BepInExPath)\core\0Harmony.dll</HintPath>
             <Private>false</Private>
         </Reference>
-        <Reference Include="assembly_valheim">
-            <HintPath>$(ValheimGamePath)\valheim_Data\Managed\assembly_valheim.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
         <Reference Include="UnityEngine">
             <HintPath>$(ValheimGamePath)\valheim_Data\Managed\UnityEngine.dll</HintPath>
             <Private>false</Private>
@@ -61,7 +57,6 @@
     <ItemGroup>
         <Compile Include="LandoriaPlugin.cs"/>
         <Compile Include="ModLog.cs"/>
-        <Compile Include="ServerFeaturePolicy.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
     <ItemGroup>

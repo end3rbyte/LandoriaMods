@@ -39,17 +39,12 @@ namespace Landoria.Socialize
 
         internal static bool IsLocalPlayerInGroup()
         {
-            return SocializePlugin.IsEnabled && Game.instance != null &&
+            return Game.instance != null &&
                    GroupState.LocalMembers.Contains(Game.instance.GetPlayerProfile().GetPlayerID());
         }
 
         internal static void SendChat(string message)
         {
-            if (!SocializePlugin.IsEnabled)
-            {
-                return;
-            }
-
             if (!IsLocalPlayerInGroup())
             {
                 Chat.instance?.AddString("You are not in a group.");
@@ -60,11 +55,6 @@ namespace Landoria.Socialize
 
         internal static void SendRequest(string action, string argument)
         {
-            if (!SocializePlugin.IsEnabled)
-            {
-                return;
-            }
-
             EnsureRpcs();
             if (ZRoutedRpc.instance == null || Game.instance == null || Player.m_localPlayer == null)
             {
@@ -80,11 +70,6 @@ namespace Landoria.Socialize
 
         internal static void Dispatch(long sender, long playerId, string playerName, string action, string argument)
         {
-            if (!SocializePlugin.IsEnabled)
-            {
-                return;
-            }
-
             GroupState.PeerPlayers[sender] = playerId;
             switch (action)
             {
@@ -102,11 +87,6 @@ namespace Landoria.Socialize
 
         internal static void ReadResponse(ZPackage package)
         {
-            if (!SocializePlugin.IsEnabled)
-            {
-                return;
-            }
-
             string type = package.ReadString();
             if (type == "message")
             {

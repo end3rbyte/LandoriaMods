@@ -10,7 +10,6 @@ namespace Landoria.Moderator
 
         internal static void SetEnabled(bool active)
         {
-            active = active && ModeratorPlugin.IsEnabled;
             IsActive = active;
             if (!active)
             {
@@ -32,10 +31,7 @@ namespace Landoria.Moderator
     {
         private static void Postfix(System.Collections.Generic.List<ZNet.PlayerInfo> playerList)
         {
-            if (ModeratorPlugin.IsEnabled)
-            {
-                ModeratorMapSharing.AddPlayers(playerList);
-            }
+            ModeratorMapSharing.AddPlayers(playerList);
         }
     }
 
@@ -74,8 +70,7 @@ namespace Landoria.Moderator
         private static void Postfix(Player __instance, ref string __result)
         {
             ZNetView view = __instance.GetComponent<ZNetView>();
-            if (ModeratorPlugin.IsEnabled &&
-                view?.GetZDO()?.GetBool(ModeratorState.ModeratorZdoKey) == true)
+            if (view?.GetZDO()?.GetBool(ModeratorState.ModeratorZdoKey) == true)
             {
                 __result += "  " + ModeratorState.ModeratorLabel;
             }
@@ -92,8 +87,7 @@ namespace Landoria.Moderator
                 return;
             }
 
-            bool isAdmin = ModeratorPlugin.IsEnabled &&
-                           AdminAccess.LocalPlayerIsAdminOrHost();
+            bool isAdmin = AdminAccess.LocalPlayerIsAdminOrHost();
             bool inactiveModeratorCommand =
                 ModeratorPlugin.RequiresEnabledModerator(__instance.Command) &&
                 !ModeratorState.IsActive;

@@ -27,14 +27,6 @@ Provides server-authorized commands and tools for Valheim administrators.
 
 All commands except `moderator` require active moderator mode. The server validates access against `adminlist.txt`.
 
-## Server-controlled activation
-
-| Setting | Default |
-|---|---:|
-| `General.Enabled` | Dedicated: `true`; otherwise: `false` |
-
-The server synchronizes this value to connected clients after restart.
-
 ## Installation
 
 | Client required | Server required |

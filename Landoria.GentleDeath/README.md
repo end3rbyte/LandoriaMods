@@ -12,19 +12,11 @@ Keeps equipable items after death while moving other inventory items to the tomb
 
 Equipable items follow Valheim's `ItemData.IsEquipable()` classification.
 
-## Server-controlled activation
-
-| Setting | Default | Purpose |
-|---|---:|---|
-| `General.Enabled` | Dedicated: `true`; otherwise: `false` | Enables the custom death inventory rules on the server and connected clients. |
-
-Set the value to `true` in the server configuration and restart the server.
-
 ## Installation
 
 | Client required | Server required |
 |---|---|
-| Yes | Yes |
+| Yes | No |
 
 ## Contact
 

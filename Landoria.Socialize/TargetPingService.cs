@@ -21,8 +21,7 @@ namespace Landoria.Socialize
 
         internal static bool Send(string targetName, string message, Terminal context)
         {
-            if (!SocializePlugin.IsEnabled ||
-                !TryFindTarget(targetName, out ZNet.PlayerInfo target) ||
+            if (!TryFindTarget(targetName, out ZNet.PlayerInfo target) ||
                 Player.m_localPlayer == null || ZRoutedRpc.instance == null)
             {
                 context?.AddString("No connected player named \"" + targetName + "\" was found.");
@@ -46,8 +45,7 @@ namespace Landoria.Socialize
             long targetPlayerId,
             string message)
         {
-            if (!SocializePlugin.IsEnabled || ZNet.instance == null ||
-                !ZNet.instance.IsServer())
+            if (ZNet.instance == null || !ZNet.instance.IsServer())
             {
                 return;
             }
@@ -63,10 +61,7 @@ namespace Landoria.Socialize
 
         internal static void RPC_TargetPingMessage(long sender, UserInfo user, string message)
         {
-            if (SocializePlugin.IsEnabled)
-            {
-                ChatFormatting.AddPing(Chat.instance, user.GetDisplayName(), "", message);
-            }
+            ChatFormatting.AddPing(Chat.instance, user.GetDisplayName(), "", message);
         }
 
         private static void EnsureRpcs()

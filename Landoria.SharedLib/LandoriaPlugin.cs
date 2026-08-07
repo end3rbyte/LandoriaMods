@@ -2,15 +2,12 @@ using System;
 using System.Reflection;
 using BepInEx;
 using HarmonyLib;
-using UnityEngine;
 
 namespace Landoria.SharedLib
 {
     public abstract class LandoriaPlugin : BaseUnityPlugin
     {
         private Harmony _harmony;
-        private Harmony _featurePolicyHarmony;
-        private ServerFeaturePolicy _featurePolicy;
         private bool _patchesApplied;
 
         protected ModLog InitializePlugin(string pluginGuid)
@@ -44,21 +41,6 @@ namespace Landoria.SharedLib
             log.LogDebug("Harmony patches were applied for the plugin namespace.");
         }
 
-        protected ServerFeaturePolicy InitializeServerFeaturePolicy(
-            string pluginGuid,
-            string pluginVersion,
-            ModLog log)
-        {
-            _featurePolicyHarmony = FeaturePolicyHarmony.Apply(pluginGuid);
-            _featurePolicy = new ServerFeaturePolicy(
-                Config,
-                pluginGuid,
-                pluginVersion,
-                log,
-                Application.isBatchMode);
-            return _featurePolicy;
-        }
-
         protected void ShutdownPlugin()
         {
             if (!_patchesApplied)
@@ -67,10 +49,6 @@ namespace Landoria.SharedLib
             }
 
             _harmony?.UnpatchSelf();
-            _featurePolicy?.Dispose();
-            _featurePolicyHarmony?.UnpatchSelf();
-            _featurePolicy = null;
-            _featurePolicyHarmony = null;
             _patchesApplied = false;
         }
     }

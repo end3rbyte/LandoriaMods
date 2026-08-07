@@ -20,14 +20,6 @@ Returns a boss trophy after its Sacrificial Stone power is selected.
 | Timer completed | The trophy drops into the world. |
 | Trophy already absent | No additional trophy is created. |
 
-## Server-controlled activation
-
-| Setting | Default | Purpose |
-|---|---:|---|
-| `General.Enabled` | Dedicated: `true`; otherwise: `false` | Enables trophy returns on the server and connected clients. |
-
-Set the value to `true` in the server configuration and restart the server.
-
 ## Installation
 
 | Client required | Server required |

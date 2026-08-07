@@ -83,7 +83,6 @@
     </ItemGroup>
     <ItemGroup>
         <Content Include="icon.png"/>
-        <Content Include="LICENSE"/>
         <Content Include="manifest.json"/>
         <Content Include="README.md"/>
         <Content Include="README.Thunderstore.md"/>

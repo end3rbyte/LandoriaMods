@@ -13,8 +13,7 @@ namespace Landoria.Moderator
     {
         private static bool Prefix(string command)
         {
-            return !ModeratorPlugin.IsEnabled ||
-                   !string.Equals(command, "devcommands", StringComparison.OrdinalIgnoreCase);
+            return !string.Equals(command, "devcommands", StringComparison.OrdinalIgnoreCase);
         }
     }
 
@@ -28,8 +27,7 @@ namespace Landoria.Moderator
     {
         private static bool Prefix(string command)
         {
-            return !ModeratorPlugin.IsEnabled ||
-                   !string.Equals(command, "devcommands", StringComparison.OrdinalIgnoreCase);
+            return !string.Equals(command, "devcommands", StringComparison.OrdinalIgnoreCase);
         }
     }
 
@@ -38,7 +36,7 @@ namespace Landoria.Moderator
     {
         private static void Postfix(Terminal.ConsoleCommand __instance, ref bool __result)
         {
-            if (ModeratorPlugin.IsEnabled && __instance.IsCheat)
+            if (__instance.IsCheat)
             {
                 __result = false;
             }
@@ -50,7 +48,7 @@ namespace Landoria.Moderator
     {
         private static bool Prefix(Terminal.ConsoleCommand __instance)
         {
-            return !ModeratorPlugin.IsEnabled || !__instance.IsCheat;
+            return !__instance.IsCheat;
         }
     }
 }

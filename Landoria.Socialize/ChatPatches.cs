@@ -27,7 +27,7 @@ namespace Landoria.Socialize
     {
         private static bool Prefix(Talker.Type type)
         {
-            return !SocializePlugin.IsEnabled || type != Talker.Type.Whisper;
+            return type != Talker.Type.Whisper;
         }
     }
 
@@ -36,7 +36,6 @@ namespace Landoria.Socialize
     {
         private static bool Prefix()
         {
-            if (!SocializePlugin.IsEnabled) return true;
             if (GroupService.IsLocalPlayerInGroup()) return true;
             SocializePlugin.Log.LogDebug(
                 "Map ping ignored because the local player is not in a group.");
@@ -49,11 +48,6 @@ namespace Landoria.Socialize
     {
         private static bool Prefix(Chat __instance)
         {
-            if (!SocializePlugin.IsEnabled)
-            {
-                return true;
-            }
-
             if (__instance.m_input == null || string.IsNullOrWhiteSpace(__instance.m_input.text) ||
                 __instance.m_input.text.StartsWith("/") ||
                 !ChatChannelState.TryRedirect(__instance.m_input.text))
@@ -71,11 +65,6 @@ namespace Landoria.Socialize
     {
         private static bool Prefix(Talker.Type type, string text)
         {
-            if (!SocializePlugin.IsEnabled)
-            {
-                return true;
-            }
-
             if (type == Talker.Type.Shout)
             {
                 SocialChatSender.SendShout(text);
@@ -90,10 +79,7 @@ namespace Landoria.Socialize
     {
         private static void Postfix(Talker __instance)
         {
-            if (SocializePlugin.IsEnabled)
-            {
-                SocialChatSender.ApplyShoutRange(__instance);
-            }
+            SocialChatSender.ApplyShoutRange(__instance);
         }
     }
 
@@ -106,11 +92,6 @@ namespace Landoria.Socialize
 
         private static void Postfix(Chat __instance)
         {
-            if (!SocializePlugin.IsEnabled)
-            {
-                return;
-            }
-
             if (owner != __instance)
             {
                 owner = __instance;
@@ -129,11 +110,6 @@ namespace Landoria.Socialize
 
         internal static void Show(Terminal terminal)
         {
-            if (!SocializePlugin.IsEnabled)
-            {
-                return;
-            }
-
             Chat chat = terminal as Chat;
             if (chat == null || chat.HasFocus() || chat.m_chatWindow == null)
             {
@@ -166,11 +142,6 @@ namespace Landoria.Socialize
     {
         private static bool Prefix(Terminal __instance, string title, string text, Talker.Type type, bool timestamp)
         {
-            if (!SocializePlugin.IsEnabled)
-            {
-                return true;
-            }
-
             if (type == Talker.Type.Whisper)
             {
                 ChatFormatting.AddPrivate(__instance, title, text, timestamp);
@@ -192,11 +163,6 @@ namespace Landoria.Socialize
     {
         private static bool Prefix(Terminal __instance, PlatformUserID user, string text, Talker.Type type, bool timestamp)
         {
-            if (!SocializePlugin.IsEnabled)
-            {
-                return true;
-            }
-
             string name = ChatFormatting.GetPlayerName(user);
             if (type == Talker.Type.Whisper)
             {

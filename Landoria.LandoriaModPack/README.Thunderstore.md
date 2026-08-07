@@ -16,8 +16,6 @@ Installs the mods required to join the Landoria Valheim server.
 
 Install with r2modman and launch the profile with **Start modded**.
 
-See the [full documentation](https://github.com/end3rbyte/LandoriaMods/blob/main/Landoria.LandoriaModPack/README.md).
-
 ## Contact
 
 Report bugs through [GitHub Issues](https://github.com/end3rbyte/LandoriaMods/issues).
