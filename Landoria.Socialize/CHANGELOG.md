@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Revert local group invite feedback
 - Remove unintended mod rollback side effects
 - Restore current package publication metadata
 - Restore mod versions and changelogs
