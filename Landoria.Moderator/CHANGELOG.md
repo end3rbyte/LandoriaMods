@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Fix moderator mode activation command
+
 ## 1.0.1
 
 - Add server-controlled client mod activation

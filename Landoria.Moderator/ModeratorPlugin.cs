@@ -19,7 +19,7 @@ namespace Landoria.Moderator
         private static ServerFeaturePolicy FeaturePolicy { get; set; }
         private const string PluginGuid = "Landoria.Moderator";
         private const string PluginName = "Landoria.Moderator";
-        private const string PluginVersion = "1.0.1";
+        private const string PluginVersion = "1.0.2";
 
         private void Awake()
         {
