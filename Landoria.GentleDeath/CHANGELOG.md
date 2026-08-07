@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Document GentleDeath as client-only after removing server-controlled activation.
 - Remove unintended mod rollback side effects
 - Restore mod versions and changelogs
 - Revert mods to pre-activation state
