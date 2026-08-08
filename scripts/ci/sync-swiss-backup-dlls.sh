@@ -92,13 +92,15 @@ plan_production_promotion() {
 
 refresh_manifests() (
     local environment="$1" website_base_url="$2" generator temporary_directory variant remote_path
+    local cleanup_command
     generator="/opt/landoria-ops/valheim-podman/manual/generate-mod-manifest.py"
     [[ -x "$generator" ]] || {
         echo "The mod manifest generator is unavailable on the storage executor." >&2
         exit 1
     }
     temporary_directory="$(mktemp -d /tmp/landoria-mod-manifests.XXXXXXXX)"
-    trap 'rm -rf -- "$temporary_directory"' EXIT
+    printf -v cleanup_command 'find %q -depth -delete' "$temporary_directory"
+    trap "$cleanup_command" EXIT
     for variant in common hammer normal; do
         remote_path="storage:$SwissBackupStorage__Container/$environment/server/$variant/mods"
         mkdir -p "$temporary_directory/$variant/mods"
@@ -114,7 +116,7 @@ refresh_manifests() (
 run_remote_operations() {
     local archive="$1" credential_environment="$2" website_base_url="$3"
     local public_environment secret_environment temporary_directory
-    local kind source destination destination_environment
+    local kind source destination destination_environment cleanup_command
     [[ "$website_base_url" =~ ^https://[^[:space:]]+$ ]] || {
         echo "The website base URL must be an absolute HTTPS URL." >&2
         exit 2
@@ -147,7 +149,8 @@ run_remote_operations() {
     export RCLONE_CONFIG_STORAGE_DOMAIN="$SwissBackupStorage__Domain"
     export RCLONE_CONFIG_STORAGE_REGION="$SwissBackupStorage__Region"
     temporary_directory="$(mktemp -d /tmp/landoria-mod-storage.XXXXXXXX)"
-    trap 'rm -rf -- "$temporary_directory"' EXIT
+    printf -v cleanup_command 'find %q -depth -delete' "$temporary_directory"
+    trap "$cleanup_command" EXIT
     tar -xzf "$archive" -C "$temporary_directory"
     destination_environment=''
     while IFS=$'\t' read -r kind source destination; do
