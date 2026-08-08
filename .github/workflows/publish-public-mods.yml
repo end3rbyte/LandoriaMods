@@ -47,6 +47,7 @@ jobs:
           GH_TOKEN="$(sudo cat /var/lib/landoria-secrets/github-token)"
           export GH_TOKEN
           gh repo clone end3rbyte/valheim-root .landoria-root -- --depth 1
+          printf '/.landoria-root/\n' >> .git/info/exclude
 
       - id: gamemodes
         name: Resolve test game modes
