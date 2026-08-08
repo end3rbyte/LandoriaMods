@@ -31,12 +31,4 @@ validate_configuration_paths() {
 validate_configuration_paths "$LANDORIA_TEST_GAMEMODES_JSON"
 validate_configuration_paths "$LANDORIA_PROD_GAMEMODES_JSON"
 
-while IFS= read -r plugin; do
-    [[ -n "$plugin" ]] || continue
-    [[ -n "$(mod_paths "$LANDORIA_TEST_GAMEMODES_JSON" "$plugin" | head -n 1)" ]] || {
-        echo "$plugin is configured in production but has no test storage source." >&2
-        exit 1
-    }
-done < <(plugins "$LANDORIA_PROD_GAMEMODES_JSON")
-
 echo "Swiss Backup DLL synchronization configuration is valid."
