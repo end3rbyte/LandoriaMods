@@ -16,10 +16,17 @@ landoria_package_source="${LANDORIA_LANDORIA_PACKAGE_SOURCE:-private}"
     echo "LANDORIA_LANDORIA_PACKAGE_SOURCE must be private or thunderstore." >&2
     exit 2
 }
-[[ "${LANDORIA_STORAGE_BASE_URL:-}" =~ ^https://[^[:space:]]+$ ]] || {
-    echo "LANDORIA_STORAGE_BASE_URL must be an absolute HTTPS URL." >&2
+storage_base_url="${LANDORIA_STORAGE_BASE_URL:-}"
+storage_root="${LANDORIA_STORAGE_ROOT:-}"
+if [[ -n "$storage_root" ]]; then
+    [[ -d "$storage_root" ]] || {
+        echo "LANDORIA_STORAGE_ROOT must reference a readable storage snapshot." >&2
+        exit 2
+    }
+elif [[ ! "$storage_base_url" =~ ^https://[^[:space:]]+$ ]]; then
+    echo "LANDORIA_STORAGE_BASE_URL or LANDORIA_STORAGE_ROOT must be configured." >&2
     exit 2
-}
+fi
 
 repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
 modpack_manifest="${LANDORIA_MODPACK_MANIFEST_PATH:-$repository_root/Landoria.LandoriaModPack/manifest.json}"
@@ -46,7 +53,21 @@ normalize() {
 
 storage_url() {
     printf '%s/%s?request=%s\n' \
-        "${LANDORIA_STORAGE_BASE_URL%/}" "${1#/}" "$storage_request_id"
+        "${storage_base_url%/}" "${1#/}" "$storage_request_id"
+}
+
+download_storage_file() {
+    local relative_path="${1#/}" output="$2"
+    [[ "$relative_path" != *'..'* ]] || {
+        echo "The storage path is invalid: $relative_path" >&2
+        return 1
+    }
+    if [[ -n "$storage_root" ]]; then
+        cp -- "${storage_root%/}/$relative_path" "$output"
+    else
+        curl --fail --silent --show-error --location \
+            "$(storage_url "$relative_path")" --output "$output"
+    fi
 }
 
 version_matches() {
@@ -79,9 +100,7 @@ actual_files="$temporary_directory/actual-files.tsv"
 : > "$actual_files"
 for variant in common hammer normal; do
     manifest="$temporary_directory/$variant-manifest.json"
-    curl --fail --silent --show-error --location \
-        "$(storage_url "server/$variant/mods/manifest.json")" \
-        --output "$manifest"
+    download_storage_file "server/$variant/mods/manifest.json" "$manifest"
     jq -r --arg variant "$variant" '
         .files[] |
         select(.name | endswith(".dll")) |
@@ -136,13 +155,12 @@ dependency_for_dll() {
 }
 
 verify_server_only_copies() {
-    local dll="$1" stored_dll stored_hash stored_path stored_url stored_version actual_hash
+    local dll="$1" stored_dll stored_hash stored_path stored_version actual_hash
     local consistent_hash=''
     while IFS=$'\t' read -r stored_path _ stored_hash; do
         [[ -n "$stored_path" ]] || continue
         stored_dll="$temporary_directory/server-only-$(normalize "$stored_path").dll"
-        stored_url="$(storage_url "$stored_path")"
-        curl --fail --silent --show-error --location "$stored_url" --output "$stored_dll"
+        download_storage_file "$stored_path" "$stored_dll"
         actual_hash="$(sha256sum "$stored_dll" | awk '{print toupper($1)}')"
         [[ "$actual_hash" == "${stored_hash^^}" ]] || {
             echo "$stored_path does not match its published SHA-256 hash." >&2
@@ -157,7 +175,7 @@ verify_server_only_copies() {
 verify_package_dll() {
     local dll="$1" namespace package version dependency archive manifest_version
     local target entry entries expected_hash package_hash package_dll package_version
-    local stored_dll stored_hash stored_path stored_url stored_version
+    local stored_dll stored_hash stored_path stored_version
     dependency="$(dependency_for_dll "$dll")"
     IFS=$'\t' read -r namespace package version <<< "$dependency"
 
@@ -202,8 +220,7 @@ verify_package_dll() {
     while IFS=$'\t' read -r stored_path _ stored_hash; do
         [[ -n "$stored_path" ]] || continue
         stored_dll="$temporary_directory/stored-$(normalize "$stored_path").dll"
-        stored_url="$(storage_url "$stored_path")"
-        curl --fail --silent --show-error --location "$stored_url" --output "$stored_dll"
+        download_storage_file "$stored_path" "$stored_dll"
         stored_version="$(dll_version "$stored_dll")"
         [[ "$stored_version" == "$package_version" ]] || {
             echo "$stored_path has FileVersion $stored_version; expected $package_version." >&2
