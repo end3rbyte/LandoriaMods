@@ -182,7 +182,18 @@ jq -e '
 mkdir -p "$repository_root/artifacts/thunderstore"
 declare -a mods=() versions=() archives=() categories=()
 declare -A seen=()
+declare -a requested_mods=()
+modpack_requested=false
 for mod in "$@"; do
+    if [[ "$mod" == LandoriaModPack ]]; then
+        modpack_requested=true
+    else
+        requested_mods+=("$mod")
+    fi
+done
+[[ "$modpack_requested" == false ]] || requested_mods+=(LandoriaModPack)
+
+for mod in "${requested_mods[@]}"; do
     [[ "$mod" =~ ^[A-Za-z0-9]+$ ]] || usage
     [[ -d "$repository_root/Landoria.$mod" ]] || { echo "Unknown public mod: $mod" >&2; exit 1; }
     [[ -z "${seen[$mod]:-}" ]] || continue
@@ -207,7 +218,7 @@ for mod in "$@"; do
 
     latest="$(thunderstore_latest "$package")"
 
-    if [[ "$current" == "$latest" ]] && thunderstore_release_exists "$package" "$current"; then
+    if thunderstore_release_exists "$package" "$current"; then
         internal_status="$(internal_release_status "$package" "$current")" || {
             echo "Landoria-$package-$current is missing from the private repository." >&2
             exit 1
