@@ -32,6 +32,12 @@ jobs:
           ref: main
           fetch-depth: 0
 
+      - id: gamemodes
+        name: Resolve production game modes
+        uses: end3rbyte/valheim-root/.github/actions/resolve-gamemodes@master
+        with:
+          environment: prod
+
       - name: Test changelog automation
         shell: bash
         run: scripts/ci/test-changelog.sh
@@ -67,6 +73,8 @@ jobs:
         shell: bash
         env:
           SELECTED_MODS: ${{ steps.mods.outputs.mods }}
+          LANDORIA_GAMEMODES_FILE: ${{ steps.gamemodes.outputs.file }}
+          LANDORIA_GAMEMODES_JSON: ${{ steps.gamemodes.outputs.configuration }}
         run: |
           set -euo pipefail
           read -r -a mods <<< "$SELECTED_MODS"

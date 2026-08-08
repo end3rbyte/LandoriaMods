@@ -40,6 +40,12 @@ jobs:
         with:
           fetch-depth: 0
 
+      - id: gamemodes
+        name: Resolve test game modes
+        uses: end3rbyte/valheim-root/.github/actions/resolve-gamemodes@master
+        with:
+          environment: test
+
       - name: Test changelog automation
         shell: bash
         run: scripts/ci/test-changelog.sh
@@ -78,6 +84,8 @@ jobs:
         env:
           BUMP_VERSION: >-
             ${{ github.event_name == 'push' || inputs.bump_version }}
+          LANDORIA_GAMEMODES_FILE: ${{ steps.gamemodes.outputs.file }}
+          LANDORIA_GAMEMODES_JSON: ${{ steps.gamemodes.outputs.configuration }}
         run: |
           set -euo pipefail
           read -r -a mods <<< "${{ steps.mods.outputs.mods }}"
