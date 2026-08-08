@@ -114,27 +114,31 @@ dependency_for_dll() {
     return 1
 }
 
-latest_private_version() {
-    curl --fail --silent --show-error --location \
-        "$private_repository_url/Landoria/$1" |
-        jq -er 'sort_by(.versionNumber | split(".") | map(tonumber)) | last.versionNumber'
+verify_server_only_copies() {
+    local dll="$1" stored_dll stored_hash stored_path stored_url stored_version actual_hash
+    local consistent_hash=''
+    while IFS=$'\t' read -r stored_path _ stored_hash; do
+        [[ -n "$stored_path" ]] || continue
+        stored_dll="$temporary_directory/server-only-$(normalize "$stored_path").dll"
+        stored_url="${LANDORIA_STORAGE_BASE_URL%/}/$stored_path"
+        curl --fail --silent --show-error --location "$stored_url" --output "$stored_dll"
+        actual_hash="$(sha256sum "$stored_dll" | awk '{print toupper($1)}')"
+        [[ "$actual_hash" == "${stored_hash^^}" ]] || {
+            echo "$stored_path does not match its published SHA-256 hash." >&2
+            return 1
+        }
+        consistent_hash="${stored_hash^^}"
+        stored_version="$(dll_version "$stored_dll")"
+    done < <(awk -F '\t' -v dll="$dll" '$2 == dll' "$actual_files")
+    echo "Verified server-only $dll FileVersion $stored_version and consistent SHA-256 $consistent_hash."
 }
 
 verify_package_dll() {
     local dll="$1" namespace package version dependency archive manifest_version
     local target entry entries expected_hash package_hash package_dll package_version
     local stored_dll stored_hash stored_path stored_url stored_version
-    if dependency="$(dependency_for_dll "$dll")"; then
-        IFS=$'\t' read -r namespace package version <<< "$dependency"
-    elif [[ "$dll" == Landoria.*.dll ]]; then
-        namespace=Landoria
-        package="${dll#Landoria.}"
-        package="${package%.dll}"
-        version="$(latest_private_version "$package")"
-    else
-        echo "$dll is neither a modpack dependency nor a Landoria server package." >&2
-        return 1
-    fi
+    dependency="$(dependency_for_dll "$dll")"
+    IFS=$'\t' read -r namespace package version <<< "$dependency"
 
     archive="$temporary_directory/$namespace-$package-$version.zip"
     if [[ "$namespace" == Landoria ]]; then
@@ -204,7 +208,12 @@ verify_package_dll() {
 }
 
 while IFS= read -r dll; do
-    [[ -n "$dll" ]] && verify_package_dll "$dll"
+    [[ -n "$dll" ]] || continue
+    if dependency_for_dll "$dll" >/dev/null; then
+        verify_package_dll "$dll"
+    else
+        verify_server_only_copies "$dll"
+    fi
 done < <(cut -f2 "$expected_paths" | sort -u)
 
 echo "The test Swiss Backup DLL set, versions, and hashes match the modpack and GAMEMODES.yml."
