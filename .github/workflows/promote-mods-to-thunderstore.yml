@@ -103,6 +103,8 @@ jobs:
           SELECTED_MODS: ${{ steps.mods.outputs.mods }}
           LANDORIA_GAMEMODES_FILE: ${{ steps.gamemodes.outputs.file }}
           LANDORIA_GAMEMODES_JSON: ${{ steps.gamemodes.outputs.configuration }}
+          LANDORIA_INCLUDE_CHARACTER_SECURITY_MODS: >-
+            ${{ steps.gamemodes.outputs.include-character-security-mods }}
         run: |
           set -euo pipefail
           read -r -a mods <<< "$SELECTED_MODS"
