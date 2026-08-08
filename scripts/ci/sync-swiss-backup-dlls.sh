@@ -100,6 +100,8 @@ refresh_manifests() (
     }
     temporary_directory="$(mktemp -d /tmp/landoria-mod-manifests.XXXXXXXX)"
     printf -v cleanup_command 'find %q -depth -delete' "$temporary_directory"
+    # Capture the local path before the subshell EXIT trap runs.
+    # shellcheck disable=SC2064
     trap "$cleanup_command" EXIT
     for variant in common hammer normal; do
         remote_path="storage:$SwissBackupStorage__Container/$environment/server/$variant/mods"
@@ -150,6 +152,8 @@ run_remote_operations() {
     export RCLONE_CONFIG_STORAGE_REGION="$SwissBackupStorage__Region"
     temporary_directory="$(mktemp -d /tmp/landoria-mod-storage.XXXXXXXX)"
     printf -v cleanup_command 'find %q -depth -delete' "$temporary_directory"
+    # Capture the local path before the function EXIT trap runs.
+    # shellcheck disable=SC2064
     trap "$cleanup_command" EXIT
     tar -xzf "$archive" -C "$temporary_directory"
     destination_environment=''
