@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-08-08T16:50:21Z",
+  "packages": [
+    {
+      "package": "GetMyTrophyBack",
+      "draftVersion": "1.0.4",
+      "restoredVersion": "1.0.3",
+      "category": "modpack"
+    },
+    {
+      "package": "LandoriaModPack",
+      "draftVersion": "1.0.4",
+      "restoredVersion": "1.0.3",
+      "category": "modpack"
+    },
+    {
+      "package": "SealedTombstone",
+      "draftVersion": "1.0.2",
+      "restoredVersion": "1.0.1",
+      "category": "modpack"
+    }
+  ]
+}
