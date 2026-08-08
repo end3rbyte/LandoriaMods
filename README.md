@@ -53,6 +53,14 @@ After Thunderstore exposes the new version, the workflow marks the matching
 package version as released in Landoria's package repository and creates a
 `thunderstore/<mod>/<version>` Git tag.
 
+The manual **Revert unused drafts** workflow removes an accidental draft only
+through a reviewed pull request. It first compares the draft source with the
+last release tag and refuses any change outside generated version metadata and
+ModPack dependency versions. Merging the generated pull request restores the
+released source versions, deletes only matching unreleased private packages,
+and reconciles test storage. Released packages and versions already present on
+Thunderstore can never be deleted by this workflow.
+
 The persistent Vault Agent on `dev` must render the Thunderstore API token as
 `TCLI_AUTH_TOKEN` in
 `/var/lib/landoria-secrets/thunderstore-publish.env`. The existing internal

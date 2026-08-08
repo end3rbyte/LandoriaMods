@@ -31,7 +31,8 @@ jobs:
   publish:
     if: >-
       ${{ !contains(github.event.head_commit.message || '',
-      'Release-Version-Bump: true') }}
+      'Release-Version-Bump: true') &&
+      !contains(github.event.head_commit.message || '', '[skip draft publish]') }}
     runs-on: [self-hosted, Linux, X64, public-mods]
     timeout-minutes: 45
     steps:
@@ -94,6 +95,10 @@ jobs:
               mods="$(tr ',' '\n' <<< "$REQUESTED_MODS" |
                   sed 's/^[[:space:]]*//;s/[[:space:]]*$//' |
                   sed '/^$/d' | sort -u | paste -sd' ' -)"
+          elif git diff --diff-filter=A --name-only "$BEFORE_SHA" "$AFTER_SHA" -- \
+              '.draft-rollbacks/*.json' | grep -q .; then
+              echo "A merged rollback plan owns these source changes; no draft will be published."
+              mods=""
           else
               mods="$(scripts/ci/changed-mods.sh "$BEFORE_SHA" "$AFTER_SHA" |
                   paste -sd' ' -)"
