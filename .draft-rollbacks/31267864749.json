@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-08-08T16:49:02Z",
+  "packages": [
+    {
+      "package": "LandoriaModPack",
+      "draftVersion": "1.0.4",
+      "restoredVersion": "1.0.3",
+      "category": "modpack"
+    }
+  ]
+}
