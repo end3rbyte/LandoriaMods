@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-[[ $# -eq 3 && "$1" =~ ^[A-Za-z0-9_]+$ && "$2" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ && \
-   "$3" =~ ^(thunderstore|test-storage)$ ]] || {
-    echo "Usage: $0 PACKAGE VERSION thunderstore|test-storage" >&2
+[[ $# -eq 4 && "$1" =~ ^[A-Za-z0-9_]+$ && "$2" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ && \
+   "$3" =~ ^(thunderstore|test-storage)$ && "$4" =~ ^(true|false)$ ]] || {
+    echo "Usage: $0 PACKAGE VERSION thunderstore|test-storage true|false" >&2
     exit 2
 }
 
 readonly package="$1"
 readonly version="$2"
 readonly source="$3"
+readonly replace_existing="$4"
 readonly namespace=Landoria
 readonly api_url="${LANDORIA_MOD_REPOSITORY_URL:-https://test.landoria-gaming.com:8443/api/v1/packages}"
 readonly secret_environment="${LANDORIA_MOD_REPOSITORY_SECRET_ENVIRONMENT:-/var/lib/landoria-secrets/mod-repository-upload.env}"
@@ -89,12 +90,21 @@ api_key="$(sed -n 's/^Authentication__ApiKey=//p' "$secret_environment")"
     exit 1
 }
 categories="$(jq -r '.categories | join(",")' <<< "$manifest")"
+if [[ "$replace_existing" == true ]]; then
+    upload_url="$api_url/$namespace/$package/$version"
+    upload_method=PUT
+else
+    upload_url="$api_url"
+    upload_method=POST
+fi
 result="$(printf 'header = "X-Api-Key: %s"\n' "$api_key" | curl --fail \
-    --silent --show-error --config - \
+    --silent --show-error --config - --request "$upload_method" \
     --form "namespace=$namespace" --form "categories=$categories" \
-    --form "package=@$archive;type=application/zip" "$api_url")"
-jq -e --arg version "$version" \
-    '.versionNumber == $version and .released == false' <<< "$result" >/dev/null || {
+    --form "package=@$archive;type=application/zip" "$upload_url")"
+jq -e --arg version "$version" --argjson replaced "$replace_existing" '
+    .versionNumber == $version and
+    (if $replaced then .replaced == true else .released == false end)
+' <<< "$result" >/dev/null || {
     echo "The private repository returned unexpected package metadata." >&2
     exit 1
 }

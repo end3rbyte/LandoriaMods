@@ -20,6 +20,11 @@ name: Import a Thunderstore package
         options:
           - thunderstore
           - test-storage
+      replace_existing:
+        description: Replace an existing private package version while preserving its release status
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -67,6 +72,7 @@ jobs:
         run: >-
           scripts/ci/import-thunderstore-package.sh
           "${{ inputs.package }}" "${{ inputs.version }}" "${{ inputs.source }}"
+          "${{ inputs.replace_existing }}"
 
       - name: Reconcile test storage with the modpack
         shell: bash
