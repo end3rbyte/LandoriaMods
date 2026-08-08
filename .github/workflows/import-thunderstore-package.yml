@@ -1,0 +1,63 @@
+---
+name: Import a Thunderstore package
+
+'on':
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Landoria package name
+        required: true
+        type: string
+      version:
+        description: Released semantic version
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: import-thunderstore-package
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: [self-hosted, Linux, X64, public-mods]
+    timeout-minutes: 30
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v5
+
+      - name: Check out central Landoria configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          GH_TOKEN="$(sudo cat /var/lib/landoria-secrets/github-token)"
+          export GH_TOKEN
+          gh repo clone end3rbyte/valheim-root .landoria-root -- --depth 1
+          printf '/.landoria-root/\n' >> .git/info/exclude
+
+      - id: gamemodes
+        name: Resolve test game modes
+        uses: ./.landoria-root/.github/actions/resolve-gamemodes
+        with:
+          environment: test
+
+      - id: storage
+        name: Resolve test storage
+        uses: ./.landoria-root/.github/actions/resolve-inventory
+        with:
+          host-group: mod_storage
+          environment: test
+          url-group: website
+
+      - name: Import released package
+        shell: bash
+        run: scripts/ci/import-thunderstore-package.sh "${{ inputs.package }}" "${{ inputs.version }}"
+
+      - name: Verify test modpack storage
+        shell: bash
+        env:
+          LANDORIA_STORAGE_BASE_URL: ${{ steps.storage.outputs.url }}
+          LANDORIA_TEST_GAMEMODES_JSON: ${{ steps.gamemodes.outputs.configuration }}
+        run: scripts/ci/verify-test-modpack-storage.sh
