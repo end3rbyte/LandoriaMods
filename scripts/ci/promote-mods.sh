@@ -20,11 +20,23 @@ internal_url="${LANDORIA_MOD_REPOSITORY_URL:-https://test.landoria-gaming.com:84
 thunderstore_environment="${THUNDERSTORE_SECRET_ENVIRONMENT:-/var/lib/landoria-secrets/thunderstore-publish.env}"
 internal_environment="${LANDORIA_MOD_REPOSITORY_SECRET_ENVIRONMENT:-/var/lib/landoria-secrets/mod-repository-upload.env}"
 tcli="${TCLI_COMMAND:-$repository_root/artifacts/tools/tcli}"
+modpack_configuration="${LANDORIA_MODPACK_CONFIGURATION_JSON:?LANDORIA_MODPACK_CONFIGURATION_JSON is required}"
 
 require_command() {
     command -v "$1" >/dev/null 2>&1 || {
         echo "Required command not found: $1" >&2
         exit 1
+    }
+}
+
+validate_promotable_package() {
+    local package="$1"
+    [[ "$package" == LandoriaModPack ]] && return
+    jq -e --arg package "$package" \
+        '.landoria_packages | index($package) != null' \
+        <<< "$modpack_configuration" >/dev/null || {
+        echo "Landoria-$package cannot be promoted because it is not included in GLOBAL_VARS.yml modpack.landoria_packages." >&2
+        return 1
     }
 }
 
@@ -148,6 +160,14 @@ download_internal_draft() {
 }
 
 for command in awk curl dotnet find git jq sed sha256sum unzip; do require_command "$command"; done
+jq -e '
+    type == "object" and
+    (.landoria_packages | type == "array" and length > 0 and length == (unique | length)) and
+    all(.landoria_packages[]; type == "string" and test("^[A-Za-z0-9_]+$"))
+' <<< "$modpack_configuration" >/dev/null || {
+    echo "LANDORIA_MODPACK_CONFIGURATION_JSON is invalid." >&2
+    exit 2
+}
 [[ -x "$tcli" ]] || { echo "TCLI is unavailable: $tcli" >&2; exit 1; }
 [[ -z "$(git -C "$repository_root" status --porcelain)" ]] || {
     echo "Repository must be clean before promotion." >&2
@@ -163,6 +183,7 @@ for mod in "$@"; do
     [[ -z "${seen[$mod]:-}" ]] || continue
     seen[$mod]=1
     package="$(jq -r '.name' "$repository_root/Landoria.$mod/manifest.json")"
+    validate_promotable_package "$package"
     latest="$(thunderstore_latest "$package")"
     current="$(jq -r '.version_number' "$repository_root/Landoria.$mod/manifest.json")"
 
