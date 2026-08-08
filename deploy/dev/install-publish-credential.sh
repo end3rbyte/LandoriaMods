@@ -22,7 +22,7 @@ else
 fi
 
 systemctl restart vault-agent-landoria.service
-for attempt in {1..30}; do
+for _ in {1..30}; do
     [[ -s "$secret_file" ]] && break
     sleep 1
 done
