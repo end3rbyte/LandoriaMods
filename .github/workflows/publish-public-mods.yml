@@ -139,6 +139,19 @@ jobs:
           scripts/ci/sync-swiss-backup-dlls.sh \
               deploy-test "$storage_host" "${mods[@]}"
 
+      - name: Reconcile test storage with the modpack
+        if: ${{ steps.mods.outputs.mods != '' }}
+        shell: bash
+        env:
+          LANDORIA_STORAGE_BASE_URL: ${{ steps.storage.outputs.url }}
+          LANDORIA_TEST_GAMEMODES_JSON: ${{ steps.gamemodes.outputs.configuration }}
+          STORAGE_HOSTS: ${{ steps.storage.outputs.hosts }}
+        run: |
+          set -euo pipefail
+          storage_host="$(jq -er 'if length == 1 then .[0] else error("exactly one storage executor is required") end' \
+              <<< "$STORAGE_HOSTS")"
+          scripts/ci/sync-swiss-backup-dlls.sh reconcile-test "$storage_host"
+
       - name: Verify the updated modpack against test storage
         if: ${{ steps.mods.outputs.mods != '' }}
         shell: bash

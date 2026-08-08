@@ -2,7 +2,7 @@
 set -euo pipefail
 
 usage() {
-    echo "Usage: $0 deploy-test|promote HOST MOD [MOD ...]" >&2
+    echo "Usage: $0 deploy-test HOST MOD [MOD ...] | reconcile-test HOST | promote HOST MOD [MOD ...]" >&2
     exit 2
 }
 
@@ -25,6 +25,65 @@ mod_paths() {
             ($path[0:-1] + [($plugin + ".dll")]) | join("/")] |
         unique[]
     ' <<< "$configuration"
+}
+
+normalize() {
+    tr '[:upper:]' '[:lower:]' <<< "$1" | tr -cd '[:alnum:]'
+}
+
+modpack_dependency() {
+    local plugin="$1" logical target dependency namespace package version
+    logical="$plugin"
+    [[ "$logical" == Landoria.* ]] && logical="${logical#Landoria.}"
+    target="$(normalize "$logical")"
+    while IFS= read -r dependency; do
+        IFS=$'\t' read -r namespace package version < <(
+            jq -rn --arg dependency "$dependency" '
+                $dependency |
+                capture("^(?<namespace>[^-]+)-(?<package>.+)-(?<version>[0-9]+\\.[0-9]+\\.[0-9]+)$") |
+                [.namespace, .package, .version] | @tsv
+            '
+        )
+        if [[ "$(normalize "$package")" == "$target" ]]; then
+            printf '%s\t%s\t%s\n' "$namespace" "$package" "$version"
+            return 0
+        fi
+    done < <(jq -r '.dependencies[]' \
+        "$repository_root/Landoria.LandoriaModPack/manifest.json")
+    return 1
+}
+
+stage_modpack_dll() {
+    local plugin="$1" dependency namespace package version package_archive
+    local archive_manifest entry entries target
+    dependency="$(modpack_dependency "$plugin")" || return 1
+    IFS=$'\t' read -r namespace package version <<< "$dependency"
+    package_archive="$staging_directory/$namespace-$package-$version.zip"
+    if [[ "$namespace" == Landoria ]]; then
+        curl --fail --silent --show-error --location \
+            "${LANDORIA_MOD_REPOSITORY_URL:-https://test.landoria-gaming.com:8443/api/v1/packages}/$namespace/$package/$version/download" \
+            --output "$package_archive"
+    else
+        curl --fail --silent --show-error --location \
+            "https://thunderstore.io/package/download/$namespace/$package/$version/" \
+            --output "$package_archive"
+    fi
+    archive_manifest="$(unzip -p "$package_archive" manifest.json)"
+    [[ "$(jq -er '.version_number' <<< "$archive_manifest")" == "$version" ]] || {
+        echo "$namespace-$package archive manifest does not declare $version." >&2
+        exit 1
+    }
+    target="$(normalize "$plugin")"
+    entries="$({ unzip -Z1 "$package_archive" | while IFS= read -r entry; do
+        [[ "$entry" == *.dll ]] || continue
+        [[ "$(normalize "$(basename "$entry" .dll)")" == "$target" ]] && printf '%s\n' "$entry"
+    done; } || true)"
+    [[ -n "$entries" && "$(wc -l <<< "$entries")" -eq 1 ]] || {
+        echo "Expected exactly one $plugin.dll in $namespace-$package-$version." >&2
+        exit 1
+    }
+    entry="$entries"
+    unzip -p "$package_archive" "$entry" > "$staging_directory/dlls/$plugin.dll"
 }
 
 add_dll_to_staging() {
@@ -60,6 +119,30 @@ plan_test_deployment() {
             echo "Skipping $plugin: it is not assigned to a test game mode."
         fi
     done
+}
+
+plan_test_reconciliation() {
+    local plugin destination
+    while IFS= read -r plugin; do
+        [[ -n "$plugin" ]] || continue
+        if ! stage_modpack_dll "$plugin"; then
+            continue
+        fi
+        while IFS= read -r destination; do
+            [[ -n "$destination" ]] || continue
+            validate_relative_path "$destination" || {
+                echo "Invalid test DLL destination: $destination" >&2
+                exit 1
+            }
+            printf 'upload\t%s\t%s\n' "$plugin.dll" "test/$destination" \
+                >> "$operations_file"
+        done < <(mod_paths "$LANDORIA_TEST_GAMEMODES_JSON" "$plugin")
+    done < <(jq -r '
+        paths(scalars) as $path |
+        select($path[-1] | type == "number") |
+        getpath($path) |
+        select(type == "string")
+    ' <<< "$LANDORIA_TEST_GAMEMODES_JSON" | sort -u)
 }
 
 plan_production_promotion() {
@@ -216,7 +299,7 @@ if [[ "${1:-}" == --remote ]]; then
     exit 0
 fi
 
-[[ $# -ge 3 ]] || usage
+[[ $# -ge 2 ]] || usage
 [[ "${LANDORIA_STORAGE_BASE_URL:-}" =~ ^https://[^[:space:]]+$ ]] || {
     echo "LANDORIA_STORAGE_BASE_URL must be an absolute HTTPS URL." >&2
     exit 2
@@ -240,10 +323,16 @@ mkdir -p "$staging_directory/dlls"
 
 case "$operation" in
     deploy-test)
+        [[ $# -ge 1 ]] || usage
         [[ -n "${LANDORIA_TEST_GAMEMODES_JSON:-}" ]] || usage
         plan_test_deployment "$@"
         ;;
+    reconcile-test)
+        [[ $# -eq 0 && -n "${LANDORIA_TEST_GAMEMODES_JSON:-}" ]] || usage
+        plan_test_reconciliation
+        ;;
     promote)
+        [[ $# -ge 1 ]] || usage
         [[ -n "${LANDORIA_TEST_GAMEMODES_JSON:-}" && \
            -n "${LANDORIA_PROD_GAMEMODES_JSON:-}" ]] || usage
         plan_production_promotion "$@"
