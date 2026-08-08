@@ -28,6 +28,7 @@ api_url="${LANDORIA_MOD_REPOSITORY_URL:-https://test.landoria-gaming.com:8443/ap
 thunderstore_url="${THUNDERSTORE_URL:-https://thunderstore.io}"
 secret_environment="${LANDORIA_MOD_REPOSITORY_SECRET_ENVIRONMENT:-/var/lib/landoria-secrets/mod-repository-upload.env}"
 include_security_mods="${LANDORIA_INCLUDE_CHARACTER_SECURITY_MODS:?LANDORIA_INCLUDE_CHARACTER_SECURITY_MODS is required}"
+modpack_configuration="${LANDORIA_MODPACK_CONFIGURATION_JSON:?LANDORIA_MODPACK_CONFIGURATION_JSON is required}"
 [[ "$include_security_mods" == true || "$include_security_mods" == false ]] || {
     echo "LANDORIA_INCLUDE_CHARACTER_SECURITY_MODS must be true or false." >&2
     exit 2
@@ -112,22 +113,43 @@ replace_version() {
 
 modpack_tracks_package() {
     local package="$1"
-    jq -e --arg prefix "Landoria-$package-" \
-        '.dependencies[]? | select(startswith($prefix))' "$modpack_manifest" >/dev/null
+    jq -e --arg package "$package" \
+        '.landoria_packages | index($package) != null' <<< "$modpack_configuration" >/dev/null
+}
+
+landoria_dependency() {
+    local package="$1" prefix existing manifest version
+    prefix="Landoria-$package-"
+    existing="$(jq -r --arg prefix "$prefix" \
+        '.dependencies[]? | select(startswith($prefix))' "$modpack_manifest")"
+    if [[ -n "$existing" ]]; then
+        [[ "$existing" != *$'\n'* ]] || {
+            echo "Duplicate LandoriaModPack dependency for $package." >&2
+            return 1
+        }
+        printf '%s\n' "$existing"
+        return
+    fi
+    manifest="$(find "$repository_root" -mindepth 2 -maxdepth 2 -type f \
+        -path "$repository_root/Landoria.*/manifest.json" -print0 |
+        xargs -0 -r jq -r --arg package "$package" \
+            'select(.name == $package) | input_filename')"
+    [[ -n "$manifest" && "$manifest" != *$'\n'* ]] || {
+        echo "Expected exactly one local manifest for Landoria-$package." >&2
+        return 1
+    }
+    version="$(jq -er '.version_number' "$manifest")"
+    printf 'Landoria-%s-%s\n' "$package" "$version"
 }
 
 sync_modpack_dependency() {
-    local package="$1" version="$2" prefix dependency current temporary
+    local package="$1" version="$2" prefix dependency temporary
+    modpack_tracks_package "$package" || return 1
     prefix="Landoria-$package-"
     dependency="Landoria-$package-$version"
-    current="$(jq -r --arg prefix "$prefix" \
-        '.dependencies[]? | select(startswith($prefix))' "$modpack_manifest")"
-    [[ -n "$current" ]] || return 1
-    [[ "$current" != *$'\n'* ]] || {
-        echo "Duplicate LandoriaModPack dependency for $package." >&2
-        exit 1
-    }
-    [[ "$current" != "$dependency" ]] || return 1
+    jq -e --arg prefix "$prefix" --arg dependency "$dependency" \
+        'any(.dependencies[]?; startswith($prefix) and . != $dependency)' \
+        "$modpack_manifest" >/dev/null || return 1
     temporary="$modpack_manifest.tmp"
     jq --arg prefix "$prefix" --arg dependency "$dependency" \
         '.dependencies |= map(if startswith($prefix) then $dependency else . end)' \
@@ -135,6 +157,25 @@ sync_modpack_dependency() {
     mv -- "$temporary" "$modpack_manifest"
     git -C "$repository_root" add -- Landoria.LandoriaModPack/manifest.json
     echo "Updated LandoriaModPack dependency to $dependency."
+}
+
+sync_modpack_dependencies() {
+    local package dependency temporary current desired
+    local -a dependencies=()
+    mapfile -t dependencies < <(jq -r '.external_dependencies[]' <<< "$modpack_configuration")
+    while IFS= read -r package; do
+        dependency="$(landoria_dependency "$package")"
+        dependencies+=("$dependency")
+    done < <(jq -r '.landoria_packages[]' <<< "$modpack_configuration")
+    desired="$(printf '%s\n' "${dependencies[@]}" | jq -Rsc 'split("\n") | map(select(length > 0))')"
+    current="$(jq -c '.dependencies' "$modpack_manifest")"
+    [[ "$current" != "$desired" ]] || return 1
+    temporary="$modpack_manifest.tmp"
+    jq --argjson dependencies "$desired" '.dependencies = $dependencies' \
+        "$modpack_manifest" > "$temporary"
+    mv -- "$temporary" "$modpack_manifest"
+    git -C "$repository_root" add -- Landoria.LandoriaModPack/manifest.json
+    echo "Synchronized LandoriaModPack dependencies from the central configuration."
 }
 
 validate_metadata() {
@@ -230,6 +271,14 @@ upload_archive() {
 for command in curl dotnet file find git jq perl sed sort unzip zip; do
     require_command "$command"
 done
+jq -e '
+    type == "object" and
+    (.external_dependencies | type == "array" and length > 0 and length == (unique | length)) and
+    (.landoria_packages | type == "array" and length > 0 and length == (unique | length))
+' <<< "$modpack_configuration" >/dev/null || {
+    echo "LANDORIA_MODPACK_CONFIGURATION_JSON is invalid." >&2
+    exit 2
+}
 [[ -z "$(git -C "$repository_root" status --porcelain)" ]] || {
     echo "Repository must be clean before publishing." >&2
     exit 1
@@ -292,10 +341,17 @@ if [[ "$bump_versions" == true ]]; then
             versions_changed=true
         fi
     done
+    if [[ "$include_modpack" == true ]] && sync_modpack_dependencies; then
+        versions_changed=true
+    fi
     if [[ "$versions_changed" == true ]]; then
         git -C "$repository_root" commit -m "Release updated public mods" -m 'Release-Version-Bump: true'
         git -C "$repository_root" push origin HEAD:main
     fi
+fi
+
+if [[ "$bump_versions" == false && "$include_modpack" == true ]]; then
+    sync_modpack_dependencies || true
 fi
 
 for index in "${!mods[@]}"; do

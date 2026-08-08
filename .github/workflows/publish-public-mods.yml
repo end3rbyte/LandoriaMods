@@ -118,6 +118,8 @@ jobs:
           LANDORIA_GAMEMODES_JSON: ${{ steps.gamemodes.outputs.configuration }}
           LANDORIA_INCLUDE_CHARACTER_SECURITY_MODS: >-
             ${{ steps.gamemodes.outputs.include-character-security-mods }}
+          LANDORIA_MODPACK_CONFIGURATION_JSON: >-
+            ${{ steps.gamemodes.outputs.modpack-configuration }}
         run: |
           set -euo pipefail
           read -r -a mods <<< "${{ steps.mods.outputs.mods }}"
