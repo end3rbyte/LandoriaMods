@@ -11,7 +11,11 @@ set -euo pipefail
 }
 
 repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
-modpack_manifest="$repository_root/Landoria.LandoriaModPack/manifest.json"
+modpack_manifest="${LANDORIA_MODPACK_MANIFEST_PATH:-$repository_root/Landoria.LandoriaModPack/manifest.json}"
+[[ -f "$modpack_manifest" ]] || {
+    echo "The modpack manifest is unavailable: $modpack_manifest" >&2
+    exit 2
+}
 private_repository_url="${LANDORIA_MOD_REPOSITORY_URL:-https://test.landoria-gaming.com:8443/api/v1/packages}"
 temporary_directory="$(mktemp -d)"
 trap 'rm -rf -- "$temporary_directory"' EXIT
