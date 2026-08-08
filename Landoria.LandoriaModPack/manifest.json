@@ -5,8 +5,8 @@
   "description": "Installs the mods required to join the Landoria Valheim server.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333",
-    "Landoria-Moderator-1.0.2",
-    "Landoria-GetMyTrophyBack-1.0.2",
+    "Landoria-Moderator-1.0.4",
+    "Landoria-GetMyTrophyBack-1.0.3",
     "Landoria-ExpandedServer-1.0.3",
     "Azumatt-AzuAntiCheat-4.3.11",
     "Smoothbrain-ServerCharacters-1.4.16",

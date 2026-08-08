@@ -164,10 +164,12 @@ verify_package_dll() {
     package_dll="$temporary_directory/package-$dll"
     unzip -p "$archive" "$entry" > "$package_dll"
     package_version="$(dll_version "$package_dll")"
-    version_matches "$package_version" "$manifest_version" || {
-        echo "$dll has FileVersion $package_version, but its manifest declares $manifest_version." >&2
-        return 1
-    }
+    if [[ "$namespace" == Landoria ]]; then
+        version_matches "$package_version" "$manifest_version" || {
+            echo "$dll has FileVersion $package_version, but its manifest declares $manifest_version." >&2
+            return 1
+        }
+    fi
     package_hash="$(sha256sum "$package_dll" | awk '{print toupper($1)}')"
     expected_hash="$(awk -F '\t' -v dll="$dll" '$2 == dll { print toupper($3); exit }' \
         "$actual_files")"

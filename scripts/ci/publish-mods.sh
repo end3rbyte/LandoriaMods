@@ -233,11 +233,10 @@ if [[ "$bump_versions" == true ]]; then
     for index in "${!mods[@]}"; do
         package="$(jq -r '.name' "${directories[$index]}/manifest.json")"
         current="$(read_plugin_version "${plugins[$index]}")"
-        IFS=$'\t' read -r published released < <(repository_state "$package")
+        IFS=$'\t' read -r published _ < <(repository_state "$package")
         version="$current"
         if [[ -z "$published" ]] || \
-            { [[ "$current" != "$published" ]] && [[ "$(printf '%s\n%s\n' "$current" "$published" | sort -V | tail -n 1)" == "$current" ]]; } || \
-            { [[ "$current" == "$published" ]] && [[ "$released" == false ]]; }; then
+            { [[ "$current" != "$published" ]] && [[ "$(printf '%s\n%s\n' "$current" "$published" | sort -V | tail -n 1)" == "$current" ]]; }; then
             echo "$package $current can be published without a new version."
         else
             version="$(next_version "$current" "$published")"
