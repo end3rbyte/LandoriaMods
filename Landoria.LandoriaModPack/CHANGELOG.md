@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3
+
+- Update SealedTombstone to version 1.0.1.
+
 ## 1.0.2
 
 - Update CharacterVault to version 1.0.2.
