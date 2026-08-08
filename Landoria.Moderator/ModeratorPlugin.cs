@@ -29,6 +29,7 @@ namespace Landoria.Moderator
         private void OnDestroy()
         {
             ModeratorMapSharing.Disable();
+            ModLogger?.LogInfo($"{PluginName} {PluginVersion} is unloaded.");
             ShutdownPlugin();
             ModLogger = null;
         }

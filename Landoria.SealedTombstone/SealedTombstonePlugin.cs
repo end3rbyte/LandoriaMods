@@ -27,6 +27,7 @@ namespace Landoria.SealedTombstone
         private void OnDestroy()
         {
             TombstoneAccess.ResetSession();
+            Log?.LogInfo($"{PluginName} {PluginVersion} is unloaded.");
             ShutdownPlugin();
             Log = null;
         }

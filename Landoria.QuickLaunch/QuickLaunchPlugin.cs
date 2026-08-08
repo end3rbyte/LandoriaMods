@@ -27,6 +27,7 @@ namespace Landoria.QuickLaunch
 
         private void OnDestroy()
         {
+            ModLogger?.LogInfo($"{PluginName} {PluginVersion} is unloaded.");
             ShutdownPlugin();
             ModLogger = null;
         }

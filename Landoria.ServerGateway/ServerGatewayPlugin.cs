@@ -93,6 +93,7 @@ namespace Landoria.ServerGateway
         {
             _server?.Dispose();
             _server = null;
+            Log?.LogInfo($"{PluginName} {PluginVersion} is unloaded.");
             ShutdownPlugin();
             Log = null;
         }

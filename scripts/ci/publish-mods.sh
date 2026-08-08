@@ -344,9 +344,15 @@ if [[ "$bump_versions" == true ]]; then
     for index in "${!mods[@]}"; do
         package="$(jq -r '.name' "${directories[$index]}/manifest.json")"
         current="$(read_plugin_version "${plugins[$index]}")"
-        IFS=$'\t' read -r published _ < <(repository_state "$package")
+        IFS=$'\t' read -r published released < <(repository_state "$package")
         version="$current"
-        if [[ -z "$published" ]] || \
+        if [[ "$released" == false ]]; then
+            [[ "$current" == "$published" ]] || {
+                echo "Landoria-$package already has draft $published; rebuild that version before preparing $current." >&2
+                exit 1
+            }
+            echo "$package $current will replace the existing draft without a version bump."
+        elif [[ -z "$published" ]] || \
             { [[ "$current" != "$published" ]] && [[ "$(printf '%s\n%s\n' "$current" "$published" | sort -V | tail -n 1)" == "$current" ]]; }; then
             echo "$package $current can be published without a new version."
         else

@@ -46,6 +46,7 @@ namespace Landoria.CharacterVault
             Coordinator?.Dispose();
             Coordinator = null;
             Instance = null;
+            Log?.LogInfo($"{PluginName} {PluginVersion} is unloaded.");
             ShutdownPlugin();
             Log = null;
         }

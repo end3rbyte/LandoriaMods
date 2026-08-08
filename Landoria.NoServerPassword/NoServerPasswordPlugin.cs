@@ -20,6 +20,7 @@ namespace Landoria.NoServerPassword
 
         private void OnDestroy()
         {
+            Log?.LogInfo($"{PluginName} {PluginVersion} is unloaded.");
             ShutdownPlugin();
             Log = null;
         }
