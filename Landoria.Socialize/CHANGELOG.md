@@ -1,5 +1,7 @@
 # Changelog
 
+## Unreleased
+
 ## 1.0.3
 
 - minor fix
