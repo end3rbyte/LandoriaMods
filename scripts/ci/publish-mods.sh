@@ -23,6 +23,11 @@ modpack_directory="$repository_root/Landoria.LandoriaModPack"
 modpack_manifest="$modpack_directory/manifest.json"
 api_url="${LANDORIA_MOD_REPOSITORY_URL:-https://test.landoria-gaming.com:8443/api/v1/packages}"
 secret_environment="${LANDORIA_MOD_REPOSITORY_SECRET_ENVIRONMENT:-/var/lib/landoria-secrets/mod-repository-upload.env}"
+include_security_mods="${LANDORIA_INCLUDE_CHARACTER_SECURITY_MODS:?LANDORIA_INCLUDE_CHARACTER_SECURITY_MODS is required}"
+[[ "$include_security_mods" == true || "$include_security_mods" == false ]] || {
+    echo "LANDORIA_INCLUDE_CHARACTER_SECURITY_MODS must be true or false." >&2
+    exit 2
+}
 
 require_command() {
     command -v "$1" >/dev/null 2>&1 || {
@@ -165,7 +170,18 @@ create_archive() {
     rm -rf -- "$staging" "$archive"
     mkdir -p -- "$staging"
     cp -- "$directory/bin/Release/Landoria.$mod.dll" "$directory/icon.png" "$staging/"
-    jq --arg commit "$commit" '. + {commit_id: $commit}' "$directory/manifest.json" > "$staging/manifest.json"
+    jq --arg commit "$commit" --argjson include_security_mods "$include_security_mods" '
+        . + {commit_id: $commit} |
+        if .name == "LandoriaModPack" and ($include_security_mods | not) then
+            .dependencies |= map(select(
+                (startswith("Azumatt-AzuAntiCheat-") or
+                startswith("Smoothbrain-ServerCharacters-") or
+                startswith("Landoria-CharacterVault-")) | not))
+        else . end
+    ' "$directory/manifest.json" > "$staging/manifest.json"
+    if [[ "$mod" == LandoriaModPack ]]; then
+        cp -- "$staging/manifest.json" "$output/.modpack-manifest.json"
+    fi
     cp -- "$directory/README.Thunderstore.md" "$staging/README.md"
     cp -- "$directory/CHANGELOG.md" "$staging/CHANGELOG.md"
     (cd -- "$staging" && zip -q "$archive" ./*)
