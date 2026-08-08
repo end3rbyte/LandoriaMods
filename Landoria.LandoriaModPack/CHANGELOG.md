@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.2
+## 1.0.1
 
 - Update package metadata and dependency versions.
 
