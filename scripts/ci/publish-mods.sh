@@ -17,11 +17,15 @@ repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
 # shellcheck source-path=SCRIPTDIR
 # shellcheck source=changelog.sh
 source "$repository_root/scripts/ci/changelog.sh"
+# shellcheck source-path=SCRIPTDIR
+# shellcheck source=release-version.sh
+source "$repository_root/scripts/ci/release-version.sh"
 dependency_script="$repository_root/scripts/ci/prepare-build-dependencies.sh"
 output="$repository_root/artifacts/thunderstore"
 modpack_directory="$repository_root/Landoria.LandoriaModPack"
 modpack_manifest="$modpack_directory/manifest.json"
 api_url="${LANDORIA_MOD_REPOSITORY_URL:-https://test.landoria-gaming.com:8443/api/v1/packages}"
+thunderstore_url="${THUNDERSTORE_URL:-https://thunderstore.io}"
 secret_environment="${LANDORIA_MOD_REPOSITORY_SECRET_ENVIRONMENT:-/var/lib/landoria-secrets/mod-repository-upload.env}"
 include_security_mods="${LANDORIA_INCLUDE_CHARACTER_SECURITY_MODS:?LANDORIA_INCLUDE_CHARACTER_SECURITY_MODS is required}"
 [[ "$include_security_mods" == true || "$include_security_mods" == false ]] || {
@@ -67,6 +71,23 @@ repository_state() {
     }
     jq -r 'sort_by(.versionNumber | split(".") | map(tonumber)) | last |
         [.versionNumber, (.released | tostring)] | @tsv' <<< "$body"
+}
+
+thunderstore_latest() {
+    local package="$1" response status body
+    response="$(curl --retry 5 --retry-all-errors --retry-delay 2 \
+        --silent --show-error --write-out $'\n%{http_code}' \
+        "$thunderstore_url/api/experimental/package/Landoria/$package/")"
+    status="${response##*$'\n'}"
+    body="${response%$'\n'*}"
+    if [[ "$status" == 404 ]]; then
+        return 0
+    fi
+    [[ "$status" =~ ^2 ]] || {
+        echo "Thunderstore lookup failed for $package ($status)." >&2
+        return 1
+    }
+    jq -r '.latest.version_number // empty' <<< "$body"
 }
 
 next_version() {
@@ -276,6 +297,13 @@ if [[ "$bump_versions" == true ]]; then
         git -C "$repository_root" push origin HEAD:main
     fi
 fi
+
+for index in "${!mods[@]}"; do
+    package="$(jq -r '.name' "${directories[$index]}/manifest.json")"
+    version="$(jq -r '.version_number' "${directories[$index]}/manifest.json")"
+    latest_release="$(thunderstore_latest "$package")"
+    validate_next_release_version "$package" "$version" "$latest_release"
+done
 
 mkdir -p -- "$output"
 if [[ "$include_modpack" == true ]]; then

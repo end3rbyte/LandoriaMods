@@ -1,8 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-[[ -n "${LANDORIA_TEST_GAMEMODES_JSON:-}" ]] || {
-    echo "LANDORIA_TEST_GAMEMODES_JSON is required." >&2
+gamemodes_json="${LANDORIA_GAMEMODES_JSON:-${LANDORIA_TEST_GAMEMODES_JSON:-}}"
+storage_environment="${LANDORIA_STORAGE_ENVIRONMENT:-test}"
+landoria_package_source="${LANDORIA_LANDORIA_PACKAGE_SOURCE:-private}"
+[[ -n "$gamemodes_json" ]] || {
+    echo "LANDORIA_GAMEMODES_JSON is required." >&2
+    exit 2
+}
+[[ "$storage_environment" == test || "$storage_environment" == prod ]] || {
+    echo "LANDORIA_STORAGE_ENVIRONMENT must be test or prod." >&2
+    exit 2
+}
+[[ "$landoria_package_source" == private || "$landoria_package_source" == thunderstore ]] || {
+    echo "LANDORIA_LANDORIA_PACKAGE_SOURCE must be private or thunderstore." >&2
     exit 2
 }
 [[ "${LANDORIA_STORAGE_BASE_URL:-}" =~ ^https://[^[:space:]]+$ ]] || {
@@ -20,6 +31,7 @@ private_repository_url="${LANDORIA_MOD_REPOSITORY_URL:-https://test.landoria-gam
 temporary_directory="$(mktemp -d)"
 trap 'rm -rf -- "$temporary_directory"' EXIT
 version_reader="$repository_root/scripts/ci/DllMetadataVersion/DllMetadataVersion.csproj"
+storage_request_id="${LANDORIA_STORAGE_REQUEST_ID:-$(date +%s%N)}"
 
 for command in curl diff dotnet jq sha256sum sort unzip; do
     command -v "$command" >/dev/null 2>&1 || {
@@ -30,6 +42,11 @@ done
 
 normalize() {
     tr '[:upper:]' '[:lower:]' <<< "$1" | tr -cd '[:alnum:]'
+}
+
+storage_url() {
+    printf '%s/%s?request=%s\n' \
+        "${LANDORIA_STORAGE_BASE_URL%/}" "${1#/}" "$storage_request_id"
 }
 
 version_matches() {
@@ -52,9 +69,9 @@ jq -r '
     select($path[-1] | type == "number") |
     [($path[0:-1] + [($plugin + ".dll")] | join("/")), ($plugin + ".dll")] |
     @tsv
-' <<< "$LANDORIA_TEST_GAMEMODES_JSON" | sort -u > "$expected_paths"
+' <<< "$gamemodes_json" | sort -u > "$expected_paths"
 [[ -s "$expected_paths" ]] || {
-    echo "No test DLL path was derived from GAMEMODES.yml." >&2
+    echo "No $storage_environment DLL path was derived from GAMEMODES.yml." >&2
     exit 1
 }
 
@@ -63,7 +80,7 @@ actual_files="$temporary_directory/actual-files.tsv"
 for variant in common hammer normal; do
     manifest="$temporary_directory/$variant-manifest.json"
     curl --fail --silent --show-error --location \
-        "$LANDORIA_STORAGE_BASE_URL/server/$variant/mods/manifest.json" \
+        "$(storage_url "server/$variant/mods/manifest.json")" \
         --output "$manifest"
     jq -r --arg variant "$variant" '
         .files[] |
@@ -81,7 +98,7 @@ cut -f1 "$expected_paths" > "$temporary_directory/expected-path-list"
 cut -f1 "$actual_files" > "$temporary_directory/actual-path-list"
 if ! diff -u "$temporary_directory/expected-path-list" \
     "$temporary_directory/actual-path-list"; then
-    echo "The test Swiss Backup DLL set does not exactly match GAMEMODES.yml." >&2
+    echo "The $storage_environment Swiss Backup DLL set does not exactly match GAMEMODES.yml." >&2
     exit 1
 fi
 
@@ -90,7 +107,7 @@ while IFS= read -r dll; do
     hashes="$(awk -F '\t' -v dll="$dll" '$2 == dll { print toupper($3) }' \
         "$actual_files" | sort -u)"
     [[ "$(wc -l <<< "$hashes")" -eq 1 ]] || {
-        echo "The test copies of $dll do not have the same SHA-256 hash." >&2
+        echo "The $storage_environment copies of $dll do not have the same SHA-256 hash." >&2
         exit 1
     }
 done < <(cut -f2 "$expected_paths" | sort -u)
@@ -124,7 +141,7 @@ verify_server_only_copies() {
     while IFS=$'\t' read -r stored_path _ stored_hash; do
         [[ -n "$stored_path" ]] || continue
         stored_dll="$temporary_directory/server-only-$(normalize "$stored_path").dll"
-        stored_url="${LANDORIA_STORAGE_BASE_URL%/}/$stored_path"
+        stored_url="$(storage_url "$stored_path")"
         curl --fail --silent --show-error --location "$stored_url" --output "$stored_dll"
         actual_hash="$(sha256sum "$stored_dll" | awk '{print toupper($1)}')"
         [[ "$actual_hash" == "${stored_hash^^}" ]] || {
@@ -145,7 +162,7 @@ verify_package_dll() {
     IFS=$'\t' read -r namespace package version <<< "$dependency"
 
     archive="$temporary_directory/$namespace-$package-$version.zip"
-    if [[ "$namespace" == Landoria ]]; then
+    if [[ "$namespace" == Landoria && "$landoria_package_source" == private ]]; then
         curl --fail --silent --show-error --location \
             "$private_repository_url/$namespace/$package/$version/download" \
             --output "$archive"
@@ -185,7 +202,7 @@ verify_package_dll() {
     while IFS=$'\t' read -r stored_path _ stored_hash; do
         [[ -n "$stored_path" ]] || continue
         stored_dll="$temporary_directory/stored-$(normalize "$stored_path").dll"
-        stored_url="${LANDORIA_STORAGE_BASE_URL%/}/$stored_path"
+        stored_url="$(storage_url "$stored_path")"
         curl --fail --silent --show-error --location "$stored_url" --output "$stored_dll"
         stored_version="$(dll_version "$stored_dll")"
         [[ "$stored_version" == "$package_version" ]] || {
@@ -220,4 +237,4 @@ while IFS= read -r dll; do
     fi
 done < <(cut -f2 "$expected_paths" | sort -u)
 
-echo "The test Swiss Backup DLL set, versions, and hashes match the modpack and GAMEMODES.yml."
+echo "The $storage_environment Swiss Backup DLL set, versions, and hashes match the modpack and GAMEMODES.yml."

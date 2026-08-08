@@ -76,6 +76,8 @@ jobs:
           LANDORIA_PROD_GAMEMODES_JSON: ${{ steps.prod-gamemodes.outputs.configuration }}
         run: |
           scripts/ci/test-changelog.sh
+          scripts/ci/test-promotion-immutability.sh
+          scripts/ci/test-release-version.sh
           scripts/ci/test-sync-swiss-backup-dlls.sh
 
       - name: Select mods

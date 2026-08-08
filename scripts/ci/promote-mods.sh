@@ -12,6 +12,9 @@ repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
 # shellcheck source-path=SCRIPTDIR
 # shellcheck source=changelog.sh
 source "$repository_root/scripts/ci/changelog.sh"
+# shellcheck source-path=SCRIPTDIR
+# shellcheck source=release-version.sh
+source "$repository_root/scripts/ci/release-version.sh"
 thunderstore_url="${THUNDERSTORE_URL:-https://thunderstore.io}"
 internal_url="${LANDORIA_MOD_REPOSITORY_URL:-https://test.landoria-gaming.com:8443/api/v1/packages}"
 thunderstore_environment="${THUNDERSTORE_SECRET_ENVIRONMENT:-/var/lib/landoria-secrets/thunderstore-publish.env}"
@@ -33,24 +36,6 @@ read_secret() {
     printf '%s' "$value"
 }
 
-plugin_file() {
-    local directory="$1" files
-    mapfile -t files < <(find "$directory" -maxdepth 1 -name '*Plugin.cs' -type f)
-    [[ ${#files[@]} -eq 1 ]] || { echo "Expected one plugin entry point in $directory." >&2; return 1; }
-    printf '%s\n' "${files[0]}"
-}
-
-replace_version() {
-    local directory="$1" version="$2" plugin temporary
-    plugin="$(plugin_file "$directory")"
-    perl -0pi -e "s/(PluginVersion\\s*=\\s*\")\\d+\\.\\d+\\.\\d+(\";)/\${1}$version\${2}/" "$plugin"
-    temporary="$directory/manifest.json.tmp"
-    jq --arg version "$version" '.version_number = $version' "$directory/manifest.json" > "$temporary"
-    mv -- "$temporary" "$directory/manifest.json"
-    perl -0pi -e "s/(AssemblyVersion\\(\")\\d+\\.\\d+\\.\\d+(\\.\\*\"\\))/\${1}$version\${2}/; s/(AssemblyFileVersion\\(\")\\d+\\.\\d+\\.\\d+(\"\\))/\${1}$version\${2}/" \
-        "$directory/Properties/AssemblyInfo.cs"
-}
-
 thunderstore_latest() {
     local package="$1" response status body
     response="$(curl --retry 5 --retry-all-errors --retry-delay 2 --silent --show-error \
@@ -60,13 +45,6 @@ thunderstore_latest() {
     if [[ "$status" == 404 ]]; then return 0; fi
     [[ "$status" =~ ^2 ]] || { echo "Thunderstore lookup failed for $package ($status)." >&2; return 1; }
     jq -r '.latest.version_number // empty' <<< "$body"
-}
-
-next_patch() {
-    local version="$1" major minor patch
-    if [[ -z "$version" ]]; then printf '1.0.0\n'; return; fi
-    IFS=. read -r major minor patch <<< "$version"
-    printf '%s.%s.%s\n' "$major" "$minor" "$((patch + 1))"
 }
 
 has_package_changes() {
@@ -125,14 +103,51 @@ mark_internal_release() {
     }
 }
 
-for command in curl dotnet find git jq perl sed; do require_command "$command"; done
+download_internal_draft() {
+    local package="$1" version="$2" target="$3" state metadata released expected_hash
+    local actual_hash manifest_name manifest_version archived_changelog
+    state="$(curl --fail --silent --show-error --retry 5 --retry-all-errors --retry-delay 2 \
+        "$internal_url/Landoria/$package")"
+    metadata="$(jq -ec --arg version "$version" \
+        '.[] | select(.versionNumber == $version)' <<< "$state")" || {
+        echo "The private draft Landoria-$package-$version does not exist." >&2
+        return 1
+    }
+    released="$(jq -r '.released' <<< "$metadata")"
+    [[ "$released" == false ]] || {
+        echo "Landoria-$package-$version is already marked released in the private repository." >&2
+        return 1
+    }
+    expected_hash="$(jq -r '.sha256' <<< "$metadata")"
+    curl --fail --silent --show-error --location --retry 5 --retry-all-errors --retry-delay 2 \
+        "$internal_url/Landoria/$package/$version/download" --output "$target"
+    actual_hash="$(sha256sum "$target" | awk '{ print toupper($1) }')"
+    [[ "$actual_hash" == "${expected_hash^^}" ]] || {
+        echo "The downloaded draft hash does not match the private repository metadata for Landoria-$package-$version." >&2
+        return 1
+    }
+    manifest_name="$(unzip -p "$target" manifest.json | jq -er '.name')"
+    manifest_version="$(unzip -p "$target" manifest.json | jq -er '.version_number')"
+    [[ "$manifest_name" == "$package" && "$manifest_version" == "$version" ]] || {
+        echo "The private draft manifest does not match Landoria-$package-$version." >&2
+        return 1
+    }
+    archived_changelog="$(mktemp)"
+    unzip -p "$target" CHANGELOG.md > "$archived_changelog"
+    validate_release_changelog "$archived_changelog" "$version"
+    rm -f -- "$archived_changelog"
+    echo "Validated immutable private draft Landoria-$package-$version ($actual_hash)."
+}
+
+for command in awk curl dotnet find git jq sed sha256sum unzip; do require_command "$command"; done
 [[ -x "$tcli" ]] || { echo "TCLI is unavailable: $tcli" >&2; exit 1; }
 [[ -z "$(git -C "$repository_root" status --porcelain)" ]] || {
     echo "Repository must be clean before promotion." >&2
     exit 1
 }
 
-declare -a mods=() next_versions=()
+mkdir -p "$repository_root/artifacts/thunderstore"
+declare -a mods=() versions=() archives=()
 declare -A seen=()
 for mod in "$@"; do
     [[ "$mod" =~ ^[A-Za-z0-9]+$ ]] || usage
@@ -156,12 +171,13 @@ for mod in "$@"; do
         echo "Skipping Landoria-$package: its generated package inputs have not changed since $latest."
         continue
     fi
-    version="$(next_patch "$latest")"
-    validate_release_changelog "$repository_root/Landoria.$mod/CHANGELOG.md" "$version"
-    replace_version "$repository_root/Landoria.$mod" "$version"
-    git -C "$repository_root" add -- "Landoria.$mod"
+    validate_next_release_version "$package" "$current" "$latest"
+    validate_release_changelog "$repository_root/Landoria.$mod/CHANGELOG.md" "$current"
+    archive="$repository_root/artifacts/thunderstore/$package-$current-private-draft.zip"
+    download_internal_draft "$package" "$current" "$archive"
     mods+=("$mod")
-    next_versions+=("$version")
+    versions+=("$current")
+    archives+=("$archive")
 done
 
 if [[ ${#mods[@]} -eq 0 ]]; then
@@ -169,23 +185,14 @@ if [[ ${#mods[@]} -eq 0 ]]; then
     exit 0
 fi
 
-if ! git -C "$repository_root" diff --cached --quiet; then
-    git -C "$repository_root" commit -m "Prepare Thunderstore releases" \
-        -m 'Thunderstore-Release: true' -m 'Release-Version-Bump: true'
-    git -C "$repository_root" push origin HEAD:main
-fi
-"$repository_root/scripts/ci/publish-mods.sh" --no-version-bump "${mods[@]}"
-
 export TCLI_AUTH_TOKEN
 TCLI_AUTH_TOKEN="$(read_secret "$thunderstore_environment" TCLI_AUTH_TOKEN)"
 for index in "${!mods[@]}"; do
     mod="${mods[$index]}"
     directory="$repository_root/Landoria.$mod"
     package="$(jq -r '.name' "$directory/manifest.json")"
-    version="${next_versions[$index]}"
-    archive="$(find "$repository_root/artifacts/thunderstore" -maxdepth 1 -type f \
-        -name "$package-$version-*.zip" -print -quit)"
-    [[ -n "$archive" ]] || { echo "Generated archive not found for $package $version." >&2; exit 1; }
+    version="${versions[$index]}"
+    archive="${archives[$index]}"
     config="$repository_root/artifacts/thunderstore/$package-$version.toml"
     write_tcli_config "$directory" "$config"
     "$tcli" publish --config-path "$config" --file "$archive"
