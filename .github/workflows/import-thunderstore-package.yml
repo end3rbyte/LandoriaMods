@@ -12,6 +12,14 @@ name: Import a Thunderstore package
         description: Released semantic version
         required: true
         type: string
+      source:
+        description: Authoritative package source
+        required: true
+        default: thunderstore
+        type: choice
+        options:
+          - thunderstore
+          - test-storage
 
 permissions:
   contents: read
@@ -53,7 +61,12 @@ jobs:
 
       - name: Import released package
         shell: bash
-        run: scripts/ci/import-thunderstore-package.sh "${{ inputs.package }}" "${{ inputs.version }}"
+        env:
+          LANDORIA_STORAGE_BASE_URL: ${{ steps.storage.outputs.url }}
+          LANDORIA_TEST_GAMEMODES_JSON: ${{ steps.gamemodes.outputs.configuration }}
+        run: >-
+          scripts/ci/import-thunderstore-package.sh
+          "${{ inputs.package }}" "${{ inputs.version }}" "${{ inputs.source }}"
 
       - name: Verify test modpack storage
         shell: bash
