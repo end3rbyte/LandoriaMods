@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-08-08T16:49:29Z",
+  "packages": [
+    {
+      "package": "SealedTombstone",
+      "draftVersion": "1.0.2",
+      "restoredVersion": "1.0.1",
+      "category": "modpack"
+    },
+    {
+      "package": "LandoriaModPack",
+      "draftVersion": "1.0.4",
+      "restoredVersion": "1.0.3",
+      "category": "modpack"
+    }
+  ]
+}
