@@ -263,6 +263,11 @@ if [[ "$bump_versions" == true ]]; then
 fi
 
 mkdir -p -- "$output"
+if [[ "$include_modpack" == true ]]; then
+    : > "$output/.modpack-published"
+else
+    rm -f -- "$output/.modpack-published"
+fi
 declare BepInExPath ValheimGamePath
 while IFS='=' read -r key value; do
     case "$key" in

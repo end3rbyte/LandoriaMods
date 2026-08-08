@@ -129,3 +129,17 @@ jobs:
           read -r -a mods <<< "$SELECTED_MODS"
           scripts/ci/sync-swiss-backup-dlls.sh \
               deploy-test "$storage_host" "${mods[@]}"
+
+      - name: Verify the updated modpack against test storage
+        if: ${{ steps.mods.outputs.mods != '' }}
+        shell: bash
+        env:
+          LANDORIA_STORAGE_BASE_URL: ${{ steps.storage.outputs.url }}
+          LANDORIA_TEST_GAMEMODES_JSON: ${{ steps.gamemodes.outputs.configuration }}
+        run: |
+          set -euo pipefail
+          if [[ -f artifacts/thunderstore/.modpack-published ]]; then
+              scripts/ci/verify-test-modpack-storage.sh
+          else
+              echo "The modpack was not updated; test storage verification is not required."
+          fi
