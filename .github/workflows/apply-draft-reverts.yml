@@ -1,0 +1,60 @@
+---
+name: Apply merged draft reverts
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .draft-rollbacks/*.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: apply-draft-reverts
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: [self-hosted, Linux, X64, public-mods]
+    steps:
+      - uses: actions/checkout@v5
+      - name: Check out central configuration
+        shell: bash
+        run: |
+          GH_TOKEN="$(sudo cat /var/lib/landoria-secrets/github-token)"
+          export GH_TOKEN
+          gh repo clone end3rbyte/valheim-root .landoria-root -- --depth 1
+          printf '/.landoria-root/\n' >> .git/info/exclude
+      - id: gamemodes
+        uses: ./.landoria-root/.github/actions/resolve-gamemodes
+        with:
+          environment: test
+      - id: storage
+        uses: ./.landoria-root/.github/actions/resolve-inventory
+        with:
+          host-group: mod_storage
+          environment: test
+          url-group: website
+      - name: Delete merged drafts
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t plans < <(git diff --diff-filter=A --name-only \
+            "$BEFORE_SHA" "$GITHUB_SHA" -- '.draft-rollbacks/*.json')
+          ((${#plans[@]} > 0)) || { echo "No new rollback plan was merged."; exit 0; }
+          for plan in "${plans[@]}"; do
+            scripts/ci/apply-draft-revert.sh "$plan"
+          done
+      - name: Reconcile test storage
+        env:
+          LANDORIA_STORAGE_BASE_URL: ${{ steps.storage.outputs.url }}
+          LANDORIA_TEST_GAMEMODES_JSON: ${{ steps.gamemodes.outputs.configuration }}
+          STORAGE_HOSTS: ${{ steps.storage.outputs.hosts }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          storage_host="$(jq -er 'if length == 1 then .[0] else error("exactly one storage executor is required") end' <<< "$STORAGE_HOSTS")"
+          scripts/ci/sync-swiss-backup-dlls.sh reconcile-test "$storage_host"

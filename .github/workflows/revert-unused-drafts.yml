@@ -1,0 +1,65 @@
+---
+name: Revert unused drafts
+
+on:
+  workflow_dispatch:
+    inputs:
+      mods:
+        description: Comma-separated mod directory names without the Landoria prefix
+        required: true
+        type: string
+      confirmation:
+        description: Type REVERT to prepare the rollback pull request
+        required: true
+        type: string
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  prepare:
+    if: ${{ inputs.confirmation == 'REVERT' }}
+    runs-on: [self-hosted, Linux, X64, public-mods]
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: Check out central configuration
+        shell: bash
+        run: |
+          GH_TOKEN="$(sudo cat /var/lib/landoria-secrets/github-token)"
+          export GH_TOKEN
+          gh repo clone end3rbyte/valheim-root .landoria-root -- --depth 1
+          printf '/.landoria-root/\n' >> .git/info/exclude
+      - id: gamemodes
+        uses: ./.landoria-root/.github/actions/resolve-gamemodes
+        with:
+          environment: test
+      - name: Prepare rollback
+        env:
+          LANDORIA_MODPACK_CONFIGURATION_JSON: ${{ steps.gamemodes.outputs.modpack-configuration }}
+          REQUESTED_MODS: ${{ inputs.mods }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t mods < <(tr ',' '\n' <<< "$REQUESTED_MODS" |
+            sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | sed '/^$/d' | sort -u)
+          ((${#mods[@]} > 0)) || { echo "At least one mod is required." >&2; exit 1; }
+          scripts/ci/prepare-draft-revert.sh "$GITHUB_RUN_ID" "${mods[@]}"
+      - name: Create ready pull request
+        shell: bash
+        run: |
+          set -euo pipefail
+          GH_TOKEN="$(sudo cat /var/lib/landoria-secrets/github-token)"
+          export GH_TOKEN
+          branch="automation/revert-unused-drafts-$GITHUB_RUN_ID"
+          git config user.name landoria-release-bot
+          git config user.email landoria-release-bot@users.noreply.github.com
+          git switch -c "$branch"
+          git add -- Landoria.*/ .draft-rollbacks/
+          git commit -m "Revert unused mod drafts [skip draft publish]"
+          git push --set-upstream origin "$branch"
+          gh pr create --base main --head "$branch" \
+            --title "Revert unused mod drafts [skip draft publish]" \
+            --body "Restores the selected sources to their released versions. After this PR is merged, the draft cleanup workflow will delete only the matching unreleased private packages and reconcile test storage."
