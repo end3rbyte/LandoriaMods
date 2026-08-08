@@ -1,6 +1,6 @@
 {
   "name": "CharacterVault",
-  "version_number": "1.0.1",
+  "version_number": "1.0.2",
   "website_url": "https://github.com/end3rbyte/LandoriaMods/tree/main/Landoria.CharacterVault",
   "description": "CharacterVault saves character profiles on the server to prevent item duplication.",
   "dependencies": [
