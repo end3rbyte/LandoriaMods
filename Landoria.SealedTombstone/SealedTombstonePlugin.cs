@@ -8,7 +8,7 @@ namespace Landoria.SealedTombstone
     {
         private const string PluginGuid = "Landoria.SealedTombstone";
         private const string PluginName = "Landoria.SealedTombstone";
-        private const string PluginVersion = "1.0.2";
+        private const string PluginVersion = "1.0.1";
 
 
         internal static ModLog Log { get; private set; }

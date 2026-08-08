@@ -10,7 +10,7 @@ namespace Landoria.ServerGateway
     {
         private const string PluginGuid = "Landoria.ServerGateway";
         private const string PluginName = "Landoria.ServerGateway";
-        private const string PluginVersion = "1.0.2";
+        private const string PluginVersion = "1.0.1";
         private const int DefaultPort = 8765;
 
         private ConfigEntry<int> _port;

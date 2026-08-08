@@ -2,7 +2,6 @@
 
 ## Unreleased
 
-- Reconcile test storage from modpack source of truth [skip ci]
 - Align modpack validation with immutable packages [skip ci]
 - Remove unintended mod rollback side effects
 - Restore current package publication metadata

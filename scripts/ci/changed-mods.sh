@@ -23,6 +23,8 @@ publish_all=false
 declare -A selected=()
 for path in "${paths[@]}"; do
     case "$path" in
+        scripts/ci/import-thunderstore-package.sh)
+            ;;
         Directory.Build.props|scripts/ci/*|Landoria.SharedLib/*)
             publish_all=true
             ;;

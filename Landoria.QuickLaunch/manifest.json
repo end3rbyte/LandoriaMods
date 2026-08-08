@@ -1,6 +1,6 @@
 {
   "name": "QuickLaunch",
-  "version_number": "1.0.2",
+  "version_number": "1.0.1",
   "website_url": "https://github.com/end3rbyte/LandoriaMods/tree/main/Landoria.QuickLaunch",
   "description": "Automatically resume your last local or multiplayer Valheim session, with an option to disable it.",
   "dependencies": [
