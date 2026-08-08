@@ -23,6 +23,14 @@ git -C "$test_root" add .
 git -C "$test_root" commit -qm 'Initial release'
 git -C "$test_root" tag thunderstore/Example/1.0.0
 
+initial_hash="$(sha256sum "$test_root/Landoria.Example/CHANGELOG.md")"
+update_unreleased_changelog "$test_root" Example 1.0.1
+[[ "$(sha256sum "$test_root/Landoria.Example/CHANGELOG.md")" == "$initial_hash" ]]
+if grep -Fqx '## Unreleased' "$test_root/Landoria.Example/CHANGELOG.md"; then
+    echo 'An empty Unreleased section was generated.' >&2
+    exit 1
+fi
+
 printf 'feature\n' > "$test_root/Landoria.Example/feature.txt"
 git -C "$test_root" add .
 git -C "$test_root" commit -qm 'Add example feature'

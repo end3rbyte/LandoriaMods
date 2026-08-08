@@ -47,15 +47,22 @@ update_unreleased_changelog() {
     changelog_has_section "$changelog" "$version" && return 0
 
     mapfile -t subjects < <(unreleased_entries "$repository_root" "$mod")
+    if [[ ${#subjects[@]} -eq 0 ]]; then
+        if changelog_has_section "$changelog" Unreleased; then
+            temporary="$changelog.tmp"
+            remove_unreleased_section "$changelog" > "$temporary"
+            mv -- "$temporary" "$changelog"
+        fi
+        return 0
+    fi
+
     temporary="$changelog.tmp"
     {
         printf '# Changelog\n\n## Unreleased\n'
-        if [[ ${#subjects[@]} -gt 0 ]]; then
-            printf '\n'
-            for subject in "${subjects[@]}"; do
-                [[ -z "$subject" ]] || printf -- '- %s\n' "$subject"
-            done
-        fi
+        printf '\n'
+        for subject in "${subjects[@]}"; do
+            [[ -z "$subject" ]] || printf -- '- %s\n' "$subject"
+        done
         printf '\n'
         remove_unreleased_section "$changelog" | tail -n +3 | sed '/./,$!d'
     } > "$temporary"
