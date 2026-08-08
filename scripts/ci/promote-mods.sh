@@ -29,15 +29,15 @@ require_command() {
     }
 }
 
-validate_promotable_package() {
+package_category() {
     local package="$1"
-    [[ "$package" == LandoriaModPack ]] && return
-    jq -e --arg package "$package" \
-        '.landoria_packages | index($package) != null' \
-        <<< "$modpack_configuration" >/dev/null || {
-        echo "Landoria-$package cannot be promoted because it is not included in GLOBAL_VARS.yml modpack.landoria_packages." >&2
-        return 1
-    }
+    [[ "$package" == LandoriaModPack ]] && { echo modpack; return; }
+    jq -er --arg package "$package" '
+        if (.landoria_packages | index($package)) != null then "modpack"
+        elif (.standalone_packages | index($package)) != null then "standalone"
+        elif (.server_only_packages | index($package)) != null then "server-only"
+        else error("package is absent from the central inventory") end
+    ' <<< "$modpack_configuration"
 }
 
 read_secret() {
@@ -163,7 +163,12 @@ for command in awk curl dotnet find git jq sed sha256sum unzip; do require_comma
 jq -e '
     type == "object" and
     (.landoria_packages | type == "array" and length > 0 and length == (unique | length)) and
-    all(.landoria_packages[]; type == "string" and test("^[A-Za-z0-9_]+$"))
+    (.server_only_packages | type == "array" and length > 0 and length == (unique | length)) and
+    (.standalone_packages | type == "array" and length > 0 and length == (unique | length)) and
+    all([.landoria_packages[], .server_only_packages[], .standalone_packages[]][];
+        type == "string" and test("^[A-Za-z0-9_]+$")) and
+    ([.landoria_packages[], .server_only_packages[], .standalone_packages[]] | length) ==
+    ([.landoria_packages[], .server_only_packages[], .standalone_packages[]] | unique | length)
 ' <<< "$modpack_configuration" >/dev/null || {
     echo "LANDORIA_MODPACK_CONFIGURATION_JSON is invalid." >&2
     exit 2
@@ -175,7 +180,7 @@ jq -e '
 }
 
 mkdir -p "$repository_root/artifacts/thunderstore"
-declare -a mods=() versions=() archives=()
+declare -a mods=() versions=() archives=() categories=()
 declare -A seen=()
 for mod in "$@"; do
     [[ "$mod" =~ ^[A-Za-z0-9]+$ ]] || usage
@@ -183,9 +188,24 @@ for mod in "$@"; do
     [[ -z "${seen[$mod]:-}" ]] || continue
     seen[$mod]=1
     package="$(jq -r '.name' "$repository_root/Landoria.$mod/manifest.json")"
-    validate_promotable_package "$package"
-    latest="$(thunderstore_latest "$package")"
+    category="$(package_category "$package")" || {
+        echo "Landoria-$package cannot be promoted because it is absent from the central package inventory." >&2
+        exit 1
+    }
     current="$(jq -r '.version_number' "$repository_root/Landoria.$mod/manifest.json")"
+    archive="$repository_root/artifacts/thunderstore/$package-$current-private-draft.zip"
+
+    if [[ "$category" == server-only ]]; then
+        validate_release_changelog "$repository_root/Landoria.$mod/CHANGELOG.md" "$current"
+        download_internal_draft "$package" "$current" "$archive"
+        mods+=("$mod")
+        versions+=("$current")
+        archives+=("$archive")
+        categories+=("$category")
+        continue
+    fi
+
+    latest="$(thunderstore_latest "$package")"
 
     if [[ "$current" == "$latest" ]] && thunderstore_release_exists "$package" "$current"; then
         internal_status="$(internal_release_status "$package" "$current")" || {
@@ -208,11 +228,11 @@ for mod in "$@"; do
     fi
     validate_next_release_version "$package" "$current" "$latest"
     validate_release_changelog "$repository_root/Landoria.$mod/CHANGELOG.md" "$current"
-    archive="$repository_root/artifacts/thunderstore/$package-$current-private-draft.zip"
     download_internal_draft "$package" "$current" "$archive"
     mods+=("$mod")
     versions+=("$current")
     archives+=("$archive")
+    categories+=("$category")
 done
 
 if [[ ${#mods[@]} -eq 0 ]]; then
@@ -228,6 +248,15 @@ for index in "${!mods[@]}"; do
     package="$(jq -r '.name' "$directory/manifest.json")"
     version="${versions[$index]}"
     archive="${archives[$index]}"
+    category="${categories[$index]}"
+    if [[ "$category" == server-only ]]; then
+        mark_internal_release "$package" "$version"
+        tag="production/server-only/$mod/$version"
+        git -C "$repository_root" tag "$tag"
+        git -C "$repository_root" push origin "refs/tags/$tag"
+        echo "Released private server-only package Landoria-$package-$version without publishing it on Thunderstore."
+        continue
+    fi
     config="$repository_root/artifacts/thunderstore/$package-$version.toml"
     write_tcli_config "$directory" "$config"
     "$tcli" publish --config-path "$config" --file "$archive"

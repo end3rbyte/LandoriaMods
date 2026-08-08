@@ -117,6 +117,24 @@ modpack_tracks_package() {
         '.landoria_packages | index($package) != null' <<< "$modpack_configuration" >/dev/null
 }
 
+is_server_only_package() {
+    local package="$1"
+    jq -e --arg package "$package" \
+        '.server_only_packages | index($package) != null' \
+        <<< "$modpack_configuration" >/dev/null
+}
+
+validate_known_package() {
+    local package="$1"
+    jq -e --arg package "$package" '
+        ([.landoria_packages[], .server_only_packages[], .standalone_packages[]] |
+            index($package)) != null
+    ' <<< "$modpack_configuration" >/dev/null || {
+        echo "Landoria-$package is not declared in the central package inventory." >&2
+        return 1
+    }
+}
+
 landoria_dependency() {
     local package="$1" prefix existing manifest version
     prefix="Landoria-$package-"
@@ -274,7 +292,13 @@ done
 jq -e '
     type == "object" and
     (.external_dependencies | type == "array" and length > 0 and length == (unique | length)) and
-    (.landoria_packages | type == "array" and length > 0 and length == (unique | length))
+    (.landoria_packages | type == "array" and length > 0 and length == (unique | length)) and
+    (.server_only_packages | type == "array" and length > 0 and length == (unique | length)) and
+    (.standalone_packages | type == "array" and length > 0 and length == (unique | length)) and
+    all([.landoria_packages[], .server_only_packages[], .standalone_packages[]][];
+        type == "string" and test("^[A-Za-z0-9_]+$")) and
+    ([.landoria_packages[], .server_only_packages[], .standalone_packages[]] | length) ==
+    ([.landoria_packages[], .server_only_packages[], .standalone_packages[]] | unique | length)
 ' <<< "$modpack_configuration" >/dev/null || {
     echo "LANDORIA_MODPACK_CONFIGURATION_JSON is invalid." >&2
     exit 2
@@ -299,6 +323,7 @@ for mod in "$@"; do
         continue
     fi
     package="$(jq -r '.name' "$directory/manifest.json")"
+    validate_known_package "$package"
     modpack_tracks_package "$package" && include_modpack=true
 done
 if [[ "$include_modpack" == true && -z "${seen_mods[LandoriaModPack]:-}" ]]; then
@@ -357,6 +382,10 @@ fi
 for index in "${!mods[@]}"; do
     package="$(jq -r '.name' "${directories[$index]}/manifest.json")"
     version="$(jq -r '.version_number' "${directories[$index]}/manifest.json")"
+    if is_server_only_package "$package"; then
+        echo "Validated private server-only package Landoria-$package-$version."
+        continue
+    fi
     latest_release="$(thunderstore_latest "$package")"
     validate_next_release_version "$package" "$version" "$latest_release"
 done
