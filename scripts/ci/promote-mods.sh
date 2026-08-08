@@ -103,6 +103,14 @@ mark_internal_release() {
     }
 }
 
+internal_release_status() {
+    local package="$1" version="$2" state
+    state="$(curl --fail --silent --show-error --retry 5 --retry-all-errors --retry-delay 2 \
+        "$internal_url/Landoria/$package")"
+    jq -er --arg version "$version" \
+        '.[] | select(.versionNumber == $version) | (.released | tostring)' <<< "$state"
+}
+
 download_internal_draft() {
     local package="$1" version="$2" target="$3" state metadata released expected_hash
     local actual_hash manifest_name manifest_version archived_changelog
@@ -158,12 +166,18 @@ for mod in "$@"; do
     latest="$(thunderstore_latest "$package")"
     current="$(jq -r '.version_number' "$repository_root/Landoria.$mod/manifest.json")"
 
-    if ! git -C "$repository_root" rev-parse --verify --quiet "refs/tags/thunderstore/$mod/$current" >/dev/null && \
-       thunderstore_release_exists "$package" "$current"; then
-        mark_internal_release "$package" "$current"
-        git -C "$repository_root" tag "thunderstore/$mod/$current"
-        git -C "$repository_root" push origin "refs/tags/thunderstore/$mod/$current"
-        echo "Reconciled the existing Thunderstore release Landoria-$package-$current."
+    if [[ "$current" == "$latest" ]] && thunderstore_release_exists "$package" "$current"; then
+        internal_status="$(internal_release_status "$package" "$current")" || {
+            echo "Landoria-$package-$current is missing from the private repository." >&2
+            exit 1
+        }
+        [[ "$internal_status" == true ]] || mark_internal_release "$package" "$current"
+        if ! git -C "$repository_root" rev-parse --verify --quiet \
+            "refs/tags/thunderstore/$mod/$current" >/dev/null; then
+            git -C "$repository_root" tag "thunderstore/$mod/$current"
+            git -C "$repository_root" push origin "refs/tags/thunderstore/$mod/$current"
+        fi
+        echo "Landoria-$package-$current is already released; no package rebuild is required."
         continue
     fi
 
