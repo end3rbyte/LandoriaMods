@@ -123,6 +123,15 @@ plan_test_deployment() {
 
 plan_test_reconciliation() {
     local plugin destination
+    jq -r '
+        paths(scalars) as $path |
+        getpath($path) as $plugin |
+        select($plugin | type == "string") |
+        select($path | length >= 5) |
+        select($path[-1] | type == "number") |
+        "test/" + (($path[0:-1] + [($plugin + ".dll")]) | join("/"))
+    ' <<< "$LANDORIA_TEST_GAMEMODES_JSON" | sort -u \
+        > "$staging_directory/expected-paths.txt"
     while IFS= read -r plugin; do
         [[ -n "$plugin" ]] || continue
         if ! stage_modpack_dll "$plugin"; then
@@ -201,7 +210,7 @@ refresh_manifests() (
 run_remote_operations() {
     local archive="$1" credential_environment="$2" website_base_url="$3"
     local public_environment secret_environment temporary_directory
-    local kind source destination destination_environment cleanup_command
+    local kind source destination destination_environment cleanup_command relative_path full_path
     [[ "$website_base_url" =~ ^https://[^[:space:]]+$ ]] || {
         echo "The website base URL must be an absolute HTTPS URL." >&2
         exit 2
@@ -285,6 +294,21 @@ run_remote_operations() {
             --files-only --max-depth 1 | grep -Fxq "${destination##*/}"
         echo "Synchronized $destination."
     done < "$temporary_directory/operations.tsv"
+    if [[ -f "$temporary_directory/expected-paths.txt" ]]; then
+        while IFS= read -r relative_path; do
+            [[ -n "$relative_path" ]] || continue
+            full_path="test/server/$relative_path"
+            validate_relative_path "${full_path#test/}" || {
+                echo "Invalid existing test DLL path: $full_path" >&2
+                exit 1
+            }
+            if ! grep -Fxq "$full_path" "$temporary_directory/expected-paths.txt"; then
+                rclone deletefile "storage:$SwissBackupStorage__Container/$full_path"
+                echo "Deleted obsolete $full_path."
+            fi
+        done < <(rclone lsf "storage:$SwissBackupStorage__Container/test/server" \
+            --recursive --files-only --include '*.dll')
+    fi
     [[ "$destination_environment" =~ ^(test|prod)$ ]]
     refresh_manifests "$destination_environment" "$website_base_url"
 }
@@ -345,7 +369,9 @@ if [[ ! -s "$operations_file" ]]; then
     exit 0
 fi
 
-tar -czf "$archive" -C "$staging_directory" operations.tsv dlls
+archive_entries=(operations.tsv dlls)
+[[ ! -f "$staging_directory/expected-paths.txt" ]] || archive_entries+=(expected-paths.txt)
+tar -czf "$archive" -C "$staging_directory" "${archive_entries[@]}"
 scp "$0" "$target_host:$remote_script"
 scp "$archive" "$target_host:$remote_archive"
 cleanup_remote() {
