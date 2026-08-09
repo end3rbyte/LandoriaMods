@@ -1,8 +1,5 @@
 # Changelog
 
-## 1.0.0 - 2026-08-09
+## 1.0.0
 
-- Detect players who remain motionless and do not send chat messages.
-- Configure the inactivity timeout and movement tolerance through BepInEx.
-- Allow deployments to override the inactivity timeout with `--afktimeout`.
-- Disconnect inactive players with a specific message on the client.
+- Initial version.
