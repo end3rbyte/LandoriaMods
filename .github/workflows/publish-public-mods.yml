@@ -177,3 +177,13 @@ jobs:
           else
               echo "The modpack was not updated; test storage verification is not required."
           fi
+
+      - name: Request a test server restart
+        if: ${{ steps.mods.outputs.mods != '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          GH_TOKEN="$(sudo cat /var/lib/landoria-secrets/github-token)"
+          export GH_TOKEN
+          gh api --method POST repos/end3rbyte/valheim-root/dispatches \
+            -f event_type=restart-valheim-test
