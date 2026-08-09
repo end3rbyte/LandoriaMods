@@ -26,6 +26,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.ServerGateway", "L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.LandoriaModPack", "Landoria.LandoriaModPack\Landoria.LandoriaModPack.csproj", "{BD9DB129-FFA6-414E-95AD-10EA8CE362C4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.AfkDetector", "Landoria.AfkDetector\Landoria.AfkDetector.csproj", "{7B88B753-913F-4936-88DF-173D3F373E9B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -190,6 +192,18 @@ Global
 		{BD9DB129-FFA6-414E-95AD-10EA8CE362C4}.Release|x64.Build.0 = Release|Any CPU
 		{BD9DB129-FFA6-414E-95AD-10EA8CE362C4}.Release|x86.ActiveCfg = Release|Any CPU
 		{BD9DB129-FFA6-414E-95AD-10EA8CE362C4}.Release|x86.Build.0 = Release|Any CPU
+		{7B88B753-913F-4936-88DF-173D3F373E9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B88B753-913F-4936-88DF-173D3F373E9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B88B753-913F-4936-88DF-173D3F373E9B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7B88B753-913F-4936-88DF-173D3F373E9B}.Debug|x64.Build.0 = Debug|Any CPU
+		{7B88B753-913F-4936-88DF-173D3F373E9B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7B88B753-913F-4936-88DF-173D3F373E9B}.Debug|x86.Build.0 = Debug|Any CPU
+		{7B88B753-913F-4936-88DF-173D3F373E9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B88B753-913F-4936-88DF-173D3F373E9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B88B753-913F-4936-88DF-173D3F373E9B}.Release|x64.ActiveCfg = Release|Any CPU
+		{7B88B753-913F-4936-88DF-173D3F373E9B}.Release|x64.Build.0 = Release|Any CPU
+		{7B88B753-913F-4936-88DF-173D3F373E9B}.Release|x86.ActiveCfg = Release|Any CPU
+		{7B88B753-913F-4936-88DF-173D3F373E9B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

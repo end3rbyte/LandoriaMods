@@ -6,6 +6,7 @@ concise player-oriented overview.
 
 | Mod | Installation side | Description |
 |---|---|---|
+| [AfkDetector](Landoria.AfkDetector/) | Both | Disconnects players who remain motionless and silent, with a clear inactivity message. |
 | [CharacterVault](Landoria.CharacterVault/) | Both | Saves connected ServerCharacters profiles before a dedicated server stops. |
 | [GentleDeath](Landoria.GentleDeath/) | Client; server when required by a game mode | Keeps equipable gear on the player after death and moves other items to the tombstone. |
 | [GetMyTrophyBack](Landoria.GetMyTrophyBack/) | Both | Drops a mounted boss trophy five seconds after its guardian power is selected. |
