@@ -130,6 +130,15 @@ jobs:
           scripts/ci/sync-swiss-backup-dlls.sh \
               promote "$storage_host" "${mods[@]}"
 
+      - name: Request a production server restart
+        shell: bash
+        run: |
+          set -euo pipefail
+          GH_TOKEN="$(sudo cat /var/lib/landoria-secrets/github-token)"
+          export GH_TOKEN
+          gh api --method POST repos/end3rbyte/valheim-root/dispatches \
+            -f event_type=restart-valheim-production
+
       - name: Archive generated packages
         if: ${{ always() }}
         uses: actions/upload-artifact@v4
