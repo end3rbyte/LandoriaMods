@@ -1,3 +1,4 @@
+using System;
 using BepInEx;
 using BepInEx.Configuration;
 using Landoria.SharedLib;
@@ -13,10 +14,12 @@ namespace Landoria.AfkDetector
         private const string PluginName = "Landoria.AfkDetector";
         private const string PluginVersion = "1.0.0";
         private const int DefaultTimeoutMinutes = 30;
+        private const string TimeoutArgument = "--afktimeout";
         private const float DefaultMovementTolerance = 0.75f;
         private const float ScanIntervalSeconds = 2f;
 
         private ConfigEntry<int> _timeoutMinutes;
+        private int? _commandLineTimeoutMinutes;
         private ConfigEntry<float> _movementTolerance;
         private ActivityMonitor _monitor;
         private float _nextScan;
@@ -35,6 +38,7 @@ namespace Landoria.AfkDetector
         {
             _timeoutMinutes = Config.Bind("Detection", "TimeoutMinutes", DefaultTimeoutMinutes,
                 "Minutes without movement or chat before the server disconnects a player.");
+            _commandLineTimeoutMinutes = ReadCommandLineTimeout();
             _movementTolerance = Config.Bind("Detection", "MovementToleranceMeters",
                 DefaultMovementTolerance,
                 "Minimum distance that resets the inactivity timer and filters position jitter.");
@@ -53,7 +57,7 @@ namespace Landoria.AfkDetector
 
         private ActivityMonitor EnsureMonitor()
         {
-            float timeout = Mathf.Max(1, _timeoutMinutes.Value) * 60f;
+            float timeout = Mathf.Max(1, EffectiveTimeoutMinutes()) * 60f;
             float tolerance = Mathf.Max(0.1f, _movementTolerance.Value);
             if (_monitor == null)
             {
@@ -64,6 +68,41 @@ namespace Landoria.AfkDetector
                 _monitor.Configure(timeout, tolerance);
             }
             return _monitor;
+        }
+
+        private int EffectiveTimeoutMinutes()
+        {
+            return _commandLineTimeoutMinutes ?? _timeoutMinutes.Value;
+        }
+
+        private static int? ReadCommandLineTimeout()
+        {
+            string[] arguments = Environment.GetCommandLineArgs();
+            for (int index = 0; index < arguments.Length; index++)
+            {
+                if (!string.Equals(arguments[index], TimeoutArgument,
+                        StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                return ParseCommandLineTimeout(arguments, index);
+            }
+
+            return null;
+        }
+
+        private static int? ParseCommandLineTimeout(string[] arguments, int index)
+        {
+            if (index + 1 < arguments.Length &&
+                int.TryParse(arguments[index + 1], out int minutes) && minutes >= 1)
+            {
+                Log.LogInfo($"Received command-line switch: {TimeoutArgument} {minutes}.");
+                return minutes;
+            }
+
+            Log.LogWarning($"Invalid {TimeoutArgument} value; using the BepInEx configuration.");
+            return null;
         }
 
         internal void RecordChat(long peerId)

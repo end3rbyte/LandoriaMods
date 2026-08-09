@@ -33,6 +33,10 @@ The server creates `BepInEx/config/Landoria.AfkDetector.cfg` after the first lau
 
 Configuration changes are applied without restarting the server.
 
+The server command-line switch `--afktimeout <minutes>` takes precedence over
+`Detection.TimeoutMinutes`. Landoria test servers launch with `--afktimeout 5`;
+production servers launch with `--afktimeout 30`.
+
 ## Detection limits
 
 AfkDetector observes movement and chat that the server can verify. Inventory use, camera rotation, and local menu interactions are not visible to a server-authoritative mod and do not reset the timer. A player carried by a moving ship may appear active because their network position changes.

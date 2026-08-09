@@ -9,6 +9,7 @@ Disconnects players who remain motionless and silent beyond a configurable timeo
 - Filters position jitter with a configurable movement tolerance.
 - Shows a specific inactivity message after disconnecting the client.
 - Defaults to a 30-minute timeout.
+- Supports a server command-line timeout override for managed deployments.
 
 ## Installation
 
