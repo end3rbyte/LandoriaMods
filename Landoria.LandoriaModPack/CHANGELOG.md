@@ -1,8 +1,9 @@
 # Changelog
 
-## Unreleased
+## 1.0.4
 
-- Revert unused mod drafts [skip draft publish]
+- Add AFK Detector to identify and disconnect inactive players.
+- Keep the packaged Landoria dependencies aligned with the tested server configuration.
 
 ## 1.0.3
 
