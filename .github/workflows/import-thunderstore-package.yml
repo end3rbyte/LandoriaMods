@@ -89,6 +89,15 @@ jobs:
       - name: Verify test modpack storage
         shell: bash
         env:
-          LANDORIA_STORAGE_BASE_URL: ${{ steps.storage.outputs.url }}
           LANDORIA_TEST_GAMEMODES_JSON: ${{ steps.gamemodes.outputs.configuration }}
-        run: scripts/ci/verify-test-modpack-storage.sh
+          STORAGE_HOSTS: ${{ steps.storage.outputs.hosts }}
+        run: |
+          set -euo pipefail
+          storage_host="$(jq -er 'if length == 1 then .[0] else error("exactly one storage executor is required") end' \
+              <<< "$STORAGE_HOSTS")"
+          storage_snapshot="$(mktemp -d)"
+          trap 'find "$storage_snapshot" -depth -delete' EXIT
+          scripts/ci/snapshot-swiss-backup-mods.sh \
+              test "$storage_host" "$storage_snapshot"
+          LANDORIA_STORAGE_ROOT="$storage_snapshot" \
+              scripts/ci/verify-test-modpack-storage.sh

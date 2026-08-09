@@ -56,7 +56,12 @@ modpack_dependency() {
 stage_modpack_dll() {
     local plugin="$1" dependency namespace package version package_archive
     local archive_manifest entry entries target
-    dependency="$(modpack_dependency "$plugin")" || return 1
+    if [[ "$plugin" == Landoria.LandoriaModPack ]]; then
+        dependency="$(jq -r '["Landoria", .name, .version_number] | @tsv' \
+            "$repository_root/Landoria.LandoriaModPack/manifest.json")"
+    else
+        dependency="$(modpack_dependency "$plugin")" || return 1
+    fi
     IFS=$'\t' read -r namespace package version <<< "$dependency"
     package_archive="$staging_directory/$namespace-$package-$version.zip"
     if [[ "$namespace" == Landoria ]]; then
