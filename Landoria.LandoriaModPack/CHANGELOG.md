@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Revert unused mod drafts [skip draft publish]
+
 ## 1.0.3
 
 - Update SealedTombstone to version 1.0.1.
