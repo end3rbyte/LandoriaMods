@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Landoria.HammerFly
+namespace Landoria.FlyCommand
 {
     internal static class FlyCommand
     {

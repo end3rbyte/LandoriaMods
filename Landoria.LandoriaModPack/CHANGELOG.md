@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Add server-authorized Hammer flight (#21)
+- Add the server-authorized FlyCommand mod (#21).
 
 ## 1.0.5
 

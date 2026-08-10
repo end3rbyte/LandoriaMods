@@ -1,4 +1,4 @@
-namespace Landoria.HammerFly
+namespace Landoria.FlyCommand
 {
     internal static class FlyInput
     {

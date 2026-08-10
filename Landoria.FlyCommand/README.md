@@ -1,6 +1,6 @@
-# HammerFly
+# FlyCommand
 
-Allows Valheim's native player flight behavior in authorized Hammer worlds without enabling debug mode, developer commands, or administrator access.
+Allows Valheim's native player flight behavior in authorized worlds without enabling debug mode, developer commands, or administrator access.
 
 ## Authorization
 
@@ -22,13 +22,13 @@ Allows Valheim's native player flight behavior in authorized Hammer worlds witho
 | Left Control | Descend. |
 | Run / Shift | Fly faster. |
 
-The enable and disable shortcuts can be changed in `BepInEx/config/Landoria.HammerFly.cfg`.
+The enable and disable shortcuts can be changed in `BepInEx/config/Landoria.FlyCommand.cfg`.
 
 ## Installation
 
 | Client required | Server required |
 |---|---|
-| Yes | Yes, for Hammer worlds only |
+| Yes | Yes, wherever flight is authorized |
 
 ## Contact
 

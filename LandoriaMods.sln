@@ -28,7 +28,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.LandoriaModPack", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.AfkDetector", "Landoria.AfkDetector\Landoria.AfkDetector.csproj", "{7B88B753-913F-4936-88DF-173D3F373E9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.HammerFly", "Landoria.HammerFly\Landoria.HammerFly.csproj", "{DDA10461-612F-42CD-A050-B2634758E942}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.FlyCommand", "Landoria.FlyCommand\Landoria.FlyCommand.csproj", "{DDA10461-612F-42CD-A050-B2634758E942}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

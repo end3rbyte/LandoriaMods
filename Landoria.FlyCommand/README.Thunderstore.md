@@ -1,6 +1,6 @@
-# HammerFly
+# FlyCommand
 
-Uses Valheim's native flight movement in server-authorized Hammer worlds without enabling debug mode, developer commands, or administrator access.
+Uses Valheim's native flight movement in server-authorized worlds without enabling debug mode, developer commands, or administrator access.
 
 ## Features
 
@@ -14,9 +14,9 @@ Uses Valheim's native flight movement in server-authorized Hammer worlds without
 
 | Client required | Server required |
 |---|---|
-| Yes | Yes, for Hammer worlds only |
+| Yes | Yes, wherever flight is authorized |
 
-See the [full documentation](https://github.com/end3rbyte/LandoriaMods/blob/main/Landoria.HammerFly/README.md).
+See the [full documentation](https://github.com/end3rbyte/LandoriaMods/blob/main/Landoria.FlyCommand/README.md).
 
 ## Contact
 

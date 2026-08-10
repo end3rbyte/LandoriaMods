@@ -1,12 +1,12 @@
 using System;
 using UnityEngine;
 
-namespace Landoria.HammerFly
+namespace Landoria.FlyCommand
 {
     internal static class FlyAuthorization
     {
-        private const string RequestRpc = "Landoria_HammerFly_Request";
-        private const string ResponseRpc = "Landoria_HammerFly_Response";
+        private const string RequestRpc = "Landoria_FlyCommand_Request";
+        private const string ResponseRpc = "Landoria_FlyCommand_Response";
         private const float RetrySeconds = 2f;
 
         private static ZRoutedRpc _registeredRpc;
@@ -65,7 +65,7 @@ namespace Landoria.HammerFly
 
             _serverAllowed = allowed;
             ZRoutedRpc.instance.InvokeRoutedRPC(ZRoutedRpc.Everybody, ResponseRpc, allowed);
-            HammerFlyPlugin.ModLogger.LogInfo($"Server flight authorization changed to {allowed}.");
+            FlyCommandPlugin.ModLogger.LogInfo($"Server flight authorization changed to {allowed}.");
         }
 
         private static void UpdateClientAuthorization()
@@ -135,7 +135,7 @@ namespace Landoria.HammerFly
 
             IsAuthorized = allowed;
             FlyController.OnAuthorizationChanged(allowed);
-            HammerFlyPlugin.ModLogger?.LogInfo($"Flight authorization is now {allowed}.");
+            FlyCommandPlugin.ModLogger?.LogInfo($"Flight authorization is now {allowed}.");
         }
     }
 }

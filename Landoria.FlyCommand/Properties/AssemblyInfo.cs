@@ -1,11 +1,11 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Landoria.HammerFly")]
-[assembly: AssemblyDescription("Allows server-authorized vanilla flight in Hammer worlds.")]
+[assembly: AssemblyTitle("Landoria.FlyCommand")]
+[assembly: AssemblyDescription("Allows server-authorized vanilla flight in configured worlds.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Landoria")]
-[assembly: AssemblyProduct("Landoria.HammerFly")]
+[assembly: AssemblyProduct("Landoria.FlyCommand")]
 [assembly: AssemblyCopyright("Copyright © 2026 End3rbyte")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

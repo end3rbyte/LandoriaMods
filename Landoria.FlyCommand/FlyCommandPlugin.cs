@@ -2,13 +2,13 @@ using BepInEx;
 using BepInEx.Configuration;
 using Landoria.SharedLib;
 
-namespace Landoria.HammerFly
+namespace Landoria.FlyCommand
 {
     [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
-    public sealed class HammerFlyPlugin : LandoriaPlugin
+    public sealed class FlyCommandPlugin : LandoriaPlugin
     {
-        internal const string PluginGuid = "Landoria.HammerFly";
-        internal const string PluginName = "Landoria.HammerFly";
+        internal const string PluginGuid = "Landoria.FlyCommand";
+        internal const string PluginName = "Landoria.FlyCommand";
         internal const string PluginVersion = "1.0.0";
 
         private ConfigEntry<KeyboardShortcut> _enableShortcut;

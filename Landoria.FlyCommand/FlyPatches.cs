@@ -1,6 +1,6 @@
 using HarmonyLib;
 
-namespace Landoria.HammerFly
+namespace Landoria.FlyCommand
 {
     [HarmonyPatch(typeof(Terminal), "InitTerminal")]
     internal static class FlyCommandRegistrationPatch
