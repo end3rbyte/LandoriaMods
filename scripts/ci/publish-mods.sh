@@ -53,8 +53,14 @@ plugin_file() {
 }
 
 read_plugin_version() {
-    grep -Eo 'PluginVersion[^\"]*\"[0-9]+\.[0-9]+\.[0-9]+\"' "$1" |
-        head -n 1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+'
+    local version
+    version="$(grep -Eo 'PluginVersion[^\"]*\"[0-9]+\.[0-9]+\.[0-9]+\"' "$1" |
+        head -n 1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+' || true)"
+    [[ -n "$version" ]] || {
+        echo "PluginVersion could not be read from $1." >&2
+        return 1
+    }
+    printf '%s\n' "$version"
 }
 
 repository_state() {
