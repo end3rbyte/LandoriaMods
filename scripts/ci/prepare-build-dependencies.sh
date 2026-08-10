@@ -6,6 +6,7 @@ steamcmd_root="$cache_root/steamcmd"
 valheim_root="$cache_root/valheim-server"
 bepinex_version="5.4.2333"
 bepinex_install_root="$cache_root/bepinex-valheim-$bepinex_version"
+: "${LANDORIA_MOD_REPOSITORY_URL:?LANDORIA_MOD_REPOSITORY_URL is required}"
 
 require_command() {
     command -v "$1" >/dev/null 2>&1 || {
@@ -29,7 +30,7 @@ install_bepinex() {
     temporary="$(mktemp -d)"
     curl --fail --retry 5 --retry-all-errors --retry-delay 2 \
         --location --silent --show-error \
-        "https://thunderstore.io/package/download/denikson/BepInExPack_Valheim/${bepinex_version}/" \
+        "${LANDORIA_MOD_REPOSITORY_URL%/}/denikson/BepInExPack_Valheim/${bepinex_version}/download" \
         --output "$temporary/bepinex.zip"
     rm -rf -- "$bepinex_install_root"
     mkdir -p "$bepinex_install_root"

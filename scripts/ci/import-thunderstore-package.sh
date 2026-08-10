@@ -12,7 +12,8 @@ readonly version="$2"
 readonly source="$3"
 readonly replace_existing="$4"
 readonly namespace=Landoria
-readonly api_url="${LANDORIA_MOD_REPOSITORY_URL:-https://test.landoria-gaming.com:8443/api/v1/packages}"
+: "${LANDORIA_MOD_REPOSITORY_URL:?LANDORIA_MOD_REPOSITORY_URL is required}"
+readonly api_url="${LANDORIA_MOD_REPOSITORY_URL%/}"
 readonly secret_environment="${LANDORIA_MOD_REPOSITORY_SECRET_ENVIRONMENT:-/var/lib/landoria-secrets/mod-repository-upload.env}"
 temporary_directory="$(mktemp -d)"
 trap 'find "$temporary_directory" -depth -delete' EXIT
@@ -29,7 +30,7 @@ done
 
 if [[ "$source" == thunderstore ]]; then
     curl --fail --silent --show-error --location \
-        "https://thunderstore.io/package/download/$namespace/$package/$version/" \
+        "$api_url/$namespace/$package/$version/download" \
         --output "$archive"
 else
     [[ -n "${LANDORIA_TEST_GAMEMODES_JSON:-}" && \
@@ -79,6 +80,20 @@ jq -e --arg package "$package" --arg version "$version" '
     echo "The downloaded Thunderstore package metadata is invalid." >&2
     exit 1
 }
+
+if [[ "$source" == thunderstore ]]; then
+    metadata="$(curl --fail --silent --show-error --location \
+        "$api_url/$namespace/$package")"
+    jq -e --arg version "$version" '
+        any(.[]; .versionNumber == $version and .released == true and
+            .source == "Thunderstore")
+    ' <<< "$metadata" >/dev/null || {
+        echo "The cached package is not an immutable Thunderstore release." >&2
+        exit 1
+    }
+    echo "Verified cached Thunderstore release $namespace-$package-$version."
+    exit 0
+fi
 
 [[ -r "$secret_environment" ]] || {
     echo "The Vault Agent API environment is unavailable: $secret_environment" >&2

@@ -36,10 +36,17 @@ jobs:
         uses: ./.landoria-root/.github/actions/resolve-gamemodes
         with:
           environment: test
+      - id: repository
+        uses: ./.landoria-root/.github/actions/resolve-inventory
+        with:
+          host-group: mod_repository
+          environment: production
+          url-group: mod_repository
       - name: Prepare rollback
         env:
           LANDORIA_MODPACK_CONFIGURATION_JSON: ${{ steps.gamemodes.outputs.modpack-configuration }}
           REQUESTED_MODS: ${{ inputs.mods }}
+          LANDORIA_MOD_REPOSITORY_URL: ${{ steps.repository.outputs.url }}/api/v1/packages
         shell: bash
         run: |
           set -euo pipefail

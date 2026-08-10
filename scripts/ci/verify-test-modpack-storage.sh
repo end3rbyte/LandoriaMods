@@ -38,7 +38,8 @@ modpack_manifest="${LANDORIA_MODPACK_MANIFEST_PATH:-$repository_root/Landoria.La
     echo "The modpack manifest is unavailable: $modpack_manifest" >&2
     exit 2
 }
-private_repository_url="${LANDORIA_MOD_REPOSITORY_URL:-https://test.landoria-gaming.com:8443/api/v1/packages}"
+: "${LANDORIA_MOD_REPOSITORY_URL:?LANDORIA_MOD_REPOSITORY_URL is required}"
+private_repository_url="${LANDORIA_MOD_REPOSITORY_URL%/}"
 temporary_directory="$(mktemp -d)"
 trap 'rm -rf -- "$temporary_directory"' EXIT
 version_reader="$repository_root/scripts/ci/DllMetadataVersion/DllMetadataVersion.csproj"
@@ -184,15 +185,9 @@ verify_package_dll() {
     IFS=$'\t' read -r namespace package version <<< "$dependency"
 
     archive="$temporary_directory/$namespace-$package-$version.zip"
-    if [[ "$namespace" == Landoria && "$landoria_package_source" == private ]]; then
-        curl --fail --silent --show-error --location \
-            "$private_repository_url/$namespace/$package/$version/download" \
-            --output "$archive"
-    else
-        curl --fail --silent --show-error --location \
-            "https://thunderstore.io/package/download/$namespace/$package/$version/" \
-            --output "$archive"
-    fi
+    curl --fail --silent --show-error --location \
+        "$private_repository_url/$namespace/$package/$version/download" \
+        --output "$archive"
     manifest_version="$(unzip -p "$archive" manifest.json | jq -er '.version_number')"
     [[ "$manifest_version" == "$version" ]] || {
         echo "$namespace-$package archive manifest declares $manifest_version; expected $version." >&2

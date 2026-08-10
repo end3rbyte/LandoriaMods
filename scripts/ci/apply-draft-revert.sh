@@ -5,7 +5,9 @@ set -euo pipefail
 readonly plan_file="$1"
 repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
 readonly repository_root
-readonly api_url="${LANDORIA_MOD_REPOSITORY_URL:-https://test.landoria-gaming.com:8443/api/v1/packages}"
+: "${LANDORIA_MOD_REPOSITORY_URL:?LANDORIA_MOD_REPOSITORY_URL is required}"
+readonly api_url="${LANDORIA_MOD_REPOSITORY_URL%/}"
+readonly upstream_url="${api_url%/packages}/upstream/packages"
 readonly secret_environment="${LANDORIA_MOD_REPOSITORY_SECRET_ENVIRONMENT:-/var/lib/landoria-secrets/mod-repository-upload.env}"
 [[ -r "$secret_environment" ]] || { echo "The repository API environment is unavailable." >&2; exit 1; }
 api_key="$(sed -n 's/^Authentication__ApiKey=//p' "$secret_environment")"
@@ -14,7 +16,7 @@ readonly api_key
 
 delete_draft() {
     local package="$1" draft="$2" restored="$3" category="$4"
-    local directory state released current status thunderstore_status
+    local directory state released current status upstream_state
     directory="$repository_root/Landoria.$package"
     current="$(jq -er '.version_number' "$directory/manifest.json")"
     [[ "$current" == "$restored" ]] || {
@@ -34,10 +36,9 @@ delete_draft() {
         return 1
     }
     if [[ "$category" != server-only ]]; then
-        thunderstore_status="$(curl --silent --show-error --location --output /dev/null \
-            --write-out '%{http_code}' \
-            "https://thunderstore.io/package/download/Landoria/$package/$draft/")"
-        [[ "$thunderstore_status" == 404 ]] || {
+        upstream_state="$(curl --fail --silent --show-error "$upstream_url/Landoria/$package")"
+        ! jq -e --arg version "$draft" '.versions | any(.version_number == $version)' \
+            <<< "$upstream_state" >/dev/null || {
             echo "$package $draft exists on Thunderstore and cannot be treated as an unused draft." >&2
             return 1
         }

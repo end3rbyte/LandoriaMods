@@ -36,9 +36,16 @@ jobs:
           host-group: mod_storage
           environment: test
           url-group: website
+      - id: repository
+        uses: ./.landoria-root/.github/actions/resolve-inventory
+        with:
+          host-group: mod_repository
+          environment: production
+          url-group: mod_repository
       - name: Delete merged drafts
         env:
           BEFORE_SHA: ${{ github.event.before }}
+          LANDORIA_MOD_REPOSITORY_URL: ${{ steps.repository.outputs.url }}/api/v1/packages
         shell: bash
         run: |
           set -euo pipefail
@@ -53,6 +60,7 @@ jobs:
           LANDORIA_STORAGE_BASE_URL: ${{ steps.storage.outputs.url }}
           LANDORIA_TEST_GAMEMODES_JSON: ${{ steps.gamemodes.outputs.configuration }}
           STORAGE_HOSTS: ${{ steps.storage.outputs.hosts }}
+          LANDORIA_MOD_REPOSITORY_URL: ${{ steps.repository.outputs.url }}/api/v1/packages
         shell: bash
         run: |
           set -euo pipefail
