@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Preserve_FreeFlyCommand_smoothing (#27)
 - Add (#22)
 - Rename
 - Add server-authorized Hammer flight (#21)
