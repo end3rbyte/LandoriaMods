@@ -16,14 +16,13 @@ Allows Valheim's native player flight behavior in authorized worlds without enab
 | Control | Action |
 |---|---|
 | `fly`, `fly on`, `fly off` | Toggle, enable, or disable authorized flight. |
-| `F6` | Enable flight. |
-| `F7` | Disable flight. |
+| `Z` | Toggle flight. |
 | Movement keys | Fly horizontally using vanilla movement. |
 | Jump / Space | Ascend. |
 | Left Control | Descend. |
 | Run / Shift | Fly faster. |
 
-The enable and disable shortcuts can be changed in `BepInEx/config/Landoria.FlyCommand.cfg`.
+The `Z` shortcut is fixed to match Valheim's native debug-flight control.
 
 ## Installation
 
