@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Landoria.ModSentry")]
-[assembly: AssemblyDescription("Strict client mod inventory validation for Landoria servers")]
+[assembly: AssemblyDescription("Strict client mod inventory validation for Valheim servers")]
 [assembly: AssemblyCompany("Landoria Gaming")]
 [assembly: AssemblyProduct("Landoria.ModSentry")]
 [assembly: AssemblyCopyright("Copyright © Landoria Gaming 2026")]
