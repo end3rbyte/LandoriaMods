@@ -23,7 +23,32 @@ namespace Landoria.ModSentry
         {
             return new PluginPolicy(
                 LoadDirectory(Path.Combine(Paths.ConfigPath, "ModSentry_Required")),
-                LoadDirectory(Path.Combine(Paths.ConfigPath, "ModSentry_Optional")));
+                LoadOptionalPolicy(Path.Combine(Paths.ConfigPath, "ModSentry_Optional.policy")));
+        }
+
+        private static IReadOnlyList<PluginDescriptor> LoadOptionalPolicy(string path)
+        {
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException("ModSentry optional policy is missing.", path);
+            }
+
+            return File.ReadAllLines(path)
+                .Where(line => !string.IsNullOrWhiteSpace(line))
+                .Select(ParseDescriptor)
+                .OrderBy(plugin => plugin.Guid, StringComparer.Ordinal)
+                .ToList();
+        }
+
+        private static PluginDescriptor ParseDescriptor(string line)
+        {
+            string[] fields = line.Split('|');
+            if (fields.Length != 4 || fields.Any(string.IsNullOrWhiteSpace))
+            {
+                throw new InvalidDataException("A ModSentry optional policy entry is invalid.");
+            }
+
+            return new PluginDescriptor(fields[0], fields[1], fields[2], fields[3]);
         }
 
         private static IReadOnlyList<PluginDescriptor> LoadDirectory(string directory)

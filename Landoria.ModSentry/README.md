@@ -5,7 +5,8 @@ ModSentry validates the complete client plugin inventory before the Valheim peer
 The server defines two explicit directories under `BepInEx/config`:
 
 - `ModSentry_Required`: every DLL must be installed by the client.
-- `ModSentry_Optional`: each DLL may be absent, but must match exactly when installed.
+- `ModSentry_Optional.policy`: each line contains the GUID, display name, version, and
+  SHA-256 of a mod that may be absent but must match exactly when installed.
 
 Every other client plugin is rejected. Matching uses the BepInEx GUID, complete plugin version, and exact DLL SHA-256. Player messages are concise and non-technical; server logs retain the complete diagnostic.
 

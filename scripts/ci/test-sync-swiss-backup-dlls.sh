@@ -37,6 +37,9 @@ argument_fixture='{"server":{"common":{"arguments":["--flycommand","true","--fre
     'server/hammer/mods/plugins/Landoria.FlyCommand.dll' ]]
 [[ -z "$(mod_paths "$argument_fixture" --flycommand)" ]]
 
+policy_fixture='{"server":{"common":{"mods":{"config":{"ModSentry_OptionalPolicy":["Landoria.QuickLaunch|Landoria.QuickLaunch|1.0.1|ABC"]}}}}}'
+[[ -z "$(configured_plugins "$policy_fixture")" ]]
+
 fixture='{"server":{"common":{"items":{"Wood":10}},"hammer":{"items":{"Hammer":1,"Wood":20}},"normal":{}}}'
 [[ "$(configured_items "$fixture" common)" == '{"Wood":10}' ]]
 [[ "$(configured_items "$fixture" hammer)" == '{"Wood":20,"Hammer":1}' ]]
