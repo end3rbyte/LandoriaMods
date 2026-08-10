@@ -5,6 +5,7 @@ Allows Valheim's native player flight behavior in authorized worlds without enab
 ## Authorization
 
 - The client starts denied and explicitly requests authorization from the connected server.
+- The server controls availability with `--flycommand true|false`; the default is `true`.
 - The server authorizes flight only while both `NoBuildCost` and `PassiveMobs` are active.
 - No response, an explicit denial, a modifier change, or a server change immediately disables flight.
 - The `fly` command is hidden and invalid until the server explicitly authorizes it.

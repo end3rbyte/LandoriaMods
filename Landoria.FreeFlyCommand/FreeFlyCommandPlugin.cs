@@ -1,20 +1,17 @@
 using System;
 using BepInEx;
-using BepInEx.Configuration;
 using Landoria.SharedLib;
 
-namespace Landoria.FlyCommand
+namespace Landoria.FreeFlyCommand
 {
     [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
-    public sealed class FlyCommandPlugin : LandoriaPlugin
+    public sealed class FreeFlyCommandPlugin : LandoriaPlugin
     {
-        internal const string PluginGuid = "Landoria.FlyCommand";
-        internal const string PluginName = "Landoria.FlyCommand";
+        internal const string PluginGuid = "Landoria.FreeFlyCommand";
+        internal const string PluginName = "Landoria.FreeFlyCommand";
         internal const string PluginVersion = "1.0.0";
-        private const string EnabledArgument = "--flycommand";
+        private const string EnabledArgument = "--freeflycommand";
 
-        private ConfigEntry<KeyboardShortcut> _enableShortcut;
-        private ConfigEntry<KeyboardShortcut> _disableShortcut;
         internal static ModLog ModLogger { get; private set; }
         internal static bool ServerEnabled { get; private set; } = true;
 
@@ -22,12 +19,13 @@ namespace Landoria.FlyCommand
         {
             ModLogger = InitializePlugin(PluginGuid);
             ServerEnabled = ReadServerEnabled();
-            _enableShortcut = Config.Bind("Keyboard", "EnableFly", new KeyboardShortcut(UnityEngine.KeyCode.F6),
-                "Enables server-authorized vanilla flight.");
-            _disableShortcut = Config.Bind("Keyboard", "DisableFly", new KeyboardShortcut(UnityEngine.KeyCode.F7),
-                "Disables vanilla flight.");
-            FlyCommand.Register();
+            FreeFlyCommands.Register();
             ModLogger.LogInfo($"{PluginName} {PluginVersion} is loaded; server enabled={ServerEnabled}.");
+        }
+
+        private void Update()
+        {
+            FreeFlyAuthorization.Update();
         }
 
         private static bool ReadServerEnabled()
@@ -54,32 +52,9 @@ namespace Landoria.FlyCommand
             return true;
         }
 
-        private void Update()
-        {
-            FlyAuthorization.Update();
-            HandleShortcuts();
-        }
-
-        private void HandleShortcuts()
-        {
-            if (!FlyInput.IsAvailable())
-            {
-                return;
-            }
-
-            if (_enableShortcut.Value.IsDown())
-            {
-                FlyController.SetEnabled(true);
-            }
-            else if (_disableShortcut.Value.IsDown())
-            {
-                FlyController.SetEnabled(false);
-            }
-        }
-
         private void OnDestroy()
         {
-            FlyAuthorization.ResetSession();
+            FreeFlyAuthorization.ResetSession();
             ModLogger?.LogInfo($"{PluginName} {PluginVersion} is unloaded.");
             ShutdownPlugin();
             ModLogger = null;

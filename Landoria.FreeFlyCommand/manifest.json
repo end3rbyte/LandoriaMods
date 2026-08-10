@@ -1,0 +1,16 @@
+{
+  "name": "FreeFlyCommand",
+  "version_number": "1.0.0",
+  "website_url": "https://github.com/end3rbyte/LandoriaMods/tree/main/Landoria.FreeFlyCommand",
+  "description": "Allows server-authorized native freefly and ffsmooth commands within 50 metres of the player.",
+  "dependencies": [
+    "denikson-BepInExPack_Valheim-5.4.2333"
+  ],
+  "categories": [
+    "ai-generated",
+    "mods",
+    "client-side",
+    "server-side",
+    "utility"
+  ]
+}
