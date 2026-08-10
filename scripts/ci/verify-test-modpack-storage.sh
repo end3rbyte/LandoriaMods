@@ -88,16 +88,13 @@ dotnet restore "$version_reader" >/dev/null
 
 expected_paths="$temporary_directory/expected-paths.tsv"
 jq -r '
-    [.server | to_entries[] |
-        .key as $variant |
-        ((.value.mods.plugins // [])[] |
-            ["server/\($variant)/mods/plugins/\(.).dll", "\(.).dll"]),
-        ((.value.mods.config // {}) | to_entries[] |
-            select(.key != "ModSentry_OptionalPolicy") |
-            .key as $directory |
-            .value[] |
-            ["server/\($variant)/mods/config/\($directory)/\(.).dll", "\(.).dll"])] |
-    .[] | @tsv
+    paths(scalars) as $path |
+    getpath($path) as $plugin |
+    select($plugin | type == "string") |
+    select($path | length >= 5) |
+    select($path[-1] | type == "number") |
+    [($path[0:-1] + [($plugin + ".dll")] | join("/")), ($plugin + ".dll")] |
+    @tsv
 ' <<< "$gamemodes_json" | sort -u > "$expected_paths"
 [[ -s "$expected_paths" ]] || {
     echo "No $storage_environment DLL path was derived from GAMEMODES.yml." >&2
@@ -159,7 +156,17 @@ dependency_for_dll() {
             return 0
         fi
     done < <(jq -r '.dependencies[]' "$modpack_manifest")
-    return 1
+    jq -e --arg plugin "${dll%.dll}" '
+        any(.server[]?.mods.config.ModSentry_Optional[]?; . == $plugin)
+    ' <<< "$gamemodes_json" >/dev/null || return 1
+    candidate="$(find "$repository_root" -mindepth 2 -maxdepth 2 -type f \
+        -path "$repository_root/Landoria.*/manifest.json" -print0 |
+        xargs -0 -r jq -r --arg target "$target" '
+            select((.name | ascii_downcase | gsub("[^a-z0-9]"; "")) == $target) |
+            ["Landoria", .name, .version_number] | @tsv
+        ')"
+    [[ -n "$candidate" && "$candidate" != *$'\n'* ]] || return 1
+    printf '%s\n' "$candidate"
 }
 
 verify_server_only_copies() {
