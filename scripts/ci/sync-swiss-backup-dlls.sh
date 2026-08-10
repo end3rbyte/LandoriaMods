@@ -20,7 +20,7 @@ validate_host() {
 }
 
 validate_relative_path() {
-    [[ "$1" =~ ^server/(common|hammer|normal)/mods/(plugins/[A-Za-z0-9._-]+\.dll|config/([A-Za-z0-9._-]+/)?[A-Za-z0-9._-]+\.dll|config/CharacterTemplate\.yml)$ ]]
+    [[ "$1" =~ ^server/(common|hammer|normal)/mods/(plugins/[A-Za-z0-9._-]+\.dll|config/([A-Za-z0-9._-]+/)?[A-Za-z0-9._-]+\.dll|config/(CharacterTemplate\.yml|ModSentry_Optional\.policy))$ ]]
 }
 
 stage_character_templates() {
@@ -35,6 +35,19 @@ stage_character_templates() {
     done
 }
 
+stage_mod_sentry_policies() {
+    local configuration="$1" environment="$2" variant output
+    mkdir -p "$staging_directory/configs"
+    for variant in common hammer normal; do
+        output="$staging_directory/configs/$variant-ModSentry_Optional.policy"
+        jq -er --arg variant "$variant" '
+            .server[$variant].mods.config.ModSentry_OptionalPolicy[]
+        ' <<< "$configuration" > "$output" 2>/dev/null || continue
+        printf 'upload-config\t%s\t%s/server/%s/mods/config/ModSentry_Optional.policy\n' \
+            "${output##*/}" "$environment" "$variant" >> "$operations_file"
+    done
+}
+
 mod_paths() {
     local configuration="$1" plugin="$2"
     jq -r --arg plugin "$plugin" '
@@ -44,6 +57,7 @@ mod_paths() {
                 select(. == $plugin) |
                 "server/\($variant)/mods/plugins/\($plugin).dll"),
             ((.value.mods.config // {}) | to_entries[] |
+                select(.key != "ModSentry_OptionalPolicy") |
                 .key as $directory |
                 .value[] |
                 select(. == $plugin) |
@@ -57,7 +71,9 @@ configured_plugins() {
     jq -r '
         [.server[] | .mods as $mods |
             ($mods.plugins // [])[],
-            (($mods.config // {})[] // [])[]] |
+            (($mods.config // {}) | to_entries[] |
+                select(.key != "ModSentry_OptionalPolicy") |
+                (.value // [])[])] |
         unique[]
     ' <<< "$configuration"
 }
@@ -173,9 +189,17 @@ plan_test_reconciliation() {
                 printf '%s\n' "$destination"
         done
     ) >> "$staging_directory/expected-paths.txt"
+    while IFS= read -r destination; do
+        printf 'test/server/%s/mods/config/ModSentry_Optional.policy\n' "$destination"
+    done < <(jq -r '
+        .server | to_entries[] |
+        select((.value.mods.config.ModSentry_OptionalPolicy // []) | length > 0) |
+        .key
+    ' <<< "$LANDORIA_TEST_GAMEMODES_JSON") >> "$staging_directory/expected-paths.txt"
     sort -u -o "$staging_directory/expected-paths.txt" \
         "$staging_directory/expected-paths.txt"
     stage_character_templates "$LANDORIA_TEST_GAMEMODES_JSON" test
+    stage_mod_sentry_policies "$LANDORIA_TEST_GAMEMODES_JSON" test
     while IFS= read -r plugin; do
         [[ -n "$plugin" ]] || continue
         if ! stage_modpack_dll "$plugin"; then
@@ -328,7 +352,7 @@ run_remote_operations() {
                     "storage:$SwissBackupStorage__Container/$destination"
                 ;;
             upload-config)
-                [[ "$source" =~ ^(common|hammer|normal)-CharacterTemplate\.yml$ && \
+                [[ "$source" =~ ^(common|hammer|normal)-(CharacterTemplate\.yml|ModSentry_Optional\.policy)$ && \
                    -f "$temporary_directory/configs/$source" ]]
                 rclone copyto "$temporary_directory/configs/$source" \
                     "storage:$SwissBackupStorage__Container/$destination"
@@ -382,7 +406,8 @@ run_remote_operations() {
             fi
         done < <(rclone lsf "storage:$SwissBackupStorage__Container/test/server" \
             --recursive --files-only \
-            --include '*.dll' --include 'CharacterTemplate.yml')
+            --include '*.dll' --include 'CharacterTemplate.yml' \
+            --include 'ModSentry_Optional.policy')
     fi
     [[ "$destination_environment" =~ ^(test|prod)$ ]]
     refresh_manifests "$destination_environment" "$website_base_url"

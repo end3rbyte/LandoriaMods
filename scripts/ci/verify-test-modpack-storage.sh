@@ -88,13 +88,16 @@ dotnet restore "$version_reader" >/dev/null
 
 expected_paths="$temporary_directory/expected-paths.tsv"
 jq -r '
-    paths(scalars) as $path |
-    getpath($path) as $plugin |
-    select($plugin | type == "string") |
-    select($path | length >= 5) |
-    select($path[-1] | type == "number") |
-    [($path[0:-1] + [($plugin + ".dll")] | join("/")), ($plugin + ".dll")] |
-    @tsv
+    [.server | to_entries[] |
+        .key as $variant |
+        ((.value.mods.plugins // [])[] |
+            ["server/\($variant)/mods/plugins/\(.).dll", "\(.).dll"]),
+        ((.value.mods.config // {}) | to_entries[] |
+            select(.key != "ModSentry_OptionalPolicy") |
+            .key as $directory |
+            .value[] |
+            ["server/\($variant)/mods/config/\($directory)/\(.).dll", "\(.).dll"])] |
+    .[] | @tsv
 ' <<< "$gamemodes_json" | sort -u > "$expected_paths"
 [[ -s "$expected_paths" ]] || {
     echo "No $storage_environment DLL path was derived from GAMEMODES.yml." >&2
