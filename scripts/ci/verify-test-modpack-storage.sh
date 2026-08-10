@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+script_directory="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck disable=SC1091
+. "$script_directory/character-template.sh"
+
 gamemodes_json="${LANDORIA_GAMEMODES_JSON:-${LANDORIA_TEST_GAMEMODES_JSON:-}}"
 storage_environment="${LANDORIA_STORAGE_ENVIRONMENT:-test}"
 landoria_package_source="${LANDORIA_LANDORIA_PACKAGE_SOURCE:-private}"
@@ -253,5 +257,40 @@ while IFS= read -r dll; do
         verify_server_only_copies "$dll"
     fi
 done < <(cut -f2 "$expected_paths" | sort -u)
+
+verify_character_templates() {
+    local variant items expected stored manifest_hash stored_hash
+    for variant in common hammer normal; do
+        manifest_hash="$(jq -r '
+            first(.files[] | select(.url == "/config/CharacterTemplate.yml") | .sha256) // empty
+        ' "$temporary_directory/$variant-manifest.json")"
+        if ! items="$(configured_items "$gamemodes_json" "$variant")"; then
+            [[ -z "$manifest_hash" ]] || {
+                echo "Unexpected CharacterTemplate.yml in $storage_environment/$variant." >&2
+                return 1
+            }
+            continue
+        fi
+        [[ -n "$manifest_hash" ]] || {
+            echo "CharacterTemplate.yml is missing from $storage_environment/$variant." >&2
+            return 1
+        }
+        expected="$temporary_directory/$variant-expected-CharacterTemplate.yml"
+        stored="$temporary_directory/$variant-stored-CharacterTemplate.yml"
+        render_character_template "$items" "$expected"
+        download_storage_file "server/$variant/mods/config/CharacterTemplate.yml" "$stored"
+        stored_hash="$(sha256sum "$stored" | awk '{print toupper($1)}')"
+        [[ "$stored_hash" == "${manifest_hash^^}" ]] || {
+            echo "$storage_environment/$variant CharacterTemplate.yml does not match its manifest." >&2
+            return 1
+        }
+        cmp --silent "$expected" "$stored" || {
+            echo "$storage_environment/$variant CharacterTemplate.yml does not match GAMEMODES.yml." >&2
+            return 1
+        }
+    done
+}
+
+verify_character_templates
 
 echo "The $storage_environment Swiss Backup DLL set, versions, and hashes match the modpack and GAMEMODES.yml."

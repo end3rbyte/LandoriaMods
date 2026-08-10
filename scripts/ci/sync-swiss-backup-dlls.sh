@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+script_directory="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+if [[ "${1:-}" != --remote ]]; then
+    # shellcheck disable=SC1091
+    . "$script_directory/character-template.sh"
+fi
+
 usage() {
     echo "Usage: $0 deploy-test HOST MOD [MOD ...] | reconcile-test HOST | promote HOST MOD [MOD ...]" >&2
     exit 2
@@ -14,7 +20,19 @@ validate_host() {
 }
 
 validate_relative_path() {
-    [[ "$1" =~ ^server/(common|hammer|normal)/mods/(plugins|config/[A-Za-z0-9._-]+)/[A-Za-z0-9._-]+\.dll$ ]]
+    [[ "$1" =~ ^server/(common|hammer|normal)/mods/(plugins/[A-Za-z0-9._-]+\.dll|config/([A-Za-z0-9._-]+/)?[A-Za-z0-9._-]+\.dll|config/CharacterTemplate\.yml)$ ]]
+}
+
+stage_character_templates() {
+    local configuration="$1" environment="$2" variant items output
+    mkdir -p "$staging_directory/configs"
+    for variant in common hammer normal; do
+        items="$(configured_items "$configuration" "$variant")" || continue
+        output="$staging_directory/configs/$variant-CharacterTemplate.yml"
+        render_character_template "$items" "$output"
+        printf 'upload-config\t%s\t%s/server/%s/mods/config/CharacterTemplate.yml\n' \
+            "${output##*/}" "$environment" "$variant" >> "$operations_file"
+    done
 }
 
 mod_paths() {
@@ -137,6 +155,17 @@ plan_test_reconciliation() {
         "test/" + (($path[0:-1] + [($plugin + ".dll")]) | join("/"))
     ' <<< "$LANDORIA_TEST_GAMEMODES_JSON" | sort -u \
         > "$staging_directory/expected-paths.txt"
+    while IFS= read -r destination; do
+        printf 'test/server/%s/mods/config/CharacterTemplate.yml\n' "$destination"
+    done < <(
+        for destination in common hammer normal; do
+            configured_items "$LANDORIA_TEST_GAMEMODES_JSON" "$destination" >/dev/null && \
+                printf '%s\n' "$destination"
+        done
+    ) >> "$staging_directory/expected-paths.txt"
+    sort -u -o "$staging_directory/expected-paths.txt" \
+        "$staging_directory/expected-paths.txt"
+    stage_character_templates "$LANDORIA_TEST_GAMEMODES_JSON" test
     while IFS= read -r plugin; do
         [[ -n "$plugin" ]] || continue
         if ! stage_modpack_dll "$plugin"; then
@@ -184,6 +213,28 @@ plan_production_promotion() {
         if [[ "$found" == false ]]; then
             echo "Skipping $plugin: it is not assigned to a production game mode."
         fi
+    done
+    plan_production_character_templates
+}
+
+plan_production_character_templates() {
+    local variant test_items production_items source destination
+    for variant in common hammer normal; do
+        source="test/server/$variant/mods/config/CharacterTemplate.yml"
+        destination="prod/server/$variant/mods/config/CharacterTemplate.yml"
+        production_items="$(configured_items "$LANDORIA_PROD_GAMEMODES_JSON" "$variant")" || {
+            printf 'delete-if-exists\t-\t%s\n' "$destination" >> "$operations_file"
+            continue
+        }
+        test_items="$(configured_items "$LANDORIA_TEST_GAMEMODES_JSON" "$variant")" || {
+            echo "Production $variant items have no tested configuration." >&2
+            exit 1
+        }
+        [[ "$test_items" == "$production_items" ]] || {
+            echo "Test and production $variant items differ; promotion is unsafe." >&2
+            exit 1
+        }
+        printf 'copy\t%s\t%s\n' "$source" "$destination" >> "$operations_file"
     done
 }
 
@@ -271,6 +322,12 @@ run_remote_operations() {
                 rclone copyto "$temporary_directory/dlls/$source" \
                     "storage:$SwissBackupStorage__Container/$destination"
                 ;;
+            upload-config)
+                [[ "$source" =~ ^(common|hammer|normal)-CharacterTemplate\.yml$ && \
+                   -f "$temporary_directory/configs/$source" ]]
+                rclone copyto "$temporary_directory/configs/$source" \
+                    "storage:$SwissBackupStorage__Container/$destination"
+                ;;
             copy)
                 [[ "$source" =~ ^test/ ]] || {
                     echo "A promoted DLL must originate from test storage." >&2
@@ -283,6 +340,13 @@ run_remote_operations() {
                 rclone copyto \
                     "storage:$SwissBackupStorage__Container/$source" \
                     "storage:$SwissBackupStorage__Container/$destination"
+                ;;
+            delete-if-exists)
+                [[ "$source" == - && "$destination" == prod/*/CharacterTemplate.yml ]]
+                rclone deletefile "storage:$SwissBackupStorage__Container/$destination" \
+                    2>/dev/null || true
+                echo "Removed obsolete $destination when present."
+                continue
                 ;;
             *)
                 echo "Unsupported Swiss Backup operation: $kind" >&2
@@ -312,7 +376,8 @@ run_remote_operations() {
                 echo "Deleted obsolete $full_path."
             fi
         done < <(rclone lsf "storage:$SwissBackupStorage__Container/test/server" \
-            --recursive --files-only --include '*.dll')
+            --recursive --files-only \
+            --include '*.dll' --include 'CharacterTemplate.yml')
     fi
     [[ "$destination_environment" =~ ^(test|prod)$ ]]
     refresh_manifests "$destination_environment" "$website_base_url"
@@ -375,6 +440,7 @@ if [[ ! -s "$operations_file" ]]; then
 fi
 
 archive_entries=(operations.tsv dlls)
+[[ ! -d "$staging_directory/configs" ]] || archive_entries+=(configs)
 [[ ! -f "$staging_directory/expected-paths.txt" ]] || archive_entries+=(expected-paths.txt)
 tar -czf "$archive" -C "$staging_directory" "${archive_entries[@]}"
 scp "$0" "$target_host:$remote_script"
