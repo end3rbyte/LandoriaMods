@@ -41,6 +41,11 @@ Until a changelog section matching the draft version exists, each build creates
 or refreshes `Unreleased` from the mod's commit history. Once a matching version
 section is present, builds leave the changelog unchanged.
 
+Test storage reconciliation also renders optional `items` from the central game-mode
+configuration as `CharacterTemplate.yml` under each applicable mode's `mods/config` path. Common
+items are inherited by mode-specific templates, and obsolete managed templates are removed.
+Production promotion copies the exact tested templates without regenerating them.
+
 Production publication is handled by the manual **Promote mods to Thunderstore**
 workflow on the self-hosted `dev` runner. It compares each selected mod with its
 latest tagged Thunderstore release, skips unchanged package inputs (including

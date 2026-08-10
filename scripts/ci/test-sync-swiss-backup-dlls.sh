@@ -31,4 +31,12 @@ validate_configuration_paths() {
 validate_configuration_paths "$LANDORIA_TEST_GAMEMODES_JSON"
 validate_configuration_paths "$LANDORIA_PROD_GAMEMODES_JSON"
 
+fixture='{"server":{"common":{"items":{"Wood":10}},"hammer":{"items":{"Hammer":1,"Wood":20}},"normal":{}}}'
+[[ "$(configured_items "$fixture" common)" == '{"Wood":10}' ]]
+[[ "$(configured_items "$fixture" hammer)" == '{"Wood":20,"Hammer":1}' ]]
+if configured_items "$fixture" normal >/dev/null; then
+    echo "Normal unexpectedly produced a character template." >&2
+    exit 1
+fi
+
 echo "Swiss Backup DLL synchronization configuration is valid."
