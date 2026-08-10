@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Rebuild_existing_FreeFlyCommand_draft (#28)
 - Preserve_FreeFlyCommand_smoothing (#27)
 - Add (#22)
 - Rename
