@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased
+## 1.0.1
 
-- Shorten inactivity disconnect message (#18)
+- Shortened the inactivity disconnect message.
 
 ## 1.0.0
 
