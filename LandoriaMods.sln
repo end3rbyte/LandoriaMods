@@ -28,6 +28,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.LandoriaModPack", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.AfkDetector", "Landoria.AfkDetector\Landoria.AfkDetector.csproj", "{7B88B753-913F-4936-88DF-173D3F373E9B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.HammerFly", "Landoria.HammerFly\Landoria.HammerFly.csproj", "{DDA10461-612F-42CD-A050-B2634758E942}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -204,6 +206,18 @@ Global
 		{7B88B753-913F-4936-88DF-173D3F373E9B}.Release|x64.Build.0 = Release|Any CPU
 		{7B88B753-913F-4936-88DF-173D3F373E9B}.Release|x86.ActiveCfg = Release|Any CPU
 		{7B88B753-913F-4936-88DF-173D3F373E9B}.Release|x86.Build.0 = Release|Any CPU
+		{DDA10461-612F-42CD-A050-B2634758E942}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDA10461-612F-42CD-A050-B2634758E942}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDA10461-612F-42CD-A050-B2634758E942}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DDA10461-612F-42CD-A050-B2634758E942}.Debug|x64.Build.0 = Debug|Any CPU
+		{DDA10461-612F-42CD-A050-B2634758E942}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DDA10461-612F-42CD-A050-B2634758E942}.Debug|x86.Build.0 = Debug|Any CPU
+		{DDA10461-612F-42CD-A050-B2634758E942}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDA10461-612F-42CD-A050-B2634758E942}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDA10461-612F-42CD-A050-B2634758E942}.Release|x64.ActiveCfg = Release|Any CPU
+		{DDA10461-612F-42CD-A050-B2634758E942}.Release|x64.Build.0 = Release|Any CPU
+		{DDA10461-612F-42CD-A050-B2634758E942}.Release|x86.ActiveCfg = Release|Any CPU
+		{DDA10461-612F-42CD-A050-B2634758E942}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
