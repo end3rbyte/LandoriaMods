@@ -24,8 +24,9 @@ dependency_script="$repository_root/scripts/ci/prepare-build-dependencies.sh"
 output="$repository_root/artifacts/thunderstore"
 modpack_directory="$repository_root/Landoria.LandoriaModPack"
 modpack_manifest="$modpack_directory/manifest.json"
-api_url="${LANDORIA_MOD_REPOSITORY_URL:-https://test.landoria-gaming.com:8443/api/v1/packages}"
-thunderstore_url="${THUNDERSTORE_URL:-https://thunderstore.io}"
+: "${LANDORIA_MOD_REPOSITORY_URL:?LANDORIA_MOD_REPOSITORY_URL is required}"
+api_url="${LANDORIA_MOD_REPOSITORY_URL%/}"
+upstream_url="${api_url%/packages}/upstream/packages"
 secret_environment="${LANDORIA_MOD_REPOSITORY_SECRET_ENVIRONMENT:-/var/lib/landoria-secrets/mod-repository-upload.env}"
 include_security_mods="${LANDORIA_INCLUDE_CHARACTER_SECURITY_MODS:?LANDORIA_INCLUDE_CHARACTER_SECURITY_MODS is required}"
 modpack_configuration="${LANDORIA_MODPACK_CONFIGURATION_JSON:?LANDORIA_MODPACK_CONFIGURATION_JSON is required}"
@@ -78,7 +79,7 @@ thunderstore_latest() {
     local package="$1" response status body
     response="$(curl --retry 5 --retry-all-errors --retry-delay 2 \
         --silent --show-error --write-out $'\n%{http_code}' \
-        "$thunderstore_url/api/experimental/package/Landoria/$package/")"
+        "$upstream_url/Landoria/$package")"
     status="${response##*$'\n'}"
     body="${response%$'\n'*}"
     if [[ "$status" == 404 ]]; then

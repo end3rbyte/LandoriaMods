@@ -99,15 +99,10 @@ stage_modpack_dll() {
     fi
     IFS=$'\t' read -r namespace package version <<< "$dependency"
     package_archive="$staging_directory/$namespace-$package-$version.zip"
-    if [[ "$namespace" == Landoria ]]; then
-        curl --fail --silent --show-error --location \
-            "${LANDORIA_MOD_REPOSITORY_URL:-https://test.landoria-gaming.com:8443/api/v1/packages}/$namespace/$package/$version/download" \
-            --output "$package_archive"
-    else
-        curl --fail --silent --show-error --location \
-            "https://thunderstore.io/package/download/$namespace/$package/$version/" \
-            --output "$package_archive"
-    fi
+    : "${LANDORIA_MOD_REPOSITORY_URL:?LANDORIA_MOD_REPOSITORY_URL is required}"
+    curl --fail --silent --show-error --location \
+        "${LANDORIA_MOD_REPOSITORY_URL%/}/$namespace/$package/$version/download" \
+        --output "$package_archive"
     archive_manifest="$(unzip -p "$package_archive" manifest.json)"
     [[ "$(jq -er '.version_number' <<< "$archive_manifest")" == "$version" ]] || {
         echo "$namespace-$package archive manifest does not declare $version." >&2

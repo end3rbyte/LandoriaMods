@@ -16,7 +16,9 @@ source "$repository_root/scripts/ci/changelog.sh"
 # shellcheck source=release-version.sh
 source "$repository_root/scripts/ci/release-version.sh"
 thunderstore_url="${THUNDERSTORE_URL:-https://thunderstore.io}"
-internal_url="${LANDORIA_MOD_REPOSITORY_URL:-https://test.landoria-gaming.com:8443/api/v1/packages}"
+: "${LANDORIA_MOD_REPOSITORY_URL:?LANDORIA_MOD_REPOSITORY_URL is required}"
+internal_url="${LANDORIA_MOD_REPOSITORY_URL%/}"
+upstream_url="${internal_url%/packages}/upstream/packages"
 thunderstore_environment="${THUNDERSTORE_SECRET_ENVIRONMENT:-/var/lib/landoria-secrets/thunderstore-publish.env}"
 internal_environment="${LANDORIA_MOD_REPOSITORY_SECRET_ENVIRONMENT:-/var/lib/landoria-secrets/mod-repository-upload.env}"
 tcli="${TCLI_COMMAND:-$repository_root/artifacts/tools/tcli}"
@@ -51,7 +53,7 @@ read_secret() {
 thunderstore_latest() {
     local package="$1" response status body
     response="$(curl --retry 5 --retry-all-errors --retry-delay 2 --silent --show-error \
-        --write-out $'\n%{http_code}' "$thunderstore_url/api/experimental/package/Landoria/$package/")"
+        --write-out $'\n%{http_code}' "$upstream_url/Landoria/$package")"
     status="${response##*$'\n'}"
     body="${response%$'\n'*}"
     if [[ "$status" == 404 ]]; then return 0; fi
@@ -89,8 +91,8 @@ write_tcli_config() {
 
 thunderstore_release_exists() {
     local package="$1" version="$2"
-    curl --fail --location --silent --output /dev/null \
-        "$thunderstore_url/package/download/Landoria/$package/$version/"
+    curl --fail --silent --show-error "$upstream_url/Landoria/$package" |
+        jq -e --arg version "$version" '.versions | any(.version_number == $version)' >/dev/null
 }
 
 confirm_thunderstore_release() {

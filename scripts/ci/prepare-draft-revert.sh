@@ -8,8 +8,9 @@ shift
 
 repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
 readonly repository_root
-readonly api_url="${LANDORIA_MOD_REPOSITORY_URL:-https://test.landoria-gaming.com:8443/api/v1/packages}"
-readonly thunderstore_url="${THUNDERSTORE_URL:-https://thunderstore.io}"
+: "${LANDORIA_MOD_REPOSITORY_URL:?LANDORIA_MOD_REPOSITORY_URL is required}"
+readonly api_url="${LANDORIA_MOD_REPOSITORY_URL%/}"
+readonly upstream_url="${api_url%/packages}/upstream/packages"
 readonly configuration="${LANDORIA_MODPACK_CONFIGURATION_JSON:?LANDORIA_MODPACK_CONFIGURATION_JSON is required}"
 readonly plan_directory="$repository_root/.draft-rollbacks"
 readonly plan_file="$plan_directory/$plan_id.json"
@@ -84,7 +85,7 @@ released_version() {
         return
     fi
     curl --fail --silent --show-error --retry 3 --retry-all-errors \
-        "$thunderstore_url/api/experimental/package/Landoria/$package/" |
+        "$upstream_url/Landoria/$package" |
         jq -er '.latest.version_number'
 }
 

@@ -61,6 +61,14 @@ jobs:
           environment: production
           url-group: website
 
+      - id: repository
+        name: Resolve the package repository
+        uses: ./.landoria-root/.github/actions/resolve-inventory
+        with:
+          host-group: mod_repository
+          environment: production
+          url-group: mod_repository
+
       - name: Test release and storage automation
         shell: bash
         env:
@@ -109,6 +117,7 @@ jobs:
             ${{ steps.gamemodes.outputs.include-character-security-mods }}
           LANDORIA_MODPACK_CONFIGURATION_JSON: >-
             ${{ steps.gamemodes.outputs.modpack-configuration }}
+          LANDORIA_MOD_REPOSITORY_URL: ${{ steps.repository.outputs.url }}/api/v1/packages
         run: |
           set -euo pipefail
           read -r -a mods <<< "$SELECTED_MODS"
@@ -122,6 +131,7 @@ jobs:
           LANDORIA_PROD_GAMEMODES_JSON: ${{ steps.gamemodes.outputs.configuration }}
           STORAGE_HOSTS: ${{ steps.storage.outputs.hosts }}
           SELECTED_MODS: ${{ steps.mods.outputs.mods }}
+          LANDORIA_MOD_REPOSITORY_URL: ${{ steps.repository.outputs.url }}/api/v1/packages
         run: |
           set -euo pipefail
           storage_host="$(jq -er 'if length == 1 then .[0] else error("exactly one storage executor is required") end' \

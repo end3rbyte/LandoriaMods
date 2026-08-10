@@ -64,11 +64,20 @@ jobs:
           environment: test
           url-group: website
 
+      - id: repository
+        name: Resolve the package repository
+        uses: ./.landoria-root/.github/actions/resolve-inventory
+        with:
+          host-group: mod_repository
+          environment: production
+          url-group: mod_repository
+
       - name: Import released package
         shell: bash
         env:
           LANDORIA_STORAGE_BASE_URL: ${{ steps.storage.outputs.url }}
           LANDORIA_TEST_GAMEMODES_JSON: ${{ steps.gamemodes.outputs.configuration }}
+          LANDORIA_MOD_REPOSITORY_URL: ${{ steps.repository.outputs.url }}/api/v1/packages
         run: >-
           scripts/ci/import-thunderstore-package.sh
           "${{ inputs.package }}" "${{ inputs.version }}" "${{ inputs.source }}"
@@ -80,6 +89,7 @@ jobs:
           LANDORIA_STORAGE_BASE_URL: ${{ steps.storage.outputs.url }}
           LANDORIA_TEST_GAMEMODES_JSON: ${{ steps.gamemodes.outputs.configuration }}
           STORAGE_HOSTS: ${{ steps.storage.outputs.hosts }}
+          LANDORIA_MOD_REPOSITORY_URL: ${{ steps.repository.outputs.url }}/api/v1/packages
         run: |
           set -euo pipefail
           storage_host="$(jq -er 'if length == 1 then .[0] else error("exactly one storage executor is required") end' \
@@ -91,6 +101,7 @@ jobs:
         env:
           LANDORIA_TEST_GAMEMODES_JSON: ${{ steps.gamemodes.outputs.configuration }}
           STORAGE_HOSTS: ${{ steps.storage.outputs.hosts }}
+          LANDORIA_MOD_REPOSITORY_URL: ${{ steps.repository.outputs.url }}/api/v1/packages
         run: |
           set -euo pipefail
           storage_host="$(jq -er 'if length == 1 then .[0] else error("exactly one storage executor is required") end' \
