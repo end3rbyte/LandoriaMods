@@ -97,11 +97,11 @@ thunderstore_release_exists() {
 
 confirm_thunderstore_release() {
     local package="$1" version="$2"
-    for _ in {1..12}; do
+    for _ in {1..60}; do
         thunderstore_release_exists "$package" "$version" && return 0
         sleep 5
     done
-    echo "Thunderstore did not expose the Landoria-$package-$version archive after publication." >&2
+    echo "Thunderstore did not expose Landoria-$package-$version within five minutes of publication." >&2
     return 1
 }
 
