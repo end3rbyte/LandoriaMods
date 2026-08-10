@@ -92,7 +92,7 @@ write_tcli_config() {
 thunderstore_release_exists() {
     local package="$1" version="$2"
     curl --fail --silent --show-error "$upstream_url/Landoria/$package" |
-        jq -e --arg version "$version" '.versions | any(.version_number == $version)' >/dev/null
+        jq -e --arg version "$version" '.latest.version_number == $version' >/dev/null
 }
 
 confirm_thunderstore_release() {
