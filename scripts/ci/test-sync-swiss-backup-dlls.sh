@@ -12,7 +12,7 @@ repository_root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
 source "$repository_root/scripts/ci/sync-swiss-backup-dlls.sh"
 
 plugins() {
-    jq -r '.. | strings | select(startswith("Landoria."))' <<< "$1" | sort -u
+    configured_plugins "$1"
 }
 
 validate_configuration_paths() {
@@ -30,6 +30,12 @@ validate_configuration_paths() {
 
 validate_configuration_paths "$LANDORIA_TEST_GAMEMODES_JSON"
 validate_configuration_paths "$LANDORIA_PROD_GAMEMODES_JSON"
+
+argument_fixture='{"server":{"common":{"arguments":["--flycommand","true","--freeflycommand","true"],"mods":{"plugins":["Landoria.FreeFlyCommand"],"config":{"AzuAntiCheat_Whitelist":["Landoria.FreeFlyCommand"]}}},"hammer":{"mods":{"plugins":["Landoria.FlyCommand"]}},"normal":{"mods":{}}}}'
+[[ "$(configured_plugins "$argument_fixture")" == $'Landoria.FlyCommand\nLandoria.FreeFlyCommand' ]]
+[[ "$(mod_paths "$argument_fixture" Landoria.FlyCommand)" == \
+    'server/hammer/mods/plugins/Landoria.FlyCommand.dll' ]]
+[[ -z "$(mod_paths "$argument_fixture" --flycommand)" ]]
 
 fixture='{"server":{"common":{"items":{"Wood":10}},"hammer":{"items":{"Hammer":1,"Wood":20}},"normal":{}}}'
 [[ "$(configured_items "$fixture" common)" == '{"Wood":10}' ]]
