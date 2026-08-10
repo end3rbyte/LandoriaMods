@@ -36,7 +36,6 @@ namespace Landoria.FlyCommand
 
         internal static void ResetSession()
         {
-            _registeredRpc = null;
             _serverAllowed = null;
             ResetConnection();
         }
