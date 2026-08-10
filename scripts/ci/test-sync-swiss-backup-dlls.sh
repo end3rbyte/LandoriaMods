@@ -31,7 +31,7 @@ validate_configuration_paths() {
 validate_configuration_paths "$LANDORIA_TEST_GAMEMODES_JSON"
 validate_configuration_paths "$LANDORIA_PROD_GAMEMODES_JSON"
 
-argument_fixture='{"server":{"common":{"arguments":["--flycommand","true","--freeflycommand","true"],"mods":{"plugins":["Landoria.FreeFlyCommand"],"config":{"AzuAntiCheat_Whitelist":["Landoria.FreeFlyCommand"]}}},"hammer":{"mods":{"plugins":["Landoria.FlyCommand"]}},"normal":{"mods":{}}}}'
+argument_fixture='{"server":{"common":{"arguments":["--flycommand","true","--freeflycommand","true"],"mods":{"plugins":["Landoria.FreeFlyCommand"],"config":{"ModSentry_Required":["Landoria.FreeFlyCommand"]}}},"hammer":{"mods":{"plugins":["Landoria.FlyCommand"]}},"normal":{"mods":{}}}}'
 [[ "$(configured_plugins "$argument_fixture")" == $'Landoria.FlyCommand\nLandoria.FreeFlyCommand' ]]
 [[ "$(mod_paths "$argument_fixture" Landoria.FlyCommand)" == \
     'server/hammer/mods/plugins/Landoria.FlyCommand.dll' ]]

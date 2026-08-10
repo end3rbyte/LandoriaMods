@@ -255,7 +255,7 @@ create_archive() {
         . + {commit_id: $commit} |
         if .name == "LandoriaModPack" and ($include_security_mods | not) then
             .dependencies |= map(select(
-                (startswith("Azumatt-AzuAntiCheat-") or
+                (startswith("Landoria-ModSentry-") or
                 startswith("Smoothbrain-ServerCharacters-") or
                 startswith("Landoria-CharacterVault-")) | not))
         else . end
