@@ -38,9 +38,26 @@ stage_character_templates() {
 mod_paths() {
     local configuration="$1" plugin="$2"
     jq -r --arg plugin "$plugin" '
-        [paths(scalars) as $path |
-            select(getpath($path) == $plugin) |
-            ($path[0:-1] + [($plugin + ".dll")]) | join("/")] |
+        [.server | to_entries[] |
+            .key as $variant |
+            ((.value.mods.plugins // [])[] |
+                select(. == $plugin) |
+                "server/\($variant)/mods/plugins/\($plugin).dll"),
+            ((.value.mods.config // {}) | to_entries[] |
+                .key as $directory |
+                .value[] |
+                select(. == $plugin) |
+                "server/\($variant)/mods/config/\($directory)/\($plugin).dll")] |
+        unique[]
+    ' <<< "$configuration"
+}
+
+configured_plugins() {
+    local configuration="$1"
+    jq -r '
+        [.server[] | .mods as $mods |
+            ($mods.plugins // [])[],
+            (($mods.config // {})[] // [])[]] |
         unique[]
     ' <<< "$configuration"
 }
@@ -146,15 +163,13 @@ plan_test_deployment() {
 
 plan_test_reconciliation() {
     local plugin destination
-    jq -r '
-        paths(scalars) as $path |
-        getpath($path) as $plugin |
-        select($plugin | type == "string") |
-        select($path | length >= 5) |
-        select($path[-1] | type == "number") |
-        "test/" + (($path[0:-1] + [($plugin + ".dll")]) | join("/"))
-    ' <<< "$LANDORIA_TEST_GAMEMODES_JSON" | sort -u \
-        > "$staging_directory/expected-paths.txt"
+    : > "$staging_directory/expected-paths.txt"
+    while IFS= read -r plugin; do
+        while IFS= read -r destination; do
+            printf 'test/%s\n' "$destination"
+        done < <(mod_paths "$LANDORIA_TEST_GAMEMODES_JSON" "$plugin")
+    done < <(configured_plugins "$LANDORIA_TEST_GAMEMODES_JSON") \
+        >> "$staging_directory/expected-paths.txt"
     while IFS= read -r destination; do
         printf 'test/server/%s/mods/config/CharacterTemplate.yml\n' "$destination"
     done < <(
@@ -180,12 +195,7 @@ plan_test_reconciliation() {
             printf 'upload\t%s\t%s\n' "$plugin.dll" "test/$destination" \
                 >> "$operations_file"
         done < <(mod_paths "$LANDORIA_TEST_GAMEMODES_JSON" "$plugin")
-    done < <(jq -r '
-        paths(scalars) as $path |
-        select($path[-1] | type == "number") |
-        getpath($path) |
-        select(type == "string")
-    ' <<< "$LANDORIA_TEST_GAMEMODES_JSON" | sort -u)
+    done < <(configured_plugins "$LANDORIA_TEST_GAMEMODES_JSON")
 }
 
 plan_production_promotion() {
