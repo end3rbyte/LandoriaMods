@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.5
+
+- Update AFK Detector to version 1.0.1 with a shorter inactivity disconnect message.
+
 ## 1.0.4
 
 - Add AFK Detector to identify and disconnect inactive players.
