@@ -1,6 +1,6 @@
 {
   "name": "LandoriaModPack",
-  "version_number": "1.0.6",
+  "version_number": "1.0.7",
   "website_url": "https://github.com/end3rbyte/LandoriaMods/tree/main/Landoria.LandoriaModPack",
   "description": "Installs the mods required to join the Landoria Valheim server.",
   "dependencies": [
@@ -8,8 +8,8 @@
     "Smoothbrain-ServerCharacters-1.4.16",
     "Landoria-ModSentry-1.0.0",
     "Landoria-AfkDetector-1.0.1",
-    "Landoria-FlyCommand-1.0.0",
-    "Landoria-FreeFlyCommand-1.0.0",
+    "Landoria-FlyCommand-1.0.1",
+    "Landoria-FreeFlyCommand-1.0.1",
     "Landoria-Moderator-1.0.3",
     "Landoria-GetMyTrophyBack-1.0.3",
     "Landoria-ExpandedServer-1.0.3",
