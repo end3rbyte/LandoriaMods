@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.7
+
+- Update FlyCommand and FreeFlyCommand to version 1.0.1 with refreshed package icons.
+
 ## 1.0.6
 
 - Add strict client mod validation with ModSentry.
