@@ -8,7 +8,7 @@ Strictly validates required and optional client mods before a Valheim server acc
 - concise player-facing mismatch messages
 - complete server-side diagnostics
 
-All other client mods are rejected. ModSentry performs no gameplay cheat detection.
+All other client mods are rejected.
 
 [Read the complete documentation](https://github.com/end3rbyte/LandoriaMods/blob/main/Landoria.ModSentry/README.md).
 

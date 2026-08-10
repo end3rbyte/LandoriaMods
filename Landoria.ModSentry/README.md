@@ -9,7 +9,7 @@ The server defines two explicit directories under `BepInEx/config`:
 
 Every other client plugin is rejected. Matching uses the BepInEx GUID, complete plugin version, and exact DLL SHA-256. Player messages are concise and non-technical; server logs retain the complete diagnostic.
 
-ModSentry was independently designed and implemented for Landoria. It does not contain AzuAntiCheat code and performs no gameplay cheat detection.
+ModSentry was independently designed and implemented for Landoria. It does not contain AzuAntiCheat code.
 
 ## Contact
 
