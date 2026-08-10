@@ -156,4 +156,4 @@ jobs:
           name: thunderstore-promotion-packages
           path: artifacts/thunderstore/*.zip
           if-no-files-found: ignore
-          retention-days: 14
+          retention-days: 7
