@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased
+## 1.0.1
 
-- Refresh FlyCommand icons (#46)
+- Updated the package icon.
 
 ## 1.0.0
 
