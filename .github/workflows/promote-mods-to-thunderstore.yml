@@ -149,11 +149,11 @@ jobs:
           gh api --method POST repos/end3rbyte/valheim-root/dispatches \
             -f event_type=restart-valheim-production
 
-      - name: Archive generated packages
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+      - name: Archive generated packages in Swiss Backup
+        if: ${{ always() && hashFiles('artifacts/thunderstore/*.zip') != '' }}
+        uses: ./.landoria-root/.github/actions/swiss-backup-artifact
         with:
-          name: thunderstore-promotion-packages
-          path: artifacts/thunderstore/*.zip
-          if-no-files-found: ignore
-          retention-days: 7
+          operation: upload
+          storage-host: ${{ fromJSON(steps.storage.outputs.hosts)[0] }}
+          artifact-key: ${{ github.repository }}/${{ github.sha }}/thunderstore-promotion-packages
+          path: artifacts/thunderstore
