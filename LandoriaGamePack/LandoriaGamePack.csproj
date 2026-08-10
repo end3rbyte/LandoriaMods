@@ -43,6 +43,7 @@
     <ProjectReference Include="..\Landoria.ServerGateway\Landoria.ServerGateway.csproj"><Private>false</Private></ProjectReference>
     <ProjectReference Include="..\Landoria.FlyCommand\Landoria.FlyCommand.csproj"><Private>false</Private></ProjectReference>
     <ProjectReference Include="..\Landoria.FreeFlyCommand\Landoria.FreeFlyCommand.csproj"><Private>false</Private></ProjectReference>
+    <ProjectReference Include="..\Landoria.ModSentry\Landoria.ModSentry.csproj"><Private>false</Private></ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

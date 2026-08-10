@@ -32,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.FlyCommand", "Land
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.FreeFlyCommand", "Landoria.FreeFlyCommand\Landoria.FreeFlyCommand.csproj", "{037059B7-0C09-4B60-A05B-62627829B3D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.ModSentry", "Landoria.ModSentry\Landoria.ModSentry.csproj", "{27ED17A4-E7BC-4D42-9C9B-CAC4812948EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -232,6 +234,18 @@ Global
 		{037059B7-0C09-4B60-A05B-62627829B3D8}.Release|x64.Build.0 = Release|Any CPU
 		{037059B7-0C09-4B60-A05B-62627829B3D8}.Release|x86.ActiveCfg = Release|Any CPU
 		{037059B7-0C09-4B60-A05B-62627829B3D8}.Release|x86.Build.0 = Release|Any CPU
+		{27ED17A4-E7BC-4D42-9C9B-CAC4812948EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27ED17A4-E7BC-4D42-9C9B-CAC4812948EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27ED17A4-E7BC-4D42-9C9B-CAC4812948EF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{27ED17A4-E7BC-4D42-9C9B-CAC4812948EF}.Debug|x64.Build.0 = Debug|Any CPU
+		{27ED17A4-E7BC-4D42-9C9B-CAC4812948EF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{27ED17A4-E7BC-4D42-9C9B-CAC4812948EF}.Debug|x86.Build.0 = Debug|Any CPU
+		{27ED17A4-E7BC-4D42-9C9B-CAC4812948EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27ED17A4-E7BC-4D42-9C9B-CAC4812948EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27ED17A4-E7BC-4D42-9C9B-CAC4812948EF}.Release|x64.ActiveCfg = Release|Any CPU
+		{27ED17A4-E7BC-4D42-9C9B-CAC4812948EF}.Release|x64.Build.0 = Release|Any CPU
+		{27ED17A4-E7BC-4D42-9C9B-CAC4812948EF}.Release|x86.ActiveCfg = Release|Any CPU
+		{27ED17A4-E7BC-4D42-9C9B-CAC4812948EF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

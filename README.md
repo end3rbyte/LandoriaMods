@@ -1,5 +1,7 @@
 # Landoria Mods
 
+`Landoria.ModSentry` validates the exact client mod inventory before a server accepts a connection.
+
 This repository contains independently built Valheim plugins. See each
 plugin's `README.md` for technical details and `README.Thunderstore.md` for a
 concise player-oriented overview.
