@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using BepInEx;
+using Mono.Cecil;
 
 namespace Landoria.ModSentry
 {
@@ -41,9 +41,18 @@ namespace Landoria.ModSentry
 
         private static PluginDescriptor ReadDescriptor(string path)
         {
-            Assembly assembly = Assembly.ReflectionOnlyLoadFrom(path);
-            CustomAttributeData attribute = assembly.GetCustomAttributesData()
-                .SingleOrDefault(item => item.AttributeType.FullName == typeof(BepInPlugin).FullName);
+            using (AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly(path))
+            {
+                CustomAttribute attribute = assembly.MainModule.Types
+                    .SelectMany(type => type.CustomAttributes)
+                    .SingleOrDefault(item =>
+                        item.AttributeType.FullName == typeof(BepInPlugin).FullName);
+                return CreateDescriptor(path, attribute);
+            }
+        }
+
+        private static PluginDescriptor CreateDescriptor(string path, CustomAttribute attribute)
+        {
             if (attribute == null || attribute.ConstructorArguments.Count < 3)
             {
                 throw new InvalidDataException($"No BepInPlugin metadata was found in {Path.GetFileName(path)}.");
