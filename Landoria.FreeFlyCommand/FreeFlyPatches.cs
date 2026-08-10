@@ -38,7 +38,6 @@ namespace Landoria.FreeFlyCommand
     {
         private static void Postfix(GameCamera __instance)
         {
-            FreeFlyController.EnableSmoothness();
             FreeFlyController.ClampToPlayer(__instance);
         }
     }
