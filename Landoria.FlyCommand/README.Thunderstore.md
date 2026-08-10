@@ -8,7 +8,7 @@ Uses Valheim's native flight movement in server-authorized worlds without enabli
 - Supports the server command-line switch `--flycommand true|false`, enabled by default.
 - Disables flight immediately when authorization is removed or the server changes.
 - Hides the `fly` command until authorization is granted.
-- Supports `fly`, `fly on`, `fly off`, and configurable enable/disable shortcuts.
+- Supports `fly`, `fly on`, `fly off`, and the fixed native `Z` toggle shortcut.
 - Keeps vanilla movement: Space ascends, Left Control descends, and Shift increases speed.
 
 ## Installation

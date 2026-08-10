@@ -12,9 +12,9 @@ namespace Landoria.FlyCommand
         internal const string PluginName = "Landoria.FlyCommand";
         internal const string PluginVersion = "1.0.0";
         private const string EnabledArgument = "--flycommand";
+        private static readonly KeyboardShortcut ToggleShortcut =
+            new KeyboardShortcut(UnityEngine.KeyCode.Z);
 
-        private ConfigEntry<KeyboardShortcut> _enableShortcut;
-        private ConfigEntry<KeyboardShortcut> _disableShortcut;
         internal static ModLog ModLogger { get; private set; }
         internal static bool ServerEnabled { get; private set; } = true;
 
@@ -22,10 +22,6 @@ namespace Landoria.FlyCommand
         {
             ModLogger = InitializePlugin(PluginGuid);
             ServerEnabled = ReadServerEnabled();
-            _enableShortcut = Config.Bind("Keyboard", "EnableFly", new KeyboardShortcut(UnityEngine.KeyCode.F6),
-                "Enables server-authorized vanilla flight.");
-            _disableShortcut = Config.Bind("Keyboard", "DisableFly", new KeyboardShortcut(UnityEngine.KeyCode.F7),
-                "Disables vanilla flight.");
             FlyCommand.Register();
             ModLogger.LogInfo($"{PluginName} {PluginVersion} is loaded; server enabled={ServerEnabled}.");
         }
@@ -67,13 +63,9 @@ namespace Landoria.FlyCommand
                 return;
             }
 
-            if (_enableShortcut.Value.IsDown())
+            if (ToggleShortcut.IsDown())
             {
-                FlyController.SetEnabled(true);
-            }
-            else if (_disableShortcut.Value.IsDown())
-            {
-                FlyController.SetEnabled(false);
+                FlyController.Toggle();
             }
         }
 
