@@ -1,12 +1,12 @@
 using System;
 using UnityEngine;
 
-namespace Landoria.FlyCommand
+namespace Landoria.FreeFlyCommand
 {
-    internal static class FlyAuthorization
+    internal static class FreeFlyAuthorization
     {
-        private const string RequestRpc = "Landoria_FlyCommand_Request";
-        private const string ResponseRpc = "Landoria_FlyCommand_Response";
+        private const string RequestRpc = "Landoria_FreeFlyCommand_Request";
+        private const string ResponseRpc = "Landoria_FreeFlyCommand_Response";
         private const float RetrySeconds = 2f;
 
         private static ZRoutedRpc _registeredRpc;
@@ -56,7 +56,7 @@ namespace Landoria.FlyCommand
 
         private static void UpdateServerAuthorization()
         {
-            bool allowed = RequiredModifiersAreActive();
+            bool allowed = FreeFlyCommandPlugin.ServerEnabled;
             SetAuthorized(allowed);
             if (_serverAllowed == allowed)
             {
@@ -65,14 +65,14 @@ namespace Landoria.FlyCommand
 
             _serverAllowed = allowed;
             ZRoutedRpc.instance.InvokeRoutedRPC(ZRoutedRpc.Everybody, ResponseRpc, allowed);
-            FlyCommandPlugin.ModLogger.LogInfo($"Server flight authorization changed to {allowed}.");
+            FreeFlyCommandPlugin.ModLogger.LogInfo($"Server free-camera authorization changed to {allowed}.");
         }
 
         private static void UpdateClientAuthorization()
         {
             if (!IsAuthorized)
             {
-                FlyController.SetEnabled(false);
+                FreeFlyController.Disable();
             }
 
             ZNetPeer currentServer = ZNet.instance.GetServerPeer();
@@ -97,7 +97,8 @@ namespace Landoria.FlyCommand
                 return;
             }
 
-            ZRoutedRpc.instance.InvokeRoutedRPC(sender, ResponseRpc, RequiredModifiersAreActive());
+            ZRoutedRpc.instance.InvokeRoutedRPC(sender, ResponseRpc,
+                FreeFlyCommandPlugin.ServerEnabled);
         }
 
         private static void ReceiveResponse(long sender, bool allowed)
@@ -111,19 +112,11 @@ namespace Landoria.FlyCommand
             SetAuthorized(allowed);
         }
 
-        private static bool RequiredModifiersAreActive()
-        {
-            return FlyCommandPlugin.ServerEnabled &&
-                   ZoneSystem.instance != null &&
-                   ZoneSystem.instance.GetGlobalKey(GlobalKeys.NoBuildCost) &&
-                   ZoneSystem.instance.GetGlobalKey(GlobalKeys.PassiveMobs);
-        }
-
         private static void ResetConnection()
         {
             _serverPeer = null;
             _nextRequestAt = 0f;
-            FlyController.SetEnabled(false);
+            FreeFlyController.Disable();
             SetAuthorized(false);
         }
 
@@ -135,8 +128,11 @@ namespace Landoria.FlyCommand
             }
 
             IsAuthorized = allowed;
-            FlyController.OnAuthorizationChanged(allowed);
-            FlyCommandPlugin.ModLogger?.LogInfo($"Flight authorization is now {allowed}.");
+            if (!allowed)
+            {
+                FreeFlyController.Disable();
+            }
+            FreeFlyCommandPlugin.ModLogger?.LogInfo($"Free-camera authorization is now {allowed}.");
         }
     }
 }

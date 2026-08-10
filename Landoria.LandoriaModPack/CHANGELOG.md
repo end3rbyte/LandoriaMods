@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Add the server-authorized FreeFlyCommand mod.
 - Rename
 - Add server-authorized Hammer flight (#21)
 

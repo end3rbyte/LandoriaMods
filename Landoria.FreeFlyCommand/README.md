@@ -1,0 +1,28 @@
+# FreeFlyCommand
+
+Allows Valheim's native `freefly` and `ffsmooth` camera commands after explicit authorization from the connected server. It does not enable `devcommands` or `debugmode`.
+
+## Authorization
+
+- The client starts denied and requests authorization from the connected server.
+- The server controls authorization with `--freeflycommand true|false`; the default is `true`.
+- No response, an explicit denial, or a server change immediately disables free camera mode.
+- The mod is required on the server and every participating client.
+
+## Camera behavior
+
+- `freefly` toggles Valheim's native free camera.
+- Enabling free camera also applies native smoothing equivalent to `ffsmooth 1` when smoothing is disabled.
+- `ffsmooth <0-1>` remains available while authorized.
+- The free camera is clamped to 50 metres from the local player.
+
+## Installation
+
+| Client required | Server required |
+|---|---|
+| Yes | Yes |
+
+## Contact
+
+Report bugs through [GitHub Issues](https://github.com/end3rbyte/LandoriaMods/issues).
+For questions, feedback, and other discussions, use [GitHub Discussions](https://github.com/end3rbyte/LandoriaMods/discussions).
