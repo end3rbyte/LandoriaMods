@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Add server-authorized Hammer flight (#21)
+
 ## 1.0.5
 
 - Update AFK Detector to version 1.0.1 with a shorter inactivity disconnect message.
