@@ -5,5 +5,12 @@
   "description": "Validates required and optional client mods before joining a Landoria server.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333"
+  ],
+  "categories": [
+    "ai-generated",
+    "mods",
+    "client-side",
+    "server-side",
+    "utility"
   ]
 }
