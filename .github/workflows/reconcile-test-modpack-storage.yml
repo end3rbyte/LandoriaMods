@@ -1,8 +1,14 @@
 ---
 name: Reconcile test modpack storage
+run-name: Reconcile test storage (${{ inputs.request_id || github.run_id }})
 
 'on':
   workflow_dispatch:
+    inputs:
+      request_id:
+        description: Correlation ID supplied by the dispatching workflow
+        required: false
+        type: string
 
 permissions:
   contents: read
