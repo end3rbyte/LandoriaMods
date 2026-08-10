@@ -5,7 +5,6 @@ namespace Landoria.FreeFlyCommand
     internal static class FreeFlyController
     {
         internal const float MaximumDistance = 50f;
-        private const float DefaultSmoothness = 1f;
 
         internal static void Toggle()
         {
@@ -15,10 +14,6 @@ namespace Landoria.FreeFlyCommand
             }
 
             GameCamera.instance.ToggleFreeFly();
-            if (GameCamera.InFreeFly())
-            {
-                GameCamera.instance.SetFreeFlySmoothness(DefaultSmoothness);
-            }
         }
 
         internal static void Disable()
@@ -26,15 +21,6 @@ namespace Landoria.FreeFlyCommand
             if (GameCamera.instance != null && GameCamera.InFreeFly())
             {
                 GameCamera.instance.ToggleFreeFly();
-            }
-        }
-
-        internal static void EnableSmoothness()
-        {
-            if (FreeFlyAuthorization.IsAuthorized && GameCamera.InFreeFly() &&
-                GameCamera.instance.GetFreeFlySmoothness() <= 0f)
-            {
-                GameCamera.instance.SetFreeFlySmoothness(DefaultSmoothness);
             }
         }
 
