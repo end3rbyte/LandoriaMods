@@ -1,13 +1,10 @@
 # Changelog
 
-## Unreleased
+## 1.0.6
 
-- Add strict client mod validation (#29)
-- Rebuild_existing_FreeFlyCommand_draft (#28)
-- Preserve_FreeFlyCommand_smoothing (#27)
-- Add (#22)
-- Rename
-- Add server-authorized Hammer flight (#21)
+- Add strict client mod validation with ModSentry.
+- Add server-authorized Hammer flight commands.
+- Add server-authorized free-camera commands with native smoothing controls.
 
 ## 1.0.5
 
