@@ -1,6 +1,6 @@
 # Landoria ModSentry
 
-Strictly validates required and optional client mods before a Landoria server accepts the connection.
+Strictly validates required and optional client mods before a Valheim server accepts the connection.
 
 - BepInEx GUID validation
 - complete version validation
