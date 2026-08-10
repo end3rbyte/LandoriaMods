@@ -120,7 +120,7 @@ namespace Landoria.AfkDetector
 
         private static void DisconnectPlayer(ZNetPeer peer)
         {
-            string message = "You were disconnected because you were inactive for too long.";
+            string message = "Disconnected due to inactivity.";
             peer.m_rpc.Invoke(DisconnectReasonRpc, message);
             ZNet.instance.Kick(peer.m_socket.GetHostName());
             Log.LogInfo($"Disconnected inactive player {peer.m_playerName}.");
