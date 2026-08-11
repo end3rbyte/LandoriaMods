@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.8
+
+- Add SlowDecay with a shared slowdown setting for rain wear and fuel consumption.
+
 ## 1.0.7
 
 - Update FlyCommand and FreeFlyCommand to version 1.0.1 with refreshed package icons.
