@@ -58,4 +58,11 @@ expected_paths="$(cat "$staging_directory/expected-paths.txt")"
 [[ "$expected_paths" != *'AzuAnticheat.dll'* ]]
 [[ "$expected_paths" != *'prod/server/normal/mods/config/CharacterTemplate.yml'* ]]
 
+LANDORIA_TEST_GAMEMODES_JSON='{"server":{"common":{"mods":{"plugins":["ServerCharacters"],"config":{"ModSentry_Required":["ServerCharacters"]}}}}}'
+LANDORIA_PROD_GAMEMODES_JSON="$LANDORIA_TEST_GAMEMODES_JSON"
+operations_file="$staging_directory/operations.tsv"
+: > "$operations_file"
+plan_production_external_policies
+[[ "$(cat "$operations_file")" == $'copy\ttest/server/common/mods/config/ModSentry_Required/ServerCharacters.dll\tprod/server/common/mods/config/ModSentry_Required/ServerCharacters.dll\ncopy\ttest/server/common/mods/config/ModSentry_Required/ServerCharacters.dll\tprod/server/common/mods/plugins/ServerCharacters.dll' ]]
+
 echo "Swiss Backup DLL synchronization configuration is valid."
