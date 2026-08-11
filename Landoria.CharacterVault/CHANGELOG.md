@@ -2,11 +2,8 @@
 
 ## Unreleased
 
-- Store authoritative character profiles directly in CharacterVault without ServerCharacters.
-- Admit new characters only after ModSentry validation and the first durable profile commit.
-- Save connected characters whenever Valheim starts a world save.
-- Configure server-authoritative starting items through BepInEx or command-line arguments.
-- Preserve the existing graceful dedicated-server shutdown trigger.
+- Add CharacterVault documentation link (#67)
+- Replace ServerCharacters with authoritative CharacterVault (#66)
 
 ## 1.0.3
 
