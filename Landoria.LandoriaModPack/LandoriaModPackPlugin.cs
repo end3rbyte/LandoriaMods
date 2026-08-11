@@ -7,6 +7,6 @@ namespace Landoria.LandoriaModPack
     {
         private const string PluginGuid = "Landoria.LandoriaModPack";
         private const string PluginName = "Landoria.LandoriaModPack";
-        private const string PluginVersion = "1.0.8";
+        private const string PluginVersion = "1.0.9";
     }
 }
