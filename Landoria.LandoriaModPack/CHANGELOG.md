@@ -3,6 +3,7 @@
 ## 1.0.8
 
 - Update Socialize so player-built structures and fuel are preserved while their creator and group are offline.
+- Update SealedTombstone to report offline owners accurately before sending access requests.
 
 ## 1.0.7
 

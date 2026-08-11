@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Landoria.SealedTombstone
 {
@@ -6,7 +7,10 @@ namespace Landoria.SealedTombstone
     {
         private const string LockDayKey = "Landoria.SealedTombstone.LockDay";
         private const string BlockedPlayersKey = "Landoria.SealedTombstone.BlockedPlayers";
+        private const string AccessCheckRpc = "Landoria_SealedTombstone_AccessCheck";
+        private const string IdentityRpc = "Landoria_SealedTombstone_Identity";
         private const string RequestRpc = "Landoria_SealedTombstone_Request";
+        private const string AvailabilityRpc = "Landoria_SealedTombstone_Availability";
         private const string DecisionRpc = "Landoria_SealedTombstone_Decision";
         private const int UnlockAfterDays = 10;
         private const int RequestExpirySeconds = 30;
@@ -15,6 +19,8 @@ namespace Landoria.SealedTombstone
         private static PendingRequest _pendingRequest;
         private static DateTime _lastRequestAt = DateTime.MinValue;
         private static ZRoutedRpc _registeredRpc;
+        private static readonly Dictionary<long, long> PeerPlayers = new Dictionary<long, long>();
+        private static long _identityServer;
 
         internal static void RegisterRpcs()
         {
@@ -24,7 +30,10 @@ namespace Landoria.SealedTombstone
                 return;
             }
 
+            rpc.Register<long, string, ZDOID, long>(AccessCheckRpc, ReceiveAccessCheck);
+            rpc.Register<long>(IdentityRpc, ReceiveIdentity);
             rpc.Register<long, string, ZDOID, long>(RequestRpc, ReceiveRequest);
+            rpc.Register<bool>(AvailabilityRpc, ReceiveAvailability);
             rpc.Register<long, ZDOID, bool, string>(DecisionRpc, ReceiveDecision);
             _registeredRpc = rpc;
             SealedTombstonePlugin.Log.LogDebug("Tombstone access RPCs registered for the current session.");
@@ -35,6 +44,8 @@ namespace Landoria.SealedTombstone
             _pendingRequest = null;
             _lastRequestAt = DateTime.MinValue;
             _registeredRpc = null;
+            PeerPlayers.Clear();
+            _identityServer = 0L;
             RecentAttackers.Reset();
         }
 
@@ -81,6 +92,7 @@ namespace Landoria.SealedTombstone
 
         internal static void Tick()
         {
+            SyncIdentity();
             if (_pendingRequest == null || !HasExpired(_pendingRequest))
             {
                 return;
@@ -100,17 +112,138 @@ namespace Landoria.SealedTombstone
                 return;
             }
 
-            if (ZRoutedRpc.instance == null)
+            ZRoutedRpc rpc = ZRoutedRpc.instance;
+            ZNet network = ZNet.instance;
+            if (rpc == null || network == null)
             {
                 requester.Message(MessageHud.MessageType.Center, "The tombstone owner is offline.");
                 return;
             }
 
+            long requesterId = requester.GetPlayerID();
+            if (network.IsServer())
+            {
+                ProcessAccessCheck(0L, requesterId, requester.GetPlayerName(), tombstoneId, ownerId);
+                return;
+            }
+
+            ZNetPeer server = network.GetServerPeer();
+            if (server == null)
+            {
+                requester.Message(MessageHud.MessageType.Center, "The tombstone owner is offline.");
+                return;
+            }
+            rpc.InvokeRoutedRPC(server.m_uid, AccessCheckRpc,
+                requesterId, requester.GetPlayerName(), tombstoneId, ownerId);
+        }
+
+        private static void ReceiveAccessCheck(
+            long sender, long requesterId, string requesterName, ZDOID tombstoneId, long ownerId)
+        {
+            if (ZNet.instance == null || !ZNet.instance.IsServer())
+            {
+                return;
+            }
+            ZNetPeer requester = ZNet.instance.GetPeer(sender);
+            if (requester == null || requesterId == 0L)
+            {
+                return;
+            }
+            PeerPlayers[sender] = requesterId;
+            ProcessAccessCheck(sender, requesterId, requesterName, tombstoneId, ownerId);
+        }
+
+        private static void ProcessAccessCheck(
+            long requesterPeer, long requesterId, string requesterName, ZDOID tombstoneId, long ownerId)
+        {
+            long ownerPeer = FindOnlinePeer(ownerId);
+            bool ownerIsLocal = Player.m_localPlayer?.GetPlayerID() == ownerId;
+            SendAvailability(requesterPeer, ownerPeer != 0L || ownerIsLocal);
+            if (ownerIsLocal)
+            {
+                ReceiveRequest(0L, requesterId, requesterName, tombstoneId, ownerId);
+            }
+            else if (ownerPeer != 0L)
+            {
+                ZRoutedRpc.instance.InvokeRoutedRPC(ownerPeer, RequestRpc,
+                    requesterId, requesterName, tombstoneId, ownerId);
+            }
+        }
+
+        private static long FindOnlinePeer(long playerId)
+        {
+            foreach (KeyValuePair<long, long> mapping in PeerPlayers)
+            {
+                ZNetPeer peer = ZNet.instance.GetPeer(mapping.Key);
+                if (mapping.Value == playerId && peer != null && peer.IsReady())
+                {
+                    return mapping.Key;
+                }
+            }
+            return 0L;
+        }
+
+        private static void SyncIdentity()
+        {
+            ZNet network = ZNet.instance;
+            Player player = Player.m_localPlayer;
+            if (network == null || player == null || network.IsServer())
+            {
+                return;
+            }
+            ZNetPeer server = network.GetServerPeer();
+            if (server == null || server.m_uid == _identityServer)
+            {
+                return;
+            }
+            _identityServer = server.m_uid;
+            ZRoutedRpc.instance?.InvokeRoutedRPC(server.m_uid, IdentityRpc, player.GetPlayerID());
+        }
+
+        private static void ReceiveIdentity(long sender, long playerId)
+        {
+            if (ZNet.instance == null || !ZNet.instance.IsServer() ||
+                ZNet.instance.GetPeer(sender) == null || playerId == 0L)
+            {
+                return;
+            }
+            PeerPlayers[sender] = playerId;
+        }
+
+        private static void SendAvailability(long requesterPeer, bool online)
+        {
+            if (requesterPeer == 0L)
+            {
+                ReceiveAvailability(0L, online);
+                return;
+            }
+            ZRoutedRpc.instance.InvokeRoutedRPC(requesterPeer, AvailabilityRpc, online);
+        }
+
+        private static void ReceiveAvailability(long sender, bool ownerOnline)
+        {
+            Player requester = Player.m_localPlayer;
+            if (requester == null || !IsServerResponse(sender))
+            {
+                return;
+            }
+            if (!ownerOnline)
+            {
+                requester.Message(MessageHud.MessageType.Center, "The tombstone owner is offline.");
+                return;
+            }
             _lastRequestAt = DateTime.UtcNow;
             requester.Message(MessageHud.MessageType.Center, "Access request sent to the tombstone owner.");
-            ZRoutedRpc.instance.InvokeRoutedRPC(ZRoutedRpc.Everybody, RequestRpc,
-                requester.GetPlayerID(), requester.GetPlayerName(), tombstoneId, ownerId);
-            SealedTombstonePlugin.Log.LogInfo($"Player {requester.GetPlayerID()} requested access to {tombstoneId}.");
+            SealedTombstonePlugin.Log.LogInfo($"Player {requester.GetPlayerID()} requested tombstone access.");
+        }
+
+        private static bool IsServerResponse(long sender)
+        {
+            if (ZNet.instance == null)
+            {
+                return false;
+            }
+            return ZNet.instance.IsServer() ? sender == 0L : ZNet.instance.GetServerPeer()?.m_uid == sender;
         }
 
         private static void ReceiveRequest(
@@ -122,7 +255,8 @@ namespace Landoria.SealedTombstone
         {
             Player owner = Player.m_localPlayer;
             ZDO tombstone = ZDOMan.instance?.GetZDO(tombstoneId);
-            if (owner == null || owner.GetPlayerID() != ownerId || _pendingRequest != null ||
+            if (!IsServerResponse(sender) || owner == null || owner.GetPlayerID() != ownerId ||
+                _pendingRequest != null ||
                 IsBlocked(tombstone, requesterId))
             {
                 return;
