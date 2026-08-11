@@ -10,15 +10,12 @@ namespace Landoria.CharacterVault
 {
     internal sealed class GracefulShutdownCoordinator : IDisposable
     {
-        internal const string SaveRequestRpc = "CharacterVault SaveRequest";
-        internal const string SaveStartedRpc = "CharacterVault SaveStarted";
         private const string ExitFilePath = "character_vault.drp";
         private const int MaximumConcurrentSaves = 4;
         private const int ShutdownTimeoutSeconds = 90;
         private readonly HashSet<ZNetPeer> _pendingPeers = new HashSet<ZNetPeer>();
         private readonly HashSet<ZNetPeer> _requestedPeers = new HashSet<ZNetPeer>();
         private readonly Queue<ZNetPeer> _queuedPeers = new Queue<ZNetPeer>();
-        private readonly Dictionary<ZNetPeer, string> _startedRequests = new Dictionary<ZNetPeer, string>();
         private readonly FileSystemWatcher _exitFileWatcher;
         private readonly SynchronizationContext _unityContext;
         private System.Threading.Timer _timeoutTimer;
@@ -83,20 +80,19 @@ namespace Landoria.CharacterVault
             }
         }
 
-        internal void RecordSavedProfile(PlayerProfile profile)
+        internal void RecordSaveCommitted(ZRpc peerRpc, string committedRequestId)
         {
-            if (_requestId == null)
+            if (_requestId == null || committedRequestId != _requestId)
             {
                 return;
             }
 
-            ZNetPeer peer = FindSavedPeer(profile);
+            ZNetPeer peer = _pendingPeers.FirstOrDefault(candidate => candidate.m_rpc == peerRpc);
             if (peer == null || !_pendingPeers.Remove(peer))
             {
                 return;
             }
 
-            _startedRequests.Remove(peer);
             _requestedPeers.Remove(peer);
             CharacterVaultPlugin.Log.LogMessage(
                 $"Confirmed graceful character save for {peer.m_playerName} ({_pendingPeers.Count} remaining).");
@@ -105,15 +101,6 @@ namespace Landoria.CharacterVault
             if (_pendingPeers.Count == 0)
             {
                 Complete();
-            }
-        }
-
-        internal void RecordSaveStarted(ZRpc peerRpc, string startedRequestId)
-        {
-            ZNetPeer peer = ZNet.instance?.GetPeers().FirstOrDefault(candidate => candidate.m_rpc == peerRpc);
-            if (peer != null && _pendingPeers.Contains(peer) && startedRequestId == _requestId)
-            {
-                _startedRequests[peer] = startedRequestId;
             }
         }
 
@@ -159,7 +146,7 @@ namespace Landoria.CharacterVault
                 }
 
                 _requestedPeers.Add(peer);
-                peer.m_rpc.Invoke(SaveRequestRpc, _requestId);
+                CharacterVaultPlugin.Transfers.RequestSave(peer, _requestId);
             }
         }
 
@@ -255,13 +242,6 @@ namespace Landoria.CharacterVault
             }
         }
 
-        private ZNetPeer FindSavedPeer(PlayerProfile profile)
-        {
-            return _pendingPeers.FirstOrDefault(candidate =>
-                _startedRequests.TryGetValue(candidate, out string startedRequest) &&
-                startedRequest == _requestId && ServerCharactersIdentity.Matches(profile, candidate));
-        }
-
         private void Complete()
         {
             CharacterVaultPlugin.Log.LogMessage(
@@ -291,7 +271,6 @@ namespace Landoria.CharacterVault
             _pendingPeers.Clear();
             _requestedPeers.Clear();
             _queuedPeers.Clear();
-            _startedRequests.Clear();
             _requestId = null;
             _shutdownCommitted = true;
             CharacterVaultPlugin.Log.LogMessage("Starting the vanilla application shutdown.");

@@ -36,6 +36,10 @@
     <Reference Include="UnityEngine.CoreModule"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CharacterVaultSettings.cs" />
+    <Compile Include="ProfileFile.cs" />
+    <Compile Include="ProfileTransferService.cs" />
+    <Compile Include="VaultStorage.cs" />
     <Compile Include="GracefulShutdownCoordinator.cs" />
     <Compile Include="ProfileSaveRpc.cs" />
     <Compile Include="CharacterVaultPlugin.cs" />

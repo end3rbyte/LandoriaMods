@@ -1,18 +1,15 @@
 # CharacterVault
 
-CharacterVault saves character profiles on the server to prevent item duplication.
+CharacterVault stores authoritative Valheim character profiles on the server and applies the server copy before a player enters the world.
 
-- Character profiles are stored and loaded by the server.
-- You must create a new character to enter a world protected by this mod
-- Items cannot be duplicated by giving them away and then restoring a local backup that still contains them.
-- The server copy is the only character save used when a player joins the server.
-- Restoring an older local character backup does not restore that character on the server.
+## Features
 
-## Additional Feature
-
-This mod is an extension for [ServerCharacters](https://thunderstore.io/c/valheim/p/Smoothbrain/ServerCharacters/), the following features are added specifically by this mod:
-
-🡆 Connected character profiles are saved before a dedicated server stops or restarts, to avoid any loss of data
+- Requires ModSentry verification before character enrollment.
+- Ignores restored or modified local backups for registered characters.
+- Supports one or multiple characters per Steam ID.
+- Grants server-configured starting items exactly once.
+- Saves characters with world saves and graceful server shutdowns.
+- Uses validated, atomic, revisioned server storage.
 
 ## Installation
 
@@ -20,9 +17,9 @@ This mod is an extension for [ServerCharacters](https://thunderstore.io/c/valhei
 |---|---|
 | Yes | Yes |
 
-See the [full documentation](https://github.com/end3rbyte/LandoriaMods/blob/main/Landoria.CharacterVault/README.md).
+Install matching CharacterVault and ModSentry versions on every client and server.
 
 ## Contact
 
-- Report bugs through [GitHub Issues](https://github.com/end3rbyte/LandoriaMods/issues).
-- For questions, feedback, and other discussions, use [GitHub Discussions](https://github.com/end3rbyte/LandoriaMods/discussions).
+Report bugs through [GitHub Issues](https://github.com/end3rbyte/LandoriaMods/issues).
+For questions and feedback, use [GitHub Discussions](https://github.com/end3rbyte/LandoriaMods/discussions).

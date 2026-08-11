@@ -5,7 +5,6 @@
   "description": "Installs the mods required to join the Landoria Valheim server.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333",
-    "Smoothbrain-ServerCharacters-1.4.16",
     "Landoria-ModSentry-1.0.1",
     "Landoria-AfkDetector-1.0.1",
     "Landoria-FlyCommand-1.0.1",

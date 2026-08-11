@@ -5,7 +5,7 @@
   "description": "CharacterVault saves character profiles on the server to prevent item duplication.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333",
-    "Smoothbrain-ServerCharacters-1.4.16"
+    "Landoria-ModSentry-1.0.1"
   ],
   "categories": [
     "ai-generated",
