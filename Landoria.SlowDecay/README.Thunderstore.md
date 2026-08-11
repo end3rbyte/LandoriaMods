@@ -2,6 +2,8 @@
 
 Slows structural rain wear and fireplace fuel consumption while preserving vanilla behavior.
 
+SlowDecay is especially useful on busy servers with many active players, where the world keeps running and in-game time advances quickly. It prevents buildings, torches, and fires from requiring disproportionately frequent maintenance and refueling.
+
 ## Features
 
 - Divides vanilla rain damage by one global slowdown multiplier.
