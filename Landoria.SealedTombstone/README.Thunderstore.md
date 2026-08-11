@@ -16,6 +16,7 @@ Protects recent tombstones from unauthorized players while allowing owner-approv
 | Situation | Result |
 |---|---|
 | Owner approves | Tombstone permanently unlocks. |
+| Owner is offline | The requester is informed immediately and no cooldown starts. |
 | Owner denies or request expires | Tombstone remains locked. |
 | Tombstone reaches ten days | Tombstone becomes public. |
 | Requester attacked the owner before death | The request is blocked. |
