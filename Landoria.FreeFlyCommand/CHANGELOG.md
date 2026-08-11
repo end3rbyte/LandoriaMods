@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Document the free-camera FOV command (#51)
+
 ## 1.0.1
 
 - Updated the package icon.
