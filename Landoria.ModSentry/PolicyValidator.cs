@@ -87,8 +87,7 @@ namespace Landoria.ModSentry
 
         private static string UpdateMessage(string reason, PluginDescriptor expected)
         {
-            return $"{reason}: {expected.Name} {expected.Version}. " +
-                   "Close Valheim and restart it through the Landoria Launcher to update your mods.";
+            return $"{reason}: {expected.Name} {expected.Version}.";
         }
 
         private static ValidationResult Missing(PluginDescriptor expected)
