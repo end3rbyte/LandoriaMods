@@ -7,6 +7,7 @@ namespace Landoria.ModSentry
         internal static void Receive(ZRpc rpc, string message)
         {
             _pending = message;
+            rpc.Invoke(ModSentryPlugin.RejectionAckRpc);
         }
 
         internal static bool TryTake(out string message)
@@ -14,6 +15,11 @@ namespace Landoria.ModSentry
             message = _pending;
             _pending = null;
             return !string.IsNullOrWhiteSpace(message);
+        }
+
+        internal static void Clear()
+        {
+            _pending = null;
         }
     }
 }

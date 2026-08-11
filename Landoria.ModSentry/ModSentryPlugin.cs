@@ -8,6 +8,7 @@ namespace Landoria.ModSentry
     {
         internal const string InventoryRpc = "Landoria_ModSentry_Inventory";
         internal const string RejectionRpc = "Landoria_ModSentry_Rejection";
+        internal const string RejectionAckRpc = "Landoria_ModSentry_RejectionAck";
         internal const int ProtocolVersion = 1;
         private const string PluginGuid = "Landoria.ModSentry";
         private const string PluginName = "Landoria.ModSentry";
@@ -34,10 +35,17 @@ namespace Landoria.ModSentry
             return Policy;
         }
 
+        private void Update()
+        {
+            PendingDisconnects.Tick();
+        }
+
         private void OnDestroy()
         {
             Log?.LogInfo($"{PluginName} {PluginVersion} is unloaded.");
             HandshakeState.Clear();
+            PendingDisconnects.Clear();
+            ClientMessage.Clear();
             Policy = null;
             ShutdownPlugin();
             Log = null;

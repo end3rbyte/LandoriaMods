@@ -11,9 +11,11 @@ namespace Landoria.ModSentry
             if (network.IsServer())
             {
                 peer.m_rpc.Register<ZPackage>(ModSentryPlugin.InventoryRpc, ReceiveInventory);
+                peer.m_rpc.Register(ModSentryPlugin.RejectionAckRpc, ReceiveRejectionAck);
             }
             else
             {
+                ClientMessage.Clear();
                 peer.m_rpc.Register<string>(ModSentryPlugin.RejectionRpc, ClientMessage.Receive);
             }
         }
@@ -53,17 +55,25 @@ namespace Landoria.ModSentry
                     "PeerInfo arrived before an accepted ModSentry inventory.");
             rpc.Invoke(ModSentryPlugin.RejectionRpc, rejection.PlayerMessage);
             ModSentryPlugin.Log.LogWarning(rejection.TechnicalMessage);
-            Disconnect(rpc);
+            PendingDisconnects.Schedule(rpc);
             return false;
         }
 
-        private static void Disconnect(ZRpc rpc)
+        internal static void Disconnect(ZRpc rpc)
         {
             ZNetPeer peer = ZNet.instance.GetPeers()
                 .FirstOrDefault(candidate => ReferenceEquals(candidate.m_rpc, rpc));
             if (peer != null)
             {
                 ZNet.instance.Kick(peer.m_socket.GetHostName());
+            }
+        }
+
+        private static void ReceiveRejectionAck(ZRpc rpc)
+        {
+            if (PendingDisconnects.Acknowledge(rpc))
+            {
+                Disconnect(rpc);
             }
         }
 

@@ -42,6 +42,7 @@ namespace Landoria.ModSentry
             if (peer?.m_rpc != null)
             {
                 HandshakeState.Remove(peer.m_rpc);
+                PendingDisconnects.Remove(peer.m_rpc);
             }
         }
     }
@@ -49,14 +50,9 @@ namespace Landoria.ModSentry
     [HarmonyPatch(typeof(FejdStartup), "ShowConnectError")]
     internal static class ShowRejectionPatch
     {
-        private static void Postfix(ZNet.ConnectionStatus statusOverride,
-            TMP_Text ___m_connectionFailedError)
+        private static void Postfix(TMP_Text ___m_connectionFailedError)
         {
-            ZNet.ConnectionStatus status = statusOverride == ZNet.ConnectionStatus.None
-                ? ZNet.GetConnectionStatus()
-                : statusOverride;
-            if (status == ZNet.ConnectionStatus.ErrorKicked &&
-                ClientMessage.TryTake(out string message))
+            if (ClientMessage.TryTake(out string message))
             {
                 ___m_connectionFailedError.text = message;
             }

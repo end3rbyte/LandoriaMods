@@ -70,32 +70,38 @@ namespace Landoria.ModSentry
             {
                 return ValidationResult.Reject(
                     optional
-                        ? $"An optional mod is not compatible: {expected.Name} (expected {expected.Version})."
-                        : $"A mod needs to be updated: {expected.Name} (expected {expected.Version}).",
+                        ? UpdateMessage("Optional mod mismatch", expected)
+                        : UpdateMessage("Mod update required", expected),
                     $"{kind} plugin {expected.Guid} version mismatch: expected {expected.Version}, received {actual.Version}.");
             }
 
             if (!string.Equals(expected.Hash, actual.Hash, StringComparison.OrdinalIgnoreCase))
             {
                 return ValidationResult.Reject(
-                    $"A mod installation is not compatible: {expected.Name} {expected.Version}.",
+                    UpdateMessage("Mod mismatch", expected),
                     $"{kind} plugin {expected.Guid} SHA-256 mismatch: expected {expected.Hash}, received {actual.Hash}.");
             }
 
             return null;
         }
 
+        private static string UpdateMessage(string reason, PluginDescriptor expected)
+        {
+            return $"{reason}: {expected.Name} {expected.Version}. " +
+                   "Close Valheim and restart it through the Landoria Launcher to update your mods.";
+        }
+
         private static ValidationResult Missing(PluginDescriptor expected)
         {
             return ValidationResult.Reject(
-                $"A required mod is missing: {expected.Name} {expected.Version}.",
+                UpdateMessage("Required mod missing", expected),
                 $"Required plugin {expected.Guid} {expected.Version} is missing.");
         }
 
         private static ValidationResult Unexpected(PluginDescriptor actual)
         {
             return ValidationResult.Reject(
-                $"An unexpected mod must be removed: {actual.Name}.",
+                $"Unsupported mod detected: {actual.Name}. Remove it before reconnecting.",
                 $"Unexpected plugin {actual.Guid} {actual.Version} with SHA-256 {actual.Hash}.");
         }
     }
