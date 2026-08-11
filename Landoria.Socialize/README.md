@@ -12,6 +12,7 @@ Adds persistent player groups, private messaging, map sharing, and expanded chat
 - Restricts public map positions and pings outside groups.
 - Uses vanilla rain wear and fuel consumption while a piece's creator or one of their group members is connected.
 - Stops rain wear and fuel consumption for player-built pieces while the creator and their entire group are offline.
+- Restricts interaction with player-built pieces to their creator and members of the creator's group.
 - Supports dedicated servers and peer-hosted worlds.
 
 ## Chat Commands
@@ -49,6 +50,8 @@ Group data is serialized in a persistent server-owned ZDO stored with the world.
 
 Pieces without an identifiable player creator retain vanilla behavior.
 Fuel does not catch up retroactively when a protected fireplace or torch is loaded again.
+
+Piece interaction protection includes normal use, using an item on a piece, containers, doors, crafting stations, adding resources or fuel, repairs, hammer removal, and damage caused by a player. Environmental damage and interactions with natural or creatorless objects retain vanilla behavior.
 
 ## Installation
 

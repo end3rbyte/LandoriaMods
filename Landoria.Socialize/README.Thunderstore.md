@@ -12,6 +12,7 @@ Adds persistent player groups, private messaging, map sharing, and expanded chat
 - Restricts public positions and map pings outside groups.
 - Uses vanilla rain wear and fuel consumption while a piece's creator or one of their group members is connected.
 - Stops rain wear and fuel consumption while the creator and their entire group are offline.
+- Restricts use, refueling, repairs, removal, and player damage for player-built pieces to their creator and group.
 
 ## Chat Commands
 
