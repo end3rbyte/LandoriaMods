@@ -1,6 +1,6 @@
 {
   "name": "ModSentry",
-  "version_number": "1.0.0",
+  "version_number": "1.0.1",
   "website_url": "https://github.com/end3rbyte/LandoriaMods/tree/main/Landoria.ModSentry",
   "description": "Validates required and optional client mods before joining a Valheim server.",
   "dependencies": [

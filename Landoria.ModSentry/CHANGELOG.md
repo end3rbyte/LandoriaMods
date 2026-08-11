@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Deliver ModSentry rejection details reliably
+
 ## 1.0.0
 
 - Initial version.

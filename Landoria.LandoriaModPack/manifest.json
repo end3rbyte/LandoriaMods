@@ -6,7 +6,7 @@
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333",
     "Smoothbrain-ServerCharacters-1.4.16",
-    "Landoria-ModSentry-1.0.0",
+    "Landoria-ModSentry-1.0.1",
     "Landoria-AfkDetector-1.0.1",
     "Landoria-FlyCommand-1.0.1",
     "Landoria-FreeFlyCommand-1.0.2",
