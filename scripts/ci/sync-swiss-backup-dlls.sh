@@ -241,8 +241,30 @@ plan_production_promotion() {
             echo "Skipping $plugin: it is not assigned to a production game mode."
         fi
     done
+    plan_production_external_policies
     plan_production_character_templates
     plan_expected_paths prod "$LANDORIA_PROD_GAMEMODES_JSON"
+}
+
+plan_production_external_policies() {
+    local plugin source destination
+    while IFS= read -r plugin; do
+        [[ "$plugin" != Landoria.* ]] || continue
+        source="$(mod_paths "$LANDORIA_TEST_GAMEMODES_JSON" "$plugin" | head -n 1)"
+        while IFS= read -r destination; do
+            [[ -n "$source" && -n "$destination" ]] || {
+                echo "$plugin has a production destination but no test source." >&2
+                exit 1
+            }
+            if ! validate_relative_path "$source" || \
+                ! validate_relative_path "$destination"; then
+                echo "Invalid external policy promotion path for $plugin." >&2
+                exit 1
+            fi
+            printf 'copy\t%s\t%s\n' "test/$source" "prod/$destination" \
+                >> "$operations_file"
+        done < <(mod_paths "$LANDORIA_PROD_GAMEMODES_JSON" "$plugin")
+    done < <(configured_plugins "$LANDORIA_PROD_GAMEMODES_JSON")
 }
 
 plan_production_character_templates() {
