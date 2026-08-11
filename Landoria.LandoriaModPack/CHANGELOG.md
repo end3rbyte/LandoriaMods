@@ -1,9 +1,5 @@
 # Changelog
 
-## 1.0.9
-
-- Update SealedTombstone and force clients to refresh the changed modpack assembly.
-
 ## 1.0.8
 
 - Update Socialize so player-built structures and fuel are preserved while their creator and group are offline.
