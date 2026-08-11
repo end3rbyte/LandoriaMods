@@ -86,6 +86,7 @@
     <Compile Include="RpcRegistry.cs" />
     <Compile Include="MapPrivacyPatches.cs" />
     <Compile Include="PiecePermissions.cs" />
+    <Compile Include="PieceOwnershipDisplay.cs" />
     <Compile Include="SocializePlugin.cs" />
     <Compile Include="TargetPingService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
