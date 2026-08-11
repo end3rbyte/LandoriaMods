@@ -19,6 +19,8 @@ CharacterVault stores authoritative Valheim character profiles on the server and
 
 Install matching CharacterVault and ModSentry versions on every client and server.
 
+See the [full documentation](https://github.com/end3rbyte/LandoriaMods/blob/main/Landoria.CharacterVault/README.md).
+
 ## Contact
 
 Report bugs through [GitHub Issues](https://github.com/end3rbyte/LandoriaMods/issues).
