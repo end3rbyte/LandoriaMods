@@ -14,6 +14,7 @@ Adds persistent player groups, private messaging, map sharing, and expanded chat
 - Stops rain wear and fuel consumption while the creator and their entire group are offline.
 - Prevents creatures from targeting or damaging pieces while the creator and their entire group are offline.
 - Restricts use, refueling, repairs, removal, and player damage for player-built pieces to their creator and group.
+- Shows the creator while hovering over an inaccessible player-built piece.
 
 ## Chat Commands
 

@@ -6,17 +6,19 @@ namespace Landoria.Socialize
 {
     internal static class PiecePermissions
     {
-        private const string DeniedMessage = "$piece_noaccess";
         private static readonly Dictionary<long, int> SyncedPlayerGroups =
             new Dictionary<long, int>();
         private static readonly Dictionary<long, long> SyncedPeerPlayers =
             new Dictionary<long, long>();
+        private static readonly Dictionary<long, string> SyncedPlayerNames =
+            new Dictionary<long, string>();
         private static bool hasServerState;
 
         internal static void Reset()
         {
             SyncedPlayerGroups.Clear();
             SyncedPeerPlayers.Clear();
+            SyncedPlayerNames.Clear();
             hasServerState = false;
         }
 
@@ -36,6 +38,13 @@ namespace Landoria.Socialize
                 package.Write(mapping.Key);
                 package.Write(mapping.Value);
             }
+            Dictionary<long, string> names = GetKnownPlayerNames(connectedPeers);
+            package.Write(names.Count);
+            foreach (KeyValuePair<long, string> player in names)
+            {
+                package.Write(player.Key);
+                package.Write(player.Value);
+            }
         }
 
         internal static void ReadState(ZPackage package)
@@ -53,7 +62,18 @@ namespace Landoria.Socialize
             {
                 SyncedPeerPlayers[package.ReadLong()] = package.ReadLong();
             }
+            SyncedPlayerNames.Clear();
+            int nameCount = package.ReadInt();
+            for (int index = 0; index < nameCount; index++)
+            {
+                SyncedPlayerNames[package.ReadLong()] = package.ReadString();
+            }
             hasServerState = true;
+        }
+
+        internal static string GetKnownPlayerName(long playerId)
+        {
+            return SyncedPlayerNames.TryGetValue(playerId, out string name) ? name : null;
         }
 
         internal static bool CanAccess(long playerId, Piece piece)
@@ -131,6 +151,28 @@ namespace Landoria.Socialize
             return peers;
         }
 
+        private static Dictionary<long, string> GetKnownPlayerNames(
+            List<KeyValuePair<long, long>> connectedPeers)
+        {
+            Dictionary<long, string> names = new Dictionary<long, string>();
+            foreach (SocialGroup group in GroupState.Groups.Values)
+            {
+                foreach (KeyValuePair<long, string> member in group.Members)
+                {
+                    names[member.Key] = member.Value;
+                }
+            }
+            foreach (KeyValuePair<long, long> mapping in connectedPeers)
+            {
+                ZNetPeer peer = ZNet.instance.GetPeer(mapping.Key);
+                if (peer != null)
+                {
+                    names[mapping.Value] = peer.m_playerName;
+                }
+            }
+            return names;
+        }
+
         private static Piece FindPiece(GameObject target)
         {
             return target != null ? target.GetComponentInParent<Piece>() : null;
@@ -142,22 +184,12 @@ namespace Landoria.Socialize
                    CanAccess(ResolvePeerPlayer(peer), component.GetComponent<Piece>());
         }
 
-        private static void ShowDenied(Humanoid humanoid)
-        {
-            humanoid?.Message(MessageHud.MessageType.Center, DeniedMessage);
-        }
-
         [HarmonyPatch(typeof(Player), "Interact")]
         private static class PlayerInteractPatch
         {
             private static bool Prefix(Player __instance, GameObject go)
             {
-                if (CanAccess(__instance, FindPiece(go)))
-                {
-                    return true;
-                }
-                ShowDenied(__instance);
-                return false;
+                return CanAccess(__instance, FindPiece(go));
             }
         }
 
@@ -166,12 +198,8 @@ namespace Landoria.Socialize
         {
             private static bool Prefix(Humanoid __instance, bool fromInventoryGui)
             {
-                if (fromInventoryGui || CanAccess(__instance, FindPiece(__instance.GetHoverObject())))
-                {
-                    return true;
-                }
-                ShowDenied(__instance);
-                return false;
+                return fromInventoryGui ||
+                       CanAccess(__instance, FindPiece(__instance.GetHoverObject()));
             }
         }
 
@@ -181,12 +209,7 @@ namespace Landoria.Socialize
             private static bool Prefix(Humanoid __instance, GameObject hoverObject,
                 bool fromInventoryGui)
             {
-                if (fromInventoryGui || CanAccess(__instance, FindPiece(hoverObject)))
-                {
-                    return true;
-                }
-                ShowDenied(__instance);
-                return false;
+                return fromInventoryGui || CanAccess(__instance, FindPiece(hoverObject));
             }
         }
 
@@ -196,12 +219,7 @@ namespace Landoria.Socialize
             private static bool Prefix(Player __instance, Piece repairPiece)
             {
                 Piece piece = repairPiece != null ? repairPiece : __instance.GetHoveringPiece();
-                if (CanAccess(__instance, piece))
-                {
-                    return true;
-                }
-                ShowDenied(__instance);
-                return false;
+                return CanAccess(__instance, piece);
             }
         }
 
@@ -214,7 +232,6 @@ namespace Landoria.Socialize
                 {
                     return true;
                 }
-                ShowDenied(__instance);
                 __result = false;
                 return false;
             }
