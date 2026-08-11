@@ -9,7 +9,7 @@ concise player-oriented overview.
 | Mod | Installation side | Description |
 |---|---|---|
 | [AfkDetector](Landoria.AfkDetector/) | Both | Disconnects players who remain motionless and silent, with a clear inactivity message. |
-| [CharacterVault](Landoria.CharacterVault/) | Both | Saves connected ServerCharacters profiles before a dedicated server stops. |
+| [CharacterVault](Landoria.CharacterVault/) | Both | Stores authoritative server profiles and checkpoints characters with world saves. |
 | [GentleDeath](Landoria.GentleDeath/) | Client; server when required by a game mode | Keeps equipable gear on the player after death and moves other items to the tombstone. |
 | [GetMyTrophyBack](Landoria.GetMyTrophyBack/) | Both | Drops a mounted boss trophy five seconds after its guardian power is selected. |
 | [FlyCommand](Landoria.FlyCommand/) | Both | Allows server-authorized vanilla flight in configured worlds. |
@@ -45,10 +45,11 @@ Until a changelog section matching the draft version exists, each build creates
 or refreshes `Unreleased` from the mod's commit history. Once a matching version
 section is present, builds leave the changelog unchanged.
 
-Test storage reconciliation also renders optional `items` from the central game-mode
-configuration as `CharacterTemplate.yml` under each applicable mode's `mods/config` path. Common
-items are inherited by mode-specific templates, and obsolete managed templates are removed.
-Production promotion copies the exact tested templates without regenerating them.
+Test storage reconciliation renders optional `items` from the central game-mode
+configuration as `Landoria.CharacterVault.cfg` under each applicable mode's `mods/config`
+path. Common items are inherited by mode-specific configurations, and obsolete managed
+configurations are removed. Production promotion copies the exact tested files without
+regenerating them.
 
 Production publication is handled by the manual **Promote mods to Thunderstore**
 workflow on the self-hosted `dev` runner. It compares each selected mod with its

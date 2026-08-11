@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
-using System.Text.RegularExpressions;
 using HarmonyLib;
-using UnityEngine;
 
 namespace Landoria.CharacterVault
 {
@@ -16,126 +12,88 @@ namespace Landoria.CharacterVault
     }
 
     [HarmonyPatch(typeof(ZNet), "OnNewConnection")]
-    internal static class ProfileSaveRequestRpc
+    internal static class CharacterVaultConnectionPatch
     {
         private static void Postfix(ZNet __instance, ZNetPeer peer)
         {
-            if (!__instance.IsServer())
-            {
-                peer.m_rpc.Register<string>(
-                    GracefulShutdownCoordinator.SaveRequestRpc, SaveProfile);
-                return;
-            }
-
-            peer.m_rpc.Register<string>(GracefulShutdownCoordinator.SaveStartedRpc,
-                CharacterVaultPlugin.Coordinator.RecordSaveStarted);
-        }
-
-        private static void SaveProfile(ZRpc serverRpc, string requestId)
-        {
-            if (Game.instance?.GetPlayerProfile() == null)
-            {
-                return;
-            }
-
-            CharacterVaultPlugin.Instance.Run(SaveWhenReady(serverRpc, requestId));
-        }
-
-        private static IEnumerator SaveWhenReady(ZRpc serverRpc, string requestId)
-        {
-            ServerCharactersTransferTracker.BeginShutdownRequest();
-            float deadline = Time.realtimeSinceStartup + 10f;
-            while (ServerCharactersTransferTracker.IsSendingProfile)
-            {
-                if (Time.realtimeSinceStartup >= deadline)
-                {
-                    CharacterVaultPlugin.Log.LogWarning(
-                        "The active ServerCharacters transfer did not finish within 10 seconds; saving anyway.");
-                    ServerCharactersTransferTracker.Reset();
-                    break;
-                }
-
-                yield return null;
-            }
-
-            CharacterVaultPlugin.Log.LogMessage(
-                $"Saving the character for graceful shutdown request {requestId}.");
-            serverRpc.Invoke(GracefulShutdownCoordinator.SaveStartedRpc, requestId);
-            Game.instance.SavePlayerProfile(true);
+            CharacterVaultPlugin.Transfers?.Register(__instance, peer);
         }
     }
 
-    [HarmonyPatch(typeof(ZRpc), nameof(ZRpc.Invoke))]
-    internal static class ServerCharactersTransferTracker
+    [HarmonyPatch(typeof(ZNet), "SendPeerInfo")]
+    [HarmonyAfter("Landoria.ModSentry")]
+    internal static class CharacterVaultHelloPatch
     {
-        private const string ProfileRpc = "ServerCharacters PlayerProfile";
-        internal static bool IsSendingProfile { get; private set; }
-
-        internal static void BeginShutdownRequest()
+        private static void Prefix(ZRpc rpc)
         {
-            if (IsSendingProfile)
+            if (ZNet.instance?.IsServer() == false)
             {
-                CharacterVaultPlugin.Log.LogInfo(
-                    "Waiting for the active ServerCharacters transfer before the shutdown save.");
+                CharacterVaultPlugin.Transfers?.SendHello(rpc);
             }
         }
+    }
 
-        internal static void Reset()
+    [HarmonyPatch(typeof(ZNet), "RPC_PeerInfo")]
+    [HarmonyAfter("Landoria.ModSentry")]
+    internal static class CharacterVaultAdmissionBarrierPatch
+    {
+        private static void Prefix(ZRpc rpc, bool __runOriginal)
         {
-            IsSendingProfile = false;
+            if (__runOriginal && ZNet.instance?.IsServer() == true)
+            {
+                CharacterVaultPlugin.Transfers?.Approve(rpc);
+            }
         }
+    }
 
-        private static void Prefix(string method, object[] parameters)
+    [HarmonyPatch(typeof(ZNet), "Disconnect")]
+    internal static class CharacterVaultDisconnectPatch
+    {
+        private static void Prefix(ZNetPeer peer)
         {
-            if (method != ProfileRpc || parameters?.Length != 1 || !(parameters[0] is ZPackage package))
-            {
-                return;
-            }
-
-            int position = package.GetPos();
-            try
-            {
-                if (package.Size() < sizeof(long) + sizeof(int) + sizeof(int))
-                {
-                    return;
-                }
-
-                package.SetPos(0);
-                package.ReadLong();
-                int fragment = package.ReadInt();
-                int fragments = package.ReadInt();
-                if (fragments > 0 && fragment >= 0 && fragment < fragments)
-                {
-                    IsSendingProfile = fragment < fragments - 1;
-                }
-            }
-            finally
-            {
-                package.SetPos(position);
-            }
+            CharacterVaultPlugin.Transfers?.Remove(peer);
         }
     }
 
     [HarmonyPatch(typeof(PlayerProfile), "SavePlayerToDisk")]
-    internal static class SavedProfilePatch
+    internal static class CharacterVaultProfileSavedPatch
     {
         private static void Postfix(PlayerProfile __instance, bool __result)
         {
-            if (__result && ZNet.instance?.IsServer() == true)
+            if (__result)
             {
-                CharacterVaultPlugin.Coordinator.RecordSavedProfile(__instance);
+                CharacterVaultPlugin.Transfers?.UploadSavedProfile(__instance);
             }
         }
     }
 
-    internal static class ServerCharactersIdentity
+    [HarmonyPatch(typeof(Player), "OnSpawned")]
+    internal static class CharacterVaultStartingItemsPatch
     {
-        internal static bool Matches(PlayerProfile profile, ZNetPeer peer)
+        private static void Postfix()
         {
-            string host = peer.m_socket.GetHostName();
-            string id = Regex.IsMatch(host, @"^\d+$") ? "Steam_" + host : host;
-            string expected = id + "_" + peer.m_playerName.ToLower();
-            return string.Equals(profile.m_filename, expected, StringComparison.Ordinal);
+            CharacterVaultPlugin.Transfers?.GrantStartingItems();
+        }
+    }
+
+    [HarmonyPatch(typeof(Game), "SpawnPlayer")]
+    internal static class CharacterVaultApplyProfilePatch
+    {
+        private static void Prefix(ref PlayerProfile ___m_playerProfile)
+        {
+            CharacterVaultPlugin.Transfers?.ApplyPendingProfile(ref ___m_playerProfile);
+        }
+    }
+
+    [HarmonyPatch(typeof(ZNet), "Save")]
+    internal static class CharacterVaultWorldSavePatch
+    {
+        private static void Prefix(ZNet __instance)
+        {
+            if (__instance.IsServer())
+            {
+                CharacterVaultPlugin.Transfers?.RequestWorldCheckpoint();
+            }
         }
     }
 }

@@ -15,11 +15,14 @@ configured_items() {
     ' <<< "$configuration"
 }
 
-render_character_template() {
+render_character_vault_config() {
     local items="$1" output="$2"
     {
         echo '# Managed by Landoria from GAMEMODES.yml.'
-        echo 'items:'
-        jq -r 'to_entries | sort_by(.key)[] | "  \(.key): \(.value)"' <<< "$items"
+        echo '[New Characters]'
+        echo
+        printf 'StartingItems = '
+        jq -jr 'to_entries | sort_by(.key) | map("\(.key):\(.value)") | join(",")' <<< "$items"
+        echo
     } > "$output"
 }

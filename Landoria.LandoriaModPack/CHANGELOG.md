@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Replace ServerCharacters with the standalone authoritative CharacterVault implementation.
+
 ## 1.0.8
 
 - Update Socialize so player-built structures and fuel are preserved while their creator and group are offline.

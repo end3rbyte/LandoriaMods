@@ -4,7 +4,7 @@ set -euo pipefail
 script_directory="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 if [[ "${1:-}" != --remote ]]; then
     # shellcheck disable=SC1091
-    . "$script_directory/character-template.sh"
+    . "$script_directory/character-vault-config.sh"
 fi
 
 usage() {
@@ -20,17 +20,17 @@ validate_host() {
 }
 
 validate_relative_path() {
-    [[ "$1" =~ ^server/(common|hammer|normal)/mods/(plugins/[A-Za-z0-9._-]+\.dll|config/([A-Za-z0-9._-]+/)?[A-Za-z0-9._-]+\.dll|config/CharacterTemplate\.yml)$ ]]
+    [[ "$1" =~ ^server/(common|hammer|normal)/mods/(plugins/[A-Za-z0-9._-]+\.dll|config/([A-Za-z0-9._-]+/)?[A-Za-z0-9._-]+\.dll|config/Landoria\.CharacterVault\.cfg)$ ]]
 }
 
-stage_character_templates() {
+stage_character_vault_configs() {
     local configuration="$1" environment="$2" variant items output
     mkdir -p "$staging_directory/configs"
     for variant in common hammer normal; do
         items="$(configured_items "$configuration" "$variant")" || continue
-        output="$staging_directory/configs/$variant-CharacterTemplate.yml"
-        render_character_template "$items" "$output"
-        printf 'upload-config\t%s\t%s/server/%s/mods/config/CharacterTemplate.yml\n' \
+        output="$staging_directory/configs/$variant-Landoria.CharacterVault.cfg"
+        render_character_vault_config "$items" "$output"
+        printf 'upload-config\t%s\t%s/server/%s/mods/config/Landoria.CharacterVault.cfg\n' \
             "${output##*/}" "$environment" "$variant" >> "$operations_file"
     done
 }
@@ -179,7 +179,7 @@ plan_test_deployment() {
 plan_test_reconciliation() {
     local plugin destination
     plan_expected_paths test "$LANDORIA_TEST_GAMEMODES_JSON"
-    stage_character_templates "$LANDORIA_TEST_GAMEMODES_JSON" test
+    stage_character_vault_configs "$LANDORIA_TEST_GAMEMODES_JSON" test
     while IFS= read -r plugin; do
         [[ -n "$plugin" ]] || continue
         if ! stage_modpack_dll "$plugin"; then
@@ -208,7 +208,7 @@ plan_expected_paths() {
         >> "$staging_directory/expected-paths.txt"
     for variant in common hammer normal; do
         configured_items "$configuration" "$variant" >/dev/null || continue
-        printf '%s/server/%s/mods/config/CharacterTemplate.yml\n' \
+        printf '%s/server/%s/mods/config/Landoria.CharacterVault.cfg\n' \
             "$environment" "$variant" >> "$staging_directory/expected-paths.txt"
     done
     sort -u -o "$staging_directory/expected-paths.txt" \
@@ -242,7 +242,7 @@ plan_production_promotion() {
         fi
     done
     plan_production_external_policies
-    plan_production_character_templates
+    plan_production_character_vault_configs
     plan_expected_paths prod "$LANDORIA_PROD_GAMEMODES_JSON"
 }
 
@@ -267,11 +267,11 @@ plan_production_external_policies() {
     done < <(configured_plugins "$LANDORIA_PROD_GAMEMODES_JSON")
 }
 
-plan_production_character_templates() {
+plan_production_character_vault_configs() {
     local variant test_items production_items source destination
     for variant in common hammer normal; do
-        source="test/server/$variant/mods/config/CharacterTemplate.yml"
-        destination="prod/server/$variant/mods/config/CharacterTemplate.yml"
+        source="test/server/$variant/mods/config/Landoria.CharacterVault.cfg"
+        destination="prod/server/$variant/mods/config/Landoria.CharacterVault.cfg"
         production_items="$(configured_items "$LANDORIA_PROD_GAMEMODES_JSON" "$variant")" || {
             printf 'delete-if-exists\t-\t%s\n' "$destination" >> "$operations_file"
             continue
@@ -373,7 +373,7 @@ run_remote_operations() {
                     "storage:$SwissBackupStorage__Container/$destination"
                 ;;
             upload-config)
-                [[ "$source" =~ ^(common|hammer|normal)-CharacterTemplate\.yml$ && \
+                [[ "$source" =~ ^(common|hammer|normal)-Landoria\.CharacterVault\.cfg$ && \
                    -f "$temporary_directory/configs/$source" ]]
                 rclone copyto "$temporary_directory/configs/$source" \
                     "storage:$SwissBackupStorage__Container/$destination"
@@ -392,7 +392,7 @@ run_remote_operations() {
                     "storage:$SwissBackupStorage__Container/$destination"
                 ;;
             delete-if-exists)
-                [[ "$source" == - && "$destination" == prod/*/CharacterTemplate.yml ]]
+                [[ "$source" == - && "$destination" == prod/*/Landoria.CharacterVault.cfg ]]
                 rclone deletefile "storage:$SwissBackupStorage__Container/$destination" \
                     2>/dev/null || true
                 echo "Removed obsolete $destination when present."
@@ -428,7 +428,7 @@ run_remote_operations() {
         done < <(rclone lsf \
             "storage:$SwissBackupStorage__Container/$destination_environment/server" \
             --recursive --files-only \
-            --include '*.dll' --include 'CharacterTemplate.yml')
+            --include '*.dll' --include 'Landoria.CharacterVault.cfg')
     fi
     [[ "$destination_environment" =~ ^(test|prod)$ ]]
     refresh_manifests "$destination_environment" "$website_base_url"
