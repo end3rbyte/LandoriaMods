@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.0
+## 1.0.5
 
 - Preserve player-built structures and fuel while their creator and the creator's group are offline.
 
