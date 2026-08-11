@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Shorten ModSentry rejection messages
 - Deliver ModSentry rejection details reliably
 
 ## 1.0.0
