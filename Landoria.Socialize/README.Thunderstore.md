@@ -10,6 +10,8 @@ Adds persistent player groups, private messaging, map sharing, and expanded chat
 - Keeps the selected chat channel active.
 - Shares connected group members' map positions automatically.
 - Restricts public positions and map pings outside groups.
+- Uses vanilla rain wear and fuel consumption while a piece's creator or one of their group members is connected.
+- Stops rain wear and fuel consumption while the creator and their entire group are offline.
 
 ## Chat Commands
 

@@ -10,6 +10,8 @@ Adds persistent player groups, private messaging, map sharing, and expanded chat
 - Keeps the selected shout, whisper, or group channel active.
 - Automatically shares connected group members' map positions.
 - Restricts public map positions and pings outside groups.
+- Uses vanilla rain wear and fuel consumption while a piece's creator or one of their group members is connected.
+- Stops rain wear and fuel consumption for player-built pieces while the creator and their entire group are offline.
 - Supports dedicated servers and peer-hosted worlds.
 
 ## Chat Commands
@@ -44,6 +46,9 @@ Groups with fewer than two members are disbanded automatically. Invitations use 
 - Friendly-fire rules, permissions, and teleportation are provided by other mods.
 
 Group data is serialized in a persistent server-owned ZDO stored with the world. No separate configuration or group file is created.
+
+Pieces without an identifiable player creator retain vanilla behavior.
+Fuel does not catch up retroactively when a protected fireplace or torch is loaded again.
 
 ## Installation
 
