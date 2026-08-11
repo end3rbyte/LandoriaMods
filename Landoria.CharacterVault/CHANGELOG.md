@@ -1,9 +1,12 @@
 # Changelog
 
-## Unreleased
+## 1.0.4
 
-- Add CharacterVault documentation link (#67)
-- Replace ServerCharacters with authoritative CharacterVault (#66)
+- Replace ServerCharacters with an independently implemented authoritative server vault.
+- Admit new characters only after ModSentry validation and the first durable profile commit.
+- Save connected characters whenever Valheim starts a world save.
+- Add server-authoritative starting items and command-line configuration overrides.
+- Preserve the existing graceful dedicated-server shutdown trigger.
 
 ## 1.0.3
 
@@ -19,4 +22,4 @@
 
 ## 1.0.0
 
-- Initial Version
+- Initial version.

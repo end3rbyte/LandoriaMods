@@ -1,11 +1,8 @@
 # Changelog
 
-## Unreleased
-
-- Replace ServerCharacters with the standalone authoritative CharacterVault implementation.
-
 ## 1.0.8
 
+- Replace ServerCharacters with the standalone authoritative CharacterVault implementation.
 - Update Socialize so player-built structures and fuel are preserved while their creator and group are offline.
 - Update SealedTombstone to report offline owners accurately before sending access requests.
 
