@@ -1,9 +1,9 @@
 # Changelog
 
-## Unreleased
+## 1.0.1
 
-- Shorten ModSentry rejection messages
-- Deliver ModSentry rejection details reliably
+- Shorten ModSentry rejection messages.
+- Deliver ModSentry rejection details reliably.
 
 ## 1.0.0
 
