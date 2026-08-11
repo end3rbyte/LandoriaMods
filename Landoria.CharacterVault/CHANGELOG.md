@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.5
+
+- Enforce CharacterVault rejection before Valheim can admit or spawn the peer.
+- Require an unregistered character to have been created during the current game session.
+
 ## 1.0.4
 
 - Replace ServerCharacters with an independently implemented authoritative server vault.
