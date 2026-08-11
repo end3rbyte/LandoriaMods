@@ -75,6 +75,7 @@
     <Compile Include="ChatCommands.cs" />
     <Compile Include="ChatFormatting.cs" />
     <Compile Include="ChatPatches.cs" />
+    <Compile Include="CreatureProtection.cs" />
     <Compile Include="DecayProtection.cs" />
     <Compile Include="GroupCommands.cs" />
     <Compile Include="GroupModels.cs" />

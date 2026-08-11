@@ -247,11 +247,20 @@ namespace Landoria.Socialize
                 {
                     return true;
                 }
-                Player attacker = hit.GetAttacker() as Player;
-                long playerId = attacker != null
-                    ? attacker.GetPlayerID()
-                    : ResolvePeerPlayer(hit.m_attacker.UserID);
-                return CanAccess(playerId, __instance.GetComponent<Piece>());
+                Piece piece = __instance.GetComponent<Piece>();
+                Character attacker = hit.GetAttacker();
+                if (attacker is Player player)
+                {
+                    return CanAccess(player.GetPlayerID(), piece);
+                }
+                if (attacker != null)
+                {
+                    return DecayProtection.GetActivityMultiplier(piece) > 0f;
+                }
+                long playerId = ResolvePeerPlayer(hit.m_attacker.UserID);
+                return playerId != 0L
+                    ? CanAccess(playerId, piece)
+                    : DecayProtection.GetActivityMultiplier(piece) > 0f;
             }
         }
 

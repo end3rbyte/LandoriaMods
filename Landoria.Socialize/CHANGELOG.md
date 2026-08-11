@@ -4,6 +4,7 @@
 
 - Preserve player-built structures and fuel while their creator and the creator's group are offline.
 - Restrict player-built piece interactions, repairs, removal, and player damage to the creator and their group.
+- Prevent creatures from targeting or damaging pieces while their creator and group are offline.
 
 ## 1.0.4
 
