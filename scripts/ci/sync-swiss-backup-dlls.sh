@@ -178,23 +178,7 @@ plan_test_deployment() {
 
 plan_test_reconciliation() {
     local plugin destination
-    : > "$staging_directory/expected-paths.txt"
-    while IFS= read -r plugin; do
-        while IFS= read -r destination; do
-            printf 'test/%s\n' "$destination"
-        done < <(mod_paths "$LANDORIA_TEST_GAMEMODES_JSON" "$plugin")
-    done < <(configured_plugins "$LANDORIA_TEST_GAMEMODES_JSON") \
-        >> "$staging_directory/expected-paths.txt"
-    while IFS= read -r destination; do
-        printf 'test/server/%s/mods/config/CharacterTemplate.yml\n' "$destination"
-    done < <(
-        for destination in common hammer normal; do
-            configured_items "$LANDORIA_TEST_GAMEMODES_JSON" "$destination" >/dev/null && \
-                printf '%s\n' "$destination"
-        done
-    ) >> "$staging_directory/expected-paths.txt"
-    sort -u -o "$staging_directory/expected-paths.txt" \
-        "$staging_directory/expected-paths.txt"
+    plan_expected_paths test "$LANDORIA_TEST_GAMEMODES_JSON"
     stage_character_templates "$LANDORIA_TEST_GAMEMODES_JSON" test
     while IFS= read -r plugin; do
         [[ -n "$plugin" ]] || continue
@@ -211,6 +195,24 @@ plan_test_reconciliation() {
                 >> "$operations_file"
         done < <(mod_paths "$LANDORIA_TEST_GAMEMODES_JSON" "$plugin")
     done < <(configured_plugins "$LANDORIA_TEST_GAMEMODES_JSON")
+}
+
+plan_expected_paths() {
+    local environment="$1" configuration="$2" plugin destination variant
+    : > "$staging_directory/expected-paths.txt"
+    while IFS= read -r plugin; do
+        while IFS= read -r destination; do
+            printf '%s/%s\n' "$environment" "$destination"
+        done < <(mod_paths "$configuration" "$plugin")
+    done < <(configured_plugins "$configuration") \
+        >> "$staging_directory/expected-paths.txt"
+    for variant in common hammer normal; do
+        configured_items "$configuration" "$variant" >/dev/null || continue
+        printf '%s/server/%s/mods/config/CharacterTemplate.yml\n' \
+            "$environment" "$variant" >> "$staging_directory/expected-paths.txt"
+    done
+    sort -u -o "$staging_directory/expected-paths.txt" \
+        "$staging_directory/expected-paths.txt"
 }
 
 plan_production_promotion() {
@@ -240,6 +242,7 @@ plan_production_promotion() {
         fi
     done
     plan_production_character_templates
+    plan_expected_paths prod "$LANDORIA_PROD_GAMEMODES_JSON"
 }
 
 plan_production_character_templates() {
@@ -391,16 +394,17 @@ run_remote_operations() {
     if [[ -f "$temporary_directory/expected-paths.txt" ]]; then
         while IFS= read -r relative_path; do
             [[ -n "$relative_path" ]] || continue
-            full_path="test/server/$relative_path"
-            validate_relative_path "${full_path#test/}" || {
-                echo "Invalid existing test DLL path: $full_path" >&2
+            full_path="$destination_environment/server/$relative_path"
+            validate_relative_path "${full_path#*/}" || {
+                echo "Invalid existing $destination_environment DLL path: $full_path" >&2
                 exit 1
             }
             if ! grep -Fxq "$full_path" "$temporary_directory/expected-paths.txt"; then
                 rclone deletefile "storage:$SwissBackupStorage__Container/$full_path"
                 echo "Deleted obsolete $full_path."
             fi
-        done < <(rclone lsf "storage:$SwissBackupStorage__Container/test/server" \
+        done < <(rclone lsf \
+            "storage:$SwissBackupStorage__Container/$destination_environment/server" \
             --recursive --files-only \
             --include '*.dll' --include 'CharacterTemplate.yml')
     fi
