@@ -14,6 +14,7 @@ Allows Valheim's native `freefly` and `ffsmooth` camera commands after explicit 
 - `freefly` toggles Valheim's native free camera.
 - Enabling free camera also applies native smoothing equivalent to `ffsmooth 1` when smoothing is disabled.
 - `ffsmooth <0-1>` remains available while authorized.
+- Valheim's vanilla `fov <degrees>` command can adjust the field of view while using `freefly`; `fov` by itself reports the current value.
 - The free camera is clamped to 50 metres from the local player.
 
 ## Installation
