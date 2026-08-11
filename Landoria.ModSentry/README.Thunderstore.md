@@ -5,7 +5,7 @@ Strictly validates required and optional client mods before a Valheim server acc
 - BepInEx GUID validation
 - complete version validation
 - mandatory SHA-256 validation
-- concise player-facing mismatch messages
+- acknowledged player-facing mismatch messages with the affected mod and update instructions
 - complete server-side diagnostics
 
 All other client mods are rejected.
