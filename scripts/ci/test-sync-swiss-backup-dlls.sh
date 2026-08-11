@@ -45,4 +45,17 @@ if configured_items "$fixture" normal >/dev/null; then
     exit 1
 fi
 
+staging_directory="$(mktemp -d)"
+trap 'find "$staging_directory" -depth -delete' EXIT
+production_fixture='{"server":{"common":{"items":{"Wood":10},"mods":{"plugins":["Landoria.ModSentry"],"config":{"ModSentry_Optional":["Landoria.QuickLaunch"],"ModSentry_Required":["Landoria.ModSentry"]}}},"hammer":{"items":{"Hammer":1},"mods":{}},"normal":{"mods":{}}}}'
+plan_expected_paths prod "$production_fixture"
+expected_paths="$(cat "$staging_directory/expected-paths.txt")"
+[[ "$expected_paths" == *'prod/server/common/mods/plugins/Landoria.ModSentry.dll'* ]]
+[[ "$expected_paths" == *'prod/server/common/mods/config/ModSentry_Optional/Landoria.QuickLaunch.dll'* ]]
+[[ "$expected_paths" == *'prod/server/common/mods/config/ModSentry_Required/Landoria.ModSentry.dll'* ]]
+[[ "$expected_paths" == *'prod/server/common/mods/config/CharacterTemplate.yml'* ]]
+[[ "$expected_paths" == *'prod/server/hammer/mods/config/CharacterTemplate.yml'* ]]
+[[ "$expected_paths" != *'AzuAnticheat.dll'* ]]
+[[ "$expected_paths" != *'prod/server/normal/mods/config/CharacterTemplate.yml'* ]]
+
 echo "Swiss Backup DLL synchronization configuration is valid."
