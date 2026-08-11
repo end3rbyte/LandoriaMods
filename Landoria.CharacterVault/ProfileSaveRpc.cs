@@ -37,12 +37,14 @@ namespace Landoria.CharacterVault
     [HarmonyAfter("Landoria.ModSentry")]
     internal static class CharacterVaultAdmissionBarrierPatch
     {
-        private static void Prefix(ZRpc rpc, bool __runOriginal)
+        private static bool Prefix(ZRpc rpc, bool __runOriginal)
         {
-            if (__runOriginal && ZNet.instance?.IsServer() == true)
+            if (!__runOriginal || ZNet.instance?.IsServer() != true)
             {
-                CharacterVaultPlugin.Transfers?.Approve(rpc);
+                return true;
             }
+
+            return CharacterVaultPlugin.Transfers?.Approve(rpc) == true;
         }
     }
 

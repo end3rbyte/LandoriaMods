@@ -65,15 +65,21 @@ namespace Landoria.CharacterVault
             package.Write(ProtocolVersion);
             package.Write(profile.GetPlayerID());
             package.Write(profile.GetName());
-            package.Write(profile.m_knownWorlds.Count == 0);
+            package.Write(NewCharacterTracker.WasCreatedThisSession(profile.GetPlayerID()));
             serverRpc.Invoke(HelloRpc, package);
         }
 
-        internal void Approve(ZRpc rpc)
+        internal bool Approve(ZRpc rpc)
         {
-            if (!_sessions.TryGetValue(rpc, out VaultSession session) || session.Verified)
+            if (!_sessions.TryGetValue(rpc, out VaultSession session))
             {
-                return;
+                Reject(rpc, "Character verification did not complete. Please try again.");
+                return false;
+            }
+
+            if (session.Verified)
+            {
+                return session.Admitted;
             }
 
             session.Verified = true;
@@ -82,10 +88,12 @@ namespace Landoria.CharacterVault
             {
                 session.Revision = revision;
                 SendDownload(rpc, session, data);
-                return;
+                session.Admitted = true;
+                return true;
             }
 
-            AdmitEnrollment(rpc, session, session.NewCharacter);
+            session.Admitted = AdmitEnrollment(rpc, session, session.NewCharacter);
+            return session.Admitted;
         }
 
         internal void Remove(ZNetPeer peer)
@@ -214,7 +222,7 @@ namespace Landoria.CharacterVault
             _sessions[rpc] = new VaultSession(accountId, characterId, name, newCharacter);
         }
 
-        private void AdmitEnrollment(ZRpc rpc, VaultSession session, bool newCharacter)
+        private bool AdmitEnrollment(ZRpc rpc, VaultSession session, bool newCharacter)
         {
             if (!newCharacter || !_storage.CanEnroll(session.AccountId, session.CharacterId,
                 CharacterVaultPlugin.Settings.AllowMultipleCharacters) || !ReserveEnrollment(rpc, session))
@@ -222,7 +230,7 @@ namespace Landoria.CharacterVault
                 _sessions.Remove(rpc);
                 Reject(rpc, newCharacter ? "This Steam account already has a character."
                     : "Create a new character before joining this server.");
-                return;
+                return false;
             }
 
             session.Enrolling = true;
@@ -235,6 +243,7 @@ namespace Landoria.CharacterVault
                 response.Write(item.Quantity);
             }
             rpc.Invoke(AdmissionRpc, response);
+            return true;
         }
 
         private void SendDownload(ZRpc rpc, VaultSession session, byte[] data)
@@ -504,6 +513,12 @@ namespace Landoria.CharacterVault
         {
             CharacterVaultPlugin.Log.LogWarning($"CharacterVault rejected {rpc.GetSocket().GetHostName()}: {message}");
             rpc.Invoke("Error", (int)ZNet.ConnectionStatus.ErrorConnectFailed);
+            ZNetPeer peer = ZNet.instance?.GetPeers()
+                .FirstOrDefault(candidate => ReferenceEquals(candidate.m_rpc, rpc));
+            if (peer != null)
+            {
+                ZNet.instance.Disconnect(peer);
+            }
         }
 
         private static bool IsReady(ZNetPeer peer)
@@ -533,6 +548,7 @@ namespace Landoria.CharacterVault
         internal string Name { get; }
         internal bool NewCharacter { get; }
         internal bool Verified { get; set; }
+        internal bool Admitted { get; set; }
         internal bool Enrolling { get; set; }
         internal long Revision { get; set; }
     }
