@@ -35,6 +35,7 @@ namespace Landoria.Socialize
             nextStateRequest = 0f;
             GroupStorage.Reset();
             GroupState.ClearAll();
+            DecayProtection.Reset();
         }
 
         internal static bool IsLocalPlayerInGroup()
@@ -110,6 +111,7 @@ namespace Landoria.Socialize
             }
             GroupStorage.Reset();
             GroupState.ClearAll();
+            DecayProtection.Reset();
         }
 
         private static void RegisterRpcs(ZRoutedRpc rpc)
@@ -399,6 +401,7 @@ namespace Landoria.Socialize
                     GroupMapSharing.WritePosition(response, member.Key);
                 }
             }
+            DecayProtection.WriteState(response);
             ZRoutedRpc.instance.InvokeRoutedRPC(peer, ResponseRpc, response);
         }
 
@@ -415,6 +418,7 @@ namespace Landoria.Socialize
                 GroupState.LocalMembers.Add(playerId);
                 GroupMapSharing.ReadPosition(package, playerId, playerName);
             }
+            DecayProtection.ReadState(package);
         }
 
         private static void ShowInvite(string inviterId, string inviterName)
@@ -506,7 +510,8 @@ namespace Landoria.Socialize
         {
             foreach (KeyValuePair<long, long> mapping in GroupState.PeerPlayers)
             {
-                if (mapping.Value == playerId)
+                if (mapping.Value == playerId && ZNet.instance != null &&
+                    ZNet.instance.GetPeer(mapping.Key) is ZNetPeer peer && peer.IsReady())
                 {
                     return mapping.Key;
                 }

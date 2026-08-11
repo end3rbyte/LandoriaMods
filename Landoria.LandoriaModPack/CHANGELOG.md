@@ -2,7 +2,7 @@
 
 ## 1.0.8
 
-- Add SlowDecay with a shared slowdown setting for rain wear and fuel consumption.
+- Update Socialize so player-built structures and fuel are preserved while their creator and group are offline.
 
 ## 1.0.7
 
