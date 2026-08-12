@@ -1,4 +1,5 @@
 using HarmonyLib;
+using Splatform;
 using TMPro;
 using UnityEngine;
 
@@ -47,6 +48,51 @@ namespace Landoria.CharacterVault
             }
 
             return CharacterVaultPlugin.Transfers?.Approve(rpc) == true;
+        }
+    }
+
+    [HarmonyPatch(typeof(ZNet), "IsAllowed")]
+    internal static class CharacterVaultPermittedListReasonPatch
+    {
+        private static void Postfix(
+            string hostName,
+            string playerName,
+            SyncedList ___m_bannedList,
+            SyncedList ___m_permittedList,
+            Platform ___m_steamPlatform,
+            bool __result)
+        {
+            if (__result || IsListed(___m_bannedList, hostName, ___m_steamPlatform) ||
+                ___m_bannedList.Contains(playerName) || ___m_permittedList.Count() == 0 ||
+                IsListed(___m_permittedList, hostName, ___m_steamPlatform))
+            {
+                return;
+            }
+
+            CharacterVaultRejection.RecordPermittedListRejection(hostName);
+        }
+
+        private static bool IsListed(SyncedList list, string value, Platform steamPlatform)
+        {
+            if (!PlatformUserID.TryParse(value, out PlatformUserID platformId))
+            {
+                platformId = new PlatformUserID(steamPlatform, value);
+            }
+
+            return list.Contains(platformId.ToString()) ||
+                platformId.m_platform == steamPlatform && list.Contains(platformId.m_userID.ToString());
+        }
+    }
+
+    [HarmonyPatch(typeof(ZNet), "RPC_PeerInfo")]
+    internal static class CharacterVaultPermittedListMessagePatch
+    {
+        private static void Postfix(ZRpc rpc)
+        {
+            if (ZNet.instance?.IsServer() == true)
+            {
+                CharacterVaultRejection.SendPermittedListRejection(rpc);
+            }
         }
     }
 

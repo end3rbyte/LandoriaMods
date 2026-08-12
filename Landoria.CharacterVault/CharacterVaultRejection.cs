@@ -11,6 +11,8 @@ namespace Landoria.CharacterVault
         private const float DisconnectFallbackSeconds = 2f;
         private static readonly Dictionary<ZRpc, float> Deadlines =
             new Dictionary<ZRpc, float>();
+        private static readonly HashSet<string> PermittedListRejections =
+            new HashSet<string>();
         private static string _clientMessage;
         private static float _clientDeadline;
         private static bool _returnToMenu;
@@ -34,6 +36,21 @@ namespace Landoria.CharacterVault
             rpc.Invoke(MessageRpc, message);
         }
 
+        internal static void RecordPermittedListRejection(string hostName)
+        {
+            PermittedListRejections.Add(hostName);
+        }
+
+        internal static void SendPermittedListRejection(ZRpc rpc)
+        {
+            string hostName = rpc?.GetSocket()?.GetHostName();
+            if (hostName != null && PermittedListRejections.Remove(hostName))
+            {
+                Reject(rpc, "Your Steam account is not registered for this server. " +
+                    "Register it on Landoria, then try again.");
+            }
+        }
+
         internal static bool TryGetMessage(out string message)
         {
             message = _clientMessage;
@@ -54,6 +71,7 @@ namespace Landoria.CharacterVault
         internal static void Clear()
         {
             Deadlines.Clear();
+            PermittedListRejections.Clear();
             ClearClient();
         }
 
