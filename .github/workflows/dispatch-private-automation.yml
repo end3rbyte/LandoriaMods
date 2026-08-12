@@ -6,8 +6,8 @@ on:
     branches: [main]
     paths:
       - .github/workflows/dispatch-private-automation.yml
-      - .draft-rollbacks/*.json
       - Landoria.*/**
+      - LandoriaGamePack/**
 
 permissions:
   contents: read
@@ -35,8 +35,3 @@ jobs:
             -f "client_payload[before]=$BEFORE_SHA" \
             -f "client_payload[after]=$AFTER_SHA" \
             -f "client_payload[message]=$COMMIT_MESSAGE"
-          gh api --method POST \
-            repos/landoria-gaming/LandoriaModsAutomation/dispatches \
-            -f event_type=public-mods-draft-rollbacks \
-            -f "client_payload[before]=$BEFORE_SHA" \
-            -f "client_payload[after]=$AFTER_SHA"
