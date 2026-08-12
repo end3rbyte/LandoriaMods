@@ -11,6 +11,7 @@ namespace Landoria.CharacterVault
     internal sealed class VaultStorage
     {
         private const string CurrentFile = "current.fch";
+        private const string BackupDirectory = "backups";
         private readonly string _root = Path.Combine(Paths.ConfigPath, "CharacterVault", "accounts");
 
         internal bool TryRead(string accountId, long characterId, out byte[] data, out long revision)
@@ -44,11 +45,20 @@ namespace Landoria.CharacterVault
             WriteDurably(next, data);
             if (File.Exists(current))
             {
-                File.Copy(current, Path.Combine(directory, "previous.fch"), true);
+                PreserveBackup(directory, current);
             }
 
             Replace(next, current);
             WriteMetadata(directory, name, hash, revision);
+        }
+
+        private static void PreserveBackup(string characterDirectory, string current)
+        {
+            string directory = Path.Combine(characterDirectory, BackupDirectory);
+            Directory.CreateDirectory(directory);
+            string timestamp = DateTime.UtcNow.ToString(
+                "yyyyMMdd'T'HHmmssfffffff'Z'", CultureInfo.InvariantCulture);
+            File.Copy(current, Path.Combine(directory, $"current-{timestamp}.fch"));
         }
 
         private string AccountPath(string accountId)
