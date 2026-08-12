@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- List every character-save trigger in the Thunderstore player documentation.
 - Clarify player behavior, save guarantees, configuration, and graceful shutdown documentation.
 - Route the in-game Quit action through the confirmed voluntary-disconnect save flow.
 - Acknowledge validated voluntary-disconnect uploads immediately, then complete the durable server commit asynchronously.

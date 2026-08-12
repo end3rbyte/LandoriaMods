@@ -4,16 +4,21 @@ CharacterVault keeps your Valheim character on the server. When you join, the
 server loads its trusted copy, preventing items from being imported or duplicated
 with another save or a restored backup.
 
-## Player experience
+## When characters are saved
 
 | Event | What CharacterVault does |
 |---|---|
-| Join a server | Loads your saved server character before you enter the world. |
-| World save | Saves your connected character with the world. |
+| First enrollment | Validates and saves a newly created character before allowing it into the world. |
+| Automatic world save | Saves every connected character with the world. |
+| Manual `save` command | Saves the world and every connected character. |
 | Log out | Sends and validates a final character save before disconnecting. |
 | Quit from the menu | Saves your character before closing Valheim. |
-| Server kick | Saves your character before the server disconnects you. |
+| Server kick | Saves the affected character before the server disconnects it. |
+| Graceful server stop or restart | Saves all connected characters before the final world save and shutdown. |
 | Client crash or lost network | Cannot request a final save because the connection is already lost. |
+
+When you join again, CharacterVault loads the latest trusted server copy before
+your character enters the world.
 
 New characters must be created during the current game session. Depending on
 the server settings, an account may use one or several characters and may
