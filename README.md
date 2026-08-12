@@ -72,14 +72,6 @@ released source versions, deletes only matching unreleased private packages,
 and reconciles test storage. Released packages and versions already present on
 Thunderstore can never be deleted by this workflow.
 
-The persistent Vault Agent on `dev` must render the Thunderstore API token as
-`TCLI_AUTH_TOKEN` in
-`/var/lib/landoria-secrets/thunderstore-publish.env`. The existing internal
-repository API key remains in
-`/var/lib/landoria-secrets/mod-repository-upload.env`.
-
-Install or refresh the Thunderstore Vault Agent template on `dev` with:
-
-```bash
-sudo ./deploy/dev/install-publish-credential.sh
-```
+Release and deployment automation is maintained privately. The public
+repository contains only a minimal event relay; operational workflows, scripts,
+and credential provisioning are not part of the public source tree.
