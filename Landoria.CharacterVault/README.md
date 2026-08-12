@@ -1,60 +1,57 @@
 # CharacterVault
 
 CharacterVault stores authoritative Valheim character profiles on the server.
-For a voluntary logout or application quit, the client waits for the server to
-receive and validate one final profile save before allowing the action to
-continue. The server then commits the accepted profile asynchronously. Client
-crashes and network failures cannot use this handshake.
-Client and server logs include the same save request identifier and accepted
-revision so each profile upload and commit can be correlated across both sides.
-Server-side kicks, including administrator, ban-list, allow-list, and inactivity
-kicks, are also delayed until this final save is confirmed.
-Once a character is enrolled, the server copy is applied before the player
-enters the world. This prevents players from bringing items from other servers
-or duplicating items by restoring a local backup.
+The server applies its saved profile before a player enters the world, preventing
+local backups or characters from other servers from replacing trusted state.
 
-## Valheim compatibility
+## Behavior
 
-| Valheim channel | Version | Compatibility |
+| Event | Character save | Completion rule |
+|---|---|---|
+| Initial enrollment | Yes | The profile must be validated and committed before admission. |
+| World or manual save | Yes | The server acknowledges after the durable commit. |
+| Voluntary logout | Yes | The server acknowledges after complete receipt and validation, then commits asynchronously. |
+| In-game Quit action | Yes | `Menu.QuitGame` is delayed until the voluntary-save acknowledgement arrives. |
+| Window close or Alt+F4 | Yes | `Application.wantsToQuit` provides the same fallback flow. |
+| Server kick | Yes | The kick waits for the durable final commit. |
+| Graceful server stop or restart | Yes | Shutdown waits for connected-character commits before the vanilla world save. |
+| Client crash or network loss | No final request | The connection is already unavailable. |
+
+Client and server logs include the request identifier and revision. Voluntary
+disconnect logs distinguish profile acceptance from the later durable commit.
+
+## Guarantees
+
+- Validates bounded fragmented transfers with SHA-256 and profile identity checks.
+- Writes profiles through atomic replacement and retains the previous revision.
+- Accepts a new character only when it was created during the current game session.
+- Requires matching CharacterVault DLLs on client and server through ModSentry.
+- Supports local and Steam Cloud profiles on stable and public-test Valheim.
+- Grants configured starting items once, during initial enrollment.
+
+An acknowledgement for a voluntary disconnect means the complete profile was
+received and validated. The durable write follows asynchronously; a server crash
+in that brief interval can lose the accepted revision. Enrollment, ordinary saves,
+server kicks, and shutdowns retain durable-commit acknowledgement semantics.
+
+## Compatibility
+
+| Valheim channel | Version | Status |
 |---|---:|---|
 | Current release | `0.221.12` | Compatible |
 | Public Test | `0.221.13` | Compatible |
 
-## Features
+## Installation
 
-- **Authoritative server profiles:** The server stores and restores enrolled
-  characters. Modified or restored local copies cannot replace the server
-  profile.
-- **New-character enrollment:** A character without an existing server profile
-  is accepted only when it was created during the current game session. This
-  prevents an existing character from another server from being enrolled.
-- **Configurable character limit:** A server can allow one character per Steam
-  ID or multiple characters per Steam ID.
-- **Configurable starting items:** The server can grant configured items and
-  quantities once, when a new character is first enrolled.
-- **World-synchronized saves:** Connected characters are saved with world
-  saves, on disconnect, and during graceful server shutdowns and restarts. The
-  shutdown coordinator waits for pending character saves before allowing the
-  server to exit.
-- **Exact client and server versions:** CharacterVault requires ModSentry to
-  verify that every client has the same CharacterVault DLL as the server before
-  enrollment or profile transfer begins.
+| Client | Server |
+|---|---|
+| Required | Required |
 
-## Storage guarantees
-
-- Creates no character data until ModSentry and the Valheim peer handshake
-  accept the client.
-- Commits a new character only after its first complete profile is validated
-  and written durably.
-- Keeps the existing `character_vault.drp` graceful shutdown protocol.
-- Logs every successful character profile commit with its character name and
-  revision.
-- Uses bounded fragmented transfers, SHA-256 validation, atomic replacement,
-  and a previous revision.
-- Supports the stable and public test Valheim save APIs for local and Steam
-  Cloud profiles.
+Install matching CharacterVault and ModSentry versions on every client and server.
 
 ## Configuration
+
+The server creates `BepInEx/config/Landoria.CharacterVault.cfg`:
 
 ```ini
 [Characters]
@@ -70,28 +67,24 @@ Starting items use comma-separated prefab and quantity pairs:
 StartingItems = hammer:1,wood:10,stone:10
 ```
 
-Command-line switches override BepInEx settings:
+Command-line switches override the configuration file:
 
-```text
---charactervault-allow-multiple-characters true
---charactervault-starting-items hammer:1,wood:10,stone:10
-```
+| Switch | Example |
+|---|---|
+| `--charactervault-allow-multiple-characters` | `--charactervault-allow-multiple-characters true` |
+| `--charactervault-starting-items` | `--charactervault-starting-items hammer:1,wood:10,stone:10` |
 
-The server configuration is authoritative. Starting items are granted exactly
-once during initial enrollment. When multiple characters are disabled, an
-account that already has an enrolled character cannot enroll another one.
+When multiple characters are disabled, an account with an enrolled character
+cannot enroll another one.
 
-## Graceful server shutdown and restart
+## Graceful server stop and restart
 
-CharacterVault watches for `character_vault.drp` in the dedicated server's
-working directory. The file must contain the Valheim process ID. When it
-receives a valid request, CharacterVault saves connected characters, waits for
-the transfers to be committed, and then continues with Valheim's normal world
-save and shutdown. It continues the shutdown after a 90-second character-save
-timeout if a client does not respond.
+CharacterVault watches for `character_vault.drp` in the server working directory.
+The file must contain the current Valheim process ID. A valid request saves
+connected characters, waits up to 90 seconds for their commits, then continues
+with the vanilla world save and shutdown.
 
-For a systemd-managed server, create a stop helper such as
-`character-vault-stop.sh`:
+Example systemd stop helper:
 
 ```bash
 #!/usr/bin/env bash
@@ -119,8 +112,7 @@ while kill -0 "$valheim_pid" 2>/dev/null; do
 done
 ```
 
-Make the helper executable, then configure the service with the helper path and
-the same working directory used to start Valheim:
+Configure the service with the same working directory used to start Valheim:
 
 ```ini
 [Service]
@@ -129,28 +121,9 @@ ExecStop=/path/to/character-vault-stop.sh $MAINPID /path/to/server-working-direc
 TimeoutStopSec=120
 ```
 
-The helper writes the request through an atomic rename so CharacterVault never
-reads a partial process ID. `TimeoutStopSec=120` gives the plugin's 90-second
-save timeout enough time to finish the vanilla shutdown. After reloading the
-unit, both `systemctl stop` and `systemctl restart` use the graceful path.
-
-## Installation
-
-| Client required | Server required |
-|---|---|
-| Yes | Yes |
-
-Install matching CharacterVault and ModSentry versions on every client and server.
-
-## Save API compatibility
-
-CharacterVault supports both the stable and public test save APIs. Valheim
-changes the signatures of its public save helpers between these releases, so a
-narrow runtime adapter selects only the available file writer, atomic replace,
-character path, cache invalidation signatures, and named local save source. An
-old-format profile is migrated by Valheim when it is saved on the public test
-version. The migrated profile is not downgraded to the old format. This
-preserves local and Steam Cloud behavior without inspecting private game state.
+Make the helper executable and reload systemd. Atomic rename prevents the plugin
+from reading a partial request, and the 120-second service timeout accommodates
+the 90-second character-save limit plus vanilla shutdown.
 
 ## Contact
 
