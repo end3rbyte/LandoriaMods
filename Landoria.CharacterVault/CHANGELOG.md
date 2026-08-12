@@ -2,6 +2,7 @@
 
 ## 1.0.7
 
+- Resolve the local save source by name across stable and public test enum layouts.
 - Document Valheim version compatibility
 - Support Valheim save API variants
 - Fix CharacterVault save API compatibility [skip draft publish]

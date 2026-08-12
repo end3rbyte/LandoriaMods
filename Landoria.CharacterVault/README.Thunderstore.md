@@ -18,6 +18,7 @@ CharacterVault stores authoritative Valheim character profiles on the server and
 - Saves characters with world saves and graceful server shutdowns.
 - Uses validated, atomic, revisioned server storage.
 - Supports stable and public test Valheim save APIs, including Steam Cloud profiles.
+- Migrates old-format profiles forward without downgrading new-format profiles.
 
 ## Installation
 
