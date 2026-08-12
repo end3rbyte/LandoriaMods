@@ -12,7 +12,7 @@ namespace Landoria.ModSentry
         internal const int ProtocolVersion = 1;
         private const string PluginGuid = "Landoria.ModSentry";
         private const string PluginName = "Landoria.ModSentry";
-        private const string PluginVersion = "1.0.3";
+        private const string PluginVersion = "1.0.4";
 
         internal static ModLog Log { get; private set; }
         internal static PluginPolicy Policy { get; private set; }
@@ -38,6 +38,7 @@ namespace Landoria.ModSentry
         private void Update()
         {
             PendingDisconnects.Tick();
+            ClientMessage.Tick();
         }
 
         private void OnDestroy()

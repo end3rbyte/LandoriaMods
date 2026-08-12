@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TMPro;
+using UnityEngine;
 
 namespace Landoria.ModSentry
 {
@@ -52,9 +53,24 @@ namespace Landoria.ModSentry
     {
         private static void Postfix(TMP_Text ___m_connectionFailedError)
         {
-            if (ClientMessage.TryTake(out string message))
+            if (ClientMessage.TryGet(out string message))
             {
                 ___m_connectionFailedError.text = message;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(FejdStartup), "Start")]
+    internal static class ShowRejectionAfterMenuLoadPatch
+    {
+        private static void Postfix(
+            GameObject ___m_connectionFailedPanel,
+            TMP_Text ___m_connectionFailedError)
+        {
+            if (ClientMessage.TryGet(out string message))
+            {
+                ___m_connectionFailedError.text = message;
+                ___m_connectionFailedPanel.SetActive(true);
             }
         }
     }

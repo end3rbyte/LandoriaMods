@@ -12,10 +12,10 @@ Strictly validates required and optional client mods before a Valheim server acc
 - BepInEx GUID validation
 - complete version validation
 - mandatory SHA-256 validation
-- acknowledged player-facing mismatch messages with the affected mod and expected version
+- clear mismatch messages at the main menu with the affected mod and expected version
 - complete server-side diagnostics
 
-All other client mods are rejected.
+All other client mods are rejected. If a mod does not match, Valheim returns to the main menu and explains what must be updated instead of remaining on a black loading screen.
 
 [Read the complete documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.ModSentry/README.md).
 
