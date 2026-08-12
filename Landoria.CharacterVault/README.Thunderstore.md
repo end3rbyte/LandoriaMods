@@ -1,6 +1,6 @@
 # CharacterVault
 
-CharacterVault keeps each character on the server. When a player joins, the
+CharacterVault saves characters on the server. When a player joins, the
 server loads its saved copy instead of trusting a local save. This prevents
 players from importing or duplicating items with another save or a backup.
 
@@ -28,8 +28,8 @@ players from importing or duplicating items with another save or a backup.
 |---|---|
 | Yes | Yes |
 
-Install CharacterVault and ModSentry on the server and on every client. Everyone
-must use the same versions.
+Install CharacterVault and Landoria.ModSentry on the server and on every client.
+Everyone must use the same versions.
 
 Server owners can configure the number of characters, starting items, and
 graceful shutdowns. See the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.CharacterVault/README.md).
