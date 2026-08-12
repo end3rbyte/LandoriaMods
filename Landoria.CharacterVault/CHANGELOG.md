@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Refine CharacterVault Thunderstore wording
+- Simplify CharacterVault Thunderstore README
+- Restore CharacterVault server configuration
 - Document CharacterVault features (#102)
 - Use transparent CharacterVault icon (#101)
 - Revert "Clean CharacterVault icon contour (#99)" (#100)
