@@ -12,7 +12,7 @@ The library is a build-time project dependency. Players and server operators do 
 
 ## Development
 
-All plugin projects receive the project reference and ILRepack package through the repository-level `Directory.Build.props`. Each standalone plugin embeds its own copy of SharedLib.
+The private build automation supplies the shared project reference and ILRepack configuration when packaging the public source. Each standalone plugin embeds its own copy of SharedLib.
 
 ## Contact
 
