@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased
+## 1.0.2
 
-- Update repository URLs after organization move
+- Update thunderstore readme
 - Log mod unload lifecycle
 - Correct mod package metadata
 - Update mod icons and metadata

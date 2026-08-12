@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased
+## 1.0.4
 
-- Update repository URLs after organization move
+- Update thunderstore readme
 - Revert unused mod drafts [skip draft publish]
 
 ## 1.0.3
