@@ -2,6 +2,13 @@
 
 Disconnects players who remain motionless and silent beyond a configurable timeout.
 
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
+
 ## Features
 
 - Keeps inactivity detection authoritative on the server.

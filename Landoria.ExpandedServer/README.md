@@ -2,6 +2,13 @@
 
 Raises Valheim's server capacity to a configurable player limit.
 
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
+
 ## Features
 
 - Increases server capacity to up to 100 players, with a default limit of 20.

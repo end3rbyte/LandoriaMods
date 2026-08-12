@@ -2,6 +2,13 @@
 
 Allows public or crossplay Valheim servers to start with an empty password.
 
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
+
 ## Features
 
 - Accepts an empty password in the server creation screen.

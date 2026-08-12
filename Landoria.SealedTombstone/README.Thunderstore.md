@@ -2,6 +2,13 @@
 
 Protects recent tombstones from unauthorized players while allowing owner-approved access.
 
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
+
 ## Features
 
 - Locks recent tombstones to their owners.

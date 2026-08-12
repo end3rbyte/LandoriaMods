@@ -2,6 +2,13 @@
 
 `Landoria.SharedLib` contains the common runtime infrastructure used by every Landoria plugin.
 
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
+
 | Component | Purpose |
 |---|---|
 | `LandoriaPlugin` | Initializes and removes Harmony patches belonging to the concrete plugin namespace. |

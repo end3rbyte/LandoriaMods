@@ -2,6 +2,13 @@
 
 Automatically resumes the last local or multiplayer Valheim session.
 
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
+
 ## Features
 
 - Selects the remembered character automatically.

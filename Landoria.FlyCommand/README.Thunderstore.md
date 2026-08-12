@@ -2,6 +2,13 @@
 
 Uses Valheim's native flight movement in server-authorized worlds without enabling debug mode, developer commands, or administrator access.
 
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
+
 ## Features
 
 - Requires an explicit authorization response from the connected server.

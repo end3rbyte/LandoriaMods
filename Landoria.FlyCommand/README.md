@@ -2,6 +2,13 @@
 
 Allows Valheim's native player flight behavior in authorized worlds without enabling debug mode, developer commands, or administrator access.
 
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
+
 ## Authorization
 
 - The client starts denied and explicitly requests authorization from the connected server.

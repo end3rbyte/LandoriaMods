@@ -2,6 +2,13 @@
 
 Returns a boss trophy after its Sacrificial Stone power is selected.
 
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
+
 ## Features
 
 - Starts a five-second timer after selecting a guardian power.

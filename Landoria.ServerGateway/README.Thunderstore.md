@@ -2,6 +2,13 @@
 
 Exposes live Valheim server information and authenticated commands through a local HTTP gateway.
 
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
+
 ## Features
 
 - Reports server and world names, connected players and player capacity.

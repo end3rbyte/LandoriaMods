@@ -2,6 +2,13 @@
 
 Keeps equipable items after death while moving other inventory items to the tombstone.
 
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
+
 ## Features
 
 - Keeps weapons, tools, armor, shields, ammunition, utility items, and trinkets.
