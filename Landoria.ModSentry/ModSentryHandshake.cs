@@ -65,7 +65,9 @@ namespace Landoria.ModSentry
                 .FirstOrDefault(candidate => ReferenceEquals(candidate.m_rpc, rpc));
             if (peer != null)
             {
-                ZNet.instance.Kick(peer.m_socket.GetHostName());
+                ModSentryPlugin.Log.LogDebug(
+                    "Disconnecting the rejected pre-admission peer directly.");
+                ZNet.instance.Disconnect(peer);
             }
         }
 
