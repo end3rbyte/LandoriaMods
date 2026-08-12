@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.10
+
+- Prevent exit-save interception before a player enters the world
+- Limit final exit-save waits to 10 seconds
+
 ## 1.0.9
 
 - Display the server's admission rejection reason and return rejected players to the main menu instead of leaving them on a black screen.

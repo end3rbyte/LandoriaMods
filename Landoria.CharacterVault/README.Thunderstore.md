@@ -12,7 +12,7 @@ with another save or a restored backup.
 | Automatic world save | Saves every connected character with the world. |
 | Manual `save` command | Saves the world and every connected character. |
 | Log out | Sends and validates a final character save before disconnecting. |
-| Quit from the menu | Saves your character before closing Valheim. |
+| Quit from the menu | After entering the world, waits at most 10 seconds to save your character before closing Valheim. |
 | Server kick | Saves the affected character before the server disconnects it. |
 | Graceful server stop or restart | Saves all connected characters before the final world save and shutdown. |
 | Client crash or lost network | Cannot request a final save because the connection is already lost. |

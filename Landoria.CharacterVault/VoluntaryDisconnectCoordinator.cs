@@ -6,7 +6,7 @@ namespace Landoria.CharacterVault
 {
     internal sealed class VoluntaryDisconnectCoordinator : IDisposable
     {
-        private const float ConfirmationTimeoutSeconds = 30f;
+        private const float ConfirmationTimeoutSeconds = 10f;
         private bool _allowApplicationQuit;
         private bool _allowLogout;
         private Game _game;
@@ -14,6 +14,7 @@ namespace Landoria.CharacterVault
         private bool _logoutStartScene;
         private string _requestId;
         private VoluntaryExitKind _exitKind;
+        private bool _playerEnteredWorld;
 
         internal VoluntaryDisconnectCoordinator()
         {
@@ -47,22 +48,19 @@ namespace Landoria.CharacterVault
 
             CharacterVaultPlugin.Log.LogMessage(
                 $"Final voluntary disconnect save {requestId} accepted at revision {revision}.");
-            VoluntaryExitKind exitKind = _exitKind;
-            Game game = _game;
-            bool logoutSave = _logoutSave;
-            bool logoutStartScene = _logoutStartScene;
-            ClearPendingRequest();
             CharacterVaultPlugin.Transfers.SuppressRedundantDisconnectUpload();
-            if (exitKind == VoluntaryExitKind.ApplicationQuit)
-            {
-                _allowApplicationQuit = true;
-                CharacterVaultPlugin.Log.LogInfo("Allowing application quit after the confirmed save.");
-                Application.Quit();
-                return;
-            }
+            CompletePendingExit("after the confirmed save");
+        }
 
-            _allowLogout = true;
-            game.Logout(logoutSave, logoutStartScene);
+        internal void RecordConnectionStarted()
+        {
+            _playerEnteredWorld = false;
+            ClearPendingRequest();
+        }
+
+        internal void RecordPlayerSpawned()
+        {
+            _playerEnteredWorld = true;
         }
 
         internal void RecordConnectionLost()
@@ -75,6 +73,7 @@ namespace Landoria.CharacterVault
             CharacterVaultPlugin.Log.LogWarning(
                 $"Connection was lost while final save {_requestId} was pending; confirmation is impossible.");
             ClearPendingRequest();
+            _playerEnteredWorld = false;
         }
 
         internal bool AllowMenuQuit()
@@ -112,10 +111,13 @@ namespace Landoria.CharacterVault
 
         private bool Start(VoluntaryExitKind kind, Game game, bool save, bool startScene)
         {
+            if (!_playerEnteredWorld)
+            {
+                return false;
+            }
+
             if (_requestId != null)
             {
-                CharacterVaultPlugin.Log.LogWarning(
-                    $"Ignored another voluntary exit request while final save {_requestId} is pending.");
                 return true;
             }
 
@@ -150,9 +152,29 @@ namespace Landoria.CharacterVault
             }
 
             CharacterVaultPlugin.Log.LogError(
-                $"Canceled voluntary {Describe(_exitKind)} because final save {requestId} " +
+                $"Allowing voluntary {Describe(_exitKind)} because final save {requestId} " +
                 $"was not confirmed within {ConfirmationTimeoutSeconds:0} seconds.");
+            CompletePendingExit("after the confirmation timeout");
+        }
+
+        private void CompletePendingExit(string reason)
+        {
+            VoluntaryExitKind exitKind = _exitKind;
+            Game game = _game;
+            bool logoutSave = _logoutSave;
+            bool logoutStartScene = _logoutStartScene;
             ClearPendingRequest();
+            if (exitKind == VoluntaryExitKind.ApplicationQuit)
+            {
+                _allowApplicationQuit = true;
+                CharacterVaultPlugin.Log.LogInfo($"Allowing application quit {reason}.");
+                Application.Quit();
+                return;
+            }
+
+            _allowLogout = true;
+            CharacterVaultPlugin.Log.LogInfo($"Allowing logout {reason}.");
+            game.Logout(logoutSave, logoutStartScene);
         }
 
         private void ClearPendingRequest()
