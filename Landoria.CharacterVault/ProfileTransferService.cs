@@ -84,7 +84,7 @@ namespace Landoria.CharacterVault
             }
 
             session.Verified = true;
-            if (_storage.TryRead(session.AccountId, session.CharacterId,
+            if (_storage.TryRead(session.AccountId, session.CharacterId, session.Name,
                 out byte[] data, out long revision))
             {
                 session.Revision = revision;
@@ -285,7 +285,7 @@ namespace Landoria.CharacterVault
 
         private bool AdmitEnrollment(ZRpc rpc, VaultSession session, bool newCharacter)
         {
-            if (!newCharacter || !_storage.CanEnroll(session.AccountId, session.CharacterId,
+            if (!newCharacter || !_storage.CanEnroll(session.AccountId, session.Name,
                 CharacterVaultPlugin.Settings.AllowMultipleCharacters) || !ReserveEnrollment(rpc, session))
             {
                 _sessions.Remove(rpc);
@@ -477,11 +477,10 @@ namespace Landoria.CharacterVault
             byte[] data = transfer.Complete(transferId);
             ValidateProfile(session, data);
             long revision = session.Revision + 1;
-            string hash = VaultStorage.Hash(data);
             if (session.Enrolling)
             {
                 _storage.Commit(session.AccountId, session.CharacterId, session.Name,
-                    data, hash, revision);
+                    data);
                 ConfirmCommit(rpc, session, transfer.RequestId, revision);
                 return;
             }
@@ -493,7 +492,7 @@ namespace Landoria.CharacterVault
                 ConfirmReceipt(rpc, session, transfer.RequestId, revision);
             }
             ThreadPool.QueueUserWorkItem(_ => Commit(rpc, session, transfer.RequestId,
-                data, hash, revision, voluntaryDisconnect));
+                data, revision, voluntaryDisconnect));
         }
 
         private void ConfirmReceipt(ZRpc rpc, VaultSession session, string requestId, long revision)
@@ -506,12 +505,12 @@ namespace Landoria.CharacterVault
         }
 
         private void Commit(ZRpc rpc, VaultSession session, string requestId, byte[] data,
-            string hash, long revision, bool receiptConfirmed)
+            long revision, bool receiptConfirmed)
         {
             try
             {
                 _storage.Commit(session.AccountId, session.CharacterId, session.Name,
-                    data, hash, revision);
+                    data);
                 _unityContext.Post(_ =>
                 {
                     if (receiptConfirmed)

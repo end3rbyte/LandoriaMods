@@ -19,8 +19,8 @@ with another save or a restored backup.
 
 When you join again, CharacterVault loads the latest trusted server copy before
 your character enters the world.
-The server stores profiles as `Steam_<id>_<character>.fch` and retains every previous revision
-in a timestamped `backups/` file.
+The server stores profiles as `characters_local/Steam_<id>_<character>.fch` and retains every
+previous revision in a timestamped `characters_local/backups/` file.
 If a character cannot join, Valheim returns to the main menu and explains why.
 
 New characters must be created during the current game session. Depending on
