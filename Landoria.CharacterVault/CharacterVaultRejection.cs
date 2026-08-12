@@ -46,8 +46,7 @@ namespace Landoria.CharacterVault
             string hostName = rpc?.GetSocket()?.GetHostName();
             if (hostName != null && PermittedListRejections.Remove(hostName))
             {
-                Reject(rpc, "Your Steam account is not registered for this server. " +
-                    "Register it on Landoria, then try again.");
+                Reject(rpc, "Steam account not registered for this server.");
             }
         }
 
