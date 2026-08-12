@@ -23,8 +23,8 @@ disconnect logs distinguish profile acceptance from the later durable commit.
 ## Guarantees
 
 - Validates bounded fragmented transfers with SHA-256 and profile identity checks.
-- Writes profiles through atomic replacement and retains every previous revision under
-  `backups/current-<UTC timestamp>.fch`.
+- Writes profiles as `Steam_<id>_<character>.fch` through atomic replacement and retains every
+  previous revision under `backups/Steam_<id>_<character>_<UTC timestamp>.fch`.
 - Accepts a new character only when it was created during the current game session.
 - Requires matching CharacterVault DLLs on client and server through ModSentry.
 - Supports local and Steam Cloud profiles on stable and public-test Valheim.

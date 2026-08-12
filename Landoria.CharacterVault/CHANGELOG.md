@@ -7,6 +7,7 @@
 - Reset interrupted client uploads between connections so a rejected attempt cannot delay later logout saves.
 - Explain when a connection is refused because the Steam account is not registered for the server.
 - Retain every previous character save in a timestamped `backups/` file.
+- Name current profiles and backups with the Steam account and character name.
 
 ## 1.0.9
 
