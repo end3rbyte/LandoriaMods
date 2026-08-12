@@ -11,8 +11,8 @@ local backups or characters from other servers from replacing trusted state.
 | Initial enrollment | Yes | The profile must be validated and committed before admission. |
 | World or manual save | Yes | The server acknowledges after the durable commit. |
 | Voluntary logout | Yes | The server acknowledges after complete receipt and validation, then commits asynchronously. |
-| In-game Quit action | Yes | `Menu.QuitGame` is delayed until the voluntary-save acknowledgement arrives. |
-| Window close or Alt+F4 | Yes | `Application.wantsToQuit` provides the same fallback flow. |
+| In-game Quit action | Yes | After entering the world, `Menu.QuitGame` waits at most 10 seconds for the voluntary-save acknowledgement. |
+| Window close or Alt+F4 | Yes | After entering the world, `Application.wantsToQuit` uses the same bounded fallback flow. |
 | Server kick | Yes | The kick waits for the durable final commit. |
 | Graceful server stop or restart | Yes | Shutdown waits for connected-character commits before the vanilla world save. |
 | Client crash or network loss | No final request | The connection is already unavailable. |

@@ -135,6 +135,7 @@ namespace Landoria.CharacterVault
     {
         private static void Postfix()
         {
+            CharacterVaultPlugin.DisconnectCoordinator?.RecordPlayerSpawned();
             CharacterVaultPlugin.Transfers?.GrantStartingItems();
         }
     }

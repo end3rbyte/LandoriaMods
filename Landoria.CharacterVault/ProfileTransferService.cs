@@ -250,6 +250,7 @@ namespace Landoria.CharacterVault
 
         private void RegisterClient(ZRpc rpc)
         {
+            CharacterVaultPlugin.DisconnectCoordinator?.RecordConnectionStarted();
             CharacterVaultRejection.RegisterClient(rpc);
             rpc.Register<ZPackage>(AdmissionRpc, ReceiveAdmission);
             rpc.Register<ZPackage>(DownloadBeginRpc, ReceiveDownloadBegin);
