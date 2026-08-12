@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Support stable and public test Valheim hash APIs.
+- Support Socialize hash API variants
 
 ## 1.0.6
 
