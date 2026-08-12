@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Fix Valheim public test compatibility
+- Support both stable and public test Valheim releases.
 
 ## 1.0.2
 

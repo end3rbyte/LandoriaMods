@@ -7,10 +7,29 @@ namespace Landoria.AfkDetector
     internal static class ChatActivityPatch
     {
         private static readonly int ChatMessageHash =
-            StringExtensionMethods.GetStableHashCode("ChatMessage");
-        private static readonly int SayHash = StringExtensionMethods.GetStableHashCode("Say");
+            ComputeStableHash("ChatMessage");
+        private static readonly int SayHash = ComputeStableHash("Say");
         private static readonly int GroupRequestHash =
-            StringExtensionMethods.GetStableHashCode("Landoria_Social_GroupRequest");
+            ComputeStableHash("Landoria_Social_GroupRequest");
+
+        private static int ComputeStableHash(string value)
+        {
+            unchecked
+            {
+                int firstHash = 5381;
+                int secondHash = firstHash;
+                for (int index = 0; index < value.Length && value[index] != '\0'; index += 2)
+                {
+                    firstHash = ((firstHash << 5) + firstHash) ^ value[index];
+                    if (index == value.Length - 1 || value[index + 1] == '\0')
+                    {
+                        break;
+                    }
+                    secondHash = ((secondHash << 5) + secondHash) ^ value[index + 1];
+                }
+                return firstHash + secondHash * 1566083941;
+            }
+        }
 
         private static void Prefix(ZPackage pkg)
         {
