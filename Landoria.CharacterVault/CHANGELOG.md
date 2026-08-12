@@ -4,6 +4,7 @@
 
 - Prevent exit-save interception before a player enters the world
 - Limit final exit-save waits to 10 seconds
+- Reset interrupted client uploads between connections so a rejected attempt cannot delay later logout saves.
 
 ## 1.0.9
 

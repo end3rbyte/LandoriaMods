@@ -156,6 +156,13 @@ namespace Landoria.CharacterVault
                 return;
             }
 
+            ZRpc serverRpc = ZNet.instance.GetServerRPC();
+            if (serverRpc == null)
+            {
+                ResetClientState();
+                return;
+            }
+
             string request = _pendingRequest ?? "save-" + Guid.NewGuid().ToString("N");
             _pendingRequest = null;
             if (_clientUploadBusy)
@@ -170,7 +177,7 @@ namespace Landoria.CharacterVault
             _clientUploadBusy = true;
             CharacterVaultPlugin.Log.LogInfo(
                 $"Uploading character profile {profile.GetName()} for save request {request}.");
-            CharacterVaultPlugin.Instance.Run(SendUpload(profile, data, request));
+            CharacterVaultPlugin.Instance.Run(SendUpload(serverRpc, profile, data, request));
         }
 
         internal bool BeginFinalDisconnectSave(string requestId)
@@ -250,6 +257,7 @@ namespace Landoria.CharacterVault
 
         private void RegisterClient(ZRpc rpc)
         {
+            ResetClientState();
             CharacterVaultPlugin.DisconnectCoordinator?.RecordConnectionStarted();
             CharacterVaultRejection.RegisterClient(rpc);
             rpc.Register<ZPackage>(AdmissionRpc, ReceiveAdmission);
@@ -391,28 +399,43 @@ namespace Landoria.CharacterVault
             _clientActive = false;
             _clientEnrolling = false;
             _clientUploadBusy = false;
+            _suppressNextClientUpload = false;
             _pendingRequest = null;
             _pendingProfile = null;
             CharacterVaultPlugin.DisconnectCoordinator?.RecordConnectionLost();
         }
 
-        private IEnumerator SendUpload(PlayerProfile profile, byte[] data, string requestId)
+        private IEnumerator SendUpload(
+            ZRpc rpc, PlayerProfile profile, byte[] data, string requestId)
         {
-            ZRpc rpc = ZNet.instance.GetServerRPC();
             string transferId = Guid.NewGuid().ToString("N");
-            ZPackage begin = BeginPackage(transferId, data.Length, VaultStorage.Hash(data));
-            begin.Write(requestId);
-            begin.Write(profile.GetPlayerID());
-            rpc.Invoke(UploadBeginRpc, begin);
-            for (int offset = 0; offset < data.Length; offset += ChunkSize)
+            bool sent = false;
+            try
             {
-                rpc.Invoke(UploadChunkRpc, ChunkPackage(transferId, data, offset));
-                yield return null;
-            }
+                ZPackage begin = BeginPackage(transferId, data.Length, VaultStorage.Hash(data));
+                begin.Write(requestId);
+                begin.Write(profile.GetPlayerID());
+                rpc.Invoke(UploadBeginRpc, begin);
+                for (int offset = 0; offset < data.Length; offset += ChunkSize)
+                {
+                    rpc.Invoke(UploadChunkRpc, ChunkPackage(transferId, data, offset));
+                    yield return null;
+                }
 
-            ZPackage complete = new ZPackage();
-            complete.Write(transferId);
-            rpc.Invoke(UploadCompleteRpc, complete);
+                ZPackage complete = new ZPackage();
+                complete.Write(transferId);
+                rpc.Invoke(UploadCompleteRpc, complete);
+                sent = true;
+            }
+            finally
+            {
+                if (!sent && ZNet.instance?.GetServerRPC() == rpc)
+                {
+                    _clientUploadBusy = false;
+                    CharacterVaultPlugin.Log.LogWarning(
+                        $"Character save upload {requestId} was interrupted before completion.");
+                }
+            }
         }
 
         private void ReceiveUploadBegin(ZRpc rpc, ZPackage package)
