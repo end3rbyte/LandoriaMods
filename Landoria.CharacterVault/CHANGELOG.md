@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Fix CharacterVault save API compatibility [skip draft publish]
 - Fix Valheim public test compatibility
 
 ## 1.0.6
