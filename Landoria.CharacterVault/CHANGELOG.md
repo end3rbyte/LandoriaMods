@@ -1,23 +1,8 @@
 # Changelog
 
-## Unreleased
+## 1.0.8
 
-- List every character-save trigger in the Thunderstore player documentation.
-- Clarify player behavior, save guarantees, configuration, and graceful shutdown documentation.
-- Route the in-game Quit action through the confirmed voluntary-disconnect save flow.
-- Acknowledge validated voluntary-disconnect uploads immediately, then complete the durable server commit asynchronously.
-- Require a server-confirmed final character save before voluntary logout or application quit.
-- Add detailed client logs for voluntary disconnect saves and acknowledgements.
-- Intercept server kicks without requiring other mods to depend on CharacterVault.
-- Require a confirmed final character save before every server-side kick.
-- Log CharacterVault profile saves
-- Refine CharacterVault Thunderstore wording
-- Simplify CharacterVault Thunderstore README
-- Restore CharacterVault server configuration
-- Document CharacterVault features (#102)
-- Use transparent CharacterVault icon (#101)
-- Revert "Clean CharacterVault icon contour (#99)" (#100)
-- Clean CharacterVault icon contour (#99)
+- Bug fix
 
 ## 1.0.7
 
