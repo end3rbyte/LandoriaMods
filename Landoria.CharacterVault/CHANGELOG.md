@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.9
+
+- Display the server's admission rejection reason and return rejected players to the main menu instead of leaving them on a black screen.
+
 ## 1.0.8
 
 - Updated documentation
