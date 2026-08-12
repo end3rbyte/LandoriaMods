@@ -9,6 +9,7 @@
 - Retain every previous character save in a timestamped `backups/` file.
 - Name current profiles and backups with the Steam account and character name.
 - Store authoritative profiles in the instance `characters_local` directory.
+- Archive every saved revision immediately, including the first one.
 
 ## 1.0.9
 

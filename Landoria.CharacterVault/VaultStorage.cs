@@ -47,28 +47,23 @@ namespace Landoria.CharacterVault
             return !currentExists && !legacyExists;
         }
 
-        internal void Commit(string accountId, long characterId, string name, byte[] data)
+        internal void Commit(string accountId, string name, byte[] data)
         {
             Directory.CreateDirectory(_root);
             string current = ProfilePath(accountId, name);
             string next = current + ".new";
             WriteDurably(next, data);
-            string existing = File.Exists(current) ? current : FindLegacyProfile(accountId, characterId);
-            if (File.Exists(existing))
-            {
-                PreserveBackup(existing, Path.GetFileNameWithoutExtension(current));
-            }
-
+            PreserveBackup(data, Path.GetFileNameWithoutExtension(current));
             Replace(next, current);
         }
 
-        private void PreserveBackup(string current, string profileName)
+        private void PreserveBackup(byte[] data, string profileName)
         {
             string directory = Path.Combine(_root, BackupDirectory);
             Directory.CreateDirectory(directory);
             string timestamp = DateTime.UtcNow.ToString(
                 "yyyyMMdd'T'HHmmssfffffff'Z'", CultureInfo.InvariantCulture);
-            File.Copy(current, Path.Combine(directory, $"{profileName}_{timestamp}.fch"));
+            WriteDurably(Path.Combine(directory, $"{profileName}_{timestamp}.fch"), data);
         }
 
         private bool TryReadLegacy(
