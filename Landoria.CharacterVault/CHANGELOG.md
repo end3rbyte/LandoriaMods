@@ -2,7 +2,10 @@
 
 ## Unreleased
 
-- Support stable and public test Valheim save APIs.
+- Document Valheim version compatibility
+- Support Valheim save API variants
+- Fix CharacterVault save API compatibility [skip draft publish]
+- Fix Valheim public test compatibility
 
 ## 1.0.6
 

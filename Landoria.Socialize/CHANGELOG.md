@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Document Valheim version compatibility
 - Support Socialize hash API variants
 
 ## 1.0.6

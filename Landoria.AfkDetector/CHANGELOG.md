@@ -2,7 +2,10 @@
 
 ## Unreleased
 
-- Support both stable and public test Valheim releases.
+- Document Valheim version compatibility
+- Support Valheim stable hash variants
+- Fix AfkDetector hash compatibility
+- Fix Valheim public test compatibility
 
 ## 1.0.2
 

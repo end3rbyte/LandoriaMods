@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Document Valheim version compatibility
+
 ## 1.0.3
 
 - Update thunderstore readme

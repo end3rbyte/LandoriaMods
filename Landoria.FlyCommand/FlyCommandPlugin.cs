@@ -10,7 +10,7 @@ namespace Landoria.FlyCommand
     {
         internal const string PluginGuid = "Landoria.FlyCommand";
         internal const string PluginName = "Landoria.FlyCommand";
-        internal const string PluginVersion = "1.0.2";
+        internal const string PluginVersion = "1.0.3";
         private const string EnabledArgument = "--flycommand";
         private static readonly KeyboardShortcut ToggleShortcut =
             new KeyboardShortcut(UnityEngine.KeyCode.Z);

@@ -5,16 +5,16 @@
   "description": "Installs the mods required to join the Landoria Valheim server.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333",
-    "Landoria-ModSentry-1.0.2",
+    "Landoria-ModSentry-1.0.3",
     "Landoria-AfkDetector-1.0.3",
-    "Landoria-FlyCommand-1.0.2",
-    "Landoria-FreeFlyCommand-1.0.3",
-    "Landoria-Moderator-1.0.4",
-    "Landoria-GetMyTrophyBack-1.0.4",
-    "Landoria-ExpandedServer-1.0.4",
+    "Landoria-FlyCommand-1.0.3",
+    "Landoria-FreeFlyCommand-1.0.4",
+    "Landoria-Moderator-1.0.5",
+    "Landoria-GetMyTrophyBack-1.0.5",
+    "Landoria-ExpandedServer-1.0.5",
     "Landoria-CharacterVault-1.0.7",
     "Landoria-Socialize-1.0.7",
-    "Landoria-SealedTombstone-1.0.3"
+    "Landoria-SealedTombstone-1.0.4"
   ],
   "categories": [
     "ai-generated",

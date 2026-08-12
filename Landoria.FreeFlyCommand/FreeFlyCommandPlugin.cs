@@ -9,7 +9,7 @@ namespace Landoria.FreeFlyCommand
     {
         internal const string PluginGuid = "Landoria.FreeFlyCommand";
         internal const string PluginName = "Landoria.FreeFlyCommand";
-        internal const string PluginVersion = "1.0.3";
+        internal const string PluginVersion = "1.0.4";
         private const string EnabledArgument = "--freeflycommand";
 
         internal static ModLog ModLogger { get; private set; }
