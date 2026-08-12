@@ -1,9 +1,8 @@
 # CharacterVault
 
-CharacterVault stores authoritative Valheim character profiles on the server
-and applies the server copy before a player enters the world. This prevents
-items from being imported from other servers or duplicated by restoring local
-backups.
+CharacterVault keeps each character on the server. When a player joins, the
+server loads its saved copy instead of trusting a local save. This prevents
+players from importing or duplicating items with another save or a backup.
 
 ## Valheim compatibility
 
@@ -12,21 +11,16 @@ backups.
 | Current release | `0.221.12` | Compatible |
 | Public Test | `0.221.13` | Compatible |
 
-## Features
+## What it does
 
-- Applies authoritative server profiles instead of restored or modified local
-  copies.
-- Accepts first-time enrollment only for a character created during the current
-  game session.
-- Supports either one or multiple characters per Steam ID.
-- Grants server-configured starting items once during initial enrollment.
-- Saves connected characters with world saves, disconnects, and graceful
-  server shutdowns or restarts.
-- Requires ModSentry to enforce the same CharacterVault version on every client
-  and the server.
-- Uses validated, atomic, revisioned server storage.
-- Supports stable and public test Valheim save APIs, including Steam Cloud profiles.
-- Migrates old-format profiles forward without downgrading new-format profiles.
+- Keeps the server copy of each enrolled character as the trusted copy.
+- Only accepts a new character created during the current game session.
+- Can allow one or several characters per Steam account.
+- Can give starting items when a character is enrolled for the first time.
+- Saves characters during world saves, disconnects, server stops, and restarts.
+- Supports local and Steam Cloud characters on the stable and public test
+  versions of Valheim.
+- Keeps a previous server copy in case the latest save must be recovered.
 
 ## Installation
 
@@ -34,9 +28,11 @@ backups.
 |---|---|
 | Yes | Yes |
 
-Install matching CharacterVault and ModSentry versions on every client and server.
+Install CharacterVault and ModSentry on the server and on every client. Everyone
+must use the same versions.
 
-See the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.CharacterVault/README.md).
+Server owners can configure the number of characters, starting items, and
+graceful shutdowns. See the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.CharacterVault/README.md).
 
 ## Contact
 
