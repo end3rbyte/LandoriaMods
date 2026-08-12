@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.3
 
 - Remove QuickLaunch option escape
 - Document Valheim version compatibility

@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.3
 
 - Document Valheim version compatibility
 - Finalize Thunderstore changelogs [skip draft publish]
