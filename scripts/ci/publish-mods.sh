@@ -212,7 +212,7 @@ validate_metadata() {
         "$directory/README.Thunderstore.md"; do
         [[ -f "$file" ]] || { echo "Required file not found: $file" >&2; return 1; }
     done
-    expected_website="https://github.com/end3rbyte/LandoriaMods/tree/main/Landoria.$mod"
+    expected_website="https://github.com/landoria-gaming/LandoriaMods/tree/main/Landoria.$mod"
     valid_categories='["ai-generated","ashlands-update","audio","bog-witch-update","building","client-side","crafting","enemies","gear","hildirs-request-update","language","libraries","misc","mistlands-update","modpacks","mods","npcs","pvp","server-side","skins","tools","transportation","tweaks","utility","vehicles","world-generation"]'
     jq -e --arg website "$expected_website" --argjson valid "$valid_categories" '
         (.name | test("^[A-Za-z0-9_]+$")) and
@@ -229,7 +229,7 @@ validate_metadata() {
         echo "Manifest metadata is invalid for $mod." >&2
         return 1
     }
-    grep -Fq "https://github.com/end3rbyte/LandoriaMods/blob/main/Landoria.$mod/README.md" \
+    grep -Fq "https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.$mod/README.md" \
         "$directory/README.Thunderstore.md" || {
         echo "The Thunderstore README has no valid full-documentation link for $mod." >&2
         return 1

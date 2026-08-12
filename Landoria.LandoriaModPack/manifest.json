@@ -1,7 +1,7 @@
 {
   "name": "LandoriaModPack",
   "version_number": "1.0.8",
-  "website_url": "https://github.com/end3rbyte/LandoriaMods/tree/main/Landoria.LandoriaModPack",
+  "website_url": "https://github.com/landoria-gaming/LandoriaMods/tree/main/Landoria.LandoriaModPack",
   "description": "Installs the mods required to join the Landoria Valheim server.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333",

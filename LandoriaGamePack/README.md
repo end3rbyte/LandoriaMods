@@ -6,4 +6,4 @@ It is not a BepInEx plugin, is never installed in Valheim, and is not published 
 
 ## Contact
 
-Report bugs through [GitHub Issues](https://github.com/end3rbyte/LandoriaMods/issues). For other conversations, use [GitHub Discussions](https://github.com/end3rbyte/LandoriaMods/discussions).
+Report bugs through [GitHub Issues](https://github.com/landoria-gaming/LandoriaMods/issues). For other conversations, use [GitHub Discussions](https://github.com/landoria-gaming/LandoriaMods/discussions).

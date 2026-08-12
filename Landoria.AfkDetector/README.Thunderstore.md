@@ -17,9 +17,9 @@ Disconnects players who remain motionless and silent beyond a configurable timeo
 |---|---|
 | Yes | Yes |
 
-The client component only displays the server-provided disconnect reason. See the [full documentation](https://github.com/end3rbyte/LandoriaMods/blob/main/Landoria.AfkDetector/README.md) for configuration and detection limits.
+The client component only displays the server-provided disconnect reason. See the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.AfkDetector/README.md) for configuration and detection limits.
 
 ## Contact
 
-Report bugs through [GitHub Issues](https://github.com/end3rbyte/LandoriaMods/issues).
-For questions, feedback, and other discussions, use [GitHub Discussions](https://github.com/end3rbyte/LandoriaMods/discussions).
+Report bugs through [GitHub Issues](https://github.com/landoria-gaming/LandoriaMods/issues).
+For questions, feedback, and other discussions, use [GitHub Discussions](https://github.com/landoria-gaming/LandoriaMods/discussions).
