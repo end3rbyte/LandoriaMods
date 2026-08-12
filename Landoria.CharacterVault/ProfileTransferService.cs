@@ -433,7 +433,7 @@ namespace Landoria.CharacterVault
         private static void ValidateProfile(VaultSession session, byte[] data)
         {
             string filename = "character_vault_validation_" + Guid.NewGuid().ToString("N");
-            string path = PlayerProfile.GetPath(FileHelpers.FileSource.Local, filename);
+            string path = SaveSystem.GetCharacterPath(FileHelpers.FileSource.Local, filename);
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             File.WriteAllBytes(path, data);
             try
@@ -448,7 +448,7 @@ namespace Landoria.CharacterVault
             finally
             {
                 File.Delete(path);
-                SaveSystem.InvalidateCache();
+                SaveSystem.InvalidateCache(SaveDataType.Character);
             }
         }
 
