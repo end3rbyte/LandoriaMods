@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.7
 
 - Document Valheim version compatibility
 - Support Valheim save API variants

@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.10
 
 - Document Valheim version compatibility
 
