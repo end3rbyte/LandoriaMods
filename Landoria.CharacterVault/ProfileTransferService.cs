@@ -427,6 +427,8 @@ namespace Landoria.CharacterVault
             session.Enrolling = false;
             ReleaseEnrollment(rpc);
             rpc.Invoke(SaveAckRpc, requestId, revision);
+            CharacterVaultPlugin.Log.LogMessage(
+                $"Saved character profile for {session.Name} at revision {revision}.");
             CharacterVaultPlugin.Coordinator?.RecordSaveCommitted(rpc, requestId);
         }
 

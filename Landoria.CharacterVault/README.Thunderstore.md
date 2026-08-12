@@ -18,6 +18,7 @@ players from importing or duplicating items with another save or a backup.
 - Can allow one or several characters per Steam account.
 - Can give starting items when a character is enrolled for the first time.
 - Saves characters during world saves, disconnects, server stops, and restarts.
+- Logs every successful server save with the character name and revision.
 - Supports local and Steam Cloud characters on the stable and public test
   versions of Valheim.
 - Keeps a previous server copy in case the latest save must be recovered.
