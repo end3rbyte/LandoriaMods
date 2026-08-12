@@ -2,8 +2,7 @@
 
 ## 1.0.4
 
-- Let CharacterVault delay inactivity kicks for a confirmed save when it is installed.
-- Keep CharacterVault optional.
+- Bug fix
 
 ## 1.0.3
 
