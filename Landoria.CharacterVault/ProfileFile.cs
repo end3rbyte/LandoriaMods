@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using Splatform;
 
 namespace Landoria.CharacterVault
 {
@@ -39,8 +40,9 @@ namespace Landoria.CharacterVault
             string path = selected.GetPath();
             string next = path + ".vault-new";
             Write(next, selected.m_fileSource, data);
-            FileHelpers.ReplaceOldFile(path, next, path + ".old", selected.m_fileSource);
-            SaveSystem.InvalidateCache();
+            FileHelpers.ReplaceOldFile(path, next, path + ".old",
+                CloudStorageFileGrouping.Individual, selected.m_fileSource);
+            SaveSystem.InvalidateCache(SaveDataType.Character);
             PlayerProfile loaded = new PlayerProfile(selected.GetFilename(), selected.m_fileSource);
             if (!loaded.Load())
             {
@@ -52,7 +54,8 @@ namespace Landoria.CharacterVault
 
         private static void Write(string path, FileHelpers.FileSource source, byte[] data)
         {
-            FileWriter writer = new FileWriter(path, FileHelpers.FileHelperType.Binary, source);
+            FileWriter writer = new FileWriter(path, CloudStorageFileGrouping.Individual,
+                FileHelpers.FileHelperType.Binary, source);
             writer.m_binary.Write(data);
             writer.Finish();
             if (writer.Status != FileWriter.WriterStatus.CloseSucceeded)
