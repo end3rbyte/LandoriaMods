@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Remove QuickLaunch option escape
 - Document Valheim version compatibility
 
 ## 1.0.2
