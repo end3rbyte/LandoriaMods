@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Acknowledge validated voluntary-disconnect uploads immediately, then complete the durable server commit asynchronously.
 - Require a server-confirmed final character save before voluntary logout or application quit.
 - Add detailed client logs for voluntary disconnect saves and acknowledgements.
 - Intercept server kicks without requiring other mods to depend on CharacterVault.

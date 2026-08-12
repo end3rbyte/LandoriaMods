@@ -375,7 +375,7 @@ namespace Landoria.CharacterVault
         {
             _clientUploadBusy = false;
             CharacterVaultPlugin.Log.LogInfo(
-                $"Server confirmed character save request {requestId} at revision {revision}.");
+                $"Server accepted character save request {requestId} at revision {revision}.");
             CharacterVaultPlugin.DisconnectCoordinator?.RecordSaveCommitted(requestId, revision);
             if (_pendingRequest != null)
             {
@@ -460,23 +460,62 @@ namespace Landoria.CharacterVault
                 return;
             }
 
+            bool voluntaryDisconnect = transfer.RequestId.StartsWith(
+                "disconnect-", StringComparison.Ordinal);
+            if (voluntaryDisconnect)
+            {
+                ConfirmReceipt(rpc, session, transfer.RequestId, revision);
+            }
             ThreadPool.QueueUserWorkItem(_ => Commit(rpc, session, transfer.RequestId,
-                data, hash, revision));
+                data, hash, revision, voluntaryDisconnect));
+        }
+
+        private void ConfirmReceipt(ZRpc rpc, VaultSession session, string requestId, long revision)
+        {
+            session.Revision = revision;
+            rpc.Invoke(SaveAckRpc, requestId, revision);
+            CharacterVaultPlugin.Log.LogMessage(
+                $"Accepted character profile for {session.Name} at revision {revision} " +
+                $"for request {requestId}; durable commit queued.");
         }
 
         private void Commit(ZRpc rpc, VaultSession session, string requestId, byte[] data,
-            string hash, long revision)
+            string hash, long revision, bool receiptConfirmed)
         {
             try
             {
                 _storage.Commit(session.AccountId, session.CharacterId, session.Name,
                     data, hash, revision);
-                _unityContext.Post(_ => ConfirmCommit(rpc, session, requestId, revision), null);
+                _unityContext.Post(_ =>
+                {
+                    if (receiptConfirmed)
+                    {
+                        ConfirmBackgroundCommit(rpc, session, requestId, revision);
+                    }
+                    else
+                    {
+                        ConfirmCommit(rpc, session, requestId, revision);
+                    }
+                }, null);
             }
             catch (Exception exception)
             {
                 CharacterVaultPlugin.Log.LogError($"Character vault commit failed: {exception}");
             }
+        }
+
+        private void ConfirmBackgroundCommit(
+            ZRpc rpc, VaultSession session, string requestId, long revision)
+        {
+            CharacterVaultPlugin.Log.LogMessage(
+                $"Committed character profile for {session.Name} at revision {revision} " +
+                $"for request {requestId}.");
+            if (!_sessions.TryGetValue(rpc, out VaultSession current) || current != session)
+            {
+                return;
+            }
+            CharacterVaultPlugin.Coordinator?.RecordSaveCommitted(rpc, requestId);
+            CharacterVaultPlugin.ServerDisconnects?.RecordCommitted(rpc, requestId, revision);
         }
 
         private void ConfirmCommit(ZRpc rpc, VaultSession session, string requestId, long revision)
