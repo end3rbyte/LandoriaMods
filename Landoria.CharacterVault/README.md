@@ -10,6 +10,7 @@ CharacterVault stores authoritative Valheim character profiles on the server. A 
 - Saves connected characters on world saves, disconnects, and graceful server shutdowns.
 - Keeps the existing `character_vault.drp` graceful shutdown protocol.
 - Uses bounded fragmented transfers, SHA-256 validation, atomic replacement, and a previous revision.
+- Supports the stable and public test Valheim save APIs for local and Steam Cloud profiles.
 
 ## Configuration
 
@@ -43,6 +44,14 @@ The server configuration is authoritative. Starting items are granted exactly on
 | Yes | Yes |
 
 Install matching CharacterVault and ModSentry versions on every client and server.
+
+## Valheim compatibility
+
+CharacterVault supports both the stable and public test save APIs. Valheim
+changes the signatures of its public save helpers between these releases, so a
+narrow runtime adapter selects only the available file writer, atomic replace,
+character path, and cache invalidation signatures. This preserves local and
+Steam Cloud behavior without inspecting private game state.
 
 ## Contact
 
