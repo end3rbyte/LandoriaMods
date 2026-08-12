@@ -19,6 +19,7 @@ with another save or a restored backup.
 
 When you join again, CharacterVault loads the latest trusted server copy before
 your character enters the world.
+If a character cannot join, Valheim returns to the main menu and explains why.
 
 New characters must be created during the current game session. Depending on
 the server settings, an account may use one or several characters and may

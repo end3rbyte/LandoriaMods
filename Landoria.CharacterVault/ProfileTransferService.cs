@@ -241,6 +241,7 @@ namespace Landoria.CharacterVault
 
         private void RegisterServer(ZRpc rpc)
         {
+            CharacterVaultRejection.RegisterServer(rpc);
             rpc.Register<ZPackage>(HelloRpc, ReceiveHello);
             rpc.Register<ZPackage>(UploadBeginRpc, ReceiveUploadBegin);
             rpc.Register<ZPackage>(UploadChunkRpc, ReceiveUploadChunk);
@@ -249,6 +250,7 @@ namespace Landoria.CharacterVault
 
         private void RegisterClient(ZRpc rpc)
         {
+            CharacterVaultRejection.RegisterClient(rpc);
             rpc.Register<ZPackage>(AdmissionRpc, ReceiveAdmission);
             rpc.Register<ZPackage>(DownloadBeginRpc, ReceiveDownloadBegin);
             rpc.Register<ZPackage>(DownloadChunkRpc, ReceiveDownloadChunk);
@@ -618,14 +620,7 @@ namespace Landoria.CharacterVault
 
         private static void Reject(ZRpc rpc, string message)
         {
-            CharacterVaultPlugin.Log.LogWarning($"CharacterVault rejected {rpc.GetSocket().GetHostName()}: {message}");
-            rpc.Invoke("Error", (int)ZNet.ConnectionStatus.ErrorConnectFailed);
-            ZNetPeer peer = ZNet.instance?.GetPeers()
-                .FirstOrDefault(candidate => ReferenceEquals(candidate.m_rpc, rpc));
-            if (peer != null)
-            {
-                ZNet.instance.Disconnect(peer);
-            }
+            CharacterVaultRejection.Reject(rpc, message);
         }
 
         private static bool IsReady(ZNetPeer peer)
