@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Fix Valheim public test compatibility
+
 ## 1.0.2
 
 - Update thunderstore readme
