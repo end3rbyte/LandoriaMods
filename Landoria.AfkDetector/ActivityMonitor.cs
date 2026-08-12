@@ -8,12 +8,12 @@ namespace Landoria.AfkDetector
     {
         private readonly Dictionary<long, PlayerActivity> _players =
             new Dictionary<long, PlayerActivity>();
-        private readonly Func<ZNetPeer, bool> _disconnect;
+        private readonly Action<ZNetPeer> _disconnect;
         private float _timeoutSeconds;
         private float _movementToleranceSquared;
 
         internal ActivityMonitor(float timeoutSeconds, float movementTolerance,
-            Func<ZNetPeer, bool> disconnect)
+            Action<ZNetPeer> disconnect)
         {
             _disconnect = disconnect;
             Configure(timeoutSeconds, movementTolerance);
@@ -48,15 +48,6 @@ namespace Landoria.AfkDetector
             }
         }
 
-        internal void ResumeMonitoring(long peerId, float now)
-        {
-            if (_players.TryGetValue(peerId, out PlayerActivity activity))
-            {
-                activity.DisconnectRequested = false;
-                activity.LastActivityAt = now;
-            }
-        }
-
         private void UpdatePeer(ZNetPeer peer, float now)
         {
             if (!_players.TryGetValue(peer.m_uid, out PlayerActivity activity))
@@ -72,7 +63,8 @@ namespace Landoria.AfkDetector
             }
             if (!activity.DisconnectRequested && now - activity.LastActivityAt >= _timeoutSeconds)
             {
-                activity.DisconnectRequested = _disconnect(peer);
+                activity.DisconnectRequested = true;
+                _disconnect(peer);
             }
         }
 

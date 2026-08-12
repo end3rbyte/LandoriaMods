@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Threading;
 using BepInEx;
@@ -43,18 +42,6 @@ namespace Landoria.CharacterVault
         internal void QuitNextFrame()
         {
             StartCoroutine(QuitAfterCurrentFrame());
-        }
-
-        public static bool SaveBeforeServerDisconnect(ZNetPeer peer, string reason,
-            Action<string, long, bool> completed, out string requestId)
-        {
-            if (ServerDisconnects != null)
-            {
-                return ServerDisconnects.TryRequest(peer, reason, completed, out requestId);
-            }
-
-            requestId = null;
-            return false;
         }
 
         private static IEnumerator QuitAfterCurrentFrame()

@@ -4,7 +4,7 @@
 
 - Require a server-confirmed final character save before voluntary logout or application quit.
 - Add detailed client logs for voluntary disconnect saves and acknowledgements.
-- Let server-side systems wait for a correlated character save before disconnecting a player.
+- Intercept server kicks without requiring other mods to depend on CharacterVault.
 - Require a confirmed final character save before every server-side kick.
 - Log CharacterVault profile saves
 - Refine CharacterVault Thunderstore wording

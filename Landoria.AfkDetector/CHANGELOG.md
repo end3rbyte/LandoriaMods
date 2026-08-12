@@ -2,8 +2,8 @@
 
 ## 1.0.4
 
-- Wait for a confirmed CharacterVault save before disconnecting an inactive player.
-- Log the correlated save request and committed revision on the server.
+- Let CharacterVault delay inactivity kicks for a confirmed save when it is installed.
+- Keep CharacterVault optional.
 
 ## 1.0.3
 
