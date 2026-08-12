@@ -2,19 +2,7 @@
 
 ## 1.0.3
 
-- Document Valheim version compatibility
-- Finalize Thunderstore changelogs
-- Update repository URLs after organization move
-- Log mod unload lifecycle
-- Correct mod package metadata
-- Update mod icons and metadata
-- Correct initial mod changelogs [skip ci]
-- Remove unintended automated version bumps [skip ci]
-- Remove unintended mod rollback side effects
-- Restore mod versions and changelogs
-- Revert mods to pre-activation state
-- Add per-mod Thunderstore changelogs
-- Harden public mod publishing
+- Updated documentation.
 
 ## 1.0.2
 
