@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Use transparent CharacterVault icon (#101)
+- Revert "Clean CharacterVault icon contour (#99)" (#100)
+- Clean CharacterVault icon contour (#99)
+
 ## 1.0.7
 
 - Resolve the local save source by name across stable and public test enum layouts.
