@@ -28,16 +28,6 @@ Each mod directory includes a technical `README.md`, a player-oriented
 plugin base, Harmony registration, and logging. It is an internal component and
 is never installed as a standalone mod.
 
-## Releases
-
-Changes merged into `main` are relayed to Landoria's private build and release
-automation. Draft packages are tested privately before approved versions are
-published to Thunderstore.
-
-This public repository intentionally contains only mod source code,
-documentation, and the minimal event relay. Operational workflows, deployment
-scripts, build configuration, and credentials are maintained privately.
-
 ## Contact
 
 Report bugs through [GitHub Issues](https://github.com/landoria-gaming/LandoriaMods/issues).
