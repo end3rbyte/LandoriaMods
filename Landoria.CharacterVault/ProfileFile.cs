@@ -40,8 +40,8 @@ namespace Landoria.CharacterVault
             string path = selected.GetPath();
             string next = path + ".vault-new";
             Write(next, selected.m_fileSource, data);
-            FileHelpers.ReplaceOldFile(path, next, path + ".old", selected.m_fileSource);
-            SaveSystem.InvalidateCache();
+            SaveApiCompatibility.ReplaceOldFile(path, next, selected.m_fileSource);
+            SaveApiCompatibility.InvalidateCharacterCache();
             PlayerProfile loaded = new PlayerProfile(selected.GetFilename(), selected.m_fileSource);
             if (!loaded.Load())
             {
@@ -53,7 +53,7 @@ namespace Landoria.CharacterVault
 
         private static void Write(string path, FileHelpers.FileSource source, byte[] data)
         {
-            FileWriter writer = new FileWriter(path, FileHelpers.FileHelperType.Binary, source);
+            FileWriter writer = SaveApiCompatibility.CreateWriter(path, source);
             writer.m_binary.Write(data);
             writer.Finish();
             if (writer.Status != FileWriter.WriterStatus.CloseSucceeded)

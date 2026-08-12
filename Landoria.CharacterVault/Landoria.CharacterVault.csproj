@@ -40,6 +40,7 @@
     <Compile Include="CharacterVaultSettings.cs" />
     <Compile Include="NewCharacterTracker.cs" />
     <Compile Include="ProfileFile.cs" />
+    <Compile Include="SaveApiCompatibility.cs" />
     <Compile Include="ProfileTransferService.cs" />
     <Compile Include="VaultStorage.cs" />
     <Compile Include="GracefulShutdownCoordinator.cs" />
