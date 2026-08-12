@@ -77,6 +77,22 @@ namespace Landoria.CharacterVault
             ClearPendingRequest();
         }
 
+        internal bool AllowMenuQuit()
+        {
+            if (_allowApplicationQuit)
+            {
+                return true;
+            }
+
+            bool delayed = Start(VoluntaryExitKind.ApplicationQuit, Game.instance, true, false);
+            if (delayed)
+            {
+                CharacterVaultPlugin.Log.LogMessage(
+                    "Intercepted the in-game Quit action; waiting for the final save acceptance.");
+            }
+            return !delayed;
+        }
+
         public void Dispose()
         {
             Application.wantsToQuit -= AllowApplicationQuit;
