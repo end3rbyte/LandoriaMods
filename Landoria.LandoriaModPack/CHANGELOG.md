@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.11
+
+- Update bundled Landoria mod dependencies.
+
 ## 1.0.10
 
 - Document Valheim version compatibility
