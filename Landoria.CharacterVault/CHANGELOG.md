@@ -4,7 +4,7 @@
 
 - Require a server-confirmed final character save before voluntary logout or application quit.
 - Add detailed client logs for voluntary disconnect saves and acknowledgements.
-- Log every successful character profile commit.
+- Log CharacterVault profile saves
 - Refine CharacterVault Thunderstore wording
 - Simplify CharacterVault Thunderstore README
 - Restore CharacterVault server configuration
