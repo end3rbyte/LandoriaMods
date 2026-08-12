@@ -17,6 +17,8 @@ Disconnects players who remain motionless and silent beyond a configurable timeo
 - Shows a specific inactivity message after disconnecting the client.
 - Defaults to a 30-minute timeout.
 - Supports a server command-line timeout override for managed deployments.
+- Waits for CharacterVault to confirm a final save before disconnecting a player.
+- Logs the same save request identifier and revision used by CharacterVault.
 
 ## Installation
 

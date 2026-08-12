@@ -107,6 +107,7 @@ namespace Landoria.CharacterVault
             _sessions.Remove(peer.m_rpc);
             _uploads.Remove(peer.m_rpc);
             ReleaseEnrollment(peer.m_rpc);
+            CharacterVaultPlugin.ServerDisconnects?.RecordDisconnected(peer.m_rpc);
             if (ZNet.instance?.IsServer() == false)
             {
                 ResetClientState();
@@ -133,6 +134,11 @@ namespace Landoria.CharacterVault
             {
                 peer.m_rpc.Invoke(SaveRequestRpc, requestId);
             }
+        }
+
+        internal bool CanRequestSave(ZNetPeer peer)
+        {
+            return peer?.m_rpc != null && _sessions.ContainsKey(peer.m_rpc);
         }
 
         internal void UploadSavedProfile(PlayerProfile profile)
@@ -485,8 +491,10 @@ namespace Landoria.CharacterVault
             ReleaseEnrollment(rpc);
             rpc.Invoke(SaveAckRpc, requestId, revision);
             CharacterVaultPlugin.Log.LogMessage(
-                $"Saved character profile for {session.Name} at revision {revision}.");
+                $"Saved character profile for {session.Name} at revision {revision} " +
+                $"for request {requestId}.");
             CharacterVaultPlugin.Coordinator?.RecordSaveCommitted(rpc, requestId);
+            CharacterVaultPlugin.ServerDisconnects?.RecordCommitted(rpc, requestId, revision);
         }
 
         private static void ValidateProfile(VaultSession session, byte[] data)

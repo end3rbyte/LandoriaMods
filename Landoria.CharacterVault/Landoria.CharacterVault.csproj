@@ -45,6 +45,7 @@
     <Compile Include="VaultStorage.cs" />
     <Compile Include="GracefulShutdownCoordinator.cs" />
     <Compile Include="VoluntaryDisconnectCoordinator.cs" />
+    <Compile Include="ServerDisconnectSaveCoordinator.cs" />
     <Compile Include="ProfileSaveRpc.cs" />
     <Compile Include="CharacterVaultPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

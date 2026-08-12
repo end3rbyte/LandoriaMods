@@ -7,6 +7,8 @@ players from importing or duplicating items with another save or a backup.
 When a player logs out or quits normally, CharacterVault saves the character
 and waits for the server to confirm it before disconnecting. Crashes and lost
 network connections cannot be delayed for this final save.
+Client and server logs share the save request identifier and committed revision
+to make each save easy to correlate.
 
 ## Valheim compatibility
 
