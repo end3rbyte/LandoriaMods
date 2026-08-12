@@ -12,91 +12,109 @@ namespace Landoria.CharacterVault
     {
         private const string LegacyCurrentFile = "current.fch";
         private const string BackupDirectory = "backups";
-        private readonly string _root = Path.Combine(Paths.ConfigPath, "CharacterVault", "accounts");
+        private readonly string _root = Path.Combine(
+            Utils.GetSaveDataPath(FileHelpers.FileSource.Local), "characters_local");
+        private readonly string _legacyRoot = Path.Combine(
+            Paths.ConfigPath, "CharacterVault", "accounts");
 
-        internal bool TryRead(string accountId, long characterId, out byte[] data, out long revision)
+        internal bool TryRead(
+            string accountId, long characterId, string name, out byte[] data, out long revision)
         {
-            string directory = CharacterPath(accountId, characterId);
-            string path = FindCurrentProfile(directory);
-            data = File.Exists(path) && IsActive(directory) ? File.ReadAllBytes(path) : null;
-            revision = data == null ? 0 : ReadRevision(directory);
-            return data != null;
+            string path = ProfilePath(accountId, name);
+            if (File.Exists(path))
+            {
+                data = File.ReadAllBytes(path);
+                revision = 0;
+                return true;
+            }
+
+            return TryReadLegacy(accountId, characterId, out data, out revision);
         }
 
-        internal bool CanEnroll(string accountId, long characterId, bool allowMultiple)
+        internal bool CanEnroll(string accountId, string name, bool allowMultiple)
         {
-            string account = AccountPath(accountId);
-            if (!Directory.Exists(account) || allowMultiple)
+            if (allowMultiple || File.Exists(ProfilePath(accountId, name)))
             {
                 return true;
             }
 
-            return IsActive(CharacterPath(accountId, characterId)) ||
-                   !Directory.GetDirectories(account).Any(IsActive);
+            string prefix = SafeSegment(accountId) + "_";
+            bool currentExists = Directory.Exists(_root) && Directory
+                .GetFiles(_root, prefix + "*.fch", SearchOption.TopDirectoryOnly).Any();
+            string legacyAccount = LegacyAccountPath(accountId);
+            bool legacyExists = Directory.Exists(legacyAccount) &&
+                Directory.GetDirectories(legacyAccount).Any(IsActive);
+            return !currentExists && !legacyExists;
         }
 
-        internal void Commit(string accountId, long characterId, string name, byte[] data,
-            string hash, long revision)
+        internal void Commit(string accountId, long characterId, string name, byte[] data)
         {
-            string directory = CharacterPath(accountId, characterId);
-            Directory.CreateDirectory(directory);
-            string current = Path.Combine(directory, ProfileFileName(accountId, name));
+            Directory.CreateDirectory(_root);
+            string current = ProfilePath(accountId, name);
             string next = current + ".new";
             WriteDurably(next, data);
-            string existing = FindCurrentProfile(directory);
+            string existing = File.Exists(current) ? current : FindLegacyProfile(accountId, characterId);
             if (File.Exists(existing))
             {
-                PreserveBackup(directory, existing, Path.GetFileNameWithoutExtension(current));
+                PreserveBackup(existing, Path.GetFileNameWithoutExtension(current));
             }
 
             Replace(next, current);
-            WriteMetadata(directory, name, hash, revision);
         }
 
-        private static void PreserveBackup(
-            string characterDirectory, string current, string profileName)
+        private void PreserveBackup(string current, string profileName)
         {
-            string directory = Path.Combine(characterDirectory, BackupDirectory);
+            string directory = Path.Combine(_root, BackupDirectory);
             Directory.CreateDirectory(directory);
             string timestamp = DateTime.UtcNow.ToString(
                 "yyyyMMdd'T'HHmmssfffffff'Z'", CultureInfo.InvariantCulture);
             File.Copy(current, Path.Combine(directory, $"{profileName}_{timestamp}.fch"));
         }
 
-        private static string FindCurrentProfile(string directory)
+        private bool TryReadLegacy(
+            string accountId, long characterId, out byte[] data, out long revision)
         {
-            if (!Directory.Exists(directory))
-            {
-                return Path.Combine(directory, LegacyCurrentFile);
-            }
-
-            return Directory.GetFiles(directory, "*.fch", SearchOption.TopDirectoryOnly)
-                .FirstOrDefault(path => Path.GetFileName(path) != LegacyCurrentFile) ??
-                Path.Combine(directory, LegacyCurrentFile);
+            string directory = LegacyCharacterPath(accountId, characterId);
+            string path = FindLegacyProfile(accountId, characterId);
+            data = File.Exists(path) && IsActive(directory) ? File.ReadAllBytes(path) : null;
+            revision = data == null ? 0 : ReadRevision(directory);
+            return data != null;
         }
 
         private static string ProfileFileName(string accountId, string name)
         {
+            return $"{SafeSegment(accountId)}_{SafeSegment(name)}.fch";
+        }
+
+        private static string SafeSegment(string value)
+        {
             const string invalid = "<>:\"/\\|?*";
-            string safeAccount = new string(accountId
+            return new string(value
                 .Select(character => char.IsControl(character) || invalid.Contains(character)
                     ? '_' : character)
                 .ToArray());
-            string safeName = new string(name
-                .Select(character => char.IsControl(character) || invalid.Contains(character)
-                    ? '_' : character)
-                .ToArray());
-            return $"{safeAccount}_{safeName}.fch";
         }
 
-        private string AccountPath(string accountId)
+        private string ProfilePath(string accountId, string name)
         {
-            return Path.Combine(_root, Hash(Encoding.UTF8.GetBytes(accountId)));
+            return Path.Combine(_root, ProfileFileName(accountId, name));
         }
 
-        private string CharacterPath(string accountId, long characterId)
+        private string LegacyAccountPath(string accountId)
         {
-            return Path.Combine(AccountPath(accountId), characterId.ToString(CultureInfo.InvariantCulture));
+            return Path.Combine(_legacyRoot, Hash(Encoding.UTF8.GetBytes(accountId)));
+        }
+
+        private string LegacyCharacterPath(string accountId, long characterId) => Path.Combine(
+            LegacyAccountPath(accountId), characterId.ToString(CultureInfo.InvariantCulture));
+
+        private string FindLegacyProfile(string accountId, long characterId)
+        {
+            string directory = LegacyCharacterPath(accountId, characterId);
+            if (!Directory.Exists(directory)) return Path.Combine(directory, LegacyCurrentFile);
+            return Directory.GetFiles(directory, "*.fch", SearchOption.TopDirectoryOnly)
+                .FirstOrDefault(path => Path.GetFileName(path) != LegacyCurrentFile) ??
+                Path.Combine(directory, LegacyCurrentFile);
         }
 
         private static void WriteDurably(string path, byte[] data)
@@ -107,15 +125,6 @@ namespace Landoria.CharacterVault
                 stream.Write(data, 0, data.Length);
                 stream.Flush(true);
             }
-        }
-
-        private static void WriteMetadata(string directory, string name, string hash, long revision)
-        {
-            string content = $"state=Active\nname={name}\nrevision={revision}\nhash={hash}\n";
-            string path = Path.Combine(directory, "metadata.txt");
-            string next = path + ".new";
-            WriteDurably(next, Encoding.UTF8.GetBytes(content));
-            Replace(next, path);
         }
 
         private static long ReadRevision(string directory)
