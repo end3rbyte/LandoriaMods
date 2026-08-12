@@ -479,8 +479,7 @@ namespace Landoria.CharacterVault
             long revision = session.Revision + 1;
             if (session.Enrolling)
             {
-                _storage.Commit(session.AccountId, session.CharacterId, session.Name,
-                    data);
+                _storage.Commit(session.AccountId, session.Name, data);
                 ConfirmCommit(rpc, session, transfer.RequestId, revision);
                 return;
             }
@@ -509,8 +508,7 @@ namespace Landoria.CharacterVault
         {
             try
             {
-                _storage.Commit(session.AccountId, session.CharacterId, session.Name,
-                    data);
+                _storage.Commit(session.AccountId, session.Name, data);
                 _unityContext.Post(_ =>
                 {
                     if (receiptConfirmed)
