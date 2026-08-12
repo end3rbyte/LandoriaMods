@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Document CharacterVault features (#102)
 - Use transparent CharacterVault icon (#101)
 - Revert "Clean CharacterVault icon contour (#99)" (#100)
 - Clean CharacterVault icon contour (#99)
