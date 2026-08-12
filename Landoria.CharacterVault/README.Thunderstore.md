@@ -1,47 +1,44 @@
 # CharacterVault
 
-CharacterVault saves characters on the server. When a player joins, the
-server loads its saved copy instead of trusting a local save. This prevents
-players from importing or duplicating items with another save or a backup.
+CharacterVault keeps your Valheim character on the server. When you join, the
+server loads its trusted copy, preventing items from being imported or duplicated
+with another save or a restored backup.
 
-When a player logs out or quits normally, CharacterVault saves the character
-and waits for the server to receive and validate it before disconnecting. The
-server then writes the accepted profile asynchronously. Crashes and lost network
-connections cannot be delayed for this final save.
-Client and server logs share the save request identifier and accepted revision
-to make the upload and server commit easy to correlate.
-Server kicks are also delayed until the server confirms a final character save.
+## Player experience
 
-## Valheim compatibility
+| Event | What CharacterVault does |
+|---|---|
+| Join a server | Loads your saved server character before you enter the world. |
+| World save | Saves your connected character with the world. |
+| Log out | Sends and validates a final character save before disconnecting. |
+| Quit from the menu | Saves your character before closing Valheim. |
+| Server kick | Saves your character before the server disconnects you. |
+| Client crash or lost network | Cannot request a final save because the connection is already lost. |
 
-| Valheim channel | Version | Compatibility |
+New characters must be created during the current game session. Depending on
+the server settings, an account may use one or several characters and may
+receive starting items on first enrollment.
+
+## Compatibility
+
+| Valheim channel | Version | Status |
 |---|---:|---|
 | Current release | `0.221.12` | Compatible |
 | Public Test | `0.221.13` | Compatible |
 
-## What it does
-
-- Keeps the server copy of each enrolled character as the trusted copy.
-- Only accepts a new character created during the current game session.
-- Can allow one or several characters per Steam account.
-- Can give starting items when a character is enrolled for the first time.
-- Saves characters during world saves, disconnects, server stops, and restarts.
-- Logs every successful server save with the character name and revision.
-- Supports local and Steam Cloud characters on the stable and public test
-  versions of Valheim.
-- Keeps a previous server copy in case the latest save must be recovered.
+CharacterVault supports local and Steam Cloud characters.
 
 ## Installation
 
-| Client required | Server required |
+| Client | Server |
 |---|---|
-| Yes | Yes |
+| Required | Required |
 
-Install CharacterVault and Landoria.ModSentry on the server and on every client.
-Everyone must use the same versions.
+Install matching versions of CharacterVault and Landoria.ModSentry on the
+server and every client.
 
-Server owners can configure the number of characters, starting items, and
-graceful shutdowns. See the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.CharacterVault/README.md).
+Server configuration and graceful restart instructions are available in the
+[full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.CharacterVault/README.md).
 
 ## Contact
 
