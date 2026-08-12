@@ -1,10 +1,8 @@
 # Landoria Mods
 
-`Landoria.ModSentry` validates the exact client mod inventory before a server accepts a connection.
-
-This repository contains independently built Valheim plugins. See each
-plugin's `README.md` for technical details and `README.Thunderstore.md` for a
-concise player-oriented overview.
+This repository contains the public source code for Landoria's Valheim mods.
+Each mod directory includes a technical `README.md`, a player-oriented
+`README.Thunderstore.md`, and its changelog.
 
 | Mod | Installation side | Description |
 |---|---|---|
@@ -25,53 +23,21 @@ concise player-oriented overview.
 
 ## Shared library
 
-Every plugin references `Landoria.SharedLib`, which provides the common plugin
-base, Harmony registration, and logging. It is embedded into every standalone
-plugin DLL and is never installed separately.
+`Landoria.SharedLib` provides common plugin infrastructure, including the
+plugin base, Harmony registration, and logging. It is an internal component and
+is never installed as a standalone mod.
+
+## Releases
+
+Changes merged into `main` are relayed to Landoria's private build and release
+automation. Draft packages are tested privately before approved versions are
+published to Thunderstore.
+
+This public repository intentionally contains only mod source code,
+documentation, and the minimal event relay. Operational workflows, deployment
+scripts, build configuration, and credentials are maintained privately.
 
 ## Contact
 
 Report bugs through [GitHub Issues](https://github.com/landoria-gaming/LandoriaMods/issues).
 For questions, feedback, and other discussions, use [GitHub Discussions](https://github.com/landoria-gaming/LandoriaMods/discussions).
-
-## Automated test packages
-
-Changes merged into `main` automatically build and publish a new draft version
-of each affected mod to Landoria's package repository. The workflow can also be
-started manually to publish selected mods or retry an existing version after a
-failed upload. When a tracked dependency changes version, the workflow updates
-and republishes `LandoriaModPack` with the matching dependency version.
-Until a changelog section matching the draft version exists, each build creates
-or refreshes `Unreleased` from the mod's commit history. Once a matching version
-section is present, builds leave the changelog unchanged.
-
-Test storage reconciliation renders optional `items` from the central game-mode
-configuration as `Landoria.CharacterVault.cfg` under each applicable mode's `mods/config`
-path. Common items are inherited by mode-specific configurations, and obsolete managed
-configurations are removed. Production promotion copies the exact tested files without
-regenerating them.
-
-Production publication is handled by the manual **Promote mods to Thunderstore**
-workflow on the self-hosted `dev` runner. It compares each selected mod with its
-latest tagged Thunderstore release, skips unchanged package inputs (including
-the shared library and packaging files), increments the patch version from the
-version currently published on Thunderstore, and includes the selected mod's
-existing `CHANGELOG.md` unchanged in the package. Changelog entries must be
-prepared and reviewed before starting the promotion workflow. Promotion fails
-if `Unreleased` is still present or if the changelog has no section matching the
-version being released.
-After Thunderstore exposes the new version, the workflow marks the matching
-package version as released in Landoria's package repository and creates a
-`thunderstore/<mod>/<version>` Git tag.
-
-The manual **Revert unused drafts** workflow removes an accidental draft only
-through a reviewed pull request. It first compares the draft source with the
-last release tag and refuses any change outside generated version metadata and
-ModPack dependency versions. Merging the generated pull request restores the
-released source versions, deletes only matching unreleased private packages,
-and reconciles test storage. Released packages and versions already present on
-Thunderstore can never be deleted by this workflow.
-
-Release and deployment automation is maintained privately. The public
-repository contains only a minimal event relay; operational workflows, scripts,
-and credential provisioning are not part of the public source tree.
