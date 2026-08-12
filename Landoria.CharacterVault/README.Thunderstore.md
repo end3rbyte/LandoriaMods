@@ -1,6 +1,9 @@
 # CharacterVault
 
-CharacterVault stores authoritative Valheim character profiles on the server and applies the server copy before a player enters the world.
+CharacterVault stores authoritative Valheim character profiles on the server
+and applies the server copy before a player enters the world. This prevents
+items from being imported from other servers or duplicated by restoring local
+backups.
 
 ## Valheim compatibility
 
@@ -11,11 +14,16 @@ CharacterVault stores authoritative Valheim character profiles on the server and
 
 ## Features
 
-- Requires ModSentry verification before character enrollment.
-- Ignores restored or modified local backups for registered characters.
-- Supports one or multiple characters per Steam ID.
-- Grants server-configured starting items exactly once.
-- Saves characters with world saves and graceful server shutdowns.
+- Applies authoritative server profiles instead of restored or modified local
+  copies.
+- Accepts first-time enrollment only for a character created during the current
+  game session.
+- Supports either one or multiple characters per Steam ID.
+- Grants server-configured starting items once during initial enrollment.
+- Saves connected characters with world saves, disconnects, and graceful
+  server shutdowns or restarts.
+- Requires ModSentry to enforce the same CharacterVault version on every client
+  and the server.
 - Uses validated, atomic, revisioned server storage.
 - Supports stable and public test Valheim save APIs, including Steam Cloud profiles.
 - Migrates old-format profiles forward without downgrading new-format profiles.
