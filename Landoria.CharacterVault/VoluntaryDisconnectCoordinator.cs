@@ -26,7 +26,7 @@ namespace Landoria.CharacterVault
             {
                 _allowLogout = false;
                 CharacterVaultPlugin.Log.LogInfo(
-                    "Allowing voluntary logout after the final character save was confirmed.");
+                    "Allowing voluntary logout after the final character save was accepted.");
                 return true;
             }
 
@@ -46,7 +46,7 @@ namespace Landoria.CharacterVault
             }
 
             CharacterVaultPlugin.Log.LogMessage(
-                $"Final voluntary disconnect save {requestId} committed at revision {revision}.");
+                $"Final voluntary disconnect save {requestId} accepted at revision {revision}.");
             VoluntaryExitKind exitKind = _exitKind;
             Game game = _game;
             bool logoutSave = _logoutSave;

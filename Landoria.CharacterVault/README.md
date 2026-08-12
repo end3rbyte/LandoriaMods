@@ -2,10 +2,11 @@
 
 CharacterVault stores authoritative Valheim character profiles on the server.
 For a voluntary logout or application quit, the client waits for the server to
-commit one final profile save before allowing the action to continue. Client
+receive and validate one final profile save before allowing the action to
+continue. The server then commits the accepted profile asynchronously. Client
 crashes and network failures cannot use this handshake.
-Client and server logs include the same save request identifier and committed
-revision so each profile write can be correlated across both sides.
+Client and server logs include the same save request identifier and accepted
+revision so each profile upload and commit can be correlated across both sides.
 Server-side kicks, including administrator, ban-list, allow-list, and inactivity
 kicks, are also delayed until this final save is confirmed.
 Once a character is enrolled, the server copy is applied before the player
