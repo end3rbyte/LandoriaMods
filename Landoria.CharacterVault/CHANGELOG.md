@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Log every successful character profile commit.
+- Log CharacterVault profile saves
 - Refine CharacterVault Thunderstore wording
 - Simplify CharacterVault Thunderstore README
 - Restore CharacterVault server configuration
