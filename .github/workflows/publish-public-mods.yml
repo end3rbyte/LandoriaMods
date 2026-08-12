@@ -47,7 +47,7 @@ jobs:
           set -euo pipefail
           GH_TOKEN="$(sudo cat /var/lib/landoria-secrets/github-token)"
           export GH_TOKEN
-          gh repo clone end3rbyte/valheim-root .landoria-root -- --depth 1
+          gh repo clone landoria-gaming/valheim-root .landoria-root -- --depth 1
           printf '/.landoria-root/\n' >> .git/info/exclude
 
       - id: gamemodes
@@ -207,5 +207,5 @@ jobs:
           set -euo pipefail
           GH_TOKEN="$(sudo cat /var/lib/landoria-secrets/github-token)"
           export GH_TOKEN
-          gh api --method POST repos/end3rbyte/valheim-root/dispatches \
+          gh api --method POST repos/landoria-gaming/valheim-root/dispatches \
             -f event_type=restart-valheim-test
