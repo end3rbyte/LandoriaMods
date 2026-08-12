@@ -21,7 +21,7 @@ Automatically resumes the last local or multiplayer Valheim session.
 
 | Switch | Default | Purpose |
 |---|---:|---|
-| `--quicklaunch <true\|false>` | `true` | Controls automatic session resume. |
+| `--quicklaunch <true|false>` | `true` | Controls automatic session resume. |
 
 ## Installation
 
