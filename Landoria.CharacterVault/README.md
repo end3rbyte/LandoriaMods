@@ -57,8 +57,10 @@ Install matching CharacterVault and ModSentry versions on every client and serve
 CharacterVault supports both the stable and public test save APIs. Valheim
 changes the signatures of its public save helpers between these releases, so a
 narrow runtime adapter selects only the available file writer, atomic replace,
-character path, and cache invalidation signatures. This preserves local and
-Steam Cloud behavior without inspecting private game state.
+character path, cache invalidation signatures, and named local save source. An
+old-format profile is migrated by Valheim when it is saved on the public test
+version. The migrated profile is not downgraded to the old format. This
+preserves local and Steam Cloud behavior without inspecting private game state.
 
 ## Contact
 

@@ -15,6 +15,9 @@ namespace Landoria.CharacterVault
             { typeof(string), typeof(CloudStorageFileGrouping), typeof(FileHelpers.FileHelperType),
                 typeof(FileHelpers.FileSource) };
 
+        internal static FileHelpers.FileSource LocalSource =>
+            (FileHelpers.FileSource)Enum.Parse(typeof(FileHelpers.FileSource), "Local");
+
         internal static FileWriter CreateWriter(string path, FileHelpers.FileSource source)
         {
             ConstructorInfo constructor = typeof(FileWriter).GetConstructor(CurrentWriterParameters);

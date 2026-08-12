@@ -433,12 +433,13 @@ namespace Landoria.CharacterVault
         private static void ValidateProfile(VaultSession session, byte[] data)
         {
             string filename = "character_vault_validation_" + Guid.NewGuid().ToString("N");
-            string path = SaveApiCompatibility.GetCharacterPath(FileHelpers.FileSource.Local, filename);
+            FileHelpers.FileSource source = SaveApiCompatibility.LocalSource;
+            string path = SaveApiCompatibility.GetCharacterPath(source, filename);
             Directory.CreateDirectory(Path.GetDirectoryName(path));
             File.WriteAllBytes(path, data);
             try
             {
-                PlayerProfile profile = new PlayerProfile(filename, FileHelpers.FileSource.Local);
+                PlayerProfile profile = new PlayerProfile(filename, source);
                 if (!profile.Load() || profile.GetPlayerID() != session.CharacterId ||
                     !string.Equals(profile.GetName(), session.Name, StringComparison.Ordinal))
                 {
