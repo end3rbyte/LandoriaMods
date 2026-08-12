@@ -1,8 +1,8 @@
 # Changelog
 
-## Unreleased
+## 1.0.6
 
-- Update repository URLs after organization move
+- Update thunderstore readme
 
 ## 1.0.5
 
