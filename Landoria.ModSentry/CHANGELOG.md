@@ -2,7 +2,7 @@
 
 ## 1.0.5
 
-- Bug fix
+- Disconnect rejected pre-admission connections directly so clients return to the main menu instead of remaining on a black screen.
 
 ## 1.0.4
 
