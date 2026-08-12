@@ -16,6 +16,7 @@ namespace Landoria.CharacterVault
         private const string PluginVersion = "1.0.8";
         internal static ModLog Log { get; private set; }
         internal static GracefulShutdownCoordinator Coordinator { get; private set; }
+        internal static VoluntaryDisconnectCoordinator DisconnectCoordinator { get; private set; }
         internal static CharacterVaultPlugin Instance { get; private set; }
         internal static CharacterVaultSettings Settings { get; private set; }
         internal static ProfileTransferService Transfers { get; private set; }
@@ -27,6 +28,7 @@ namespace Landoria.CharacterVault
             Settings = CharacterVaultSettings.Load(Config);
             Transfers = new ProfileTransferService(SynchronizationContext.Current);
             Coordinator = new GracefulShutdownCoordinator(SynchronizationContext.Current);
+            DisconnectCoordinator = new VoluntaryDisconnectCoordinator();
             Log.LogInfo($"{PluginName} {PluginVersion} is loaded.");
         }
 
@@ -48,8 +50,10 @@ namespace Landoria.CharacterVault
 
         private void OnDestroy()
         {
+            DisconnectCoordinator?.Dispose();
             Coordinator?.Dispose();
             Transfers?.Dispose();
+            DisconnectCoordinator = null;
             Coordinator = null;
             Transfers = null;
             Settings = null;

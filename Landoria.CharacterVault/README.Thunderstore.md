@@ -4,6 +4,10 @@ CharacterVault saves characters on the server. When a player joins, the
 server loads its saved copy instead of trusting a local save. This prevents
 players from importing or duplicating items with another save or a backup.
 
+When a player logs out or quits normally, CharacterVault saves the character
+and waits for the server to confirm it before disconnecting. Crashes and lost
+network connections cannot be delayed for this final save.
+
 ## Valheim compatibility
 
 | Valheim channel | Version | Compatibility |

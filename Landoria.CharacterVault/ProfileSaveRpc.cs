@@ -69,6 +69,16 @@ namespace Landoria.CharacterVault
         }
     }
 
+    [HarmonyPatch(typeof(Game), "Logout")]
+    internal static class CharacterVaultVoluntaryLogoutPatch
+    {
+        private static bool Prefix(Game __instance, bool save, bool changeToStartScene)
+        {
+            return CharacterVaultPlugin.DisconnectCoordinator?.AllowLogout(
+                __instance, save, changeToStartScene) ?? true;
+        }
+    }
+
     [HarmonyPatch(typeof(Player), "OnSpawned")]
     internal static class CharacterVaultStartingItemsPatch
     {
