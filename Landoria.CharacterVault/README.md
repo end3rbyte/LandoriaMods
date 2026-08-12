@@ -39,6 +39,8 @@ or duplicating items by restoring a local backup.
 - Commits a new character only after its first complete profile is validated
   and written durably.
 - Keeps the existing `character_vault.drp` graceful shutdown protocol.
+- Logs every successful character profile commit with its character name and
+  revision.
 - Uses bounded fragmented transfers, SHA-256 validation, atomic replacement,
   and a previous revision.
 - Supports the stable and public test Valheim save APIs for local and Steam
