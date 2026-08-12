@@ -2,15 +2,7 @@
 
 ## 1.0.10
 
-- Prevent exit-save interception before a player enters the world
-- Limit final exit-save waits to 10 seconds
-- Reset interrupted client uploads between connections so a rejected attempt cannot delay later logout saves.
-- Explain when a connection is refused because the Steam account is not registered for the server.
-- Retain every previous character save in a timestamped `backups/` file.
-- Name current profiles and backups with the Steam account and character name.
-- Store authoritative profiles in the instance `characters_local` directory.
-- Archive every saved revision immediately, including the first one.
-- Drop compatibility with the former hashed CharacterVault storage.
+- Bug fix
 
 ## 1.0.9
 
