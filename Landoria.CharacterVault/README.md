@@ -48,6 +48,7 @@ server kicks, and shutdowns retain durable-commit acknowledgement semantics.
 | Required | Required |
 
 Install matching CharacterVault and ModSentry versions on every client and server.
+When CharacterVault refuses admission, Valheim returns to the main menu and displays the server's reason.
 
 ## Configuration
 

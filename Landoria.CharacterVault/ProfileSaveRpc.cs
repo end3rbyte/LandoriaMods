@@ -1,4 +1,6 @@
 using HarmonyLib;
+using TMPro;
+using UnityEngine;
 
 namespace Landoria.CharacterVault
 {
@@ -54,6 +56,37 @@ namespace Landoria.CharacterVault
         private static void Prefix(ZNetPeer peer)
         {
             CharacterVaultPlugin.Transfers?.Remove(peer);
+            if (peer?.m_rpc != null)
+            {
+                CharacterVaultRejection.Remove(peer.m_rpc);
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(FejdStartup), "ShowConnectError")]
+    internal static class CharacterVaultShowRejectionPatch
+    {
+        private static void Postfix(TMP_Text ___m_connectionFailedError)
+        {
+            if (CharacterVaultRejection.TryGetMessage(out string message))
+            {
+                ___m_connectionFailedError.text = message;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(FejdStartup), "Start")]
+    internal static class CharacterVaultShowRejectionAfterMenuLoadPatch
+    {
+        private static void Postfix(
+            GameObject ___m_connectionFailedPanel,
+            TMP_Text ___m_connectionFailedError)
+        {
+            if (CharacterVaultRejection.TryGetMessage(out string message))
+            {
+                ___m_connectionFailedError.text = message;
+                ___m_connectionFailedPanel.SetActive(true);
+            }
         }
     }
 

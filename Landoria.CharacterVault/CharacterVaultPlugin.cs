@@ -44,6 +44,11 @@ namespace Landoria.CharacterVault
             StartCoroutine(QuitAfterCurrentFrame());
         }
 
+        private void Update()
+        {
+            CharacterVaultRejection.Tick();
+        }
+
         private static IEnumerator QuitAfterCurrentFrame()
         {
             yield return null;
@@ -56,6 +61,7 @@ namespace Landoria.CharacterVault
             ServerDisconnects?.Dispose();
             Coordinator?.Dispose();
             Transfers?.Dispose();
+            CharacterVaultRejection.Clear();
             DisconnectCoordinator = null;
             ServerDisconnects = null;
             Coordinator = null;
