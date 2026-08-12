@@ -1,6 +1,9 @@
 # CharacterVault
 
 CharacterVault stores authoritative Valheim character profiles on the server.
+For a voluntary logout or application quit, the client waits for the server to
+commit one final profile save before allowing the action to continue. Client
+crashes and network failures cannot use this handshake.
 Once a character is enrolled, the server copy is applied before the player
 enters the world. This prevents players from bringing items from other servers
 or duplicating items by restoring a local backup.

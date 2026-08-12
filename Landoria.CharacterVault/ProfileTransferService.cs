@@ -32,6 +32,7 @@ namespace Landoria.CharacterVault
         private bool _clientActive;
         private bool _clientEnrolling;
         private bool _clientUploadBusy;
+        private bool _suppressNextClientUpload;
         private string _pendingRequest;
         private PlayerProfile _pendingProfile;
         private IReadOnlyList<StartingItem> _serverStartingItems = Array.Empty<StartingItem>();
@@ -106,6 +107,10 @@ namespace Landoria.CharacterVault
             _sessions.Remove(peer.m_rpc);
             _uploads.Remove(peer.m_rpc);
             ReleaseEnrollment(peer.m_rpc);
+            if (ZNet.instance?.IsServer() == false)
+            {
+                ResetClientState();
+            }
         }
 
         internal void RequestWorldCheckpoint()
@@ -132,6 +137,14 @@ namespace Landoria.CharacterVault
 
         internal void UploadSavedProfile(PlayerProfile profile)
         {
+            if (_suppressNextClientUpload)
+            {
+                _suppressNextClientUpload = false;
+                CharacterVaultPlugin.Log.LogInfo(
+                    "Skipped the redundant local save upload after a confirmed voluntary disconnect save.");
+                return;
+            }
+
             if (!_clientActive || ZNet.instance?.IsServer() != false)
             {
                 return;
@@ -142,12 +155,43 @@ namespace Landoria.CharacterVault
             if (_clientUploadBusy)
             {
                 _pendingRequest = request;
+                CharacterVaultPlugin.Log.LogInfo(
+                    $"Queued character save request {request} while another upload is awaiting confirmation.");
                 return;
             }
 
             byte[] data = ProfileFile.Read(profile);
             _clientUploadBusy = true;
+            CharacterVaultPlugin.Log.LogInfo(
+                $"Uploading character profile {profile.GetName()} for save request {request}.");
             CharacterVaultPlugin.Instance.Run(SendUpload(profile, data, request));
+        }
+
+        internal bool BeginFinalDisconnectSave(string requestId)
+        {
+            PlayerProfile profile = Game.instance?.GetPlayerProfile();
+            if (!_clientActive || ZNet.instance?.IsServer() != false || profile == null)
+            {
+                return false;
+            }
+
+            _pendingRequest = requestId;
+            if (_clientUploadBusy)
+            {
+                CharacterVaultPlugin.Log.LogInfo(
+                    $"Final save request {requestId} is waiting for the active upload to finish.");
+                return true;
+            }
+
+            CharacterVaultPlugin.Log.LogInfo(
+                $"Writing the final local profile for {profile.GetName()} before disconnect.");
+            Game.instance.SavePlayerProfile(true);
+            return true;
+        }
+
+        internal void SuppressRedundantDisconnectUpload()
+        {
+            _suppressNextClientUpload = true;
         }
 
         internal void GrantStartingItems()
@@ -324,10 +368,23 @@ namespace Landoria.CharacterVault
         private void ReceiveSaveAck(ZRpc rpc, string requestId, long revision)
         {
             _clientUploadBusy = false;
+            CharacterVaultPlugin.Log.LogInfo(
+                $"Server confirmed character save request {requestId} at revision {revision}.");
+            CharacterVaultPlugin.DisconnectCoordinator?.RecordSaveCommitted(requestId, revision);
             if (_pendingRequest != null)
             {
                 Game.instance.SavePlayerProfile(true);
             }
+        }
+
+        private void ResetClientState()
+        {
+            _clientActive = false;
+            _clientEnrolling = false;
+            _clientUploadBusy = false;
+            _pendingRequest = null;
+            _pendingProfile = null;
+            CharacterVaultPlugin.DisconnectCoordinator?.RecordConnectionLost();
         }
 
         private IEnumerator SendUpload(PlayerProfile profile, byte[] data, string requestId)
