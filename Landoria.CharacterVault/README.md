@@ -71,6 +71,59 @@ The server configuration is authoritative. Starting items are granted exactly
 once during initial enrollment. When multiple characters are disabled, an
 account that already has an enrolled character cannot enroll another one.
 
+## Graceful server shutdown and restart
+
+CharacterVault watches for `character_vault.drp` in the dedicated server's
+working directory. The file must contain the Valheim process ID. When it
+receives a valid request, CharacterVault saves connected characters, waits for
+the transfers to be committed, and then continues with Valheim's normal world
+save and shutdown. It continues the shutdown after a 90-second character-save
+timeout if a client does not respond.
+
+For a systemd-managed server, create a stop helper such as
+`character-vault-stop.sh`:
+
+```bash
+#!/usr/bin/env bash
+set -u
+
+readonly valheim_pid="${1:-}"
+readonly working_directory="${2:-}"
+
+if [[ ! "$valheim_pid" =~ ^[0-9]+$ ]] || (( valheim_pid <= 1 )); then
+  exit 0
+fi
+if [[ ! -d "$working_directory" ]] || ! kill -0 "$valheim_pid" 2>/dev/null; then
+  exit 0
+fi
+
+readonly exit_file="$working_directory/character_vault.drp"
+readonly temporary_exit_file="$exit_file.$$"
+trap 'rm -f -- "$temporary_exit_file"' EXIT HUP INT TERM
+printf '%s\n' "$valheim_pid" >"$temporary_exit_file"
+mv -f -- "$temporary_exit_file" "$exit_file"
+trap - EXIT HUP INT TERM
+
+while kill -0 "$valheim_pid" 2>/dev/null; do
+  sleep 1
+done
+```
+
+Make the helper executable, then configure the service with the helper path and
+the same working directory used to start Valheim:
+
+```ini
+[Service]
+WorkingDirectory=/path/to/server-working-directory
+ExecStop=/path/to/character-vault-stop.sh $MAINPID /path/to/server-working-directory
+TimeoutStopSec=120
+```
+
+The helper writes the request through an atomic rename so CharacterVault never
+reads a partial process ID. `TimeoutStopSec=120` gives the plugin's 90-second
+save timeout enough time to finish the vanilla shutdown. After reloading the
+unit, both `systemctl stop` and `systemctl restart` use the graceful path.
+
 ## Installation
 
 | Client required | Server required |
