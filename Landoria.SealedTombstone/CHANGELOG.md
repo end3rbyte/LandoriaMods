@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Update repository URLs after organization move
+
 ## 1.0.2
 
 - Report an offline owner accurately and only send access requests to the connected owner.

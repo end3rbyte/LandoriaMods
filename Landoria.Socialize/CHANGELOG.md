@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Update repository URLs after organization move
+
 ## 1.0.5
 
 - Preserve player-built structures and fuel while their creator and the creator's group are offline.

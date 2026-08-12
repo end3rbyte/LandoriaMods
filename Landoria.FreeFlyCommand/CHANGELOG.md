@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Update repository URLs after organization move
+
 ## 1.0.2
 
 - Document the free-camera FOV command (#51)

@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Update repository URLs after organization move
+
 ## 1.0.8
 
 - Replace ServerCharacters with the standalone authoritative CharacterVault implementation.

@@ -1,20 +1,20 @@
 {
   "name": "LandoriaModPack",
-  "version_number": "1.0.8",
+  "version_number": "1.0.9",
   "website_url": "https://github.com/landoria-gaming/LandoriaMods/tree/main/Landoria.LandoriaModPack",
   "description": "Installs the mods required to join the Landoria Valheim server.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333",
-    "Landoria-ModSentry-1.0.1",
-    "Landoria-AfkDetector-1.0.1",
-    "Landoria-FlyCommand-1.0.1",
-    "Landoria-FreeFlyCommand-1.0.2",
-    "Landoria-Moderator-1.0.3",
-    "Landoria-GetMyTrophyBack-1.0.3",
-    "Landoria-ExpandedServer-1.0.3",
-    "Landoria-CharacterVault-1.0.5",
-    "Landoria-Socialize-1.0.5",
-    "Landoria-SealedTombstone-1.0.2"
+    "Landoria-ModSentry-1.0.2",
+    "Landoria-AfkDetector-1.0.2",
+    "Landoria-FlyCommand-1.0.2",
+    "Landoria-FreeFlyCommand-1.0.3",
+    "Landoria-Moderator-1.0.4",
+    "Landoria-GetMyTrophyBack-1.0.4",
+    "Landoria-ExpandedServer-1.0.4",
+    "Landoria-CharacterVault-1.0.6",
+    "Landoria-Socialize-1.0.6",
+    "Landoria-SealedTombstone-1.0.3"
   ],
   "categories": [
     "ai-generated",

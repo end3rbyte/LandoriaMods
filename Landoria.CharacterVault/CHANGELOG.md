@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Update repository URLs after organization move
+
 ## 1.0.5
 
 - Enforce CharacterVault rejection before Valheim can admit or spawn the peer.

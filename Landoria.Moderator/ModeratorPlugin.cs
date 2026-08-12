@@ -17,7 +17,7 @@ namespace Landoria.Moderator
         internal static ModLog ModLogger { get; private set; }
         private const string PluginGuid = "Landoria.Moderator";
         private const string PluginName = "Landoria.Moderator";
-        private const string PluginVersion = "1.0.3";
+        private const string PluginVersion = "1.0.4";
 
         private void Awake()
         {
