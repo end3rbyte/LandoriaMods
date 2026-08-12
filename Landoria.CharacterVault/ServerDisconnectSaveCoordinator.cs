@@ -10,6 +10,43 @@ namespace Landoria.CharacterVault
         private const float ConfirmationTimeoutSeconds = 30f;
         private readonly Dictionary<string, PendingServerSave> _pending =
             new Dictionary<string, PendingServerSave>(StringComparer.Ordinal);
+        private readonly HashSet<ZRpc> _authorizedDisconnects = new HashSet<ZRpc>();
+
+        internal bool AllowKick(ZNet network, ZNetPeer peer)
+        {
+            if (network?.IsServer() != true || peer?.m_rpc == null)
+            {
+                return true;
+            }
+
+            if (_authorizedDisconnects.Remove(peer.m_rpc))
+            {
+                CharacterVaultPlugin.Log.LogInfo(
+                    $"Allowing kick for {peer.m_playerName} after its confirmed final save.");
+                return true;
+            }
+
+            if (HasPendingRequest(peer.m_rpc))
+            {
+                CharacterVaultPlugin.Log.LogWarning(
+                    $"Ignored another kick for {peer.m_playerName} while its final save is pending.");
+                return false;
+            }
+
+            bool requested = TryRequest(peer, "server kick",
+                (request, revision, saved) => CompleteKick(network, peer, request, revision, saved),
+                out string requestId);
+            if (!requested)
+            {
+                CharacterVaultPlugin.Log.LogError(
+                    $"Canceled kick for {peer.m_playerName}: a final save could not be requested.");
+                return false;
+            }
+
+            CharacterVaultPlugin.Log.LogMessage(
+                $"Delayed kick for {peer.m_playerName} until final save {requestId} is committed.");
+            return false;
+        }
 
         internal bool TryRequest(ZNetPeer peer, string reason,
             Action<string, long, bool> completed, out string requestId)
@@ -40,6 +77,7 @@ namespace Landoria.CharacterVault
             }
 
             _pending.Remove(requestId);
+            _authorizedDisconnects.Add(rpc);
             CharacterVaultPlugin.Log.LogMessage(
                 $"Final save {requestId} for {save.PlayerName} committed at revision {revision}; " +
                 $"authorizing {save.Reason}.");
@@ -48,6 +86,7 @@ namespace Landoria.CharacterVault
 
         internal void RecordDisconnected(ZRpc rpc)
         {
+            _authorizedDisconnects.Remove(rpc);
             foreach (string requestId in RequestsFor(rpc))
             {
                 CompleteFailed(requestId, "the connection closed before confirmation");
@@ -56,10 +95,39 @@ namespace Landoria.CharacterVault
 
         public void Dispose()
         {
+            _authorizedDisconnects.Clear();
             foreach (string requestId in new List<string>(_pending.Keys))
             {
                 CompleteFailed(requestId, "CharacterVault unloaded before confirmation");
             }
+        }
+
+        private void CompleteKick(ZNet network, ZNetPeer peer, string requestId,
+            long revision, bool saved)
+        {
+            if (!saved)
+            {
+                CharacterVaultPlugin.Log.LogError(
+                    $"Kick for {peer.m_playerName} canceled because save {requestId} was not confirmed.");
+                return;
+            }
+
+            CharacterVaultPlugin.Log.LogMessage(
+                $"Replaying kick for {peer.m_playerName} after save {requestId} revision {revision}.");
+            network.Kick(peer.m_socket.GetHostName());
+        }
+
+        private bool HasPendingRequest(ZRpc rpc)
+        {
+            foreach (PendingServerSave save in _pending.Values)
+            {
+                if (save.Rpc == rpc)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private IEnumerator WaitForConfirmation(string requestId)

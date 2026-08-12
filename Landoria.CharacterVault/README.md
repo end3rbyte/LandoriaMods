@@ -6,6 +6,8 @@ commit one final profile save before allowing the action to continue. Client
 crashes and network failures cannot use this handshake.
 Client and server logs include the same save request identifier and committed
 revision so each profile write can be correlated across both sides.
+Server-side kicks, including administrator, ban-list, allow-list, and inactivity
+kicks, are also delayed until this final save is confirmed.
 Once a character is enrolled, the server copy is applied before the player
 enters the world. This prevents players from bringing items from other servers
 or duplicating items by restoring a local backup.

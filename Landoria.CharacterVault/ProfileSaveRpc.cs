@@ -57,6 +57,15 @@ namespace Landoria.CharacterVault
         }
     }
 
+    [HarmonyPatch(typeof(ZNet), "InternalKick", new[] { typeof(ZNetPeer) })]
+    internal static class CharacterVaultKickBarrierPatch
+    {
+        private static bool Prefix(ZNet __instance, ZNetPeer peer)
+        {
+            return CharacterVaultPlugin.ServerDisconnects?.AllowKick(__instance, peer) ?? true;
+        }
+    }
+
     [HarmonyPatch(typeof(PlayerProfile), "SavePlayerToDisk")]
     internal static class CharacterVaultProfileSavedPatch
     {

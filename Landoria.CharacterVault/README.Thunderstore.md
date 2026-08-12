@@ -9,6 +9,7 @@ and waits for the server to confirm it before disconnecting. Crashes and lost
 network connections cannot be delayed for this final save.
 Client and server logs share the save request identifier and committed revision
 to make each save easy to correlate.
+Server kicks are also delayed until the server confirms a final character save.
 
 ## Valheim compatibility
 
