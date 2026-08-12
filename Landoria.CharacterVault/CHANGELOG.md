@@ -5,6 +5,7 @@
 - Prevent exit-save interception before a player enters the world
 - Limit final exit-save waits to 10 seconds
 - Reset interrupted client uploads between connections so a rejected attempt cannot delay later logout saves.
+- Explain when a connection is refused because the Steam account is not registered for the server.
 
 ## 1.0.9
 
