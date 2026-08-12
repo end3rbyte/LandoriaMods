@@ -7,12 +7,13 @@ using UnityEngine;
 namespace Landoria.AfkDetector
 {
     [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
+    [BepInDependency("Landoria.CharacterVault", BepInDependency.DependencyFlags.HardDependency)]
     public sealed class AfkDetectorPlugin : LandoriaPlugin
     {
         internal const string DisconnectReasonRpc = "Landoria_AfkDisconnectReason";
         private const string PluginGuid = "Landoria.AfkDetector";
         private const string PluginName = "Landoria.AfkDetector";
-        private const string PluginVersion = "1.0.3";
+        private const string PluginVersion = "1.0.4";
         private const int DefaultTimeoutMinutes = 30;
         private const string TimeoutArgument = "--afktimeout";
         private const float DefaultMovementTolerance = 0.75f;
@@ -118,12 +119,38 @@ namespace Landoria.AfkDetector
             return ZNet.instance != null && ZNet.instance.IsServer();
         }
 
-        private static void DisconnectPlayer(ZNetPeer peer)
+        private static bool DisconnectPlayer(ZNetPeer peer)
         {
-            string message = "Disconnected due to inactivity.";
-            peer.m_rpc.Invoke(DisconnectReasonRpc, message);
+            bool requested = Landoria.CharacterVault.CharacterVaultPlugin.SaveBeforeServerDisconnect(
+                peer, "AFK inactivity disconnect", (request, revision, saved) =>
+                    CompleteDisconnect(peer, request, revision, saved), out string requestId);
+            if (requested)
+            {
+                Log.LogInfo(
+                    $"Waiting for CharacterVault save {requestId} before disconnecting inactive player {peer.m_playerName}.");
+                return true;
+            }
+
+            Log.LogError(
+                $"Canceled inactivity disconnect for {peer.m_playerName}: CharacterVault could not request a save.");
+            return false;
+        }
+
+        private static void CompleteDisconnect(ZNetPeer peer, string requestId, long revision, bool saved)
+        {
+            if (!saved)
+            {
+                Log.LogError(
+                    $"Canceled inactivity disconnect for {peer.m_playerName}: save {requestId} was not confirmed.");
+                Instance?._monitor?.ResumeMonitoring(peer.m_uid, Time.unscaledTime);
+                return;
+            }
+
+            Log.LogInfo(
+                $"CharacterVault save {requestId} committed at revision {revision}; disconnecting inactive player {peer.m_playerName}.");
+            peer.m_rpc.Invoke(DisconnectReasonRpc, "Disconnected due to inactivity.");
             ZNet.instance.Kick(peer.m_socket.GetHostName());
-            Log.LogInfo($"Disconnected inactive player {peer.m_playerName}.");
+            Log.LogInfo($"Disconnected inactive player {peer.m_playerName} after confirmed save {requestId}.");
         }
 
         private void OnDestroy()

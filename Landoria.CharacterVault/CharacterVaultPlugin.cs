@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Threading;
 using BepInEx;
@@ -17,6 +18,7 @@ namespace Landoria.CharacterVault
         internal static ModLog Log { get; private set; }
         internal static GracefulShutdownCoordinator Coordinator { get; private set; }
         internal static VoluntaryDisconnectCoordinator DisconnectCoordinator { get; private set; }
+        internal static ServerDisconnectSaveCoordinator ServerDisconnects { get; private set; }
         internal static CharacterVaultPlugin Instance { get; private set; }
         internal static CharacterVaultSettings Settings { get; private set; }
         internal static ProfileTransferService Transfers { get; private set; }
@@ -29,6 +31,7 @@ namespace Landoria.CharacterVault
             Transfers = new ProfileTransferService(SynchronizationContext.Current);
             Coordinator = new GracefulShutdownCoordinator(SynchronizationContext.Current);
             DisconnectCoordinator = new VoluntaryDisconnectCoordinator();
+            ServerDisconnects = new ServerDisconnectSaveCoordinator();
             Log.LogInfo($"{PluginName} {PluginVersion} is loaded.");
         }
 
@@ -42,6 +45,18 @@ namespace Landoria.CharacterVault
             StartCoroutine(QuitAfterCurrentFrame());
         }
 
+        public static bool SaveBeforeServerDisconnect(ZNetPeer peer, string reason,
+            Action<string, long, bool> completed, out string requestId)
+        {
+            if (ServerDisconnects != null)
+            {
+                return ServerDisconnects.TryRequest(peer, reason, completed, out requestId);
+            }
+
+            requestId = null;
+            return false;
+        }
+
         private static IEnumerator QuitAfterCurrentFrame()
         {
             yield return null;
@@ -51,9 +66,11 @@ namespace Landoria.CharacterVault
         private void OnDestroy()
         {
             DisconnectCoordinator?.Dispose();
+            ServerDisconnects?.Dispose();
             Coordinator?.Dispose();
             Transfers?.Dispose();
             DisconnectCoordinator = null;
+            ServerDisconnects = null;
             Coordinator = null;
             Transfers = null;
             Settings = null;
