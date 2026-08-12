@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Support stable and public test Valheim hash APIs.
+
 ## 1.0.6
 
 - Update thunderstore readme

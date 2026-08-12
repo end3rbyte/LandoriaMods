@@ -61,7 +61,7 @@ namespace Landoria.Socialize
 
         private static ZDO Create()
         {
-            int prefabHash = PrefabName.GetStableHashCode();
+            int prefabHash = ComputeStableHash(PrefabName);
             Vector3 storagePosition = new Vector3(1000000f, -10000f, 1000000f);
             ZDO zdo = ZDOMan.instance.CreateNewZDO(storagePosition, prefabHash);
             zdo.Persistent = true;
@@ -69,6 +69,25 @@ namespace Landoria.Socialize
             zdo.SetPrefab(prefabHash);
             SocializePlugin.Log.LogInfo("Created persistent social group storage for the world.");
             return zdo;
+        }
+
+        private static int ComputeStableHash(string value)
+        {
+            unchecked
+            {
+                int firstHash = 5381;
+                int secondHash = firstHash;
+                for (int index = 0; index < value.Length && value[index] != '\0'; index += 2)
+                {
+                    firstHash = ((firstHash << 5) + firstHash) ^ value[index];
+                    if (index == value.Length - 1 || value[index + 1] == '\0')
+                    {
+                        break;
+                    }
+                    secondHash = ((secondHash << 5) + secondHash) ^ value[index + 1];
+                }
+                return firstHash + secondHash * 1566083941;
+            }
         }
 
         private static void Load(string encoded)
