@@ -3,7 +3,7 @@
 ## 1.0.3
 
 - Document Valheim version compatibility
-- Finalize Thunderstore changelogs [skip draft publish]
+- Finalize Thunderstore changelogs
 - Update repository URLs after organization move
 - Log mod unload lifecycle
 - Correct mod package metadata
