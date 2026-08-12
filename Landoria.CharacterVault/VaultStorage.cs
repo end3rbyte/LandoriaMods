@@ -9,8 +9,6 @@ namespace Landoria.CharacterVault
     internal sealed class VaultStorage
     {
         private const string BackupDirectory = "backups";
-        private readonly string _root = Path.Combine(
-            Utils.GetSaveDataPath(FileHelpers.FileSource.Local), "characters_local");
 
         internal bool TryRead(string accountId, string name, out byte[] data, out long revision)
         {
@@ -28,13 +26,14 @@ namespace Landoria.CharacterVault
             }
 
             string prefix = SafeSegment(accountId) + "_";
-            return !Directory.Exists(_root) || !Directory
-                .GetFiles(_root, prefix + "*.fch", SearchOption.TopDirectoryOnly).Any();
+            string root = StorageRoot();
+            return !Directory.Exists(root) || !Directory
+                .GetFiles(root, prefix + "*.fch", SearchOption.TopDirectoryOnly).Any();
         }
 
         internal void Commit(string accountId, string name, byte[] data)
         {
-            Directory.CreateDirectory(_root);
+            Directory.CreateDirectory(StorageRoot());
             string current = ProfilePath(accountId, name);
             string next = current + ".new";
             WriteDurably(next, data);
@@ -44,7 +43,7 @@ namespace Landoria.CharacterVault
 
         private void PreserveBackup(byte[] data, string profileName)
         {
-            string directory = Path.Combine(_root, BackupDirectory);
+            string directory = Path.Combine(StorageRoot(), BackupDirectory);
             Directory.CreateDirectory(directory);
             string timestamp = DateTime.UtcNow.ToString(
                 "yyyyMMdd'T'HHmmssfffffff'Z'", CultureInfo.InvariantCulture);
@@ -67,8 +66,11 @@ namespace Landoria.CharacterVault
 
         private string ProfilePath(string accountId, string name)
         {
-            return Path.Combine(_root, ProfileFileName(accountId, name));
+            return Path.Combine(StorageRoot(), ProfileFileName(accountId, name));
         }
+
+        private static string StorageRoot() => Path.Combine(
+            Utils.GetSaveDataPath(FileHelpers.FileSource.Local), "characters_local");
 
         private static void WriteDurably(string path, byte[] data)
         {
