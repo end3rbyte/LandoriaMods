@@ -10,14 +10,14 @@ namespace Landoria.CharacterVault
 {
     internal sealed class VaultStorage
     {
-        private const string CurrentFile = "current.fch";
+        private const string LegacyCurrentFile = "current.fch";
         private const string BackupDirectory = "backups";
         private readonly string _root = Path.Combine(Paths.ConfigPath, "CharacterVault", "accounts");
 
         internal bool TryRead(string accountId, long characterId, out byte[] data, out long revision)
         {
             string directory = CharacterPath(accountId, characterId);
-            string path = Path.Combine(directory, CurrentFile);
+            string path = FindCurrentProfile(directory);
             data = File.Exists(path) && IsActive(directory) ? File.ReadAllBytes(path) : null;
             revision = data == null ? 0 : ReadRevision(directory);
             return data != null;
@@ -40,25 +40,53 @@ namespace Landoria.CharacterVault
         {
             string directory = CharacterPath(accountId, characterId);
             Directory.CreateDirectory(directory);
-            string current = Path.Combine(directory, CurrentFile);
+            string current = Path.Combine(directory, ProfileFileName(accountId, name));
             string next = current + ".new";
             WriteDurably(next, data);
-            if (File.Exists(current))
+            string existing = FindCurrentProfile(directory);
+            if (File.Exists(existing))
             {
-                PreserveBackup(directory, current);
+                PreserveBackup(directory, existing, Path.GetFileNameWithoutExtension(current));
             }
 
             Replace(next, current);
             WriteMetadata(directory, name, hash, revision);
         }
 
-        private static void PreserveBackup(string characterDirectory, string current)
+        private static void PreserveBackup(
+            string characterDirectory, string current, string profileName)
         {
             string directory = Path.Combine(characterDirectory, BackupDirectory);
             Directory.CreateDirectory(directory);
             string timestamp = DateTime.UtcNow.ToString(
                 "yyyyMMdd'T'HHmmssfffffff'Z'", CultureInfo.InvariantCulture);
-            File.Copy(current, Path.Combine(directory, $"current-{timestamp}.fch"));
+            File.Copy(current, Path.Combine(directory, $"{profileName}_{timestamp}.fch"));
+        }
+
+        private static string FindCurrentProfile(string directory)
+        {
+            if (!Directory.Exists(directory))
+            {
+                return Path.Combine(directory, LegacyCurrentFile);
+            }
+
+            return Directory.GetFiles(directory, "*.fch", SearchOption.TopDirectoryOnly)
+                .FirstOrDefault(path => Path.GetFileName(path) != LegacyCurrentFile) ??
+                Path.Combine(directory, LegacyCurrentFile);
+        }
+
+        private static string ProfileFileName(string accountId, string name)
+        {
+            const string invalid = "<>:\"/\\|?*";
+            string safeAccount = new string(accountId
+                .Select(character => char.IsControl(character) || invalid.Contains(character)
+                    ? '_' : character)
+                .ToArray());
+            string safeName = new string(name
+                .Select(character => char.IsControl(character) || invalid.Contains(character)
+                    ? '_' : character)
+                .ToArray());
+            return $"{safeAccount}_{safeName}.fch";
         }
 
         private string AccountPath(string accountId)
