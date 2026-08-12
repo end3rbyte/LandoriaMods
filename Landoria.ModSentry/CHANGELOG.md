@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.5
+
+- Bug fix
+
 ## 1.0.4
 
 - Return rejected clients to the main menu and display the server's rejection reason.
