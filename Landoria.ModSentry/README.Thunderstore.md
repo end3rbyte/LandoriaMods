@@ -10,7 +10,7 @@ Strictly validates required and optional client mods before a Valheim server acc
 
 All other client mods are rejected.
 
-[Read the complete documentation](https://github.com/end3rbyte/LandoriaMods/blob/main/Landoria.ModSentry/README.md).
+[Read the complete documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.ModSentry/README.md).
 
 ## Contact
 

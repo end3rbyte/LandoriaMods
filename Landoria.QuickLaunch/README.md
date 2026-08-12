@@ -25,5 +25,5 @@ Automatically resumes the last local or multiplayer Valheim session.
 
 ## Contact
 
-Report bugs through [GitHub Issues](https://github.com/end3rbyte/LandoriaMods/issues).
-For questions, feedback, and other discussions, use [GitHub Discussions](https://github.com/end3rbyte/LandoriaMods/discussions).
+Report bugs through [GitHub Issues](https://github.com/landoria-gaming/LandoriaMods/issues).
+For questions, feedback, and other discussions, use [GitHub Discussions](https://github.com/landoria-gaming/LandoriaMods/discussions).

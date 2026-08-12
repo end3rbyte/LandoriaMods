@@ -18,9 +18,9 @@ Install the same version everywhere so the peer owning the stone can perform the
 |---|---|
 | Yes | Yes |
 
-Read the [full documentation](https://github.com/end3rbyte/LandoriaMods/blob/main/Landoria.GetMyTrophyBack/README.md) on GitHub.
+Read the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.GetMyTrophyBack/README.md) on GitHub.
 
 ## Contact
 
-Report bugs through [GitHub Issues](https://github.com/end3rbyte/LandoriaMods/issues).
-For questions, feedback, and other discussions, use [GitHub Discussions](https://github.com/end3rbyte/LandoriaMods/discussions).
+Report bugs through [GitHub Issues](https://github.com/landoria-gaming/LandoriaMods/issues).
+For questions, feedback, and other discussions, use [GitHub Discussions](https://github.com/landoria-gaming/LandoriaMods/discussions).

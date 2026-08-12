@@ -46,5 +46,5 @@ Install matching CharacterVault and ModSentry versions on every client and serve
 
 ## Contact
 
-Report bugs through [GitHub Issues](https://github.com/end3rbyte/LandoriaMods/issues).
-For questions and feedback, use [GitHub Discussions](https://github.com/end3rbyte/LandoriaMods/discussions).
+Report bugs through [GitHub Issues](https://github.com/landoria-gaming/LandoriaMods/issues).
+For questions and feedback, use [GitHub Discussions](https://github.com/landoria-gaming/LandoriaMods/discussions).

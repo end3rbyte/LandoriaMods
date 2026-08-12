@@ -17,9 +17,9 @@ Uses Valheim's native flight movement in server-authorized worlds without enabli
 |---|---|
 | Yes | Yes, wherever flight is authorized |
 
-See the [full documentation](https://github.com/end3rbyte/LandoriaMods/blob/main/Landoria.FlyCommand/README.md).
+See the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.FlyCommand/README.md).
 
 ## Contact
 
-Report bugs through [GitHub Issues](https://github.com/end3rbyte/LandoriaMods/issues).
-For questions, feedback, and other discussions, use [GitHub Discussions](https://github.com/end3rbyte/LandoriaMods/discussions).
+Report bugs through [GitHub Issues](https://github.com/landoria-gaming/LandoriaMods/issues).
+For questions, feedback, and other discussions, use [GitHub Discussions](https://github.com/landoria-gaming/LandoriaMods/discussions).
