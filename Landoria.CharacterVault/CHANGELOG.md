@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Route the in-game Quit action through the confirmed voluntary-disconnect save flow.
 - Acknowledge validated voluntary-disconnect uploads immediately, then complete the durable server commit asynchronously.
 - Require a server-confirmed final character save before voluntary logout or application quit.
 - Add detailed client logs for voluntary disconnect saves and acknowledgements.

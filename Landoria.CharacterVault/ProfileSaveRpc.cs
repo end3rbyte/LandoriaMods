@@ -88,6 +88,15 @@ namespace Landoria.CharacterVault
         }
     }
 
+    [HarmonyPatch(typeof(Menu), "QuitGame")]
+    internal static class CharacterVaultMenuQuitPatch
+    {
+        private static bool Prefix()
+        {
+            return CharacterVaultPlugin.DisconnectCoordinator?.AllowMenuQuit() ?? true;
+        }
+    }
+
     [HarmonyPatch(typeof(Player), "OnSpawned")]
     internal static class CharacterVaultStartingItemsPatch
     {
