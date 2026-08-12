@@ -7,7 +7,6 @@ on:
     paths:
       - .github/workflows/dispatch-private-automation.yml
       - .draft-rollbacks/*.json
-      - Directory.Build.props
       - Landoria.*/**
 
 permissions:
