@@ -2,6 +2,13 @@
 
 Adds persistent player groups, private messaging, map sharing, and expanded chat channels.
 
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
+
 ## Features
 
 - Creates persistent server-owned groups of up to five players.

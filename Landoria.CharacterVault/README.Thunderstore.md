@@ -2,6 +2,13 @@
 
 CharacterVault stores authoritative Valheim character profiles on the server and applies the server copy before a player enters the world.
 
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
+
 ## Features
 
 - Requires ModSentry verification before character enrollment.

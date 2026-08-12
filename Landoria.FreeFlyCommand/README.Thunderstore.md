@@ -2,6 +2,13 @@
 
 Allows Valheim's native `freefly` and `ffsmooth` commands only after explicit server authorization, without enabling `devcommands` or `debugmode`.
 
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
+
 ## Features
 
 - Starts denied until the connected server authorizes the client.

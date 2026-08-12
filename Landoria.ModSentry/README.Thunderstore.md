@@ -2,6 +2,13 @@
 
 Strictly validates required and optional client mods before a Valheim server accepts the connection.
 
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
+
 - BepInEx GUID validation
 - complete version validation
 - mandatory SHA-256 validation

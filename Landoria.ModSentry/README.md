@@ -2,6 +2,13 @@
 
 ModSentry validates the complete client plugin inventory before the Valheim peer handshake is accepted.
 
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
+
 The server defines two explicit directories under `BepInEx/config`:
 
 - `ModSentry_Required`: every DLL must be installed by the client.

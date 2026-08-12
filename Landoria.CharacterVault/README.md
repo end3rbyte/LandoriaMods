@@ -2,6 +2,13 @@
 
 CharacterVault stores authoritative Valheim character profiles on the server. A local backup cannot replace an existing server profile because the server profile is applied before the player enters the world.
 
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
+
 ## Guarantees
 
 - Requires an exact, ModSentry-verified CharacterVault DLL on every client.

@@ -2,6 +2,13 @@
 
 Installs the mods required to join the Landoria Valheim server.
 
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
+
 ## Features
 
 - Installs BepInEx and all required Landoria dependencies.

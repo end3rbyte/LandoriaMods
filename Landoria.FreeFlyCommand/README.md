@@ -2,6 +2,13 @@
 
 Allows Valheim's native `freefly` and `ffsmooth` camera commands after explicit authorization from the connected server. It does not enable `devcommands` or `debugmode`.
 
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
+
 ## Authorization
 
 - The client starts denied and requests authorization from the connected server.
