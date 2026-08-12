@@ -84,7 +84,7 @@ namespace Landoria.CharacterVault
             }
 
             session.Verified = true;
-            if (_storage.TryRead(session.AccountId, session.CharacterId, session.Name,
+            if (_storage.TryRead(session.AccountId, session.Name,
                 out byte[] data, out long revision))
             {
                 session.Revision = revision;

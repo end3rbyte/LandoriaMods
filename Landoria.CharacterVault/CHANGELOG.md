@@ -10,6 +10,7 @@
 - Name current profiles and backups with the Steam account and character name.
 - Store authoritative profiles in the instance `characters_local` directory.
 - Archive every saved revision immediately, including the first one.
+- Drop compatibility with the former hashed CharacterVault storage.
 
 ## 1.0.9
 
