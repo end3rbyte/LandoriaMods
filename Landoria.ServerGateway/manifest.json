@@ -1,6 +1,6 @@
 {
   "name": "ServerGateway",
-  "version_number": "1.0.3",
+  "version_number": "1.0.4",
   "website_url": "https://valheim.landoria-gaming.com/",
   "description": "Exposes live server status and authenticated local commands for Valheim.",
   "dependencies": [

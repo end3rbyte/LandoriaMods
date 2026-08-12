@@ -1,6 +1,6 @@
 {
   "name": "NoServerPassword",
-  "version_number": "1.0.3",
+  "version_number": "1.0.4",
   "website_url": "https://valheim.landoria-gaming.com/",
   "description": "Host a public or crossplay Valheim server without requiring players to enter a password.",
   "dependencies": [
