@@ -5,6 +5,7 @@ on:
   push:
     branches: [main]
     paths:
+      - .github/workflows/dispatch-private-automation.yml
       - .draft-rollbacks/*.json
       - Directory.Build.props
       - Landoria.*/**
@@ -18,18 +19,17 @@ concurrency:
 
 jobs:
   dispatch:
-    runs-on: [self-hosted, Linux, X64, public-mods]
+    runs-on: ubuntu-latest
     steps:
       - name: Dispatch the private publication workflow
         env:
+          GH_TOKEN: ${{ secrets.PRIVATE_AUTOMATION_TOKEN }}
           BEFORE_SHA: ${{ github.event.before }}
           AFTER_SHA: ${{ github.sha }}
           COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         shell: bash
         run: |
           set -euo pipefail
-          GH_TOKEN="$(sudo cat /var/lib/landoria-secrets/github-token)"
-          export GH_TOKEN
           gh api --method POST \
             repos/landoria-gaming/LandoriaModsAutomation/dispatches \
             -f event_type=public-mods-push \
