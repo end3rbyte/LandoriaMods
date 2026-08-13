@@ -78,6 +78,7 @@
     <Compile Include="ChatPatches.cs" />
     <Compile Include="CreatureProtection.cs" />
     <Compile Include="CreatorActivityPolicy.cs" />
+    <Compile Include="DecayEffectPolicy.cs" />
     <Compile Include="DecayProtection.cs" />
     <Compile Include="GroupCommands.cs" />
     <Compile Include="GroupChatPolicy.cs" />
