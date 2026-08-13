@@ -21,8 +21,8 @@ with another save or a restored backup.
 When you join again, CharacterVault loads the latest trusted server copy before
 your character enters the world.
 Whenever your client starts sending a character save to the server,
-`Saving character..` appears in white below the small minimap. It changes to
-`Saving character....` when the server accepts the upload, then to
+`Saving character...` appears in white below the small minimap. It changes to
+`Saving character......` when the server accepts the upload, then to
 `Character saved` after the durable write. Each message remains visible for at
 most three seconds unless the next status replaces it.
 The server also sends a separate confirmation after the profile and its backup

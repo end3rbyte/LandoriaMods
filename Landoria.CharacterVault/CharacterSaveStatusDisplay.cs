@@ -48,12 +48,12 @@ namespace Landoria.CharacterVault
 
         internal void ShowSaving()
         {
-            ShowForThreeSeconds("Saving character..");
+            ShowForThreeSeconds("Saving character...");
         }
 
         internal void ShowAccepted()
         {
-            ShowForThreeSeconds("Saving character....");
+            ShowForThreeSeconds("Saving character......");
         }
 
         internal void ShowCommitted()
