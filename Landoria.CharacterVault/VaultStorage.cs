@@ -48,7 +48,11 @@ namespace Landoria.CharacterVault
             string timestamp = DateTime.UtcNow.ToString(
                 "yyyyMMdd'T'HHmmssfffffff'Z'", CultureInfo.InvariantCulture);
             WriteDurably(Path.Combine(directory, $"{profileName}_{timestamp}.fch"), data);
-            BackupRetention.Apply(directory, profileName);
+            foreach (string deleted in BackupRetention.Apply(directory, profileName))
+            {
+                CharacterVaultPlugin.Log.LogInfo(
+                    $"Deleted expired character backup {deleted} for profile {profileName}.");
+            }
         }
 
         private static string ProfileFileName(string accountId, string name)
