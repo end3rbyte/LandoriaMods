@@ -532,6 +532,13 @@ namespace Landoria.CharacterVault
             _uploads.Remove(rpc);
             byte[] data = transfer.Complete(transferId);
             ValidateProfile(session, data);
+            if (!SaveAcknowledgementPolicy.CanAcknowledge(session.State))
+            {
+                CharacterVaultPlugin.Log.LogWarning(
+                    $"Rejected character save {transfer.RequestId} for {session.Name}: " +
+                    "the player is not permitted to save on this server.");
+                return;
+            }
             if (session.Enrolling)
             {
                 _storage.Commit(session.AccountId, session.Name, data);

@@ -69,4 +69,12 @@ namespace Landoria.CharacterVault
             Permitted = permitted;
         }
     }
+
+    internal static class SaveAcknowledgementPolicy
+    {
+        internal static bool CanAcknowledge(ServerProfileSessionState session)
+        {
+            return session != null && session.CanSave;
+        }
+    }
 }
