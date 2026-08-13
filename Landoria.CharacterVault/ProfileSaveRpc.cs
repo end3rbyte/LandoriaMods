@@ -207,10 +207,10 @@ namespace Landoria.CharacterVault
     [HarmonyPatch(typeof(Player), "OnSpawned")]
     internal static class CharacterVaultStartingItemsPatch
     {
-        private static void Postfix()
+        private static void Postfix(Player __instance)
         {
             CharacterVaultPlugin.DisconnectCoordinator?.RecordPlayerSpawned();
-            CharacterVaultPlugin.Transfers?.GrantStartingItems();
+            CharacterVaultPlugin.Transfers?.RecordPlayerSpawned(__instance);
         }
     }
 
