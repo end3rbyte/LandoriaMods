@@ -339,9 +339,7 @@ namespace Landoria.CharacterVault
             if (admission != CharacterAdmission.NewEnrollment)
             {
                 _sessions.Remove(rpc);
-                Reject(rpc, admission == CharacterAdmission.RejectUnregisteredProfile
-                    ? "Create a new character before joining this server."
-                    : "This Steam account already has a character.");
+                Reject(rpc, CharacterAdmissionMessages.ForRejection(admission));
                 return false;
             }
 

@@ -107,4 +107,25 @@ public sealed class CharacterAdmissionEvaluatorMoqTests
         profiles.Verify(catalog => catalog.HasProfile("Steam_1"), Times.Once);
         profiles.VerifyNoOtherCalls();
     }
+
+    // A second character receives the existing-character rejection shown by the client UI.
+    [Fact]
+    public void AdditionalCharacterReceivesExistingCharacterMessage()
+    {
+        Mock<ICharacterProfileCatalog> profiles = new(MockBehavior.Strict);
+        profiles.Setup(catalog => catalog.HasProfile("Steam_1")).Returns(true);
+        CharacterAdmissionEvaluator evaluator = new(profiles.Object);
+        CharacterRejectionMessageState clientMessage = new();
+
+        CharacterAdmission admission = evaluator.Decide(hasStoredProfile: false, "Steam_1",
+            createdThisSession: true, allowMultipleCharacters: false,
+            enrollmentAvailable: true);
+        clientMessage.Receive(CharacterAdmissionMessages.ForRejection(admission));
+
+        Assert.Equal(CharacterAdmission.RejectAdditionalCharacter, admission);
+        Assert.True(clientMessage.TryGet(out string message));
+        Assert.Equal("This Steam account already has a character.", message);
+        profiles.Verify(catalog => catalog.HasProfile("Steam_1"), Times.Once);
+        profiles.VerifyNoOtherCalls();
+    }
 }

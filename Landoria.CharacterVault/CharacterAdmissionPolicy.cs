@@ -36,6 +36,16 @@ namespace Landoria.CharacterVault
         }
     }
 
+    internal static class CharacterAdmissionMessages
+    {
+        internal static string ForRejection(CharacterAdmission admission)
+        {
+            return admission == CharacterAdmission.RejectUnregisteredProfile
+                ? "Create a new character before joining this server."
+                : CharacterRejectionMessages.AdditionalCharacterDenied;
+        }
+    }
+
     internal sealed class CharacterAdmissionEvaluator
     {
         private readonly ICharacterProfileCatalog _profiles;
