@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.6
+
+- Add unit tests.
+
 ## 1.0.5
 
 - Disconnect rejected pre-admission connections directly so clients return to the main menu instead of remaining on a black screen.
