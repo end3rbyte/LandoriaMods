@@ -27,7 +27,7 @@ namespace Landoria.ModSentry
         {
             if (Policy == null)
             {
-                Policy = PluginPolicy.Load();
+                Policy = PluginPolicyLoader.Load();
                 Log.LogInfo($"Loaded {Policy.Required.Count} required and " +
                             $"{Policy.Optional.Count} optional client mod policies.");
             }
