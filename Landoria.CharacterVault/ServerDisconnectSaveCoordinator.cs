@@ -27,10 +27,15 @@ namespace Landoria.CharacterVault
                 return allow;
             }
 
-            bool requested = TryRequest(peer, "server kick",
-                (request, saved) => CompleteKick(network, peer, request, saved),
-                out string requestId);
-            if (!requested)
+            IKickSaveRequest request = new KickSaveRequestOperation(() =>
+            {
+                bool started = TryRequest(peer, "server kick",
+                    (requestId, saved) => CompleteKick(network, peer, requestId, saved),
+                    out string requestId);
+                return new KickSaveRequestResult(started, requestId);
+            });
+            KickSaveRequestResult result = KickSaveRequestExecutor.Execute(action, request);
+            if (!result.Started)
             {
                 CharacterVaultPlugin.Log.LogError(
                     $"Canceled kick for {peer.m_playerName}: a final save could not be requested.");
@@ -38,7 +43,7 @@ namespace Landoria.CharacterVault
             }
 
             CharacterVaultPlugin.Log.LogMessage(
-                $"Delayed kick for {peer.m_playerName} until final save {requestId} is committed.");
+                $"Delayed kick for {peer.m_playerName} until final save {result.RequestId} is committed.");
             return false;
         }
 
@@ -190,6 +195,21 @@ namespace Landoria.CharacterVault
             }
 
             return requests;
+        }
+    }
+
+    internal sealed class KickSaveRequestOperation : IKickSaveRequest
+    {
+        private readonly Func<KickSaveRequestResult> _request;
+
+        internal KickSaveRequestOperation(Func<KickSaveRequestResult> request)
+        {
+            _request = request;
+        }
+
+        public KickSaveRequestResult Request()
+        {
+            return _request();
         }
     }
 

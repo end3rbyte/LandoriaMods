@@ -5,19 +5,54 @@ namespace Landoria.CharacterVault;
 
 public sealed class KickSavePolicyMoqTests
 {
-    [Fact]
-    public void RejectedEligibilityProviderIsReadOnceAndSkipsTheSave()
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    [InlineData(4)]
+    public void NonRequestActionsNeverInvokeTheSaveGateway(int action)
     {
-        // Verifies that a rejected session is resolved once and kicked without requesting a save.
-        Mock<Func<int>> eligibility = new();
-        eligibility.Setup(provider => provider()).Returns((int)KickSaveEligibility.Rejected);
+        // Non-save kick outcomes must not contact the character save subsystem.
+        Mock<IKickSaveRequest> request = new(MockBehavior.Strict);
 
-        KickAction action = KickSavePolicy.Decide(validServerPeer: true,
-            saveAuthorized: false, savePending: false,
-            (KickSaveEligibility)eligibility.Object());
+        KickSaveRequestResult result = KickSaveRequestExecutor.Execute(
+            (KickAction)action, request.Object);
 
-        Assert.Equal(KickAction.AllowWithoutSave, action);
-        eligibility.Verify(provider => provider(), Times.Once);
-        eligibility.VerifyNoOtherCalls();
+        Assert.False(result.Started);
+        Assert.Empty(result.RequestId);
+        request.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public void RequestSaveInvokesTheGatewayOnceAndReturnsItsRequestId()
+    {
+        // A permitted kick delegates exactly one final-save request and preserves its identifier.
+        Mock<IKickSaveRequest> request = new(MockBehavior.Strict);
+        request.Setup(gateway => gateway.Request())
+            .Returns(new KickSaveRequestResult(true, "request-1"));
+
+        KickSaveRequestResult result = KickSaveRequestExecutor.Execute(
+            KickAction.RequestSave, request.Object);
+
+        Assert.True(result.Started);
+        Assert.Equal("request-1", result.RequestId);
+        request.Verify(gateway => gateway.Request(), Times.Once);
+        request.VerifyNoOtherCalls();
+    }
+
+    [Fact]
+    public void FailedSaveRequestIsReturnedWithoutRetry()
+    {
+        // A failed save start remains blocked and is not retried implicitly.
+        Mock<IKickSaveRequest> request = new(MockBehavior.Strict);
+        request.Setup(gateway => gateway.Request())
+            .Returns(new KickSaveRequestResult(false));
+
+        KickSaveRequestResult result = KickSaveRequestExecutor.Execute(
+            KickAction.RequestSave, request.Object);
+
+        Assert.False(result.Started);
+        request.Verify(gateway => gateway.Request(), Times.Once);
+        request.VerifyNoOtherCalls();
     }
 }

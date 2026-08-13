@@ -56,6 +56,7 @@
     <Compile Include="GracefulShutdownCoordinator.cs" />
     <Compile Include="KickSavePolicy.cs" />
     <Compile Include="VoluntaryDisconnectCoordinator.cs" />
+    <Compile Include="VoluntaryExitSavePolicy.cs" />
     <Compile Include="ServerDisconnectSaveCoordinator.cs" />
     <Compile Include="ProfileSaveRpc.cs" />
     <Compile Include="CharacterVaultPlugin.cs" />
