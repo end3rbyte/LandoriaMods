@@ -20,7 +20,6 @@ namespace Landoria.CharacterVault
         internal const string UploadCompleteRpc = "CharacterVault_UploadComplete_v1";
         internal const string SaveRequestRpc = "CharacterVault_SaveRequest_v1";
         internal const string SaveAckRpc = "CharacterVault_SaveAck_v1";
-        private const int ProtocolVersion = 2;
         private const int ChunkSize = 65536;
         private const int MaximumProfileBytes = 64 * 1024 * 1024;
         private readonly Dictionary<ZRpc, VaultSession> _sessions = new Dictionary<ZRpc, VaultSession>();
@@ -63,7 +62,6 @@ namespace Landoria.CharacterVault
             }
 
             ZPackage package = new ZPackage();
-            package.Write(ProtocolVersion);
             package.Write(profile.GetPlayerID());
             package.Write(profile.GetName());
             package.Write(NewCharacterTracker.WasCreatedThisSession(profile.GetPlayerID()));
@@ -280,12 +278,6 @@ namespace Landoria.CharacterVault
 
         private void ReceiveHello(ZRpc rpc, ZPackage package)
         {
-            if (package.ReadInt() != ProtocolVersion)
-            {
-                Reject(rpc, "The CharacterVault protocol is incompatible.");
-                return;
-            }
-
             long characterId = package.ReadLong();
             string name = package.ReadString();
             bool newCharacter = package.ReadBool();
