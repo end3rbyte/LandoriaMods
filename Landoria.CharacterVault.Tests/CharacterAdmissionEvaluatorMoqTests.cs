@@ -83,4 +83,28 @@ public sealed class CharacterAdmissionEvaluatorMoqTests
         profiles.Verify(catalog => catalog.HasProfile("Steam_1"), Times.Once);
         profiles.VerifyNoOtherCalls();
     }
+
+    // A new profile rejected by the permitted list remains unsaved and receives the server reason.
+    [Fact]
+    public void NewProfileWithDeniedSteamIdReceivesPermittedListMessage()
+    {
+        Mock<ICharacterProfileCatalog> profiles = new(MockBehavior.Strict);
+        profiles.Setup(catalog => catalog.HasProfile("Steam_1")).Returns(false);
+        CharacterAdmissionEvaluator evaluator = new(profiles.Object);
+        ServerProfileSessionState session = new() { Verified = true, Admitted = true };
+        CharacterRejectionMessageState clientMessage = new();
+
+        CharacterAdmission admission = evaluator.Decide(hasStoredProfile: false, "Steam_1",
+            createdThisSession: true, allowMultipleCharacters: false,
+            enrollmentAvailable: true);
+        session.RecordPermission(permitted: false);
+        clientMessage.Receive(CharacterRejectionMessages.PermittedListDenied);
+
+        Assert.Equal(CharacterAdmission.NewEnrollment, admission);
+        Assert.False(session.CanSave);
+        Assert.True(clientMessage.TryGet(out string message));
+        Assert.Equal("Steam account not registered for this server.", message);
+        profiles.Verify(catalog => catalog.HasProfile("Steam_1"), Times.Once);
+        profiles.VerifyNoOtherCalls();
+    }
 }
