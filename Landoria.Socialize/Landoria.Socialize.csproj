@@ -95,6 +95,7 @@
     <Compile Include="PiecePermissions.cs" />
     <Compile Include="PieceOwnershipDisplay.cs" />
     <Compile Include="PieceAccessPolicy.cs" />
+    <Compile Include="PieceInteractionPolicy.cs" />
     <Compile Include="SocializePlugin.cs" />
     <Compile Include="SocialGroup.cs" />
     <Compile Include="TargetPingService.cs" />

@@ -220,12 +220,8 @@ namespace Landoria.Socialize
         {
             private static bool Prefix(Player __instance, ref bool __result)
             {
-                if (CanAccess(__instance, __instance.GetHoveringPiece()))
-                {
-                    return true;
-                }
-                __result = false;
-                return false;
+                bool hasAccess = CanAccess(__instance, __instance.GetHoveringPiece());
+                return PieceInteractionPolicy.CanRemove(hasAccess, ref __result);
             }
         }
 
@@ -291,7 +287,7 @@ namespace Landoria.Socialize
         {
             private static bool Prefix(Door __instance, long uid)
             {
-                return CanPeerAccess(uid, __instance);
+                return PieceInteractionPolicy.CanUse(CanPeerAccess(uid, __instance));
             }
         }
 
