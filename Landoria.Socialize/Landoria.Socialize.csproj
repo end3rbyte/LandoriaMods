@@ -72,13 +72,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChatChannelState.cs" />
+    <Compile Include="ChatCommandParser.cs" />
     <Compile Include="ChatCommands.cs" />
     <Compile Include="ChatFormatting.cs" />
     <Compile Include="ChatPatches.cs" />
     <Compile Include="CreatureProtection.cs" />
+    <Compile Include="CreatorActivityPolicy.cs" />
     <Compile Include="DecayProtection.cs" />
     <Compile Include="GroupCommands.cs" />
     <Compile Include="GroupModels.cs" />
+    <Compile Include="GroupPolicy.cs" />
     <Compile Include="GroupMapSharing.cs" />
     <Compile Include="GroupRpc.cs" />
     <Compile Include="GroupService.cs" />
@@ -87,7 +90,9 @@
     <Compile Include="MapPrivacyPatches.cs" />
     <Compile Include="PiecePermissions.cs" />
     <Compile Include="PieceOwnershipDisplay.cs" />
+    <Compile Include="PieceAccessPolicy.cs" />
     <Compile Include="SocializePlugin.cs" />
+    <Compile Include="SocialGroup.cs" />
     <Compile Include="TargetPingService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

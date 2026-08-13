@@ -78,30 +78,15 @@ namespace Landoria.Socialize
 
         internal static bool CanAccess(long playerId, Piece piece)
         {
-            if (piece == null || !piece.IsPlacedByPlayer())
-            {
-                return true;
-            }
-            if (playerId == 0L)
-            {
-                return false;
-            }
-            long creator = piece.GetCreator();
-            if (creator == 0L || creator == playerId)
-            {
-                return true;
-            }
+            bool placedByPlayer = piece != null && piece.IsPlacedByPlayer();
+            long creator = piece != null ? piece.GetCreator() : 0L;
             if (ZNet.instance != null && ZNet.instance.IsServer())
             {
-                return AreServerGroupMembers(playerId, creator);
+                return PieceAccessPolicy.CanAccess(placedByPlayer, playerId, creator,
+                    true, AreServerGroupMembers);
             }
-            if (!hasServerState)
-            {
-                return false;
-            }
-            return SyncedPlayerGroups.TryGetValue(playerId, out int playerGroup) &&
-                   SyncedPlayerGroups.TryGetValue(creator, out int creatorGroup) &&
-                   playerGroup == creatorGroup;
+            return PieceAccessPolicy.CanAccess(placedByPlayer, playerId, creator,
+                hasServerState, AreSyncedGroupMembers);
         }
 
         private static bool CanAccess(Humanoid humanoid, Piece piece)
@@ -113,6 +98,13 @@ namespace Landoria.Socialize
         {
             return GroupState.PlayerGroups.TryGetValue(playerId, out int playerGroup) &&
                    GroupState.PlayerGroups.TryGetValue(creator, out int creatorGroup) &&
+                   playerGroup == creatorGroup;
+        }
+
+        private static bool AreSyncedGroupMembers(long playerId, long creator)
+        {
+            return SyncedPlayerGroups.TryGetValue(playerId, out int playerGroup) &&
+                   SyncedPlayerGroups.TryGetValue(creator, out int creatorGroup) &&
                    playerGroup == creatorGroup;
         }
 

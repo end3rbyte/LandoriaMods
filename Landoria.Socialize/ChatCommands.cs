@@ -60,7 +60,7 @@ namespace Landoria.Socialize
 
         private static object SendWhisper(Terminal.ConsoleEventArgs args)
         {
-            if (!TryParseTarget(args.FullLine, out string target, out string message))
+            if (!ChatCommandParser.TryParseTarget(args.FullLine, out string target, out string message))
             {
                 args.Context.AddString("Usage: /w PlayerName message");
                 return true;
@@ -75,7 +75,7 @@ namespace Landoria.Socialize
 
         private static object SendTargetPing(Terminal.ConsoleEventArgs args)
         {
-            if (!TryParseTarget(args.FullLine, out string target, out string message))
+            if (!ChatCommandParser.TryParseTarget(args.FullLine, out string target, out string message))
             {
                 args.Context.AddString("Usage: /wping PlayerName message");
                 return true;
@@ -90,21 +90,6 @@ namespace Landoria.Socialize
             return Chat.instance != null && !string.IsNullOrEmpty(message);
         }
 
-        private static bool TryParseTarget(string fullLine, out string target, out string message)
-        {
-            target = "";
-            message = "";
-            int targetStart = fullLine.IndexOf(' ');
-            if (targetStart < 0) return false;
-            int messageStart = fullLine.IndexOf(' ', targetStart + 1);
-            string token = messageStart >= 0
-                ? fullLine.Substring(targetStart + 1, messageStart - targetStart - 1)
-                : fullLine.Substring(targetStart + 1);
-            target = token.Trim();
-            if (target.StartsWith("@", StringComparison.Ordinal)) target = target.Substring(1);
-            message = messageStart >= 0 ? fullLine.Substring(messageStart + 1) : "";
-            return !string.IsNullOrWhiteSpace(target) && !string.IsNullOrWhiteSpace(message);
-        }
     }
 
     internal static class PrivateChat

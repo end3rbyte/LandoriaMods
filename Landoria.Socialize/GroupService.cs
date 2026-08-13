@@ -145,22 +145,13 @@ namespace Landoria.Socialize
         private static bool CanInvite(long sender, long inviter, long target)
         {
             SocialGroup inviterGroup = GroupState.GetGroup(inviter);
-            if (GroupState.PlayerGroups.ContainsKey(target))
+            GroupDecision decision = GroupPolicy.CanInvite(inviterGroup, inviter, target,
+                GroupState.PlayerGroups.ContainsKey(target));
+            if (!decision.Allowed && decision.Message != null)
             {
-                SendMessage(sender, "That player is already in a group.");
-                return false;
+                SendMessage(sender, decision.Message);
             }
-            if (inviterGroup != null && inviterGroup.Leader != inviter)
-            {
-                SendMessage(sender, "Only the group leader can invite players.");
-                return false;
-            }
-            if (inviterGroup != null && inviterGroup.Members.Count >= GroupState.MaximumSize)
-            {
-                SendMessage(sender, "Your group is full.");
-                return false;
-            }
-            return inviter != target;
+            return decision.Allowed;
         }
 
         private static void Accept(long sender, long playerId, string playerName, string inviterText)
@@ -172,7 +163,7 @@ namespace Landoria.Socialize
                 return;
             }
             SocialGroup group = GetOrCreateGroup(inviter);
-            if (group == null || group.Members.Count >= GroupState.MaximumSize)
+            if (group == null || group.Members.Count >= SocialGroup.MaximumSize)
             {
                 SendMessage(sender, "That group is no longer available.");
                 return;
@@ -262,36 +253,32 @@ namespace Landoria.Socialize
         private static bool ValidateLeaderAction(
             long sender, long actor, string targetName, SocialGroup group, long target)
         {
-            if (group == null)
+            GroupDecision decision = GroupPolicy.CanTargetMember(
+                group, actor, target, targetName);
+            if (!decision.Allowed)
             {
-                SendMessage(sender, "You are not in a group.");
-                return false;
+                SendMessage(sender, decision.Message);
             }
-            if (group.Leader != actor)
-            {
-                SendMessage(sender, "Only the group leader can do that.");
-                return false;
-            }
-            if (target == 0L)
-            {
-                SendMessage(sender, "Player not found in your group: " + targetName);
-                return false;
-            }
-            return true;
+            return decision.Allowed;
         }
 
         private static bool ValidateRemoveTarget(long sender, long actor, long target)
         {
-            if (target != actor) return true;
-            SendMessage(sender, "You cannot remove yourself.");
-            return false;
+            return ValidateTargetDecision(sender, GroupPolicy.CanRemove(actor, target));
         }
 
         private static bool ValidatePromoteTarget(long sender, long actor, long target)
         {
-            if (target != actor) return true;
-            SendMessage(sender, "You are already group leader.");
-            return false;
+            return ValidateTargetDecision(sender, GroupPolicy.CanPromote(actor, target));
+        }
+
+        private static bool ValidateTargetDecision(long sender, GroupDecision decision)
+        {
+            if (!decision.Allowed)
+            {
+                SendMessage(sender, decision.Message);
+            }
+            return decision.Allowed;
         }
 
         private static void NormalizeAfterRemoval(SocialGroup group)

@@ -62,41 +62,14 @@ namespace Landoria.Socialize
         private static HashSet<long> GetActiveCreators()
         {
             HashSet<long> onlinePlayers = GetOnlinePlayers();
-            HashSet<long> activeCreators = new HashSet<long>(onlinePlayers);
-            foreach (SocialGroup group in GroupState.Groups.Values)
-            {
-                if (!HasOnlineMember(group, onlinePlayers))
-                {
-                    continue;
-                }
-                foreach (long member in group.Members.Keys)
-                {
-                    activeCreators.Add(member);
-                }
-            }
-            return activeCreators;
+            return CreatorActivityPolicy.GetActiveCreators(
+                onlinePlayers, GroupState.Groups.Values);
         }
 
         private static bool IsCreatorActive(long creator, HashSet<long> onlinePlayers)
         {
-            if (onlinePlayers.Contains(creator))
-            {
-                return true;
-            }
             SocialGroup group = GroupState.GetGroup(creator);
-            return group != null && HasOnlineMember(group, onlinePlayers);
-        }
-
-        private static bool HasOnlineMember(SocialGroup group, HashSet<long> onlinePlayers)
-        {
-            foreach (long member in group.Members.Keys)
-            {
-                if (onlinePlayers.Contains(member))
-                {
-                    return true;
-                }
-            }
-            return false;
+            return CreatorActivityPolicy.IsCreatorActive(creator, onlinePlayers, group);
         }
 
         private static HashSet<long> GetOnlinePlayers()
