@@ -34,7 +34,7 @@ namespace Landoria.CharacterVault
             }
 
             bool requested = TryRequest(peer, "server kick",
-                (request, revision, saved) => CompleteKick(network, peer, request, revision, saved),
+                (request, saved) => CompleteKick(network, peer, request, saved),
                 out string requestId);
             if (!requested)
             {
@@ -49,7 +49,7 @@ namespace Landoria.CharacterVault
         }
 
         internal bool TryRequest(ZNetPeer peer, string reason,
-            Action<string, long, bool> completed, out string requestId)
+            Action<string, bool> completed, out string requestId)
         {
             requestId = null;
             if (peer?.m_rpc == null || completed == null ||
@@ -69,7 +69,7 @@ namespace Landoria.CharacterVault
             return true;
         }
 
-        internal void RecordCommitted(ZRpc rpc, string requestId, long revision)
+        internal void RecordCommitted(ZRpc rpc, string requestId)
         {
             if (!_pending.TryGetValue(requestId, out PendingServerSave save) || save.Rpc != rpc)
             {
@@ -79,9 +79,9 @@ namespace Landoria.CharacterVault
             _pending.Remove(requestId);
             _authorizedDisconnects.Add(rpc);
             CharacterVaultPlugin.Log.LogMessage(
-                $"Final save {requestId} for {save.PlayerName} committed at revision {revision}; " +
+                $"Final save {requestId} for {save.PlayerName} committed; " +
                 $"authorizing {save.Reason}.");
-            save.Completed(requestId, revision, true);
+            save.Completed(requestId, true);
         }
 
         internal void RecordDisconnected(ZRpc rpc)
@@ -102,8 +102,7 @@ namespace Landoria.CharacterVault
             }
         }
 
-        private void CompleteKick(ZNet network, ZNetPeer peer, string requestId,
-            long revision, bool saved)
+        private void CompleteKick(ZNet network, ZNetPeer peer, string requestId, bool saved)
         {
             if (!saved)
             {
@@ -113,7 +112,7 @@ namespace Landoria.CharacterVault
             }
 
             CharacterVaultPlugin.Log.LogMessage(
-                $"Replaying kick for {peer.m_playerName} after save {requestId} revision {revision}.");
+                $"Replaying kick for {peer.m_playerName} after save {requestId}.");
             network.Kick(peer.m_socket.GetHostName());
         }
 
@@ -155,7 +154,7 @@ namespace Landoria.CharacterVault
             _pending.Remove(requestId);
             CharacterVaultPlugin.Log.LogError(
                 $"Final save {requestId} for {save.PlayerName} failed: {reason}; {save.Reason} is canceled.");
-            save.Completed(requestId, 0, false);
+            save.Completed(requestId, false);
         }
 
         private List<string> RequestsFor(ZRpc rpc)
@@ -176,7 +175,7 @@ namespace Landoria.CharacterVault
     internal sealed class PendingServerSave
     {
         internal PendingServerSave(ZRpc rpc, string playerName, string reason,
-            Action<string, long, bool> completed)
+            Action<string, bool> completed)
         {
             Rpc = rpc;
             PlayerName = playerName;
@@ -184,7 +183,7 @@ namespace Landoria.CharacterVault
             Completed = completed;
         }
 
-        internal Action<string, long, bool> Completed { get; }
+        internal Action<string, bool> Completed { get; }
         internal string PlayerName { get; }
         internal string Reason { get; }
         internal ZRpc Rpc { get; }
