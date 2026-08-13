@@ -20,7 +20,7 @@ namespace Landoria.CharacterVault
         internal const string UploadCompleteRpc = "CharacterVault_UploadComplete_v1";
         internal const string SaveRequestRpc = "CharacterVault_SaveRequest_v1";
         internal const string SaveAckRpc = "CharacterVault_SaveAck_v1";
-        private const int ProtocolVersion = 1;
+        private const int ProtocolVersion = 2;
         private const int ChunkSize = 65536;
         private const int MaximumProfileBytes = 64 * 1024 * 1024;
         private readonly Dictionary<ZRpc, VaultSession> _sessions = new Dictionary<ZRpc, VaultSession>();
@@ -84,10 +84,8 @@ namespace Landoria.CharacterVault
             }
 
             session.Verified = true;
-            if (_storage.TryRead(session.AccountId, session.Name,
-                out byte[] data, out long revision))
+            if (_storage.TryRead(session.AccountId, session.Name, out byte[] data))
             {
-                session.Revision = revision;
                 SendDownload(rpc, session, data);
                 session.Admitted = true;
                 return true;
@@ -277,7 +275,7 @@ namespace Landoria.CharacterVault
             rpc.Register<ZPackage>(DownloadChunkRpc, ReceiveDownloadChunk);
             rpc.Register<ZPackage>(DownloadCompleteRpc, ReceiveDownloadComplete);
             rpc.Register<string>(SaveRequestRpc, ReceiveSaveRequest);
-            rpc.Register<string, long>(SaveAckRpc, ReceiveSaveAck);
+            rpc.Register<string>(SaveAckRpc, ReceiveSaveAck);
         }
 
         private void ReceiveHello(ZRpc rpc, ZPackage package)
@@ -331,7 +329,6 @@ namespace Landoria.CharacterVault
 
             ZPackage complete = new ZPackage();
             complete.Write(transferId);
-            complete.Write(session.Revision);
             rpc.Invoke(DownloadCompleteRpc, complete);
         }
 
@@ -368,7 +365,6 @@ namespace Landoria.CharacterVault
         private void ReceiveDownloadComplete(ZRpc rpc, ZPackage package)
         {
             string transferId = package.ReadString();
-            package.ReadLong();
             byte[] data = _download?.Complete(transferId);
             _download = null;
             if (data == null)
@@ -394,13 +390,13 @@ namespace Landoria.CharacterVault
             }
         }
 
-        private void ReceiveSaveAck(ZRpc rpc, string requestId, long revision)
+        private void ReceiveSaveAck(ZRpc rpc, string requestId)
         {
             _clientUploadBusy = false;
             CharacterVaultPlugin.SaveStatus?.ShowSaved();
             CharacterVaultPlugin.Log.LogInfo(
-                $"Server accepted character save request {requestId} at revision {revision}.");
-            CharacterVaultPlugin.DisconnectCoordinator?.RecordSaveCommitted(requestId, revision);
+                $"Server accepted character save request {requestId}.");
+            CharacterVaultPlugin.DisconnectCoordinator?.RecordSaveCommitted(requestId);
             if (_pendingRequest != null)
             {
                 Game.instance.SavePlayerProfile(true);
@@ -490,11 +486,10 @@ namespace Landoria.CharacterVault
             _uploads.Remove(rpc);
             byte[] data = transfer.Complete(transferId);
             ValidateProfile(session, data);
-            long revision = session.Revision + 1;
             if (session.Enrolling)
             {
                 _storage.Commit(session.AccountId, session.Name, data);
-                ConfirmCommit(rpc, session, transfer.RequestId, revision);
+                ConfirmCommit(rpc, session, transfer.RequestId);
                 return;
             }
 
@@ -502,23 +497,22 @@ namespace Landoria.CharacterVault
                 "disconnect-", StringComparison.Ordinal);
             if (voluntaryDisconnect)
             {
-                ConfirmReceipt(rpc, session, transfer.RequestId, revision);
+                ConfirmReceipt(rpc, session, transfer.RequestId);
             }
             ThreadPool.QueueUserWorkItem(_ => Commit(rpc, session, transfer.RequestId,
-                data, revision, voluntaryDisconnect));
+                data, voluntaryDisconnect));
         }
 
-        private void ConfirmReceipt(ZRpc rpc, VaultSession session, string requestId, long revision)
+        private void ConfirmReceipt(ZRpc rpc, VaultSession session, string requestId)
         {
-            session.Revision = revision;
-            rpc.Invoke(SaveAckRpc, requestId, revision);
+            rpc.Invoke(SaveAckRpc, requestId);
             CharacterVaultPlugin.Log.LogMessage(
-                $"Accepted character profile for {session.Name} at revision {revision} " +
-                $"for request {requestId}; durable commit queued.");
+                $"Accepted character profile for {session.Name} for request {requestId}; " +
+                "durable commit queued.");
         }
 
         private void Commit(ZRpc rpc, VaultSession session, string requestId, byte[] data,
-            long revision, bool receiptConfirmed)
+            bool receiptConfirmed)
         {
             try
             {
@@ -527,11 +521,11 @@ namespace Landoria.CharacterVault
                 {
                     if (receiptConfirmed)
                     {
-                        ConfirmBackgroundCommit(rpc, session, requestId, revision);
+                        ConfirmBackgroundCommit(rpc, session, requestId);
                     }
                     else
                     {
-                        ConfirmCommit(rpc, session, requestId, revision);
+                        ConfirmCommit(rpc, session, requestId);
                     }
                 }, null);
             }
@@ -541,36 +535,32 @@ namespace Landoria.CharacterVault
             }
         }
 
-        private void ConfirmBackgroundCommit(
-            ZRpc rpc, VaultSession session, string requestId, long revision)
+        private void ConfirmBackgroundCommit(ZRpc rpc, VaultSession session, string requestId)
         {
             CharacterVaultPlugin.Log.LogMessage(
-                $"Committed character profile for {session.Name} at revision {revision} " +
-                $"for request {requestId}.");
+                $"Committed character profile for {session.Name} for request {requestId}.");
             if (!_sessions.TryGetValue(rpc, out VaultSession current) || current != session)
             {
                 return;
             }
             CharacterVaultPlugin.Coordinator?.RecordSaveCommitted(rpc, requestId);
-            CharacterVaultPlugin.ServerDisconnects?.RecordCommitted(rpc, requestId, revision);
+            CharacterVaultPlugin.ServerDisconnects?.RecordCommitted(rpc, requestId);
         }
 
-        private void ConfirmCommit(ZRpc rpc, VaultSession session, string requestId, long revision)
+        private void ConfirmCommit(ZRpc rpc, VaultSession session, string requestId)
         {
             if (!_sessions.TryGetValue(rpc, out VaultSession current) || current != session)
             {
                 return;
             }
 
-            session.Revision = revision;
             session.Enrolling = false;
             ReleaseEnrollment(rpc);
-            rpc.Invoke(SaveAckRpc, requestId, revision);
+            rpc.Invoke(SaveAckRpc, requestId);
             CharacterVaultPlugin.Log.LogMessage(
-                $"Saved character profile for {session.Name} at revision {revision} " +
-                $"for request {requestId}.");
+                $"Saved character profile for {session.Name} for request {requestId}.");
             CharacterVaultPlugin.Coordinator?.RecordSaveCommitted(rpc, requestId);
-            CharacterVaultPlugin.ServerDisconnects?.RecordCommitted(rpc, requestId, revision);
+            CharacterVaultPlugin.ServerDisconnects?.RecordCommitted(rpc, requestId);
         }
 
         private static void ValidateProfile(VaultSession session, byte[] data)
@@ -687,7 +677,6 @@ namespace Landoria.CharacterVault
         internal bool Verified { get; set; }
         internal bool Admitted { get; set; }
         internal bool Enrolling { get; set; }
-        internal long Revision { get; set; }
     }
 
     internal sealed class IncomingTransfer

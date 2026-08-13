@@ -40,7 +40,7 @@ namespace Landoria.CharacterVault
             return false;
         }
 
-        internal void RecordSaveCommitted(string requestId, long revision)
+        internal void RecordSaveCommitted(string requestId)
         {
             if (requestId != _requestId)
             {
@@ -48,7 +48,7 @@ namespace Landoria.CharacterVault
             }
 
             CharacterVaultPlugin.Log.LogMessage(
-                $"Final voluntary disconnect save {requestId} accepted at revision {revision}.");
+                $"Final voluntary disconnect save {requestId} accepted.");
             CharacterVaultPlugin.Transfers.SuppressRedundantDisconnectUpload();
             CompletePendingExit("after the confirmed save");
         }

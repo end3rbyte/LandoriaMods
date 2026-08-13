@@ -10,11 +10,10 @@ namespace Landoria.CharacterVault
     {
         private const string BackupDirectory = "backups";
 
-        internal bool TryRead(string accountId, string name, out byte[] data, out long revision)
+        internal bool TryRead(string accountId, string name, out byte[] data)
         {
             string path = ProfilePath(accountId, name);
             data = File.Exists(path) ? File.ReadAllBytes(path) : null;
-            revision = 0;
             return data != null;
         }
 

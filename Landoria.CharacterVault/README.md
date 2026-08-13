@@ -17,7 +17,7 @@ local backups or characters from other servers from replacing trusted state.
 | Graceful server stop or restart | Yes | Shutdown waits for connected-character commits before the vanilla world save. |
 | Client crash or network loss | No final request | The connection is already unavailable. |
 
-Client and server logs include the request identifier and revision. Voluntary
+Client and server logs include the request identifier. Voluntary
 disconnect logs distinguish profile acceptance from the later durable commit.
 Whenever a client starts sending a character save to the server,
 `Saving character...` appears in white below the small minimap. The message is
@@ -42,7 +42,7 @@ message remains visible for at most three seconds unless the next status replace
 
 An acknowledgement for a voluntary disconnect means the complete profile was
 received and validated. The durable write follows asynchronously; a server crash
-in that brief interval can lose the accepted revision. Enrollment, ordinary saves,
+in that brief interval can lose the accepted save. Enrollment, ordinary saves,
 server kicks, and shutdowns retain durable-commit acknowledgement semantics.
 
 ## Compatibility
