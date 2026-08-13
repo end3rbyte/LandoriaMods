@@ -22,7 +22,8 @@ your character enters the world.
 The server writes every profile save both as `characters_local/Steam_<id>_<character>.fch` and
 as a timestamped `characters_local/backups/` file.
 For each character, it retains the 5 most recent backups plus the earliest
-backup from each of the next 10 distinct UTC days, up to 15 backups in total.
+backup from each of the next 10 distinct UTC days before the day of the fifth
+backup, up to 15 backups in total.
 Successful retention deletions are recorded in the server log.
 If a character cannot join, Valheim returns to the main menu and explains why.
 

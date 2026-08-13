@@ -20,7 +20,12 @@ namespace Landoria.CharacterVault
             HashSet<string> retained = new HashSet<string>(
                 backups.Take(RecentBackupCount).Select(backup => backup.Path),
                 StringComparer.Ordinal);
+            DateTime dailyBoundary = backups.Take(RecentBackupCount)
+                .Select(backup => backup.Timestamp.Date)
+                .DefaultIfEmpty(DateTime.MinValue)
+                .Last();
             IEnumerable<BackupFile> daily = backups.Skip(RecentBackupCount)
+                .Where(backup => backup.Timestamp.Date < dailyBoundary)
                 .GroupBy(backup => backup.Timestamp.Date)
                 .OrderByDescending(group => group.Key)
                 .Take(DailyBackupCount)
