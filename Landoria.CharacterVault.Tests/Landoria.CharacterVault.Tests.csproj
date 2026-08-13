@@ -14,6 +14,7 @@
   <ItemGroup>
     <Compile Include="../Landoria.CharacterVault/BackupRetention.cs" Link="BackupRetention.cs" />
     <Compile Include="../Landoria.CharacterVault/CharacterAdmissionPolicy.cs" Link="CharacterAdmissionPolicy.cs" />
+    <Compile Include="../Landoria.CharacterVault/CharacterRejectionMessageState.cs" Link="CharacterRejectionMessageState.cs" />
     <Compile Include="../Landoria.CharacterVault/ClientSaveLifecycle.cs" Link="ClientSaveLifecycle.cs" />
     <Compile Include="../Landoria.CharacterVault/DocumentedSaveEventPolicy.cs" Link="DocumentedSaveEventPolicy.cs" />
     <Compile Include="../Landoria.CharacterVault/SaveStatusLifecycle.cs" Link="SaveStatusLifecycle.cs" />
