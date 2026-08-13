@@ -6,8 +6,12 @@ namespace Landoria.CharacterVault
 {
     internal sealed class CharacterSaveStatusDisplay
     {
-        private const float StatusDisplaySeconds = 3f;
+        private const float ActiveDisplaySeconds = 30f;
+        private const float CommitTimeoutSeconds = 20f;
+        private const float ResultDisplaySeconds = 3f;
         private TextMeshProUGUI _label;
+        private string _requestId;
+        private bool _waitingForCommit;
         private int _stateVersion;
 
         internal void Attach(Minimap minimap)
@@ -46,24 +50,31 @@ namespace Landoria.CharacterVault
             target.SetActive(false);
         }
 
-        internal void ShowSaving()
+        internal void ShowSaving(string requestId)
         {
-            ShowForThreeSeconds("Saving character...");
+            Show(requestId, "Saving character...", ActiveDisplaySeconds, false);
         }
 
-        internal void ShowAccepted()
+        internal void ShowAccepted(string requestId)
         {
-            ShowForThreeSeconds("Saving character......");
+            Show(requestId, "Saving character......", ActiveDisplaySeconds, true);
+            int version = _stateVersion;
+            CharacterVaultPlugin.Instance?.Run(FailWithoutCommit(requestId, version));
         }
 
-        internal void ShowCommitted()
+        internal void ShowCommitted(string requestId)
         {
-            ShowForThreeSeconds("Character saved");
+            if (_requestId == requestId && _waitingForCommit)
+            {
+                Show(requestId, "Character saved", ResultDisplaySeconds, false);
+            }
         }
 
         internal void Hide()
         {
             _stateVersion++;
+            _requestId = null;
+            _waitingForCommit = false;
             if (_label != null)
             {
                 _label.gameObject.SetActive(false);
@@ -73,6 +84,8 @@ namespace Landoria.CharacterVault
         internal void Dispose()
         {
             _stateVersion++;
+            _requestId = null;
+            _waitingForCommit = false;
             if (_label != null)
             {
                 Object.Destroy(_label.gameObject);
@@ -80,9 +93,11 @@ namespace Landoria.CharacterVault
             }
         }
 
-        private void ShowForThreeSeconds(string message)
+        private void Show(string requestId, string message, float duration, bool waitingForCommit)
         {
             _stateVersion++;
+            _requestId = requestId;
+            _waitingForCommit = waitingForCommit;
             Attach(Minimap.instance);
             if (_label == null)
             {
@@ -92,12 +107,21 @@ namespace Landoria.CharacterVault
             _label.text = message;
             _label.gameObject.SetActive(true);
             int version = _stateVersion;
-            CharacterVaultPlugin.Instance?.Run(HideAfterDelay(version));
+            CharacterVaultPlugin.Instance?.Run(HideAfterDelay(version, duration));
         }
 
-        private IEnumerator HideAfterDelay(int version)
+        private IEnumerator FailWithoutCommit(string requestId, int version)
         {
-            yield return new WaitForSecondsRealtime(StatusDisplaySeconds);
+            yield return new WaitForSecondsRealtime(CommitTimeoutSeconds);
+            if (_stateVersion == version && _requestId == requestId && _waitingForCommit)
+            {
+                Show(requestId, "Failed", ResultDisplaySeconds, false);
+            }
+        }
+
+        private IEnumerator HideAfterDelay(int version, float duration)
+        {
+            yield return new WaitForSecondsRealtime(duration);
             if (_stateVersion == version)
             {
                 Hide();
