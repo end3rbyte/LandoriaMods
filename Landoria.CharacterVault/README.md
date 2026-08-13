@@ -9,7 +9,7 @@ local backups or characters from other servers from replacing trusted state.
 | Event | Character save | Completion rule |
 |---|---|---|
 | Initial enrollment | Yes | The profile must be validated and committed before admission. |
-| World or manual save | Yes | The server acknowledges after the durable commit. |
+| World save, `save` command, or pause-menu Save button | Yes | The server acknowledges after the durable commit. The pause-menu action retains its vanilla behavior. |
 | Voluntary logout | Yes | The server acknowledges after complete receipt and validation, then commits asynchronously. |
 | In-game Quit action | Yes | After entering the world, `Menu.QuitGame` waits at most 10 seconds for the voluntary-save acknowledgement. |
 | Window close or Alt+F4 | Yes | After entering the world, `Application.wantsToQuit` uses the same bounded fallback flow. |
@@ -19,6 +19,10 @@ local backups or characters from other servers from replacing trusted state.
 
 Client and server logs include the request identifier and revision. Voluntary
 disconnect logs distinguish profile acceptance from the later durable commit.
+Whenever a client starts sending a character save to the server,
+`Saving character...` appears in white below the small minimap. The message is
+replaced by `Character saved` when the server acknowledgement arrives. Each
+message remains visible for at most three seconds unless the next status replaces it.
 
 ## Guarantees
 
