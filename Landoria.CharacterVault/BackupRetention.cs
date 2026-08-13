@@ -12,7 +12,7 @@ namespace Landoria.CharacterVault
         private const int DailyBackupCount = 10;
         private const string TimestampFormat = "yyyyMMdd'T'HHmmssfffffff'Z'";
 
-        internal static void Apply(string directory, string profileName)
+        internal static IReadOnlyList<string> Apply(string directory, string profileName)
         {
             List<BackupFile> backups = FindBackups(directory, profileName)
                 .OrderByDescending(backup => backup.Timestamp)
@@ -27,10 +27,13 @@ namespace Landoria.CharacterVault
                 .Select(group => group.OrderBy(backup => backup.Timestamp).First());
             retained.UnionWith(daily.Select(backup => backup.Path));
 
+            List<string> deleted = new List<string>();
             foreach (BackupFile backup in backups.Where(backup => !retained.Contains(backup.Path)))
             {
                 File.Delete(backup.Path);
+                deleted.Add(Path.GetFileName(backup.Path));
             }
+            return deleted;
         }
 
         private static IEnumerable<BackupFile> FindBackups(string directory, string profileName)
