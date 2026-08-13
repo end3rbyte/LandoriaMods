@@ -8,7 +8,7 @@ namespace Landoria.CharacterVault
     [HarmonyPatch(typeof(ZNet), "SaveWorldAndPlayerProfiles")]
     internal static class CharacterVaultManualSavePatch
     {
-        private static void Postfix()
+        private static void Prefix()
         {
             CharacterVaultPlugin.Transfers?.SaveManualClientProfile();
         }
