@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Landoria.ModSentry
@@ -6,44 +5,32 @@ namespace Landoria.ModSentry
     internal static class PendingDisconnects
     {
         private const float FallbackSeconds = 2f;
-        private static readonly Dictionary<ZRpc, float> Deadlines =
-            new Dictionary<ZRpc, float>();
+        private static readonly PendingDisconnectRegistry<ZRpc> Registry =
+            new PendingDisconnectRegistry<ZRpc>(() => Time.unscaledTime, FallbackSeconds);
 
         internal static void Schedule(ZRpc rpc)
         {
-            Deadlines[rpc] = Time.unscaledTime + FallbackSeconds;
+            Registry.Schedule(rpc);
         }
 
         internal static bool Acknowledge(ZRpc rpc)
         {
-            return Deadlines.Remove(rpc);
+            return Registry.Acknowledge(rpc);
         }
 
         internal static void Remove(ZRpc rpc)
         {
-            Deadlines.Remove(rpc);
+            Registry.Remove(rpc);
         }
 
         internal static void Tick()
         {
-            List<ZRpc> expired = new List<ZRpc>();
-            foreach (KeyValuePair<ZRpc, float> pending in Deadlines)
-            {
-                if (Time.unscaledTime >= pending.Value)
-                {
-                    expired.Add(pending.Key);
-                }
-            }
-            foreach (ZRpc rpc in expired)
-            {
-                Deadlines.Remove(rpc);
-                ModSentryHandshake.Disconnect(rpc);
-            }
+            Registry.Tick(ModSentryHandshake.Disconnect);
         }
 
         internal static void Clear()
         {
-            Deadlines.Clear();
+            Registry.Clear();
         }
     }
 }
