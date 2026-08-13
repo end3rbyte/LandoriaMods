@@ -9,6 +9,7 @@ namespace Landoria.CharacterVault
         private const float ConfirmationTimeoutSeconds = 10f;
         private bool _allowApplicationQuit;
         private bool _allowLogout;
+        private bool _allowShutdown;
         private Game _game;
         private bool _logoutSave;
         private bool _logoutStartScene;
@@ -61,6 +62,21 @@ namespace Landoria.CharacterVault
         internal void RecordPlayerSpawned()
         {
             _playerEnteredWorld = true;
+            CharacterVaultPlugin.Log.LogInfo(
+                "CharacterVault final-save protection armed after the local player spawned.");
+        }
+
+        internal bool AllowShutdown(Game game, bool saveWorld)
+        {
+            if (_allowShutdown)
+            {
+                _allowShutdown = false;
+                CharacterVaultPlugin.Log.LogInfo(
+                    "Allowing shutdown after the final character save was accepted.");
+                return true;
+            }
+
+            return !saveWorld || !Start(VoluntaryExitKind.Logout, game, true, true);
         }
 
         internal void RecordConnectionLost()
@@ -164,6 +180,7 @@ namespace Landoria.CharacterVault
             bool logoutSave = _logoutSave;
             bool logoutStartScene = _logoutStartScene;
             ClearPendingRequest();
+            _allowShutdown = true;
             if (exitKind == VoluntaryExitKind.ApplicationQuit)
             {
                 _allowApplicationQuit = true;
