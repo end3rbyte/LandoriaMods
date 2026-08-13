@@ -7,6 +7,11 @@ namespace Landoria.Socialize
             return hasAccess;
         }
 
+        internal static bool CanDamage(bool hasAccess)
+        {
+            return hasAccess;
+        }
+
         internal static bool CanRemove(bool hasAccess, ref bool result)
         {
             if (hasAccess)

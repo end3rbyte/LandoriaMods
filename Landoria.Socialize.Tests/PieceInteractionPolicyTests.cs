@@ -4,6 +4,39 @@ namespace Landoria.Socialize;
 
 public sealed class PieceInteractionPolicyTests
 {
+    // Verifies that a player cannot damage a building created outside the group.
+    [Fact]
+    public void PlayerCannotDamageForeignBuilding()
+    {
+        bool hasAccess = PieceAccessPolicy.CanAccess(
+            placedByPlayer: true, playerId: 1, creator: 2,
+            hasMembershipState: true, areGroupMembers: (_, _) => false);
+
+        Assert.False(PieceInteractionPolicy.CanDamage(hasAccess));
+    }
+
+    // Verifies that a player can damage a building they created.
+    [Fact]
+    public void PlayerCanDamageOwnBuilding()
+    {
+        bool hasAccess = PieceAccessPolicy.CanAccess(
+            placedByPlayer: true, playerId: 1, creator: 1,
+            hasMembershipState: true, areGroupMembers: (_, _) => false);
+
+        Assert.True(PieceInteractionPolicy.CanDamage(hasAccess));
+    }
+
+    // Verifies that a player can damage a building created by another group member.
+    [Fact]
+    public void PlayerCanDamageGroupMembersBuilding()
+    {
+        bool hasAccess = PieceAccessPolicy.CanAccess(
+            placedByPlayer: true, playerId: 1, creator: 2,
+            hasMembershipState: true, areGroupMembers: (_, _) => true);
+
+        Assert.True(PieceInteractionPolicy.CanDamage(hasAccess));
+    }
+
     // Verifies that the hammer cannot destroy a wall created by a player outside the group.
     [Fact]
     public void HammerCannotDestroyForeignWall()
