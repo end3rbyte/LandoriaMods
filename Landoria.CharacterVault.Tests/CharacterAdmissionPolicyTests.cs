@@ -53,4 +53,28 @@ public sealed class CharacterAdmissionPolicyTests
 
         Assert.False(state.CanSave);
     }
+
+    // A new profile denied by the permitted list cannot receive its first save acknowledgement.
+    [Fact]
+    public void DeniedNewProfileCannotReceiveFirstSaveAcknowledgement()
+    {
+        ServerProfileSessionState state = new() { Verified = true, Admitted = true };
+        state.RecordPermission(false);
+
+        bool canAcknowledge = SaveAcknowledgementPolicy.CanAcknowledge(state);
+
+        Assert.False(canAcknowledge);
+    }
+
+    // A verified, admitted, and permitted profile can receive a save acknowledgement.
+    [Fact]
+    public void PermittedProfileCanReceiveSaveAcknowledgement()
+    {
+        ServerProfileSessionState state = new() { Verified = true, Admitted = true };
+        state.RecordPermission(true);
+
+        bool canAcknowledge = SaveAcknowledgementPolicy.CanAcknowledge(state);
+
+        Assert.True(canAcknowledge);
+    }
 }
