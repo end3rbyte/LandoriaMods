@@ -6,7 +6,8 @@ namespace Landoria.CharacterVault
 {
     internal sealed class VoluntaryDisconnectCoordinator : IDisposable
     {
-        private const float ConfirmationTimeoutSeconds = 10f;
+        private const float ConfirmationTimeoutSeconds =
+            DocumentedSaveEventPolicy.VoluntaryExitTimeoutSeconds;
         private bool _allowApplicationQuit;
         private bool _allowLogout;
         private bool _allowShutdown;
