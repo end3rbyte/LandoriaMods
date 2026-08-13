@@ -229,12 +229,13 @@ namespace Landoria.Socialize
         {
             SocialGroup group = GroupState.GetGroup(actor);
             long target = FindMember(group, targetName);
-            if (!ValidateLeaderAction(sender, actor, targetName, group, target)
-                || !ValidatePromoteTarget(sender, actor, target))
+            GroupDecision decision = GroupPromotionPolicy.TryPromote(
+                group, actor, target, targetName);
+            if (!decision.Allowed)
             {
+                SendMessage(sender, decision.Message);
                 return;
             }
-            group.Leader = target;
             GroupStorage.Save();
             Broadcast(group, group.Members[target] + " is now the group leader.");
             BroadcastSnapshots(group);
@@ -255,11 +256,6 @@ namespace Landoria.Socialize
         private static bool ValidateRemoveTarget(long sender, long actor, long target)
         {
             return ValidateTargetDecision(sender, GroupPolicy.CanRemove(actor, target));
-        }
-
-        private static bool ValidatePromoteTarget(long sender, long actor, long target)
-        {
-            return ValidateTargetDecision(sender, GroupPolicy.CanPromote(actor, target));
         }
 
         private static bool ValidateTargetDecision(long sender, GroupDecision decision)
