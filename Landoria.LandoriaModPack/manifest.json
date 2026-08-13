@@ -1,6 +1,6 @@
 {
   "name": "LandoriaModPack",
-  "version_number": "1.0.12",
+  "version_number": "1.0.13",
   "website_url": "https://valheim.landoria-gaming.com/",
   "description": "Installs the mods required to join the Landoria Valheim server.",
   "dependencies": [
@@ -12,7 +12,7 @@
     "Landoria-Moderator-1.0.5",
     "Landoria-GetMyTrophyBack-1.0.5",
     "Landoria-ExpandedServer-1.0.5",
-    "Landoria-CharacterVault-1.0.10",
+    "Landoria-CharacterVault-1.0.11",
     "Landoria-Socialize-1.0.7",
     "Landoria-SealedTombstone-1.0.4"
   ],
