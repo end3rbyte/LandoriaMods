@@ -128,20 +128,14 @@ namespace Landoria.CharacterVault
 
         private bool Start(VoluntaryExitKind kind, Game game, bool save, bool startScene)
         {
-            if (!_playerEnteredWorld)
-            {
-                return false;
-            }
-
-            if (_requestId != null)
-            {
-                return true;
-            }
-
             string requestId = "disconnect-" + Guid.NewGuid().ToString("N");
-            if (CharacterVaultPlugin.Transfers?.BeginFinalDisconnectSave(requestId) != true)
+            IVoluntaryExitSaveRequest request = new VoluntaryExitSaveRequest(() =>
+                CharacterVaultPlugin.Transfers?.BeginFinalDisconnectSave(requestId) == true);
+            VoluntaryExitSaveAction action = VoluntaryExitSavePolicy.Start(
+                _playerEnteredWorld, _requestId != null, request);
+            if (action != VoluntaryExitSaveAction.WaitForNewSave)
             {
-                return false;
+                return action == VoluntaryExitSaveAction.WaitForPendingSave;
             }
 
             _requestId = requestId;
@@ -211,5 +205,20 @@ namespace Landoria.CharacterVault
     {
         Logout,
         ApplicationQuit
+    }
+
+    internal sealed class VoluntaryExitSaveRequest : IVoluntaryExitSaveRequest
+    {
+        private readonly Func<bool> _request;
+
+        internal VoluntaryExitSaveRequest(Func<bool> request)
+        {
+            _request = request;
+        }
+
+        public bool Request()
+        {
+            return _request();
+        }
     }
 }

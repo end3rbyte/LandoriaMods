@@ -1,5 +1,22 @@
 namespace Landoria.CharacterVault
 {
+    internal interface IKickSaveRequest
+    {
+        KickSaveRequestResult Request();
+    }
+
+    internal sealed class KickSaveRequestResult
+    {
+        internal KickSaveRequestResult(bool started, string requestId = "")
+        {
+            Started = started;
+            RequestId = requestId;
+        }
+
+        internal string RequestId { get; }
+        internal bool Started { get; }
+    }
+
     internal enum KickSaveEligibility
     {
         Unmanaged,
@@ -35,6 +52,15 @@ namespace Landoria.CharacterVault
             }
             return eligibility == KickSaveEligibility.SaveRequired
                 ? KickAction.RequestSave : KickAction.Block;
+        }
+    }
+
+    internal static class KickSaveRequestExecutor
+    {
+        internal static KickSaveRequestResult Execute(KickAction action, IKickSaveRequest request)
+        {
+            return action == KickAction.RequestSave
+                ? request.Request() : new KickSaveRequestResult(false);
         }
     }
 }

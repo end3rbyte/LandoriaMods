@@ -18,5 +18,6 @@
     <Compile Include="../Landoria.CharacterVault/DocumentedSaveEventPolicy.cs" Link="DocumentedSaveEventPolicy.cs" />
     <Compile Include="../Landoria.CharacterVault/SaveStatusLifecycle.cs" Link="SaveStatusLifecycle.cs" />
     <Compile Include="../Landoria.CharacterVault/KickSavePolicy.cs" Link="KickSavePolicy.cs" />
+    <Compile Include="../Landoria.CharacterVault/VoluntaryExitSavePolicy.cs" Link="VoluntaryExitSavePolicy.cs" />
   </ItemGroup>
 </Project>
