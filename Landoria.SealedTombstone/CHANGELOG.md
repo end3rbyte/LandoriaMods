@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.5
+
+- Add unit tests.
+
 ## 1.0.4
 
 - Document Valheim version compatibility
