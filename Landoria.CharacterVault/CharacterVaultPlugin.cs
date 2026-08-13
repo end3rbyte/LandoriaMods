@@ -18,6 +18,7 @@ namespace Landoria.CharacterVault
         internal static GracefulShutdownCoordinator Coordinator { get; private set; }
         internal static VoluntaryDisconnectCoordinator DisconnectCoordinator { get; private set; }
         internal static ServerDisconnectSaveCoordinator ServerDisconnects { get; private set; }
+        internal static CharacterSaveStatusDisplay SaveStatus { get; private set; }
         internal static CharacterVaultPlugin Instance { get; private set; }
         internal static CharacterVaultSettings Settings { get; private set; }
         internal static ProfileTransferService Transfers { get; private set; }
@@ -31,6 +32,7 @@ namespace Landoria.CharacterVault
             Coordinator = new GracefulShutdownCoordinator(SynchronizationContext.Current);
             DisconnectCoordinator = new VoluntaryDisconnectCoordinator();
             ServerDisconnects = new ServerDisconnectSaveCoordinator();
+            SaveStatus = new CharacterSaveStatusDisplay();
             Log.LogInfo($"{PluginName} {PluginVersion} is loaded.");
         }
 
@@ -61,11 +63,13 @@ namespace Landoria.CharacterVault
             ServerDisconnects?.Dispose();
             Coordinator?.Dispose();
             Transfers?.Dispose();
+            SaveStatus?.Dispose();
             CharacterVaultRejection.Clear();
             DisconnectCoordinator = null;
             ServerDisconnects = null;
             Coordinator = null;
             Transfers = null;
+            SaveStatus = null;
             Settings = null;
             Instance = null;
             Log?.LogInfo($"{PluginName} {PluginVersion} is unloaded.");

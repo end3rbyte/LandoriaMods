@@ -5,6 +5,15 @@ using UnityEngine;
 
 namespace Landoria.CharacterVault
 {
+    [HarmonyPatch(typeof(Minimap), "Start")]
+    internal static class CharacterVaultSaveStatusPatch
+    {
+        private static void Postfix(Minimap __instance)
+        {
+            CharacterVaultPlugin.SaveStatus?.Attach(__instance);
+        }
+    }
+
     [HarmonyPatch(typeof(ZNet), "Start")]
     internal static class PendingExitRequestPatch
     {

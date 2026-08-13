@@ -175,6 +175,7 @@ namespace Landoria.CharacterVault
 
             byte[] data = ProfileFile.Read(profile);
             _clientUploadBusy = true;
+            CharacterVaultPlugin.SaveStatus?.ShowSaving();
             CharacterVaultPlugin.Log.LogInfo(
                 $"Uploading character profile {profile.GetName()} for save request {request}.");
             CharacterVaultPlugin.Instance.Run(SendUpload(serverRpc, profile, data, request));
@@ -385,6 +386,7 @@ namespace Landoria.CharacterVault
         private void ReceiveSaveAck(ZRpc rpc, string requestId, long revision)
         {
             _clientUploadBusy = false;
+            CharacterVaultPlugin.SaveStatus?.ShowSaved();
             CharacterVaultPlugin.Log.LogInfo(
                 $"Server accepted character save request {requestId} at revision {revision}.");
             CharacterVaultPlugin.DisconnectCoordinator?.RecordSaveCommitted(requestId, revision);
@@ -402,6 +404,7 @@ namespace Landoria.CharacterVault
             _suppressNextClientUpload = false;
             _pendingRequest = null;
             _pendingProfile = null;
+            CharacterVaultPlugin.SaveStatus?.Hide();
             CharacterVaultPlugin.DisconnectCoordinator?.RecordConnectionLost();
         }
 
