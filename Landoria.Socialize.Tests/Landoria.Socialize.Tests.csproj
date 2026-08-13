@@ -20,6 +20,7 @@
     <Compile Include="../Landoria.Socialize/GroupPromotionPolicy.cs" Link="GroupPromotionPolicy.cs" />
     <Compile Include="../Landoria.Socialize/GroupPolicy.cs" Link="GroupPolicy.cs" />
     <Compile Include="../Landoria.Socialize/PieceAccessPolicy.cs" Link="PieceAccessPolicy.cs" />
+    <Compile Include="../Landoria.Socialize/PieceInteractionPolicy.cs" Link="PieceInteractionPolicy.cs" />
     <Compile Include="../Landoria.Socialize/SocialGroup.cs" Link="SocialGroup.cs" />
   </ItemGroup>
 </Project>
