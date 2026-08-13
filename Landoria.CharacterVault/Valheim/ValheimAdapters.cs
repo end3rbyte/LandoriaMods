@@ -344,8 +344,8 @@ namespace Landoria.CharacterVault
     {
         public IValheimNetwork Network => ZNet.instance == null
             ? null : new ValheimNetworkAdapter(ZNet.instance);
-        public IValheimGame Game => Game.instance == null
-            ? null : new ValheimGameAdapter(Game.instance);
+        public IValheimGame Game => global::Game.instance == null
+            ? null : new ValheimGameAdapter(global::Game.instance);
         public IValheimPlayer LocalPlayer => Player.m_localPlayer == null
             ? null : new ValheimPlayerAdapter(Player.m_localPlayer);
         public IValheimItemDatabase Items => ObjectDB.instance == null
