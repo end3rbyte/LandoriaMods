@@ -12,5 +12,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="../Landoria.CharacterVault/BackupRetention.cs" Link="BackupRetention.cs" />
+    <Compile Include="../Landoria.CharacterVault/ClientSaveLifecycle.cs" Link="ClientSaveLifecycle.cs" />
+    <Compile Include="../Landoria.CharacterVault/SaveStatusLifecycle.cs" Link="SaveStatusLifecycle.cs" />
   </ItemGroup>
 </Project>
