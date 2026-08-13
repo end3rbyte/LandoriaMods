@@ -40,6 +40,7 @@ the receipt acknowledgement, `Failed` replaces the status for three seconds.
 - Logs the exact backup filename after each successful retention deletion.
 - Ignores the former hashed `CharacterVault/accounts` storage without migrating or deleting it.
 - Accepts a new character only when it was created during the current game session.
+- Requires the server permission check to succeed before accepting any server-side character save.
 - Leaves local profile saves unchanged while blocking every server upload before the local player's `Player.OnSpawned()` completes.
 - Starts the first server-side save for a new character only after `Player.OnSpawned()` completes.
 - Requires matching CharacterVault DLLs on client and server through ModSentry.

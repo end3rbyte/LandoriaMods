@@ -39,6 +39,7 @@ backup from each of the next 10 distinct UTC days before the day of the fifth
 backup, up to 15 backups in total.
 Successful retention deletions are recorded in the server log.
 If a character cannot join, Valheim returns to the main menu and explains why.
+CharacterVault never saves a profile for an account rejected by the server permission check.
 
 New characters must be created during the current game session. Depending on
 the server settings, an account may use one or several characters and may

@@ -14,23 +14,17 @@ namespace Landoria.CharacterVault
 
         internal bool AllowKick(ZNet network, ZNetPeer peer)
         {
-            if (network?.IsServer() != true || peer?.m_rpc == null)
+            bool validPeer = network?.IsServer() == true && peer?.m_rpc != null;
+            bool authorized = validPeer && _authorizedDisconnects.Remove(peer.m_rpc);
+            bool pending = validPeer && HasPendingRequest(peer.m_rpc);
+            KickSaveEligibility eligibility = validPeer
+                ? CharacterVaultPlugin.Transfers?.GetKickSaveEligibility(peer) ??
+                    KickSaveEligibility.Unmanaged
+                : KickSaveEligibility.Unmanaged;
+            KickAction action = KickSavePolicy.Decide(validPeer, authorized, pending, eligibility);
+            if (TryResolveWithoutSave(action, authorized, peer, out bool allow))
             {
-                return true;
-            }
-
-            if (_authorizedDisconnects.Remove(peer.m_rpc))
-            {
-                CharacterVaultPlugin.Log.LogInfo(
-                    $"Allowing kick for {peer.m_playerName} after its confirmed final save.");
-                return true;
-            }
-
-            if (HasPendingRequest(peer.m_rpc))
-            {
-                CharacterVaultPlugin.Log.LogWarning(
-                    $"Ignored another kick for {peer.m_playerName} while its final save is pending.");
-                return false;
+                return allow;
             }
 
             bool requested = TryRequest(peer, "server kick",
@@ -46,6 +40,33 @@ namespace Landoria.CharacterVault
             CharacterVaultPlugin.Log.LogMessage(
                 $"Delayed kick for {peer.m_playerName} until final save {requestId} is committed.");
             return false;
+        }
+
+        private static bool TryResolveWithoutSave(KickAction action, bool authorized,
+            ZNetPeer peer, out bool allow)
+        {
+            allow = action == KickAction.Allow || action == KickAction.AllowWithoutSave;
+            if (action == KickAction.Allow && authorized)
+            {
+                CharacterVaultPlugin.Log.LogInfo(
+                    $"Allowing kick for {peer.m_playerName} after its confirmed final save.");
+            }
+            else if (action == KickAction.AllowWithoutSave)
+            {
+                CharacterVaultPlugin.Log.LogInfo(
+                    $"Allowing kick for rejected player {peer.m_playerName} without a character save.");
+            }
+            else if (action == KickAction.WaitForPendingSave)
+            {
+                CharacterVaultPlugin.Log.LogWarning(
+                    $"Ignored another kick for {peer.m_playerName} while its final save is pending.");
+            }
+            else if (action == KickAction.Block)
+            {
+                CharacterVaultPlugin.Log.LogError(
+                    $"Canceled kick for {peer.m_playerName}: no save-eligible session exists.");
+            }
+            return action != KickAction.RequestSave;
         }
 
         internal bool TryRequest(ZNetPeer peer, string reason,

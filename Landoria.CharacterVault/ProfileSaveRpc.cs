@@ -80,6 +80,7 @@ namespace Landoria.CharacterVault
             Platform ___m_steamPlatform,
             bool __result)
         {
+            CharacterVaultPlugin.Transfers?.RecordPermission(hostName, __result);
             if (__result || IsListed(___m_bannedList, hostName, ___m_steamPlatform) ||
                 ___m_bannedList.Contains(playerName) || ___m_permittedList.Count() == 0 ||
                 IsListed(___m_permittedList, hostName, ___m_steamPlatform))
