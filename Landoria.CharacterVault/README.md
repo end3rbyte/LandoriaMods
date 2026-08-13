@@ -21,9 +21,10 @@ Client and server logs include the request identifier and distinguish profile
 acceptance from the later durable commit. After a successful disk write, the
 server sends an optional commit confirmation that the client logs without waiting for it.
 Whenever a client starts sending a character save to the server,
-`Saving character...` appears in white below the small minimap. The message is
-replaced by `Character saved` when the server acknowledgement arrives. Each
-message remains visible for at most three seconds unless the next status replaces it.
+`Saving character..` appears in white below the small minimap. It is replaced by
+`Saving character....` when the server accepts the upload, then by
+`Character saved` after the durable write. Each message remains visible for at
+most three seconds unless the next status replaces it.
 
 ## Guarantees
 
