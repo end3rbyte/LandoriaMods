@@ -88,7 +88,8 @@ namespace Landoria.CharacterVault
                 return;
             }
 
-            CharacterVaultRejection.RecordPermittedListRejection(hostName);
+            bool isNewCharacter = CharacterVaultPlugin.Transfers?.IsNewCharacter(hostName) == true;
+            CharacterVaultRejection.RecordPermittedListRejection(hostName, isNewCharacter);
         }
 
         private static bool IsListed(SyncedList list, string value, Platform steamPlatform)
@@ -229,10 +230,7 @@ namespace Landoria.CharacterVault
     {
         private static void Prefix(ZNet __instance)
         {
-            if (__instance.IsServer())
-            {
-                CharacterVaultPlugin.Transfers?.RequestWorldCheckpoint();
-            }
+            WorldSavePolicy.Handle(__instance.IsServer(), CharacterVaultPlugin.WorldCheckpoints);
         }
     }
 }

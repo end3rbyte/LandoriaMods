@@ -6,13 +6,38 @@ using System.Linq;
 
 namespace Landoria.CharacterVault
 {
-    internal static class BackupRetention
+    internal interface IBackupFileSystem
+    {
+        IReadOnlyList<string> GetBackupFiles(string directory);
+        void Delete(string path);
+    }
+
+    internal sealed class SystemBackupFileSystem : IBackupFileSystem
+    {
+        public IReadOnlyList<string> GetBackupFiles(string directory)
+        {
+            return Directory.GetFiles(directory, "*.fch");
+        }
+
+        public void Delete(string path)
+        {
+            File.Delete(path);
+        }
+    }
+
+    internal sealed class BackupRetention
     {
         private const int RecentBackupCount = 5;
         private const int DailyBackupCount = 10;
         private const string TimestampFormat = "yyyyMMdd'T'HHmmssfffffff'Z'";
+        private readonly IBackupFileSystem _files;
 
-        internal static IReadOnlyList<string> Apply(string directory, string profileName)
+        internal BackupRetention(IBackupFileSystem files)
+        {
+            _files = files ?? throw new ArgumentNullException(nameof(files));
+        }
+
+        internal IReadOnlyList<string> Apply(string directory, string profileName)
         {
             List<BackupFile> backups = FindBackups(directory, profileName)
                 .OrderByDescending(backup => backup.Timestamp)
@@ -35,16 +60,16 @@ namespace Landoria.CharacterVault
             List<string> deleted = new List<string>();
             foreach (BackupFile backup in backups.Where(backup => !retained.Contains(backup.Path)))
             {
-                File.Delete(backup.Path);
+                _files.Delete(backup.Path);
                 deleted.Add(Path.GetFileName(backup.Path));
             }
             return deleted;
         }
 
-        private static IEnumerable<BackupFile> FindBackups(string directory, string profileName)
+        private IEnumerable<BackupFile> FindBackups(string directory, string profileName)
         {
             string prefix = profileName + "_";
-            foreach (string path in Directory.GetFiles(directory, "*.fch"))
+            foreach (string path in _files.GetBackupFiles(directory))
             {
                 string fileName = Path.GetFileNameWithoutExtension(path);
                 if (!fileName.StartsWith(prefix, StringComparison.Ordinal))

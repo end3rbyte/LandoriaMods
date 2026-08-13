@@ -3,6 +3,7 @@ using System.Threading;
 using BepInEx;
 using BepInEx.Configuration;
 using Landoria.SharedLib;
+using Microsoft.Extensions.DependencyInjection;
 using UnityEngine;
 
 namespace Landoria.CharacterVault
@@ -22,17 +23,21 @@ namespace Landoria.CharacterVault
         internal static CharacterVaultPlugin Instance { get; private set; }
         internal static CharacterVaultSettings Settings { get; private set; }
         internal static ProfileTransferService Transfers { get; private set; }
+        internal static IWorldCheckpointRequest WorldCheckpoints { get; private set; }
+        private ServiceProvider _services;
 
         private void Awake()
         {
             Instance = this;
             Log = InitializePlugin(PluginGuid);
             Settings = CharacterVaultSettings.Load(Config);
-            Transfers = new ProfileTransferService(SynchronizationContext.Current);
-            Coordinator = new GracefulShutdownCoordinator(SynchronizationContext.Current);
-            DisconnectCoordinator = new VoluntaryDisconnectCoordinator();
-            ServerDisconnects = new ServerDisconnectSaveCoordinator();
-            SaveStatus = new CharacterSaveStatusDisplay();
+            _services = CharacterVaultServiceRegistration.Build(SynchronizationContext.Current);
+            Transfers = _services.GetRequiredService<ProfileTransferService>();
+            WorldCheckpoints = _services.GetRequiredService<IWorldCheckpointRequest>();
+            Coordinator = _services.GetRequiredService<GracefulShutdownCoordinator>();
+            DisconnectCoordinator = _services.GetRequiredService<VoluntaryDisconnectCoordinator>();
+            ServerDisconnects = _services.GetRequiredService<ServerDisconnectSaveCoordinator>();
+            SaveStatus = _services.GetRequiredService<CharacterSaveStatusDisplay>();
             Log.LogInfo($"{PluginName} {PluginVersion} is loaded.");
         }
 
@@ -59,16 +64,15 @@ namespace Landoria.CharacterVault
 
         private void OnDestroy()
         {
-            DisconnectCoordinator?.Dispose();
-            ServerDisconnects?.Dispose();
-            Coordinator?.Dispose();
-            Transfers?.Dispose();
             SaveStatus?.Dispose();
             CharacterVaultRejection.Clear();
+            _services?.Dispose();
+            _services = null;
             DisconnectCoordinator = null;
             ServerDisconnects = null;
             Coordinator = null;
             Transfers = null;
+            WorldCheckpoints = null;
             SaveStatus = null;
             Settings = null;
             Instance = null;

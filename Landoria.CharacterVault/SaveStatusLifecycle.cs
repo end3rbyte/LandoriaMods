@@ -1,17 +1,28 @@
 namespace Landoria.CharacterVault
 {
+    internal static class SaveStatusMessages
+    {
+        internal const string Saving = "Saving character...";
+        internal const string Accepted = "Saving character......";
+        internal const string Saved = "Character saved";
+        internal const string Failed = "Failed";
+    }
+
     internal sealed class SaveStatusLifecycle
     {
         private string _requestId = string.Empty;
         private bool _waitingForCommit;
 
         internal int Version { get; private set; }
+        internal string Message { get; private set; } = string.Empty;
+        internal bool Visible => !string.IsNullOrEmpty(Message);
 
-        internal int Begin(string requestId, bool waitingForCommit)
+        internal int Begin(string requestId, bool waitingForCommit, string message)
         {
             Version++;
             _requestId = requestId;
             _waitingForCommit = waitingForCommit;
+            Message = message;
             return Version;
         }
 
@@ -35,6 +46,7 @@ namespace Landoria.CharacterVault
             Version++;
             _requestId = string.Empty;
             _waitingForCommit = false;
+            Message = string.Empty;
         }
     }
 }
