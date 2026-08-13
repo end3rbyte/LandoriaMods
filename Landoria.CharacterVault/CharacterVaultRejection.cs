@@ -11,8 +11,8 @@ namespace Landoria.CharacterVault
         private const float DisconnectFallbackSeconds = 2f;
         private static readonly Dictionary<ZRpc, float> Deadlines =
             new Dictionary<ZRpc, float>();
-        private static readonly HashSet<string> PermittedListRejections =
-            new HashSet<string>();
+        private static readonly Dictionary<string, bool> PermittedListRejections =
+            new Dictionary<string, bool>();
         private static readonly CharacterRejectionMessageState ClientMessage =
             new CharacterRejectionMessageState();
         private static float _clientDeadline;
@@ -37,17 +37,19 @@ namespace Landoria.CharacterVault
             rpc.Invoke(MessageRpc, message);
         }
 
-        internal static void RecordPermittedListRejection(string hostName)
+        internal static void RecordPermittedListRejection(string hostName, bool isNewCharacter)
         {
-            PermittedListRejections.Add(hostName);
+            PermittedListRejections[hostName] = isNewCharacter;
         }
 
         internal static void SendPermittedListRejection(ZRpc rpc)
         {
             string hostName = rpc?.GetSocket()?.GetHostName();
-            if (hostName != null && PermittedListRejections.Remove(hostName))
+            if (hostName != null &&
+                PermittedListRejections.TryGetValue(hostName, out bool isNewCharacter))
             {
-                Reject(rpc, CharacterRejectionMessages.PermittedListDenied);
+                PermittedListRejections.Remove(hostName);
+                Reject(rpc, PermittedListRejectionPolicy.MessageFor(isNewCharacter));
             }
         }
 

@@ -50,12 +50,12 @@ namespace Landoria.CharacterVault
 
         internal void ShowSaving(string requestId)
         {
-            Show(requestId, "Saving character...", ActiveDisplaySeconds, false);
+            Show(requestId, SaveStatusMessages.Saving, ActiveDisplaySeconds, false);
         }
 
         internal void ShowAccepted(string requestId)
         {
-            int version = Show(requestId, "Saving character......", ActiveDisplaySeconds, true);
+            int version = Show(requestId, SaveStatusMessages.Accepted, ActiveDisplaySeconds, true);
             CharacterVaultPlugin.Instance?.Run(FailWithoutCommit(requestId, version));
         }
 
@@ -63,7 +63,7 @@ namespace Landoria.CharacterVault
         {
             if (_lifecycle.CanCommit(requestId))
             {
-                Show(requestId, "Character saved", ResultDisplaySeconds, false);
+                Show(requestId, SaveStatusMessages.Saved, ResultDisplaySeconds, false);
             }
         }
 
@@ -88,7 +88,7 @@ namespace Landoria.CharacterVault
 
         private int Show(string requestId, string message, float duration, bool waitingForCommit)
         {
-            int version = _lifecycle.Begin(requestId, waitingForCommit);
+            int version = _lifecycle.Begin(requestId, waitingForCommit, message);
             Attach(Minimap.instance);
             if (_label == null)
             {
@@ -106,7 +106,7 @@ namespace Landoria.CharacterVault
             yield return new WaitForSecondsRealtime(CommitTimeoutSeconds);
             if (_lifecycle.CanFail(requestId, version))
             {
-                Show(requestId, "Failed", ResultDisplaySeconds, false);
+                Show(requestId, SaveStatusMessages.Failed, ResultDisplaySeconds, false);
             }
         }
 
