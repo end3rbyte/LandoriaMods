@@ -1,0 +1,155 @@
+using System;
+using UnityEngine;
+
+namespace Landoria.HammerFreedom
+{
+    internal static class HammerFreedomAuthorization
+    {
+        private const string RequestRpc = "Landoria_HammerFreedom_Request";
+        private const string ResponseRpc = "Landoria_HammerFreedom_Response";
+        private const float RetrySeconds = 2f;
+
+        private static ZRoutedRpc _registeredRpc;
+        private static ZNetPeer _serverPeer;
+        private static HammerFreedomCapabilities? _serverCapabilities;
+        private static float _nextRequestAt;
+        private static HammerFreedomCapabilities _authorizedCapabilities;
+
+        internal static bool IsAuthorized(HammerFreedomCapabilities capability)
+        {
+            return (_authorizedCapabilities & capability) == capability;
+        }
+
+        internal static void Update()
+        {
+            RegisterRpcs();
+            if (ZNet.instance == null || ZRoutedRpc.instance == null)
+            {
+                ResetConnection();
+                return;
+            }
+
+            if (ZNet.instance.IsServer())
+            {
+                UpdateServerAuthorization();
+            }
+            else
+            {
+                UpdateClientAuthorization();
+            }
+        }
+
+        internal static void ResetSession()
+        {
+            _serverCapabilities = null;
+            ResetConnection();
+        }
+
+        private static void RegisterRpcs()
+        {
+            ZRoutedRpc rpc = ZRoutedRpc.instance;
+            if (rpc == null || ReferenceEquals(rpc, _registeredRpc))
+            {
+                return;
+            }
+
+            rpc.Register(RequestRpc, ReceiveRequest);
+            rpc.Register<int>(ResponseRpc, ReceiveResponse);
+            _registeredRpc = rpc;
+        }
+
+        private static void UpdateServerAuthorization()
+        {
+            HammerFreedomCapabilities capabilities = ResolveServerCapabilities();
+            SetAuthorized(capabilities);
+            if (_serverCapabilities == capabilities)
+            {
+                return;
+            }
+
+            _serverCapabilities = capabilities;
+            ZRoutedRpc.instance.InvokeRoutedRPC(
+                ZRoutedRpc.Everybody, ResponseRpc, (int)capabilities);
+            HammerFreedomPlugin.ModLogger.LogInfo(
+                $"Server HammerFreedom capabilities changed to {capabilities}.");
+        }
+
+        private static void UpdateClientAuthorization()
+        {
+            if (!IsAuthorized(HammerFreedomCapabilities.Flight))
+            {
+                FlyController.SetEnabled(false);
+            }
+
+            ZNetPeer currentServer = ZNet.instance.GetServerPeer();
+            if (!ReferenceEquals(currentServer, _serverPeer))
+            {
+                ResetConnection();
+                _serverPeer = currentServer;
+            }
+
+            if (_serverPeer != null && _authorizedCapabilities == HammerFreedomCapabilities.None &&
+                Time.unscaledTime >= _nextRequestAt)
+            {
+                _nextRequestAt = Time.unscaledTime + RetrySeconds;
+                ZRoutedRpc.instance.InvokeRoutedRPC(_serverPeer.m_uid, RequestRpc);
+            }
+        }
+
+        private static void ReceiveRequest(long sender)
+        {
+            if (ZNet.instance == null || !ZNet.instance.IsServer() ||
+                ZNet.instance.GetPeer(sender) == null || ZRoutedRpc.instance == null)
+            {
+                return;
+            }
+
+            ZRoutedRpc.instance.InvokeRoutedRPC(
+                sender, ResponseRpc, (int)ResolveServerCapabilities());
+        }
+
+        private static void ReceiveResponse(long sender, int capabilities)
+        {
+            if (ZNet.instance == null || ZNet.instance.IsServer() ||
+                _serverPeer == null || _serverPeer.m_uid != sender)
+            {
+                return;
+            }
+
+            SetAuthorized((HammerFreedomCapabilities)capabilities);
+        }
+
+        private static HammerFreedomCapabilities ResolveServerCapabilities()
+        {
+            bool hammerWorld = ZoneSystem.instance != null &&
+                ZoneSystem.instance.GetGlobalKey(GlobalKeys.NoBuildCost) &&
+                ZoneSystem.instance.GetGlobalKey(GlobalKeys.PassiveMobs);
+            HammerFreedomSettings settings = HammerFreedomPlugin.Settings;
+            return HammerFreedomCapabilityPolicy.Resolve(
+                hammerWorld, settings != null && settings.Flight,
+                settings != null && settings.FallDamageImmunity,
+                settings != null && settings.UnlimitedStamina);
+        }
+
+        private static void ResetConnection()
+        {
+            _serverPeer = null;
+            _nextRequestAt = 0f;
+            FlyController.SetEnabled(false);
+            SetAuthorized(HammerFreedomCapabilities.None);
+        }
+
+        private static void SetAuthorized(HammerFreedomCapabilities capabilities)
+        {
+            if (_authorizedCapabilities == capabilities)
+            {
+                return;
+            }
+
+            _authorizedCapabilities = capabilities;
+            FlyController.OnAuthorizationChanged(IsAuthorized(HammerFreedomCapabilities.Flight));
+            HammerFreedomPlugin.ModLogger?.LogInfo(
+                $"HammerFreedom authorization is now {capabilities}.");
+        }
+    }
+}

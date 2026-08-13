@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Landoria.FlyCommand
+namespace Landoria.HammerFreedom
 {
     internal static class FlyCommand
     {
@@ -23,7 +23,7 @@ namespace Landoria.FlyCommand
 
         private static object Run(Terminal.ConsoleEventArgs args)
         {
-            if (!FlyAuthorization.IsAuthorized)
+            if (!HammerFreedomAuthorization.IsAuthorized(HammerFreedomCapabilities.Flight))
             {
                 return "Flight is not authorized by this server.";
             }
