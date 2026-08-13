@@ -20,11 +20,15 @@ namespace Landoria.CharacterVault
         internal const string UploadCompleteRpc = "CharacterVault_UploadComplete_v1";
         internal const string SaveRequestRpc = "CharacterVault_SaveRequest_v1";
         internal const string SaveAckRpc = "CharacterVault_SaveAck_v1";
+        internal const string CommitAckRpc = "CharacterVault_CommitAck_v1";
         private const int ChunkSize = 65536;
         private const int MaximumProfileBytes = 64 * 1024 * 1024;
         private readonly Dictionary<ZRpc, VaultSession> _sessions = new Dictionary<ZRpc, VaultSession>();
         private readonly Dictionary<ZRpc, IncomingTransfer> _uploads = new Dictionary<ZRpc, IncomingTransfer>();
         private readonly Dictionary<string, ZRpc> _enrollments = new Dictionary<string, ZRpc>(StringComparer.Ordinal);
+        private readonly Queue<PendingCommit> _commits = new Queue<PendingCommit>();
+        private readonly object _commitLock = new object();
+        private bool _commitWorkerRunning;
         private readonly SynchronizationContext _unityContext;
         private readonly VaultStorage _storage = new VaultStorage();
         private IncomingTransfer _download;
@@ -274,6 +278,7 @@ namespace Landoria.CharacterVault
             rpc.Register<ZPackage>(DownloadCompleteRpc, ReceiveDownloadComplete);
             rpc.Register<string>(SaveRequestRpc, ReceiveSaveRequest);
             rpc.Register<string>(SaveAckRpc, ReceiveSaveAck);
+            rpc.Register<string>(CommitAckRpc, ReceiveCommitAck);
         }
 
         private void ReceiveHello(ZRpc rpc, ZPackage package)
@@ -395,6 +400,12 @@ namespace Landoria.CharacterVault
             }
         }
 
+        private void ReceiveCommitAck(ZRpc rpc, string requestId)
+        {
+            CharacterVaultPlugin.Log.LogInfo(
+                $"Server confirmed durable character save request {requestId}.");
+        }
+
         private void ResetClientState()
         {
             _clientActive = false;
@@ -485,14 +496,8 @@ namespace Landoria.CharacterVault
                 return;
             }
 
-            bool voluntaryDisconnect = transfer.RequestId.StartsWith(
-                "disconnect-", StringComparison.Ordinal);
-            if (voluntaryDisconnect)
-            {
-                ConfirmReceipt(rpc, session, transfer.RequestId);
-            }
-            ThreadPool.QueueUserWorkItem(_ => Commit(rpc, session, transfer.RequestId,
-                data, voluntaryDisconnect));
+            ConfirmReceipt(rpc, session, transfer.RequestId);
+            QueueCommit(rpc, session, transfer.RequestId, data);
         }
 
         private void ConfirmReceipt(ZRpc rpc, VaultSession session, string requestId)
@@ -503,27 +508,46 @@ namespace Landoria.CharacterVault
                 "durable commit queued.");
         }
 
-        private void Commit(ZRpc rpc, VaultSession session, string requestId, byte[] data,
-            bool receiptConfirmed)
+        private void QueueCommit(ZRpc rpc, VaultSession session, string requestId, byte[] data)
         {
-            try
+            lock (_commitLock)
             {
-                _storage.Commit(session.AccountId, session.Name, data);
-                _unityContext.Post(_ =>
+                _commits.Enqueue(new PendingCommit(rpc, session, requestId, data));
+                if (!_commitWorkerRunning)
                 {
-                    if (receiptConfirmed)
-                    {
-                        ConfirmBackgroundCommit(rpc, session, requestId);
-                    }
-                    else
-                    {
-                        ConfirmCommit(rpc, session, requestId);
-                    }
-                }, null);
+                    _commitWorkerRunning = true;
+                    ThreadPool.QueueUserWorkItem(_ => ProcessCommits());
+                }
             }
-            catch (Exception exception)
+        }
+
+        private void ProcessCommits()
+        {
+            while (TryDequeueCommit(out PendingCommit commit))
             {
-                CharacterVaultPlugin.Log.LogError($"Character vault commit failed: {exception}");
+                try
+                {
+                    _storage.Commit(commit.Session.AccountId, commit.Session.Name, commit.Data);
+                    _unityContext.Post(_ => ConfirmBackgroundCommit(
+                        commit.Rpc, commit.Session, commit.RequestId), null);
+                }
+                catch (Exception exception)
+                {
+                    CharacterVaultPlugin.Log.LogError($"Character vault commit failed: {exception}");
+                }
+            }
+        }
+
+        private bool TryDequeueCommit(out PendingCommit commit)
+        {
+            lock (_commitLock)
+            {
+                commit = _commits.Count > 0 ? _commits.Dequeue() : null;
+                if (commit == null)
+                {
+                    _commitWorkerRunning = false;
+                }
+                return commit != null;
             }
         }
 
@@ -535,6 +559,7 @@ namespace Landoria.CharacterVault
             {
                 return;
             }
+            rpc.Invoke(CommitAckRpc, requestId);
             CharacterVaultPlugin.Coordinator?.RecordSaveCommitted(rpc, requestId);
             CharacterVaultPlugin.ServerDisconnects?.RecordCommitted(rpc, requestId);
         }
@@ -669,6 +694,22 @@ namespace Landoria.CharacterVault
         internal bool Verified { get; set; }
         internal bool Admitted { get; set; }
         internal bool Enrolling { get; set; }
+    }
+
+    internal sealed class PendingCommit
+    {
+        internal PendingCommit(ZRpc rpc, VaultSession session, string requestId, byte[] data)
+        {
+            Rpc = rpc;
+            Session = session;
+            RequestId = requestId;
+            Data = data;
+        }
+
+        internal byte[] Data { get; }
+        internal ZRpc Rpc { get; }
+        internal string RequestId { get; }
+        internal VaultSession Session { get; }
     }
 
     internal sealed class IncomingTransfer
