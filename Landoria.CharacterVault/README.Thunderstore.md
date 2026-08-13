@@ -11,6 +11,7 @@ with another save or a restored backup.
 | First enrollment | Validates and saves a newly created character before allowing it into the world. |
 | Automatic world save | Saves every connected character with the world. |
 | Manual `save` command | Saves the world and every connected character. |
+| Pause-menu Save button | Saves the character through CharacterVault and retains the vanilla save behavior. |
 | Log out | Sends and validates a final character save before disconnecting. |
 | Quit from the menu | After entering the world, waits at most 10 seconds to save your character before closing Valheim. |
 | Server kick | Saves the affected character before the server disconnects it. |
@@ -19,6 +20,10 @@ with another save or a restored backup.
 
 When you join again, CharacterVault loads the latest trusted server copy before
 your character enters the world.
+Whenever your client starts sending a character save to the server,
+`Saving character...` appears in white below the small minimap. It changes to
+`Character saved` when the server acknowledges the save. Each message remains
+visible for at most three seconds unless the next status replaces it.
 The server writes every profile save both as `characters_local/Steam_<id>_<character>.fch` and
 as a timestamped `characters_local/backups/` file.
 For each character, it retains the 5 most recent backups plus the earliest
