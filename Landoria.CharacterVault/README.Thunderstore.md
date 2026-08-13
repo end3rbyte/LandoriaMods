@@ -18,32 +18,13 @@ with another save or a restored backup.
 | Graceful server stop or restart (optional) | Saves all connected characters before the final world save and shutdown. Requires Linux server configuration. |
 | Client crash or lost network | Cannot request a final save because the connection is already lost. |
 
-When you join again, CharacterVault loads the latest trusted server copy before
-your character enters the world.
-Local profile saves remain unchanged, but CharacterVault never uploads a profile
-to the server before the local player's `Player.OnSpawned()` completes.
-Whenever your client starts sending a character save to the server,
-`Saving character...` appears in white below the small minimap. It changes to
-`Saving character......` when the server accepts the upload, then to
-`Character saved` after the durable write. The two saving states remain visible
-for at most 30 seconds. If no commit confirmation arrives within 20 seconds of
-the receipt acknowledgement, `Failed` replaces the status for three seconds.
-`Character saved` also remains visible for at most three seconds.
-The server also sends a separate confirmation after the profile and its backup
-are written durably. The client records that confirmation in its log without
-blocking gameplay or disconnection while waiting for it.
-The server writes every profile save both as `characters_local/Steam_<id>_<character>.fch` and
-as a timestamped `characters_local/backups/` file.
-For each character, it retains the 5 most recent backups plus the earliest
-backup from each of the next 10 distinct UTC days before the day of the fifth
-backup, up to 15 backups in total.
-Successful retention deletions are recorded in the server log.
-If a character cannot join, Valheim returns to the main menu and explains why.
-CharacterVault never saves a profile for an account rejected by the server permission check.
+## What players should know
 
-New characters must be created during the current game session. Depending on
-the server settings, an account may use one or several characters and may
-receive starting items on first enrollment.
+- The server loads its latest trusted copy before your character enters the world; local saves still work normally.
+- The status below the minimap progresses from `Saving character...` to `Saving character......`, then `Character saved` once the server has written the save.
+- `Failed` appears when the server does not confirm the save in time.
+- The server keeps up to 15 automatic backups per character, including the 5 most recent saves and older daily snapshots.
+- Rejected accounts are never saved and receive a clear error. New characters must be created during the current game session; character limits and starting items depend on the server.
 
 ## Compatibility
 
