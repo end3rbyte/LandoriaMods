@@ -4,6 +4,17 @@ namespace Landoria.Socialize;
 
 public sealed class GroupPolicyTests
 {
+    // Verifies that an unknown or unready invitation target is rejected.
+    [Fact]
+    public void UnknownInvitationTargetIsRejected()
+    {
+        GroupDecision decision = GroupPolicy.CanInviteTarget(false);
+
+        Assert.False(decision.Allowed);
+        Assert.Equal("Player not found or not ready.", decision.Message);
+        Assert.True(GroupPolicy.CanInviteTarget(true).Allowed);
+    }
+
     // Verifies that an ungrouped player can invite another player.
     [Fact]
     public void UngroupedPlayerCanInviteAnotherPlayer()
