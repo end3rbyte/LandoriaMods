@@ -6,7 +6,7 @@ namespace Landoria.CharacterVault
 {
     internal sealed class CharacterSaveStatusDisplay
     {
-        private const float SavedDisplaySeconds = 2f;
+        private const float StatusDisplaySeconds = 3f;
         private TextMeshProUGUI _label;
         private int _stateVersion;
 
@@ -88,7 +88,7 @@ namespace Landoria.CharacterVault
 
         private IEnumerator HideAfterDelay(int version)
         {
-            yield return new WaitForSecondsRealtime(SavedDisplaySeconds);
+            yield return new WaitForSecondsRealtime(StatusDisplaySeconds);
             if (_stateVersion == version)
             {
                 Hide();
