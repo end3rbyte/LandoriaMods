@@ -1,11 +1,8 @@
 # Changelog
 
-## 1.0.12
-
-- Add unit tests.
-
 ## 1.0.11
 
+- Add unit tests.
 - Limit retained character backups and log every retention deletion.
 
 ## 1.0.10
