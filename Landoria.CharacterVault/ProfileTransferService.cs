@@ -31,9 +31,7 @@ namespace Landoria.CharacterVault
         private readonly ClientSaveLifecycle _clientLifecycle = new ClientSaveLifecycle();
         private bool _commitWorkerRunning;
         private readonly SynchronizationContext _unityContext;
-        private readonly IValheimAdapterFactory _adapters;
-        private readonly IValheimEnvironment _environment;
-        private readonly VaultStorage _storage;
+        private readonly VaultStorage _storage = new VaultStorage();
         private readonly CharacterAdmissionEvaluator _admission;
         private IncomingTransfer _download;
         private bool _clientUploadBusy;
@@ -42,13 +40,9 @@ namespace Landoria.CharacterVault
         private PlayerProfile _pendingProfile;
         private IReadOnlyList<StartingItem> _serverStartingItems = Array.Empty<StartingItem>();
 
-        internal ProfileTransferService(SynchronizationContext unityContext,
-            IValheimAdapterFactory adapters, IValheimEnvironment environment, VaultStorage storage)
+        internal ProfileTransferService(SynchronizationContext unityContext)
         {
             _unityContext = unityContext ?? throw new ArgumentNullException(nameof(unityContext));
-            _adapters = adapters ?? throw new ArgumentNullException(nameof(adapters));
-            _environment = environment ?? throw new ArgumentNullException(nameof(environment));
-            _storage = storage ?? throw new ArgumentNullException(nameof(storage));
             _admission = new CharacterAdmissionEvaluator(_storage);
         }
 
@@ -114,14 +108,6 @@ namespace Landoria.CharacterVault
             }
         }
 
-        internal bool IsNewCharacter(string hostName)
-        {
-            string accountId = NormalizeAccount(hostName);
-            return _sessions.Values.Any(session =>
-                string.Equals(session.AccountId, accountId, StringComparison.Ordinal) &&
-                session.NewCharacter);
-        }
-
         internal void Remove(ZNetPeer peer)
         {
             if (peer?.m_rpc == null)
@@ -183,13 +169,12 @@ namespace Landoria.CharacterVault
 
         internal bool SaveManualClientProfile()
         {
-            if (!_clientLifecycle.IsActive || _environment.Network?.IsServer != false ||
-                _environment.Game == null)
+            if (!_clientLifecycle.IsActive || ZNet.instance?.IsServer() != false || Game.instance == null)
             {
                 return false;
             }
 
-            _environment.Game.SavePlayerProfile(true);
+            Game.instance.SavePlayerProfile(true);
             return true;
         }
 
@@ -242,9 +227,8 @@ namespace Landoria.CharacterVault
 
         internal bool BeginFinalDisconnectSave(string requestId)
         {
-            IValheimPlayerProfile profile = _environment.Game?.SelectedProfile;
-            if (!_clientLifecycle.IsActive || _environment.Network?.IsServer != false ||
-                profile == null)
+            PlayerProfile profile = Game.instance?.GetPlayerProfile();
+            if (!_clientLifecycle.IsActive || ZNet.instance?.IsServer() != false || profile == null)
             {
                 return false;
             }
@@ -258,8 +242,8 @@ namespace Landoria.CharacterVault
             }
 
             CharacterVaultPlugin.Log.LogInfo(
-                $"Writing the final local profile for {profile.Name} before disconnect.");
-            _environment.Game.SavePlayerProfile(true);
+                $"Writing the final local profile for {profile.GetName()} before disconnect.");
+            Game.instance.SavePlayerProfile(true);
             return true;
         }
 
@@ -270,27 +254,28 @@ namespace Landoria.CharacterVault
 
         internal void RecordPlayerSpawned(Player player)
         {
-            IValheimPlayer adaptedPlayer = player == null ? null : _adapters.Player(player);
-            if (adaptedPlayer?.IsLocalPlayer != true)
+            if (player == null || player != Player.m_localPlayer)
             {
                 return;
             }
 
-            if (!_clientLifecycle.RecordSpawn(adaptedPlayer.IsLocalPlayer))
+            if (!_clientLifecycle.RecordSpawn(player == Player.m_localPlayer))
             {
                 return;
             }
 
             foreach (StartingItem item in _serverStartingItems)
             {
-                IValheimItem prefab = _environment.Items?.Find(item.Prefab);
-                if (prefab == null || !adaptedPlayer.Inventory.AddItem(prefab, item.Quantity))
+                bool granted = StartingItemGrantPolicy.Grant(item.Prefab, item.Quantity,
+                    FindItem, (prefab, quantity) =>
+                        Player.m_localPlayer.GetInventory().AddItem(prefab, quantity));
+                if (!granted)
                 {
                     CharacterVaultPlugin.Log.LogError($"Could not grant starting item {item.Prefab}:{item.Quantity}.");
                 }
             }
 
-            _environment.Game.SavePlayerProfile(true);
+            Game.instance.SavePlayerProfile(true);
         }
 
         internal void ApplyPendingProfile(ref PlayerProfile profile)

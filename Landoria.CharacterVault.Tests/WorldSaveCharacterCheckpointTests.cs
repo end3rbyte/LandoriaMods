@@ -1,20 +1,17 @@
-using Moq;
 using Xunit;
 
 namespace Landoria.CharacterVault;
 
 public sealed class WorldSaveCharacterCheckpointTests
 {
-    // Verifies that a server world save requests character checkpoints for connected players.
+    // Verifies that a server world save requests character checkpoints.
     [Fact]
     public void ServerWorldSaveRequestsCharacterCheckpoint()
     {
-        Mock<IWorldCheckpointRequest> checkpoint = new(MockBehavior.Strict);
-        checkpoint
-            .Setup(request => request.Request());
+        int requests = 0;
 
-        WorldSavePolicy.Handle(isServer: true, checkpoint.Object);
+        WorldSavePolicy.Handle(isServer: true, () => requests++);
 
-        checkpoint.Verify(request => request.Request(), Times.Once);
+        Assert.Equal(1, requests);
     }
 }

@@ -14,15 +14,12 @@ namespace Landoria.CharacterVault
         private bool _waitingForCommit;
 
         internal int Version { get; private set; }
-        internal string Message { get; private set; } = string.Empty;
-        internal bool Visible => !string.IsNullOrEmpty(Message);
 
-        internal int Begin(string requestId, bool waitingForCommit, string message)
+        internal int Begin(string requestId, bool waitingForCommit)
         {
             Version++;
             _requestId = requestId;
             _waitingForCommit = waitingForCommit;
-            Message = message;
             return Version;
         }
 
@@ -46,7 +43,6 @@ namespace Landoria.CharacterVault
             Version++;
             _requestId = string.Empty;
             _waitingForCommit = false;
-            Message = string.Empty;
         }
     }
 }

@@ -7,25 +7,20 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.11" />
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="xunit.v3" Version="3.2.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="../Landoria.CharacterVault/BackupRetention.cs"
-             Link="BackupRetention.cs" />
-    <Compile Include="../Landoria.CharacterVault/CharacterAdmissionPolicy.cs"
-             Link="CharacterAdmissionPolicy.cs" />
-    <Compile Include="../Landoria.CharacterVault/CharacterRejectionMessageState.cs"
-             Link="CharacterRejectionMessageState.cs" />
-    <Compile Include="../Landoria.CharacterVault/KickSavePolicy.cs"
-             Link="KickSavePolicy.cs" />
-    <Compile Include="../Landoria.CharacterVault/SaveStatusLifecycle.cs"
-             Link="SaveStatusLifecycle.cs" />
-    <Compile Include="../Landoria.CharacterVault/VoluntaryExitSavePolicy.cs"
-             Link="VoluntaryExitSavePolicy.cs" />
-    <Compile Include="../Landoria.CharacterVault/WorldSavePolicy.cs"
-             Link="WorldSavePolicy.cs" />
+    <Compile Include="../Landoria.CharacterVault/BackupRetention.cs" Link="BackupRetention.cs" />
+    <Compile Include="../Landoria.CharacterVault/CharacterAdmissionPolicy.cs" Link="CharacterAdmissionPolicy.cs" />
+    <Compile Include="../Landoria.CharacterVault/CharacterRejectionMessageState.cs" Link="CharacterRejectionMessageState.cs" />
+    <Compile Include="../Landoria.CharacterVault/ClientSaveLifecycle.cs" Link="ClientSaveLifecycle.cs" />
+    <Compile Include="../Landoria.CharacterVault/DocumentedSaveEventPolicy.cs" Link="DocumentedSaveEventPolicy.cs" />
+    <Compile Include="../Landoria.CharacterVault/SaveStatusLifecycle.cs" Link="SaveStatusLifecycle.cs" />
+    <Compile Include="../Landoria.CharacterVault/KickSavePolicy.cs" Link="KickSavePolicy.cs" />
+    <Compile Include="../Landoria.CharacterVault/VoluntaryExitSavePolicy.cs" Link="VoluntaryExitSavePolicy.cs" />
+    <Compile Include="../Landoria.CharacterVault/WorldSavePolicy.cs" Link="WorldSavePolicy.cs" />
+    <Compile Include="../Landoria.CharacterVault/StartingItemGrantPolicy.cs" Link="StartingItemGrantPolicy.cs" />
   </ItemGroup>
 </Project>
