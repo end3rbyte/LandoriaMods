@@ -28,13 +28,11 @@ namespace Landoria.CharacterVault
         private readonly Dictionary<string, ZRpc> _enrollments = new Dictionary<string, ZRpc>(StringComparer.Ordinal);
         private readonly Queue<PendingCommit> _commits = new Queue<PendingCommit>();
         private readonly object _commitLock = new object();
+        private readonly ClientSaveLifecycle _clientLifecycle = new ClientSaveLifecycle();
         private bool _commitWorkerRunning;
         private readonly SynchronizationContext _unityContext;
         private readonly VaultStorage _storage = new VaultStorage();
         private IncomingTransfer _download;
-        private bool _clientActive;
-        private bool _clientEnrolling;
-        private bool _clientSpawned;
         private bool _clientUploadBusy;
         private bool _suppressNextClientUpload;
         private string _pendingRequest;
@@ -144,7 +142,7 @@ namespace Landoria.CharacterVault
 
         internal bool SaveManualClientProfile()
         {
-            if (!_clientActive || ZNet.instance?.IsServer() != false || Game.instance == null)
+            if (!_clientLifecycle.IsActive || ZNet.instance?.IsServer() != false || Game.instance == null)
             {
                 return false;
             }
@@ -163,12 +161,12 @@ namespace Landoria.CharacterVault
                 return;
             }
 
-            if (!_clientActive || ZNet.instance?.IsServer() != false)
+            if (!_clientLifecycle.IsActive || ZNet.instance?.IsServer() != false)
             {
                 return;
             }
 
-            if (!_clientSpawned)
+            if (!_clientLifecycle.CanUpload)
             {
                 CharacterVaultPlugin.Log.LogInfo(
                     "Skipped the server upload for a local save before Player.OnSpawned completed.");
@@ -203,7 +201,7 @@ namespace Landoria.CharacterVault
         internal bool BeginFinalDisconnectSave(string requestId)
         {
             PlayerProfile profile = Game.instance?.GetPlayerProfile();
-            if (!_clientActive || ZNet.instance?.IsServer() != false || profile == null)
+            if (!_clientLifecycle.IsActive || ZNet.instance?.IsServer() != false || profile == null)
             {
                 return false;
             }
@@ -234,13 +232,11 @@ namespace Landoria.CharacterVault
                 return;
             }
 
-            _clientSpawned = true;
-            if (!_clientEnrolling)
+            if (!_clientLifecycle.RecordSpawn(player == Player.m_localPlayer))
             {
                 return;
             }
 
-            _clientEnrolling = false;
             foreach (StartingItem item in _serverStartingItems)
             {
                 GameObject prefab = FindItem(item.Prefab);
@@ -359,8 +355,7 @@ namespace Landoria.CharacterVault
             }
 
             _serverStartingItems = items;
-            _clientActive = true;
-            _clientEnrolling = true;
+            _clientLifecycle.BeginEnrollment();
         }
 
         private void ReceiveDownloadBegin(ZRpc rpc, ZPackage package)
@@ -384,12 +379,12 @@ namespace Landoria.CharacterVault
             }
 
             _pendingProfile = ProfileFile.ReplaceSelected(data);
-            _clientActive = true;
+            _clientLifecycle.ActivateExisting();
         }
 
         private void ReceiveSaveRequest(ZRpc rpc, string requestId)
         {
-            if (!_clientActive || string.IsNullOrWhiteSpace(requestId))
+            if (!_clientLifecycle.IsActive || string.IsNullOrWhiteSpace(requestId))
             {
                 return;
             }
@@ -423,9 +418,7 @@ namespace Landoria.CharacterVault
 
         private void ResetClientState()
         {
-            _clientActive = false;
-            _clientEnrolling = false;
-            _clientSpawned = false;
+            _clientLifecycle.Reset();
             _clientUploadBusy = false;
             _suppressNextClientUpload = false;
             _pendingRequest = null;

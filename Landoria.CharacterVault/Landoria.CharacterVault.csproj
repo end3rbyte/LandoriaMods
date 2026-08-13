@@ -43,9 +43,11 @@
     <Compile Include="CharacterVaultSettings.cs" />
     <Compile Include="CharacterVaultRejection.cs" />
     <Compile Include="CharacterSaveStatusDisplay.cs" />
+    <Compile Include="ClientSaveLifecycle.cs" />
     <Compile Include="NewCharacterTracker.cs" />
     <Compile Include="ProfileFile.cs" />
     <Compile Include="SaveApiCompatibility.cs" />
+    <Compile Include="SaveStatusLifecycle.cs" />
     <Compile Include="ProfileTransferService.cs" />
     <Compile Include="BackupRetention.cs" />
     <Compile Include="VaultStorage.cs" />
