@@ -100,13 +100,12 @@ namespace Landoria.Socialize
             private static bool Prefix(WearNTear __instance, float damage, HitData hitData)
             {
                 float rainDamage = __instance.m_health * VanillaRainDamageFraction;
-                if (hitData != null || !__instance.IsWet() ||
-                    __instance.GetHealthPercentage() <= 0.5f ||
-                    !Mathf.Approximately(damage, rainDamage))
-                {
-                    return true;
-                }
-                return GetActivityMultiplier(__instance.GetComponent<Piece>()) > 0f;
+                bool isVanillaRainTick = hitData == null && __instance.IsWet() &&
+                    __instance.GetHealthPercentage() > 0.5f &&
+                    Mathf.Approximately(damage, rainDamage);
+                float activity = GetActivityMultiplier(__instance.GetComponent<Piece>());
+                return DecayEffectPolicy.ShouldApplyRainDamage(
+                    isVanillaRainTick, activity);
             }
         }
 
@@ -123,7 +122,8 @@ namespace Landoria.Socialize
                 {
                     initializedFireplaces.Add(__instance, new object());
                 }
-                if (firstUpdate || GetActivityMultiplier(piece) <= 0f)
+                float activity = GetActivityMultiplier(piece);
+                if (DecayEffectPolicy.ShouldPauseFuel(firstUpdate, activity))
                 {
                     __instance.m_secPerFuel = float.PositiveInfinity;
                 }
