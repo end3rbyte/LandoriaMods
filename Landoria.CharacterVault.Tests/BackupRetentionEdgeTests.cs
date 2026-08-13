@@ -10,12 +10,12 @@ public sealed class BackupRetentionEdgeTests
     [Fact]
     public void FiveOrFewerBackupsAreNeverDeleted()
     {
-        BackupRetentionTests.WithDirectory((directory, retention) =>
+        WithDirectory(directory =>
         {
             WriteBackups(directory, Enumerable.Range(0, 5)
                 .Select(index => new DateTime(2026, 8, 13, 15 - index, 0, 0, DateTimeKind.Utc)));
 
-            Assert.Empty(retention.Apply(directory, Profile));
+            Assert.Empty(BackupRetention.Apply(directory, Profile));
             Assert.Equal(5, Directory.GetFiles(directory).Length);
         });
     }
@@ -24,13 +24,13 @@ public sealed class BackupRetentionEdgeTests
     [Fact]
     public void RetentionNeverKeepsMoreThanFifteenBackups()
     {
-        BackupRetentionTests.WithDirectory((directory, retention) =>
+        WithDirectory(directory =>
         {
             WriteBackups(directory, Enumerable.Range(0, 25)
                 .Select(index => new DateTime(2026, 8, 25, 12, 0, 0, DateTimeKind.Utc)
                     .AddDays(-index)));
 
-            IReadOnlyList<string> deleted = retention.Apply(directory, Profile);
+            IReadOnlyList<string> deleted = BackupRetention.Apply(directory, Profile);
 
             Assert.Equal(10, deleted.Count);
             Assert.Equal(15, Directory.GetFiles(directory).Length);
@@ -41,7 +41,7 @@ public sealed class BackupRetentionEdgeTests
     [Fact]
     public void UnrelatedAndMalformedFilesAreIgnored()
     {
-        BackupRetentionTests.WithDirectory((directory, retention) =>
+        WithDirectory(directory =>
         {
             WriteBackups(directory, Enumerable.Range(0, 6)
                 .Select(index => new DateTime(2026, 8, 13, 15 - index, 0, 0, DateTimeKind.Utc)));
@@ -51,7 +51,7 @@ public sealed class BackupRetentionEdgeTests
             File.WriteAllText(otherProfile, "other");
             File.WriteAllText(malformed, "malformed");
 
-            retention.Apply(directory, Profile);
+            BackupRetention.Apply(directory, Profile);
 
             Assert.True(File.Exists(otherProfile));
             Assert.True(File.Exists(malformed));
@@ -64,6 +64,20 @@ public sealed class BackupRetentionEdgeTests
         {
             string name = $"{Profile}_{timestamp:yyyyMMdd'T'HHmmssfffffff'Z'}.fch";
             File.WriteAllText(Path.Combine(directory, name), "backup");
+        }
+    }
+
+    private static void WithDirectory(Action<string> test)
+    {
+        string directory = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(directory);
+        try
+        {
+            test(directory);
+        }
+        finally
+        {
+            Directory.Delete(directory, true);
         }
     }
 }

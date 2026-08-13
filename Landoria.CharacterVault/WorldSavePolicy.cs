@@ -1,17 +1,14 @@
+using System;
+
 namespace Landoria.CharacterVault
 {
-    internal interface IWorldCheckpointRequest
-    {
-        void Request();
-    }
-
     internal static class WorldSavePolicy
     {
-        internal static void Handle(bool isServer, IWorldCheckpointRequest request)
+        internal static void Handle(bool isServer, Action requestCharacterCheckpoint)
         {
-            if (isServer && request != null)
+            if (isServer)
             {
-                request.Request();
+                requestCharacterCheckpoint();
             }
         }
     }

@@ -8,14 +8,6 @@ namespace Landoria.CharacterVault
             "This Steam account already has a character.";
     }
 
-    internal static class PermittedListRejectionPolicy
-    {
-        internal static string MessageFor(bool isNewCharacter)
-        {
-            return CharacterRejectionMessages.PermittedListDenied;
-        }
-    }
-
     internal sealed class CharacterRejectionMessageState
     {
         private string _message = string.Empty;

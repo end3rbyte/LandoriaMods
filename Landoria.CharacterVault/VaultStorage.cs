@@ -9,12 +9,6 @@ namespace Landoria.CharacterVault
     internal sealed class VaultStorage : ICharacterProfileCatalog
     {
         private const string BackupDirectory = "backups";
-        private readonly BackupRetention _retention;
-
-        internal VaultStorage(BackupRetention retention)
-        {
-            _retention = retention;
-        }
 
         bool ICharacterProfileCatalog.HasProfile(string accountId) => HasProfile(accountId);
 
@@ -50,7 +44,7 @@ namespace Landoria.CharacterVault
             string timestamp = DateTime.UtcNow.ToString(
                 "yyyyMMdd'T'HHmmssfffffff'Z'", CultureInfo.InvariantCulture);
             WriteDurably(Path.Combine(directory, $"{profileName}_{timestamp}.fch"), data);
-            foreach (string deleted in _retention.Apply(directory, profileName))
+            foreach (string deleted in BackupRetention.Apply(directory, profileName))
             {
                 CharacterVaultPlugin.Log.LogInfo(
                     $"Deleted expired character backup {deleted} for profile {profileName}.");

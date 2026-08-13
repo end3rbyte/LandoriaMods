@@ -88,7 +88,7 @@ namespace Landoria.CharacterVault
 
         private int Show(string requestId, string message, float duration, bool waitingForCommit)
         {
-            int version = _lifecycle.Begin(requestId, waitingForCommit, message);
+            int version = _lifecycle.Begin(requestId, waitingForCommit);
             Attach(Minimap.instance);
             if (_label == null)
             {

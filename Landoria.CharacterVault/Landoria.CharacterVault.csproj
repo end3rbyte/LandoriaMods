@@ -26,23 +26,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection"
-                      Version="10.0.11" />
-    <Reference Include="Microsoft.Extensions.DependencyInjection">
-      <HintPath>$(NuGetPackageRoot)microsoft.extensions.dependencyinjection\10.0.11\lib\net462\Microsoft.Extensions.DependencyInjection.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions">
-      <HintPath>$(NuGetPackageRoot)microsoft.extensions.dependencyinjection.abstractions\10.0.11\lib\net462\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces">
-      <HintPath>$(NuGetPackageRoot)microsoft.bcl.asyncinterfaces\10.0.11\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe">
-      <HintPath>$(NuGetPackageRoot)system.runtime.compilerservices.unsafe\6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions">
-      <HintPath>$(NuGetPackageRoot)system.threading.tasks.extensions\4.6.3\lib\net462\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="BepInEx"><HintPath>$(BepInExPath)\core\BepInEx.dll</HintPath><Private>false</Private></Reference>
@@ -58,9 +41,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CharacterVaultSettings.cs" />
-    <Compile Include="Valheim\ValheimAbstractions.cs" />
-    <Compile Include="Valheim\ValheimAdapters.cs" />
-    <Compile Include="CharacterVaultServiceRegistration.cs" />
     <Compile Include="CharacterAdmissionPolicy.cs" />
     <Compile Include="CharacterVaultRejection.cs" />
     <Compile Include="CharacterRejectionMessageState.cs" />
@@ -79,23 +59,12 @@
     <Compile Include="VoluntaryDisconnectCoordinator.cs" />
     <Compile Include="VoluntaryExitSavePolicy.cs" />
     <Compile Include="WorldSavePolicy.cs" />
-    <Compile Include="WorldCheckpointRequest.cs" />
+    <Compile Include="StartingItemGrantPolicy.cs" />
     <Compile Include="ServerDisconnectSaveCoordinator.cs" />
     <Compile Include="ProfileSaveRpc.cs" />
     <Compile Include="CharacterVaultPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <Target Name="IncludeDependencyInjectionAssemblies"
-          BeforeTargets="MergeLandoriaSharedLib">
-    <ItemGroup>
-      <LandoriaAdditionalAssembliesToMerge Include="@(ReferenceCopyLocalPaths)"
-          Condition="'%(Filename)' == 'Microsoft.Extensions.DependencyInjection' or
-                     '%(Filename)' == 'Microsoft.Extensions.DependencyInjection.Abstractions' or
-                     '%(Filename)' == 'Microsoft.Bcl.AsyncInterfaces' or
-                     '%(Filename)' == 'System.Threading.Tasks.Extensions' or
-                     '%(Filename)' == 'System.Runtime.CompilerServices.Unsafe'" />
-    </ItemGroup>
-  </Target>
   <ItemGroup>
     <Content Include="icon.png" />
     <Content Include="LICENSE" />
