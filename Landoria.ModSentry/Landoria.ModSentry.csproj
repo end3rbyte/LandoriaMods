@@ -31,9 +31,6 @@
     <Compile Include="ValidationResult.cs" /><Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Landoria.SharedLib\Landoria.SharedLib.csproj"><Private>false</Private></ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="icon.png" /><Content Include="LICENSE" /><Content Include="manifest.json" />
     <Content Include="README.md" /><Content Include="README.Thunderstore.md" /><Content Include="CHANGELOG.md" />
   </ItemGroup>

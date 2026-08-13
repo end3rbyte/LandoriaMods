@@ -6,6 +6,7 @@ namespace Landoria.SealedTombstone
     {
         internal long RequesterPlayerId { get; set; }
         internal string RequesterName { get; set; }
+        internal long OwnerPlayerId { get; set; }
         internal ZDOID TombstoneId { get; set; }
         internal DateTime CreatedAt { get; set; }
     }

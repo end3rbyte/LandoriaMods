@@ -60,8 +60,11 @@
     </ItemGroup>
     <ItemGroup>
         <Compile Include="PendingRequest.cs"/>
+        <Compile Include="RecentAttackerPolicy.cs"/>
         <Compile Include="RecentAttackers.cs"/>
+        <Compile Include="TombstoneAccessPolicy.cs"/>
         <Compile Include="TombstoneAccess.cs"/>
+        <Compile Include="TombstoneDecisionPolicy.cs"/>
         <Compile Include="SealedTombstonePlugin.cs"/>
         <Compile Include="TombstonePatches.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
