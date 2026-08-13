@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.14
+
+- Replace FlyCommand with HammerFreedom.
+
 ## 1.0.13
 
 - Update bundled CharacterVault to version 1.0.11.

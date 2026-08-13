@@ -1,8 +1,8 @@
 {
-  "name": "FlyCommand",
-  "version_number": "1.0.3",
+  "name": "HammerFreedom",
+  "version_number": "1.0.0",
   "website_url": "https://valheim.landoria-gaming.com/",
-  "description": "Allows server-authorized vanilla flight in configured worlds without debug mode or administrator access.",
+  "description": "Adds server-authorized flight, fall immunity, and unlimited stamina to Hammer worlds.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333"
   ],

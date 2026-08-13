@@ -1,6 +1,7 @@
-# FlyCommand
+# HammerFreedom
 
-Allows Valheim's native player flight behavior in authorized worlds without enabling debug mode, developer commands, or administrator access.
+Adds creative freedoms to authorized Hammer worlds without enabling debug mode,
+developer commands, or administrator access.
 
 ## Valheim compatibility
 
@@ -12,11 +13,20 @@ Allows Valheim's native player flight behavior in authorized worlds without enab
 ## Authorization
 
 - The client starts denied and explicitly requests authorization from the connected server.
-- The server controls availability with `--flycommand true|false`; the default is `true`.
-- The server authorizes flight only while both `NoBuildCost` and `PassiveMobs` are active.
-- No response, an explicit denial, a modifier change, or a server change immediately disables flight.
+- The server controls flight with `--hammerfreedom-fly true|false`.
+- The server controls fall damage immunity with `--hammerfreedom-fall-damage-immunity true|false`.
+- The server controls unlimited stamina with `--hammerfreedom-unlimited-stamina true|false`.
+- Each switch defaults to `true`.
+- The server authorizes capabilities only while both `NoBuildCost` and `PassiveMobs` are active.
+- No response, an explicit denial, a modifier change, or a server change immediately removes every capability.
 - The `fly` command is hidden and invalid until the server explicitly authorizes it.
 - The mod is required on the server and every participating client.
+
+## Features
+
+- Any fall deals zero damage when fall damage immunity is authorized.
+- No action consumes stamina when unlimited stamina is authorized, including
+  running, building, gardening, combat, jumping, swimming, and dodging.
 
 ## Controls
 
@@ -35,7 +45,7 @@ The `Z` shortcut is fixed to match Valheim's native debug-flight control.
 
 | Client required | Server required |
 |---|---|
-| Yes | Yes, wherever flight is authorized |
+| Yes | Yes, wherever HammerFreedom is authorized |
 
 ## Contact
 
