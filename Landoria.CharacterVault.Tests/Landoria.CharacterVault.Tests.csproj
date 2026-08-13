@@ -16,7 +16,6 @@
     <Compile Include="../Landoria.CharacterVault/CharacterAdmissionPolicy.cs" Link="CharacterAdmissionPolicy.cs" />
     <Compile Include="../Landoria.CharacterVault/CharacterRejectionMessageState.cs" Link="CharacterRejectionMessageState.cs" />
     <Compile Include="../Landoria.CharacterVault/ClientSaveLifecycle.cs" Link="ClientSaveLifecycle.cs" />
-    <Compile Include="../Landoria.CharacterVault/DocumentedSaveEventPolicy.cs" Link="DocumentedSaveEventPolicy.cs" />
     <Compile Include="../Landoria.CharacterVault/SaveStatusLifecycle.cs" Link="SaveStatusLifecycle.cs" />
     <Compile Include="../Landoria.CharacterVault/KickSavePolicy.cs" Link="KickSavePolicy.cs" />
     <Compile Include="../Landoria.CharacterVault/VoluntaryExitSavePolicy.cs" Link="VoluntaryExitSavePolicy.cs" />

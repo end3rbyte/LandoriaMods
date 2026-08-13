@@ -21,7 +21,6 @@ namespace Landoria.CharacterVault
         internal const string SaveRequestRpc = "CharacterVault_SaveRequest_v1";
         internal const string SaveAckRpc = "CharacterVault_SaveAck_v1";
         internal const string CommitAckRpc = "CharacterVault_CommitAck_v1";
-        private const int ChunkSize = 65536;
         private const int MaximumProfileBytes = 64 * 1024 * 1024;
         private readonly Dictionary<ZRpc, VaultSession> _sessions = new Dictionary<ZRpc, VaultSession>();
         private readonly Dictionary<ZRpc, IncomingTransfer> _uploads = new Dictionary<ZRpc, IncomingTransfer>();
@@ -259,23 +258,12 @@ namespace Landoria.CharacterVault
                 return;
             }
 
-            if (!_clientLifecycle.RecordSpawn(player == Player.m_localPlayer))
-            {
-                return;
-            }
-
-            foreach (StartingItem item in _serverStartingItems)
-            {
-                bool granted = StartingItemGrantPolicy.Grant(item.Prefab, item.Quantity,
-                    FindItem, (prefab, quantity) =>
-                        Player.m_localPlayer.GetInventory().AddItem(prefab, quantity));
-                if (!granted)
-                {
-                    CharacterVaultPlugin.Log.LogError($"Could not grant starting item {item.Prefab}:{item.Quantity}.");
-                }
-            }
-
-            Game.instance.SavePlayerProfile(true);
+            StartingItemGrantPolicy.ApplyEnrollment(_clientLifecycle, true,
+                _serverStartingItems, FindItem, (prefab, quantity) =>
+                    player.GetInventory().AddItem(prefab, quantity),
+                () => Game.instance.SavePlayerProfile(true), item =>
+                    CharacterVaultPlugin.Log.LogError(
+                        $"Could not grant starting item {item.Prefab}:{item.Quantity}."));
         }
 
         internal void ApplyPendingProfile(ref PlayerProfile profile)
@@ -362,10 +350,10 @@ namespace Landoria.CharacterVault
         {
             string transferId = Guid.NewGuid().ToString("N");
             string hash = VaultStorage.Hash(data);
-            rpc.Invoke(DownloadBeginRpc, BeginPackage(transferId, data.Length, hash));
-            for (int offset = 0; offset < data.Length; offset += ChunkSize)
+            rpc.Invoke(DownloadBeginRpc, ProfileTransferProtocol.Begin(transferId, data.Length, hash));
+            for (int offset = 0; offset < data.Length; offset += ProfileTransferProtocol.ChunkSize)
             {
-                rpc.Invoke(DownloadChunkRpc, ChunkPackage(transferId, data, offset));
+                rpc.Invoke(DownloadChunkRpc, ProfileTransferProtocol.Chunk(transferId, data, offset));
             }
 
             ZPackage complete = new ZPackage();
@@ -468,13 +456,14 @@ namespace Landoria.CharacterVault
             bool sent = false;
             try
             {
-                ZPackage begin = BeginPackage(transferId, data.Length, VaultStorage.Hash(data));
+                ZPackage begin = ProfileTransferProtocol.Begin(
+                    transferId, data.Length, VaultStorage.Hash(data));
                 begin.Write(requestId);
                 begin.Write(profile.GetPlayerID());
                 rpc.Invoke(UploadBeginRpc, begin);
-                for (int offset = 0; offset < data.Length; offset += ChunkSize)
+                for (int offset = 0; offset < data.Length; offset += ProfileTransferProtocol.ChunkSize)
                 {
-                    rpc.Invoke(UploadChunkRpc, ChunkPackage(transferId, data, offset));
+                    rpc.Invoke(UploadChunkRpc, ProfileTransferProtocol.Chunk(transferId, data, offset));
                     yield return null;
                 }
 
@@ -531,7 +520,7 @@ namespace Landoria.CharacterVault
 
             _uploads.Remove(rpc);
             byte[] data = transfer.Complete(transferId);
-            ValidateProfile(session, data);
+            ProfileUploadValidator.Validate(session, data);
             if (!SaveAcknowledgementPolicy.CanAcknowledge(session.State))
             {
                 CharacterVaultPlugin.Log.LogWarning(
@@ -631,29 +620,6 @@ namespace Landoria.CharacterVault
             CharacterVaultPlugin.ServerDisconnects?.RecordCommitted(rpc, requestId);
         }
 
-        private static void ValidateProfile(VaultSession session, byte[] data)
-        {
-            string filename = "character_vault_validation_" + Guid.NewGuid().ToString("N");
-            FileHelpers.FileSource source = SaveApiCompatibility.LocalSource;
-            string path = SaveApiCompatibility.GetCharacterPath(source, filename);
-            Directory.CreateDirectory(Path.GetDirectoryName(path));
-            File.WriteAllBytes(path, data);
-            try
-            {
-                PlayerProfile profile = new PlayerProfile(filename, source);
-                if (!profile.Load() || profile.GetPlayerID() != session.CharacterId ||
-                    !string.Equals(profile.GetName(), session.Name, StringComparison.Ordinal))
-                {
-                    throw new InvalidDataException("The uploaded profile identity is invalid.");
-                }
-            }
-            finally
-            {
-                File.Delete(path);
-                SaveApiCompatibility.InvalidateCharacterCache();
-            }
-        }
-
         private bool TryGetVerifiedSession(ZRpc rpc, out VaultSession session)
         {
             session = null;
@@ -685,27 +651,6 @@ namespace Landoria.CharacterVault
             }
         }
 
-        private static ZPackage BeginPackage(string transferId, int length, string hash)
-        {
-            ZPackage package = new ZPackage();
-            package.Write(transferId);
-            package.Write(length);
-            package.Write(hash);
-            return package;
-        }
-
-        private static ZPackage ChunkPackage(string transferId, byte[] data, int offset)
-        {
-            int length = Math.Min(ChunkSize, data.Length - offset);
-            byte[] chunk = new byte[length];
-            Buffer.BlockCopy(data, offset, chunk, 0, length);
-            ZPackage package = new ZPackage();
-            package.Write(transferId);
-            package.Write(offset);
-            package.Write(chunk);
-            return package;
-        }
-
         private static string NormalizeAccount(string host)
         {
             return host.All(char.IsDigit) ? "Steam_" + host : host;
@@ -733,100 +678,4 @@ namespace Landoria.CharacterVault
         }
     }
 
-    internal sealed class VaultSession
-    {
-        internal VaultSession(string accountId, long characterId, string name, bool newCharacter)
-        {
-            AccountId = accountId;
-            CharacterId = characterId;
-            Name = name;
-            NewCharacter = newCharacter;
-        }
-
-        internal string AccountId { get; }
-        internal long CharacterId { get; }
-        internal string Name { get; }
-        internal bool NewCharacter { get; }
-        internal ServerProfileSessionState State { get; } = new ServerProfileSessionState();
-        internal bool Enrolling { get; set; }
-    }
-
-    internal sealed class PendingCommit
-    {
-        internal PendingCommit(ZRpc rpc, VaultSession session, string requestId, byte[] data)
-        {
-            Rpc = rpc;
-            Session = session;
-            RequestId = requestId;
-            Data = data;
-        }
-
-        internal byte[] Data { get; }
-        internal ZRpc Rpc { get; }
-        internal string RequestId { get; }
-        internal VaultSession Session { get; }
-    }
-
-    internal sealed class IncomingTransfer
-    {
-        private readonly byte[] _data;
-        private readonly bool[] _blocks;
-        private readonly string _hash;
-        private readonly string _transferId;
-
-        private IncomingTransfer(string transferId, int length, string hash)
-        {
-            _transferId = transferId;
-            _hash = hash;
-            _data = new byte[length];
-            _blocks = new bool[(length + 65535) / 65536];
-        }
-
-        internal string RequestId { get; set; }
-
-        internal static IncomingTransfer Create(ZPackage package, int maximumLength)
-        {
-            string id = package.ReadString();
-            int length = package.ReadInt();
-            string hash = package.ReadString();
-            if (string.IsNullOrWhiteSpace(id) || length <= 0 || length > maximumLength || hash.Length != 64)
-            {
-                throw new InvalidDataException("The profile transfer header is invalid.");
-            }
-
-            return new IncomingTransfer(id, length, hash);
-        }
-
-        internal void Add(ZPackage package)
-        {
-            string id = package.ReadString();
-            int offset = package.ReadInt();
-            byte[] chunk = package.ReadByteArray();
-            if (id != _transferId || offset < 0 || offset % 65536 != 0 ||
-                chunk.Length == 0 || chunk.Length > 65536 || offset + chunk.Length > _data.Length)
-            {
-                throw new InvalidDataException("The profile transfer chunk is invalid.");
-            }
-
-            int block = offset / 65536;
-            if (_blocks[block])
-            {
-                throw new InvalidDataException("The profile transfer contains a duplicate chunk.");
-            }
-
-            Buffer.BlockCopy(chunk, 0, _data, offset, chunk.Length);
-            _blocks[block] = true;
-        }
-
-        internal byte[] Complete(string transferId)
-        {
-            if (transferId != _transferId || _blocks.Any(block => !block) ||
-                !string.Equals(VaultStorage.Hash(_data), _hash, StringComparison.OrdinalIgnoreCase))
-            {
-                throw new InvalidDataException("The profile transfer is incomplete or corrupted.");
-            }
-
-            return _data;
-        }
-    }
 }

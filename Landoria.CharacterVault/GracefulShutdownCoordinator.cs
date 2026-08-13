@@ -12,8 +12,7 @@ namespace Landoria.CharacterVault
     {
         private const string ExitFilePath = "character_vault.drp";
         private const int MaximumConcurrentSaves = 4;
-        private const int ShutdownTimeoutSeconds =
-            DocumentedSaveEventPolicy.GracefulShutdownTimeoutSeconds;
+        private const int ShutdownTimeoutSeconds = 90;
         private readonly HashSet<ZNetPeer> _pendingPeers = new HashSet<ZNetPeer>();
         private readonly HashSet<ZNetPeer> _requestedPeers = new HashSet<ZNetPeer>();
         private readonly Queue<ZNetPeer> _queuedPeers = new Queue<ZNetPeer>();
