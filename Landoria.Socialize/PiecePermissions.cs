@@ -256,7 +256,8 @@ namespace Landoria.Socialize
                 Character attacker = hit.GetAttacker();
                 if (attacker is Player player)
                 {
-                    return CanAccess(player.GetPlayerID(), piece);
+                    return PieceInteractionPolicy.CanDamage(
+                        CanAccess(player.GetPlayerID(), piece));
                 }
                 if (attacker != null)
                 {
@@ -264,7 +265,7 @@ namespace Landoria.Socialize
                 }
                 long playerId = ResolvePeerPlayer(hit.m_attacker.UserID);
                 return playerId != 0L
-                    ? CanAccess(playerId, piece)
+                    ? PieceInteractionPolicy.CanDamage(CanAccess(playerId, piece))
                     : DecayProtection.GetActivityMultiplier(piece) > 0f;
             }
         }
