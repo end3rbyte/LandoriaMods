@@ -167,6 +167,16 @@ namespace Landoria.CharacterVault
         }
     }
 
+    [HarmonyPatch(typeof(Game), "Shutdown")]
+    internal static class CharacterVaultDirectShutdownPatch
+    {
+        private static bool Prefix(Game __instance, bool saveWorld)
+        {
+            return CharacterVaultPlugin.DisconnectCoordinator?.AllowShutdown(
+                __instance, saveWorld) ?? true;
+        }
+    }
+
     [HarmonyPatch(typeof(Menu), "QuitGame")]
     internal static class CharacterVaultMenuQuitPatch
     {
