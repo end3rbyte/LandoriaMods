@@ -26,6 +26,8 @@ disconnect logs distinguish profile acceptance from the later durable commit.
 - Writes every save in the instance `characters_local` directory as
   `Steam_<id>_<character>.fch` and simultaneously archives it under
   `characters_local/backups/Steam_<id>_<character>_<UTC timestamp>.fch`.
+- Retains at most 15 backups per character: the 5 most recent saves and the
+  earliest save from each of the next 10 distinct UTC days.
 - Ignores the former hashed `CharacterVault/accounts` storage without migrating or deleting it.
 - Accepts a new character only when it was created during the current game session.
 - Requires matching CharacterVault DLLs on client and server through ModSentry.
