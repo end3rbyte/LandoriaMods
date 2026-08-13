@@ -32,8 +32,10 @@ namespace Landoria.Socialize
                 return;
             }
             ZPackage package = new ZPackage();
-            package.Write(GroupState.Groups.Count);
-            foreach (SocialGroup group in GroupState.Groups.Values)
+            List<PersistedGroup> groups = GroupPersistencePolicy.Capture(
+                GroupState.Groups.Values);
+            package.Write(groups.Count);
+            foreach (PersistedGroup group in groups)
             {
                 WriteGroup(package, group);
             }
@@ -111,27 +113,29 @@ namespace Landoria.Socialize
         private static void ReadGroups(ZPackage package)
         {
             int count = package.ReadInt();
+            List<PersistedGroup> groups = new List<PersistedGroup>();
             for (int index = 0; index < count; index++)
             {
-                SocialGroup group = ReadGroup(package);
-                GroupState.Groups[group.Id] = group;
+                groups.Add(ReadGroup(package));
             }
+            GroupPersistencePolicy.Restore(
+                groups, GroupState.Groups, GroupState.PlayerGroups);
         }
 
-        private static SocialGroup ReadGroup(ZPackage package)
+        private static PersistedGroup ReadGroup(ZPackage package)
         {
-            SocialGroup group = new SocialGroup { Id = package.ReadInt(), Leader = package.ReadLong() };
+            PersistedGroup group = new PersistedGroup
+                { Id = package.ReadInt(), Leader = package.ReadLong() };
             int count = package.ReadInt();
             for (int index = 0; index < count; index++)
             {
                 long playerId = package.ReadLong();
                 group.Members[playerId] = package.ReadString();
-                GroupState.PlayerGroups[playerId] = group.Id;
             }
             return group;
         }
 
-        private static void WriteGroup(ZPackage package, SocialGroup group)
+        private static void WriteGroup(ZPackage package, PersistedGroup group)
         {
             package.Write(group.Id);
             package.Write(group.Leader);

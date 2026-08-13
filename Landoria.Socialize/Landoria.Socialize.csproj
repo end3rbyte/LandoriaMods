@@ -71,14 +71,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Landoria.SharedLib\Landoria.SharedLib.csproj">
+      <Private>false</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="ChatChannelState.cs" />
+    <Compile Include="ChatBehaviorPolicy.cs" />
     <Compile Include="ChatCommandParser.cs" />
     <Compile Include="ChatCommands.cs" />
     <Compile Include="ChatFormatting.cs" />
+    <Compile Include="ChatFormattingPolicy.cs" />
     <Compile Include="ChatPatches.cs" />
     <Compile Include="CreatureProtection.cs" />
     <Compile Include="CreatureProtectionPolicy.cs" />
     <Compile Include="CreatorActivityPolicy.cs" />
+    <Compile Include="CreatorDisplayPolicy.cs" />
     <Compile Include="DecayEffectPolicy.cs" />
     <Compile Include="DecayProtection.cs" />
     <Compile Include="GroupCommands.cs" />
@@ -86,6 +94,8 @@
     <Compile Include="GroupAcceptancePolicy.cs" />
     <Compile Include="GroupInfoPolicy.cs" />
     <Compile Include="GroupInvitationPolicy.cs" />
+    <Compile Include="GroupLifecyclePolicy.cs" />
+    <Compile Include="GroupPersistencePolicy.cs" />
     <Compile Include="GroupPromotionPolicy.cs" />
     <Compile Include="GroupModels.cs" />
     <Compile Include="GroupPolicy.cs" />
@@ -93,8 +103,10 @@
     <Compile Include="GroupRpc.cs" />
     <Compile Include="GroupService.cs" />
     <Compile Include="GroupStorage.cs" />
+    <Compile Include="InvitationPresentationPolicy.cs" />
     <Compile Include="RpcRegistry.cs" />
     <Compile Include="MapPrivacyPatches.cs" />
+    <Compile Include="MapSharingPolicy.cs" />
     <Compile Include="PiecePermissions.cs" />
     <Compile Include="PieceOwnershipDisplay.cs" />
     <Compile Include="PieceAccessPolicy.cs" />

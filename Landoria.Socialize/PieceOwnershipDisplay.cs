@@ -5,19 +5,15 @@ namespace Landoria.Socialize
 {
     internal static class PieceOwnershipDisplay
     {
-        private const string UnknownCreator = "Unknown creator";
-
         private static string GetCreatorName(Piece piece)
         {
             long creator = piece.GetCreator();
             ZDO zdo = piece.GetComponent<ZNetView>()?.GetZDO();
             string name = zdo?.GetString(ZDOVars.s_creatorName) ?? string.Empty;
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                name = PiecePermissions.GetKnownPlayerName(creator);
-            }
-            return string.IsNullOrWhiteSpace(name)
-                ? UnknownCreator
+            name = CreatorDisplayPolicy.ResolveName(
+                name, PiecePermissions.GetKnownPlayerName(creator));
+            return name == CreatorDisplayPolicy.UnknownCreator
+                ? name
                 : CensorShittyWords.FilterUGC(name, UGCType.CharacterName, creator);
         }
 
@@ -48,8 +44,8 @@ namespace Landoria.Socialize
                     return;
                 }
                 string creator = GetCreatorName(piece);
-                string prefix = string.IsNullOrEmpty(___m_hoverName.text) ? "" : "\n";
-                ___m_hoverName.text += prefix + "<color=orange>Created by " + creator + "</color>";
+                ___m_hoverName.text = CreatorDisplayPolicy.AppendCreator(
+                    ___m_hoverName.text, creator);
             }
         }
     }

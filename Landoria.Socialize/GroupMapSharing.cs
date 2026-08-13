@@ -43,11 +43,19 @@ namespace Landoria.Socialize
 
         internal static void AddGroupMembers(List<ZNet.PlayerInfo> players)
         {
+            HashSet<long> visiblePlayerIds = new HashSet<long>();
+            foreach (ZNet.PlayerInfo player in players)
+            {
+                visiblePlayerIds.Add(player.m_characterID.UserID);
+            }
+            long localPlayerId = GetLocalPlayerId();
             foreach (KeyValuePair<long, ZNet.PlayerInfo> member in Players)
             {
-                if (!IsLocalPlayer(member.Key) && !Contains(players, member.Key))
+                if (MapSharingPolicy.ShouldAddGroupMember(
+                    member.Key, localPlayerId, visiblePlayerIds))
                 {
                     players.Add(member.Value);
+                    visiblePlayerIds.Add(member.Key);
                 }
             }
         }
@@ -83,19 +91,9 @@ namespace Landoria.Socialize
             return false;
         }
 
-        private static bool Contains(List<ZNet.PlayerInfo> players, long playerId)
+        private static long GetLocalPlayerId()
         {
-            foreach (ZNet.PlayerInfo player in players)
-            {
-                if (player.m_characterID.UserID == playerId) return true;
-            }
-            return false;
-        }
-
-        private static bool IsLocalPlayer(long playerId)
-        {
-            return Game.instance != null
-                   && Game.instance.GetPlayerProfile().GetPlayerID() == playerId;
+            return Game.instance != null ? Game.instance.GetPlayerProfile().GetPlayerID() : 0L;
         }
     }
 }

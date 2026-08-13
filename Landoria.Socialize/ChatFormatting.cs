@@ -5,33 +5,26 @@ namespace Landoria.Socialize
 {
     internal static class ChatFormatting
     {
-        private const string GroupColor = "#4A90E2";
-        private const string PrivateColor = "#2FAE5F";
-        private const string ShoutColor = "#FFFF00";
-
         internal static string FormatGroup(string sender, string message)
         {
-            return "<color=" + GroupColor + ">" + sender + ": " + message + "</color>";
+            return ChatFormattingPolicy.FormatGroup(sender, message);
         }
 
         internal static void AddPrivate(Terminal terminal, string user, string text, bool timestamp)
         {
-            terminal.AddString(GetTimestamp(timestamp) + "<color=" + PrivateColor + ">" +
-                               user + FormatPrivateText(text) + "</color>");
+            terminal.AddString(GetTimestamp(timestamp) +
+                               ChatFormattingPolicy.FormatPrivate(user, text));
         }
 
         internal static void AddShout(Terminal terminal, string user, string text, bool timestamp)
         {
-            terminal.AddString(GetTimestamp(timestamp) + "<color=orange>" + user +
-                               "</color>: <color=" + ShoutColor + ">" + text + "</color>");
+            terminal.AddString(GetTimestamp(timestamp) +
+                               ChatFormattingPolicy.FormatShout(user, text));
         }
 
         internal static void AddPing(Terminal terminal, string user, string target, string message)
         {
-            string recipient = string.IsNullOrEmpty(target) ? ": " : " to " + target + ": ";
-            terminal.AddString("<color=" + PrivateColor + ">" + user + recipient +
-                               "</color><color=" + ShoutColor + ">((Ping))</color>" +
-                               "<color=" + PrivateColor + "> " + message + "</color>");
+            terminal.AddString(ChatFormattingPolicy.FormatPing(user, target, message));
         }
 
         internal static string GetPlayerName(PlatformUserID user)
@@ -39,13 +32,6 @@ namespace Landoria.Socialize
             return ZNet.TryGetPlayerByPlatformUserID(user, out ZNet.PlayerInfo info)
                 ? info.m_name
                 : user.ToString();
-        }
-
-        private static string FormatPrivateText(string text)
-        {
-            return (text ?? "").StartsWith("to ", StringComparison.OrdinalIgnoreCase)
-                ? " " + text
-                : ": " + text;
         }
 
         private static string GetTimestamp(bool enabled)
