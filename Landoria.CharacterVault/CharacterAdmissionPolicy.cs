@@ -1,0 +1,48 @@
+namespace Landoria.CharacterVault
+{
+    internal enum CharacterAdmission
+    {
+        ExistingProfile,
+        NewEnrollment,
+        RejectUnregisteredProfile,
+        RejectAdditionalCharacter,
+        RejectConcurrentEnrollment
+    }
+
+    internal static class CharacterAdmissionPolicy
+    {
+        internal static CharacterAdmission Decide(bool hasStoredProfile, bool createdThisSession,
+            bool allowMultipleCharacters, bool accountHasProfile, bool enrollmentAvailable)
+        {
+            if (hasStoredProfile)
+            {
+                return CharacterAdmission.ExistingProfile;
+            }
+            if (!createdThisSession)
+            {
+                return CharacterAdmission.RejectUnregisteredProfile;
+            }
+            if (!allowMultipleCharacters && accountHasProfile)
+            {
+                return CharacterAdmission.RejectAdditionalCharacter;
+            }
+            return enrollmentAvailable ? CharacterAdmission.NewEnrollment
+                : CharacterAdmission.RejectConcurrentEnrollment;
+        }
+    }
+
+    internal sealed class ServerProfileSessionState
+    {
+        internal bool CanSave => Verified && Admitted && Permitted;
+        internal bool PermissionChecked { get; private set; }
+        internal bool Verified { get; set; }
+        internal bool Admitted { get; set; }
+        internal bool Permitted { get; private set; }
+
+        internal void RecordPermission(bool permitted)
+        {
+            PermissionChecked = true;
+            Permitted = permitted;
+        }
+    }
+}

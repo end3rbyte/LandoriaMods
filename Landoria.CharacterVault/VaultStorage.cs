@@ -17,16 +17,11 @@ namespace Landoria.CharacterVault
             return data != null;
         }
 
-        internal bool CanEnroll(string accountId, string name, bool allowMultiple)
+        internal bool HasProfile(string accountId)
         {
-            if (allowMultiple || File.Exists(ProfilePath(accountId, name)))
-            {
-                return true;
-            }
-
             string prefix = SafeSegment(accountId) + "_";
             string root = StorageRoot();
-            return !Directory.Exists(root) || !Directory
+            return Directory.Exists(root) && Directory
                 .GetFiles(root, prefix + "*.fch", SearchOption.TopDirectoryOnly).Any();
         }
 

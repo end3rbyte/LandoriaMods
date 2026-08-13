@@ -79,21 +79,31 @@ namespace Landoria.CharacterVault
                 return false;
             }
 
-            if (session.Verified)
+            if (session.State.Verified)
             {
-                return session.Admitted;
+                return session.State.Admitted;
             }
 
-            session.Verified = true;
+            session.State.Verified = true;
             if (_storage.TryRead(session.AccountId, session.Name, out byte[] data))
             {
                 SendDownload(rpc, session, data);
-                session.Admitted = true;
+                session.State.Admitted = true;
                 return true;
             }
 
-            session.Admitted = AdmitEnrollment(rpc, session, session.NewCharacter);
-            return session.Admitted;
+            session.State.Admitted = AdmitEnrollment(rpc, session);
+            return session.State.Admitted;
+        }
+
+        internal void RecordPermission(string hostName, bool permitted)
+        {
+            foreach (VaultSession session in _sessions.Values.Where(candidate =>
+                string.Equals(candidate.AccountId, NormalizeAccount(hostName),
+                    StringComparison.Ordinal)))
+            {
+                session.State.RecordPermission(permitted);
+            }
         }
 
         internal void Remove(ZNetPeer peer)
@@ -129,7 +139,7 @@ namespace Landoria.CharacterVault
 
         internal void RequestSave(ZNetPeer peer, string requestId)
         {
-            if (peer?.m_rpc != null && _sessions.ContainsKey(peer.m_rpc))
+            if (peer?.m_rpc != null && CanSave(_sessions, peer.m_rpc))
             {
                 peer.m_rpc.Invoke(SaveRequestRpc, requestId);
             }
@@ -137,7 +147,22 @@ namespace Landoria.CharacterVault
 
         internal bool CanRequestSave(ZNetPeer peer)
         {
-            return peer?.m_rpc != null && _sessions.ContainsKey(peer.m_rpc);
+            return peer?.m_rpc != null && CanSave(_sessions, peer.m_rpc);
+        }
+
+        internal KickSaveEligibility GetKickSaveEligibility(ZNetPeer peer)
+        {
+            if (peer?.m_rpc == null || !_sessions.TryGetValue(peer.m_rpc, out VaultSession session))
+            {
+                return KickSaveEligibility.Unmanaged;
+            }
+            if (session.State.CanSave)
+            {
+                return KickSaveEligibility.SaveRequired;
+            }
+            return session.State.Verified && session.State.Admitted &&
+                session.State.PermissionChecked && !session.State.Permitted
+                ? KickSaveEligibility.Rejected : KickSaveEligibility.Unmanaged;
         }
 
         internal bool SaveManualClientProfile()
@@ -300,14 +325,21 @@ namespace Landoria.CharacterVault
             _sessions[rpc] = new VaultSession(accountId, characterId, name, newCharacter);
         }
 
-        private bool AdmitEnrollment(ZRpc rpc, VaultSession session, bool newCharacter)
+        private bool AdmitEnrollment(ZRpc rpc, VaultSession session)
         {
-            if (!newCharacter || !_storage.CanEnroll(session.AccountId, session.Name,
-                CharacterVaultPlugin.Settings.AllowMultipleCharacters) || !ReserveEnrollment(rpc, session))
+            bool allowMultiple = CharacterVaultPlugin.Settings.AllowMultipleCharacters;
+            CharacterAdmission admission = CharacterAdmissionPolicy.Decide(false,
+                session.NewCharacter, allowMultiple, _storage.HasProfile(session.AccountId), true);
+            if (admission == CharacterAdmission.NewEnrollment && !ReserveEnrollment(rpc, session))
+            {
+                admission = CharacterAdmission.RejectConcurrentEnrollment;
+            }
+            if (admission != CharacterAdmission.NewEnrollment)
             {
                 _sessions.Remove(rpc);
-                Reject(rpc, newCharacter ? "This Steam account already has a character."
-                    : "Create a new character before joining this server.");
+                Reject(rpc, admission == CharacterAdmission.RejectUnregisteredProfile
+                    ? "Create a new character before joining this server."
+                    : "This Steam account already has a character.");
                 return false;
             }
 
@@ -616,7 +648,7 @@ namespace Landoria.CharacterVault
         private bool TryGetVerifiedSession(ZRpc rpc, out VaultSession session)
         {
             session = null;
-            return _sessions.TryGetValue(rpc, out session) && session.Verified;
+            return _sessions.TryGetValue(rpc, out session) && session.State.CanSave;
         }
 
         private bool ReserveEnrollment(ZRpc rpc, VaultSession session)
@@ -680,6 +712,11 @@ namespace Landoria.CharacterVault
             return peer?.m_rpc != null && peer.IsReady() && peer.m_socket?.IsConnected() == true;
         }
 
+        private static bool CanSave(Dictionary<ZRpc, VaultSession> sessions, ZRpc rpc)
+        {
+            return sessions.TryGetValue(rpc, out VaultSession session) && session.State.CanSave;
+        }
+
         private static GameObject FindItem(string name)
         {
             return ObjectDB.instance?.m_items.FirstOrDefault(item =>
@@ -701,8 +738,7 @@ namespace Landoria.CharacterVault
         internal long CharacterId { get; }
         internal string Name { get; }
         internal bool NewCharacter { get; }
-        internal bool Verified { get; set; }
-        internal bool Admitted { get; set; }
+        internal ServerProfileSessionState State { get; } = new ServerProfileSessionState();
         internal bool Enrolling { get; set; }
     }
 
