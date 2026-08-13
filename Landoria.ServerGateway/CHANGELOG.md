@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.0.4
 
 - Remove empty draft versions (#124)
 - Simplify server-only mod changelogs
