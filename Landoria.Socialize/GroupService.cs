@@ -132,28 +132,23 @@ namespace Landoria.Socialize
                 SendMessage(sender, targetDecision.Message);
                 return;
             }
-            if (!CanInvite(sender, inviter, target))
+            SocialGroup inviterGroup = GroupState.GetGroup(inviter);
+            GroupDecision decision = GroupInvitationPolicy.TryInvite(
+                inviterGroup, inviter, target, GroupState.PlayerGroups.ContainsKey(target),
+                GroupState.Invitations);
+            if (!decision.Allowed)
             {
+                if (decision.Message != null)
+                {
+                    SendMessage(sender, decision.Message);
+                }
                 return;
             }
-            GroupState.Invitations[target] = inviter;
             ZPackage response = NewResponse("invite");
             response.Write(inviter.ToString());
             response.Write(inviterName);
             ZRoutedRpc.instance.InvokeRoutedRPC(targetPeer, ResponseRpc, response);
             SendMessage(sender, "Group invitation sent.");
-        }
-
-        private static bool CanInvite(long sender, long inviter, long target)
-        {
-            SocialGroup inviterGroup = GroupState.GetGroup(inviter);
-            GroupDecision decision = GroupPolicy.CanInvite(inviterGroup, inviter, target,
-                GroupState.PlayerGroups.ContainsKey(target));
-            if (!decision.Allowed && decision.Message != null)
-            {
-                SendMessage(sender, decision.Message);
-            }
-            return decision.Allowed;
         }
 
         private static void Accept(long sender, long playerId, string playerName, string inviterText)
