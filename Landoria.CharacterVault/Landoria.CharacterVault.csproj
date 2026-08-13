@@ -44,6 +44,7 @@
     <Compile Include="ProfileFile.cs" />
     <Compile Include="SaveApiCompatibility.cs" />
     <Compile Include="ProfileTransferService.cs" />
+    <Compile Include="BackupRetention.cs" />
     <Compile Include="VaultStorage.cs" />
     <Compile Include="GracefulShutdownCoordinator.cs" />
     <Compile Include="VoluntaryDisconnectCoordinator.cs" />

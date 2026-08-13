@@ -48,6 +48,7 @@ namespace Landoria.CharacterVault
             string timestamp = DateTime.UtcNow.ToString(
                 "yyyyMMdd'T'HHmmssfffffff'Z'", CultureInfo.InvariantCulture);
             WriteDurably(Path.Combine(directory, $"{profileName}_{timestamp}.fch"), data);
+            BackupRetention.Apply(directory, profileName);
         }
 
         private static string ProfileFileName(string accountId, string name)
