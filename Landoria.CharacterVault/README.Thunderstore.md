@@ -23,8 +23,10 @@ your character enters the world.
 Whenever your client starts sending a character save to the server,
 `Saving character...` appears in white below the small minimap. It changes to
 `Saving character......` when the server accepts the upload, then to
-`Character saved` after the durable write. Each message remains visible for at
-most three seconds unless the next status replaces it.
+`Character saved` after the durable write. The two saving states remain visible
+for at most 30 seconds. If no commit confirmation arrives within 20 seconds of
+the receipt acknowledgement, `Failed` replaces the status for three seconds.
+`Character saved` also remains visible for at most three seconds.
 The server also sends a separate confirmation after the profile and its backup
 are written durably. The client records that confirmation in its log without
 blocking gameplay or disconnection while waiting for it.
