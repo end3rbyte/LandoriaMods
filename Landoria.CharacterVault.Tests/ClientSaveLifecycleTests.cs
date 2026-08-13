@@ -4,6 +4,7 @@ namespace Landoria.CharacterVault;
 
 public sealed class ClientSaveLifecycleTests
 {
+    // Verifies that a disconnected or inactive client cannot upload a profile.
     [Fact]
     public void InactiveClientCannotUpload()
     {
@@ -15,6 +16,7 @@ public sealed class ClientSaveLifecycleTests
         Assert.False(lifecycle.CanUpload);
     }
 
+    // Verifies that loading an existing profile does not permit uploads before local spawn.
     [Fact]
     public void ExistingCharacterCannotUploadBeforeLocalSpawn()
     {
@@ -26,6 +28,7 @@ public sealed class ClientSaveLifecycleTests
         Assert.False(lifecycle.CanUpload);
     }
 
+    // Verifies that another player's spawn cannot unlock the local profile upload gate.
     [Fact]
     public void RemoteSpawnDoesNotEnableUploads()
     {
@@ -38,6 +41,7 @@ public sealed class ClientSaveLifecycleTests
         Assert.False(lifecycle.CanUpload);
     }
 
+    // Verifies that the local spawn unlocks uploads for an existing server profile.
     [Fact]
     public void ExistingCharacterCanUploadAfterLocalSpawn()
     {
@@ -50,6 +54,7 @@ public sealed class ClientSaveLifecycleTests
         Assert.True(lifecycle.CanUpload);
     }
 
+    // Verifies that a new character requests exactly one enrollment save after local spawn.
     [Fact]
     public void NewCharacterRequestsOneEnrollmentSaveAfterLocalSpawn()
     {
@@ -64,6 +69,7 @@ public sealed class ClientSaveLifecycleTests
         Assert.False(lifecycle.RecordSpawn(isLocalPlayer: true));
     }
 
+    // Verifies that reconnecting closes the upload gate until the next local spawn.
     [Fact]
     public void ResetBlocksUploadsUntilTheNextLocalSpawn()
     {
@@ -77,6 +83,7 @@ public sealed class ClientSaveLifecycleTests
         Assert.False(lifecycle.CanUpload);
     }
 
+    // Verifies that disconnecting cancels an enrollment save that has not started.
     [Fact]
     public void ResetCancelsPendingEnrollmentSave()
     {
@@ -90,6 +97,7 @@ public sealed class ClientSaveLifecycleTests
         Assert.True(lifecycle.CanUpload);
     }
 
+    // Verifies that duplicate existing-profile activation cannot mimic enrollment.
     [Fact]
     public void RepeatedActivationDoesNotCreateEnrollmentSave()
     {

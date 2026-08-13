@@ -4,6 +4,7 @@ namespace Landoria.CharacterVault;
 
 public sealed class DocumentedSaveEventPolicyTests
 {
+    // Verifies the save contract documented for every Thunderstore event-table row.
     [Theory]
     [InlineData(0, 1, 2, true, false, 0)]
     [InlineData(1, 2, 1, true, true, 0)]
@@ -27,6 +28,7 @@ public sealed class DocumentedSaveEventPolicyTests
         Assert.Equal(timeout, behavior.TimeoutSeconds);
     }
 
+    // Verifies that every declared save event has an explicit policy entry.
     [Fact]
     public void EveryDeclaredEventIsCoveredByThePolicy()
     {
@@ -36,6 +38,7 @@ public sealed class DocumentedSaveEventPolicyTests
         }
     }
 
+    // Verifies that invalid event values fail instead of receiving an implicit behavior.
     [Fact]
     public void UnknownEventIsRejected()
     {
