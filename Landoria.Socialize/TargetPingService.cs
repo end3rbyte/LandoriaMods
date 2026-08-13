@@ -21,10 +21,12 @@ namespace Landoria.Socialize
 
         internal static bool Send(string targetName, string message, Terminal context)
         {
-            if (!TryFindTarget(targetName, out ZNet.PlayerInfo target) ||
-                Player.m_localPlayer == null || ZRoutedRpc.instance == null)
+            bool found = TryFindTarget(targetName, out ZNet.PlayerInfo target);
+            GroupDecision decision = TargetPingPolicy.CanSend(
+                found, Player.m_localPlayer != null && ZRoutedRpc.instance != null, targetName);
+            if (!decision.Allowed)
             {
-                context?.AddString("No connected player named \"" + targetName + "\" was found.");
+                context?.AddString(decision.Message);
                 return false;
             }
             EnsureRpcs();

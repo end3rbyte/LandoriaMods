@@ -96,14 +96,12 @@ namespace Landoria.Socialize
     {
         internal static bool Send(string targetName, string message, Terminal context)
         {
-            if (!TryFindPlayer(targetName, out ZNet.PlayerInfo target))
+            bool found = TryFindPlayer(targetName, out ZNet.PlayerInfo target);
+            GroupDecision decision = PrivateChatPolicy.CanSend(
+                found, found && IsLocalPlayer(target), targetName);
+            if (!decision.Allowed)
             {
-                context?.AddString("No connected player named \"" + targetName + "\" was found.");
-                return false;
-            }
-            if (IsLocalPlayer(target))
-            {
-                context?.AddString("You cannot whisper yourself.");
+                context?.AddString(decision.Message);
                 return false;
             }
             SendToTarget(target, message);

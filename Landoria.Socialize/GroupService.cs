@@ -197,9 +197,8 @@ namespace Landoria.Socialize
                 return;
             }
             string name = group.Members[playerId];
-            group.Members.Remove(playerId);
             GroupState.PlayerGroups.Remove(playerId);
-            NormalizeAfterRemoval(group);
+            ApplyRemoval(group, GroupLifecyclePolicy.Remove(group, playerId));
             GroupStorage.Save();
             SendMessage(sender, "You left the group.");
             Broadcast(group, name + " left the group.");
@@ -216,9 +215,8 @@ namespace Landoria.Socialize
                 return;
             }
             string name = group.Members[target];
-            group.Members.Remove(target);
             GroupState.PlayerGroups.Remove(target);
-            NormalizeAfterRemoval(group);
+            ApplyRemoval(group, GroupLifecyclePolicy.Remove(group, target));
             GroupStorage.Save();
             SendMessage(FindPeer(target), "You were removed from the group.");
             Broadcast(group, name + " was removed from the group.");
@@ -267,28 +265,19 @@ namespace Landoria.Socialize
             return decision.Allowed;
         }
 
-        private static void NormalizeAfterRemoval(SocialGroup group)
+        private static void ApplyRemoval(SocialGroup group, GroupRemovalResult result)
         {
-            if (group.Members.Count <= 1)
+            if (!result.Disbanded)
             {
-                foreach (long member in group.Members.Keys)
-                {
-                    GroupState.PlayerGroups.Remove(member);
-                    SendMessage(FindPeer(member), "The group was disbanded.");
-                    SendSnapshot(FindPeer(member), member);
-                }
-                GroupState.Groups.Remove(group.Id);
-                group.Members.Clear();
                 return;
             }
-            if (!group.Members.ContainsKey(group.Leader))
+            foreach (long member in result.RemainingMembers)
             {
-                foreach (long member in group.Members.Keys)
-                {
-                    group.Leader = member;
-                    break;
-                }
+                GroupState.PlayerGroups.Remove(member);
+                SendMessage(FindPeer(member), "The group was disbanded.");
+                SendSnapshot(FindPeer(member), member);
             }
+            GroupState.Groups.Remove(group.Id);
         }
 
         private static void SendGroupChat(long sender, long actor, string message)
@@ -373,11 +362,12 @@ namespace Landoria.Socialize
 
         private static void ShowInvite(string inviterId, string inviterName)
         {
+            InvitationPresentation presentation = InvitationPresentationPolicy.Build(inviterName);
             UnifiedPopup.Push(new YesNoPopup(
-                "Group invitation",
-                inviterName + " invited you to a group.",
-                () => RespondToInvite("accept", inviterId),
-                () => RespondToInvite("reject", inviterId),
+                presentation.Title,
+                presentation.Message,
+                () => RespondToInvite(presentation.AcceptAction, inviterId),
+                () => RespondToInvite(presentation.RejectAction, inviterId),
                 localizeText: false));
         }
 

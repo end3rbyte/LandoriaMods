@@ -19,7 +19,7 @@ namespace Landoria.Socialize
     {
         private static void Prefix(ref bool pub)
         {
-            pub = false;
+            pub = MapSharingPolicy.GetPublicPosition();
         }
     }
 
@@ -50,7 +50,8 @@ namespace Landoria.Socialize
         internal static void UpdatePingVisibility(Minimap minimap)
         {
             if (minimap.m_pingImageObject == null) return;
-            GetPingButton(minimap).SetActive(GroupService.IsLocalPlayerInGroup());
+            GetPingButton(minimap).SetActive(
+                MapSharingPolicy.CanSendPublicPing(GroupService.IsLocalPlayerInGroup()));
         }
 
         private static GameObject GetPingButton(Minimap minimap)

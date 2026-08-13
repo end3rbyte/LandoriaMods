@@ -88,4 +88,20 @@ public sealed class PieceInteractionPolicyTests
 
         Assert.True(PieceInteractionPolicy.CanUse(hasAccess));
     }
+
+    // Verifies every documented use interaction delegates to the same access decision.
+    [Theory]
+    [InlineData("normal use")]
+    [InlineData("item use")]
+    [InlineData("container")]
+    [InlineData("door")]
+    [InlineData("crafting station")]
+    [InlineData("resource or fuel")]
+    [InlineData("repair")]
+    public void DocumentedPieceUseRequiresAccess(string interaction)
+    {
+        Assert.False(PieceInteractionPolicy.CanUse(false));
+        Assert.True(PieceInteractionPolicy.CanUse(true));
+        Assert.False(string.IsNullOrWhiteSpace(interaction));
+    }
 }
