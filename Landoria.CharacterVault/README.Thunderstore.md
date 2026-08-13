@@ -8,7 +8,7 @@ with another save or a restored backup.
 
 | Event | What CharacterVault does |
 |---|---|
-| First enrollment | Validates and saves a newly created character before allowing it into the world. |
+| First enrollment | Waits for `Player.OnSpawned()`, then validates and saves the new character. |
 | Automatic world save | Saves every connected character with the world. |
 | Manual `save` command | Saves the world and every connected character. |
 | Pause-menu Save button | Saves the character through CharacterVault and retains the vanilla save behavior. |
@@ -20,6 +20,8 @@ with another save or a restored backup.
 
 When you join again, CharacterVault loads the latest trusted server copy before
 your character enters the world.
+Local profile saves remain unchanged, but CharacterVault never uploads a profile
+to the server before the local player's `Player.OnSpawned()` completes.
 Whenever your client starts sending a character save to the server,
 `Saving character...` appears in white below the small minimap. It changes to
 `Saving character......` when the server accepts the upload, then to

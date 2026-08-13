@@ -34,6 +34,7 @@ namespace Landoria.CharacterVault
         private IncomingTransfer _download;
         private bool _clientActive;
         private bool _clientEnrolling;
+        private bool _clientSpawned;
         private bool _clientUploadBusy;
         private bool _suppressNextClientUpload;
         private string _pendingRequest;
@@ -167,6 +168,13 @@ namespace Landoria.CharacterVault
                 return;
             }
 
+            if (!_clientSpawned)
+            {
+                CharacterVaultPlugin.Log.LogInfo(
+                    "Skipped the server upload for a local save before Player.OnSpawned completed.");
+                return;
+            }
+
             ZRpc serverRpc = ZNet.instance.GetServerRPC();
             if (serverRpc == null)
             {
@@ -219,9 +227,15 @@ namespace Landoria.CharacterVault
             _suppressNextClientUpload = true;
         }
 
-        internal void GrantStartingItems()
+        internal void RecordPlayerSpawned(Player player)
         {
-            if (!_clientEnrolling || Player.m_localPlayer == null)
+            if (player == null || player != Player.m_localPlayer)
+            {
+                return;
+            }
+
+            _clientSpawned = true;
+            if (!_clientEnrolling)
             {
                 return;
             }
@@ -411,6 +425,7 @@ namespace Landoria.CharacterVault
         {
             _clientActive = false;
             _clientEnrolling = false;
+            _clientSpawned = false;
             _clientUploadBusy = false;
             _suppressNextClientUpload = false;
             _pendingRequest = null;

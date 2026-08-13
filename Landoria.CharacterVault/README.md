@@ -8,7 +8,7 @@ local backups or characters from other servers from replacing trusted state.
 
 | Event | Character save | Completion rule |
 |---|---|---|
-| Initial enrollment | Yes | The profile must be validated and committed before admission. |
+| Initial enrollment | Yes | Server uploads are blocked until the local player's `Player.OnSpawned()` completes, then the new profile is validated and committed. |
 | World save, `save` command, or pause-menu Save button | Yes | The server acknowledges after complete receipt and validation, then commits asynchronously. The pause-menu action retains its vanilla behavior. |
 | Voluntary logout | Yes | The server acknowledges after complete receipt and validation, then commits asynchronously. |
 | In-game Quit action | Yes | After entering the world, `Menu.QuitGame` waits at most 10 seconds for the voluntary-save acknowledgement. |
@@ -40,6 +40,8 @@ the receipt acknowledgement, `Failed` replaces the status for three seconds.
 - Logs the exact backup filename after each successful retention deletion.
 - Ignores the former hashed `CharacterVault/accounts` storage without migrating or deleting it.
 - Accepts a new character only when it was created during the current game session.
+- Leaves local profile saves unchanged while blocking every server upload before the local player's `Player.OnSpawned()` completes.
+- Starts the first server-side save for a new character only after `Player.OnSpawned()` completes.
 - Requires matching CharacterVault DLLs on client and server through ModSentry.
 - Supports local and Steam Cloud profiles on stable and public-test Valheim.
 - Grants configured starting items once, during initial enrollment.
