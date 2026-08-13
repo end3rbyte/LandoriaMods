@@ -93,15 +93,4 @@ namespace Landoria.CharacterVault
         }
     }
 
-    internal sealed class StartingItem
-    {
-        internal StartingItem(string prefab, int quantity)
-        {
-            Prefab = prefab;
-            Quantity = quantity;
-        }
-
-        internal string Prefab { get; }
-        internal int Quantity { get; }
-    }
 }
