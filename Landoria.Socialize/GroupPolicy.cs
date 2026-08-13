@@ -24,6 +24,13 @@ namespace Landoria.Socialize
 
     internal static class GroupPolicy
     {
+        internal static GroupDecision CanInviteTarget(bool targetReady)
+        {
+            return targetReady
+                ? GroupDecision.Allow()
+                : GroupDecision.Deny("Player not found or not ready.");
+        }
+
         internal static GroupDecision CanInvite(SocialGroup group, long inviter, long target,
             bool targetAlreadyGrouped)
         {

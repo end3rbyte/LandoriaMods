@@ -125,9 +125,11 @@ namespace Landoria.Socialize
         private static void Invite(long sender, long inviter, string inviterName, string targetName)
         {
             long targetPeer = FindPeerByName(targetName);
-            if (!TryGetPlayerForPeer(targetPeer, out long target))
+            bool targetReady = TryGetPlayerForPeer(targetPeer, out long target);
+            GroupDecision targetDecision = GroupPolicy.CanInviteTarget(targetReady);
+            if (!targetDecision.Allowed)
             {
-                SendMessage(sender, "Player not found or not ready.");
+                SendMessage(sender, targetDecision.Message);
                 return;
             }
             if (!CanInvite(sender, inviter, target))
@@ -156,22 +158,15 @@ namespace Landoria.Socialize
 
         private static void Accept(long sender, long playerId, string playerName, string inviterText)
         {
-            if (!long.TryParse(inviterText, out long inviter) ||
-                !GroupState.Invitations.TryGetValue(playerId, out long expected) || expected != inviter)
+            GroupAcceptanceResult result = GroupAcceptancePolicy.Accept(
+                playerId, playerName, inviterText, GroupState.Invitations,
+                GetOrCreateGroup, GroupState.PlayerGroups);
+            if (!result.Accepted)
             {
-                SendMessage(sender, "That group invitation is no longer valid.");
+                SendMessage(sender, result.Message);
                 return;
             }
-            SocialGroup group = GetOrCreateGroup(inviter);
-            if (group == null || group.Members.Count >= SocialGroup.MaximumSize)
-            {
-                SendMessage(sender, "That group is no longer available.");
-                return;
-            }
-            group.Members[playerId] = playerName;
-            GroupState.PlayerGroups[playerId] = group.Id;
-            GroupState.Invitations.Remove(playerId);
-            SaveAndBroadcast(group, playerName + " joined the group.");
+            SaveAndBroadcast(result.Group, playerName + " joined the group.");
         }
 
         private static SocialGroup GetOrCreateGroup(long inviter)
@@ -336,19 +331,7 @@ namespace Landoria.Socialize
         private static void SendInfo(long sender, long playerId)
         {
             SocialGroup group = GroupState.GetGroup(playerId);
-            if (group == null)
-            {
-                SendMessage(sender, "You are not in a group.");
-                return;
-            }
-            List<string> lines = new List<string> { "Group members:" };
-            foreach (KeyValuePair<long, string> member in group.Members)
-            {
-                string online = FindPeer(member.Key) != 0L ? "Connected" : "Disconnected";
-                string leader = member.Key == group.Leader ? " - Group Leader" : "";
-                lines.Add(member.Value + " - " + online + leader);
-            }
-            SendMessage(sender, string.Join("\n", lines));
+            SendMessage(sender, GroupInfoPolicy.Build(group, member => FindPeer(member) != 0L));
         }
 
         private static void SaveAndBroadcast(SocialGroup group, string message)
