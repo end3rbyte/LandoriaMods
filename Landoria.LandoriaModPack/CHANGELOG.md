@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.13
+
+- Update bundled CharacterVault to version 1.0.11.
+
 ## 1.0.12
 
 - Update bundled CharacterVault to version 1.0.10.

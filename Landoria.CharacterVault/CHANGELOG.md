@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.11
+
+- Limit retained character backups and log every retention deletion.
+
 ## 1.0.10
 
 - Bug fix
