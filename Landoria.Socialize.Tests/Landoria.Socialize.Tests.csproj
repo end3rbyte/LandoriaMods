@@ -15,6 +15,7 @@
     <Compile Include="../Landoria.Socialize/ChatCommandParser.cs" Link="ChatCommandParser.cs" />
     <Compile Include="../Landoria.Socialize/CreatorActivityPolicy.cs" Link="CreatorActivityPolicy.cs" />
     <Compile Include="../Landoria.Socialize/GroupAcceptancePolicy.cs" Link="GroupAcceptancePolicy.cs" />
+    <Compile Include="../Landoria.Socialize/GroupChatPolicy.cs" Link="GroupChatPolicy.cs" />
     <Compile Include="../Landoria.Socialize/GroupInfoPolicy.cs" Link="GroupInfoPolicy.cs" />
     <Compile Include="../Landoria.Socialize/GroupInvitationPolicy.cs" Link="GroupInvitationPolicy.cs" />
     <Compile Include="../Landoria.Socialize/GroupPromotionPolicy.cs" Link="GroupPromotionPolicy.cs" />
