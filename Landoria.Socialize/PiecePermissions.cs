@@ -261,12 +261,14 @@ namespace Landoria.Socialize
                 }
                 if (attacker != null)
                 {
-                    return DecayProtection.GetActivityMultiplier(piece) > 0f;
+                    return CreatureProtectionPolicy.CanDamageBuilding(
+                        DecayProtection.GetActivityMultiplier(piece));
                 }
                 long playerId = ResolvePeerPlayer(hit.m_attacker.UserID);
                 return playerId != 0L
                     ? PieceInteractionPolicy.CanDamage(CanAccess(playerId, piece))
-                    : DecayProtection.GetActivityMultiplier(piece) > 0f;
+                    : CreatureProtectionPolicy.CanDamageBuilding(
+                        DecayProtection.GetActivityMultiplier(piece));
             }
         }
 
