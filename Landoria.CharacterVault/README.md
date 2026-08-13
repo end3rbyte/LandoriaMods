@@ -96,6 +96,7 @@ cannot enroll another one.
 
 ## Graceful server stop and restart
 
+This feature is optional and requires configuration on the Linux server.
 CharacterVault watches for `character_vault.drp` in the server working directory.
 The file must contain the current Valheim process ID. A valid request saves
 connected characters, waits up to 90 seconds for their commits, then continues
