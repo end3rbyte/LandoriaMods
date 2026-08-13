@@ -4,6 +4,7 @@ namespace Landoria.CharacterVault;
 
 public sealed class SaveStatusLifecycleTests
 {
+    // Verifies that commit confirmation is accepted only for the current acknowledged request.
     [Fact]
     public void CommitRequiresTheCurrentAcceptedRequest()
     {
@@ -14,6 +15,7 @@ public sealed class SaveStatusLifecycleTests
         Assert.False(lifecycle.CanCommit("request-b"));
     }
 
+    // Verifies that an upload still in its initial saving state cannot complete prematurely.
     [Fact]
     public void SavingStateCannotReceiveCommitConfirmation()
     {
@@ -23,6 +25,7 @@ public sealed class SaveStatusLifecycleTests
         Assert.False(lifecycle.CanCommit("request-a"));
     }
 
+    // Verifies that failure timeout callbacks match both request identity and state version.
     [Fact]
     public void TimeoutRequiresMatchingRequestAndVersion()
     {
@@ -34,6 +37,7 @@ public sealed class SaveStatusLifecycleTests
         Assert.False(lifecycle.CanFail("request-a", version + 1));
     }
 
+    // Verifies that a newer request invalidates timeout and hide callbacks from the prior one.
     [Fact]
     public void NewRequestInvalidatesPreviousTimeoutAndHideTimers()
     {
@@ -47,6 +51,7 @@ public sealed class SaveStatusLifecycleTests
         Assert.True(lifecycle.IsCurrent(current));
     }
 
+    // Verifies that clearing the display invalidates every outstanding status callback.
     [Fact]
     public void ClearInvalidatesAllPendingCallbacks()
     {

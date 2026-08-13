@@ -4,6 +4,7 @@ namespace Landoria.CharacterVault;
 
 public sealed class KickSavePolicyTests
 {
+    // Verifies all kick outcomes across peer validity, authorization, pending saves, and eligibility.
     [Theory]
     [InlineData(false, false, false, 0, 0)]
     [InlineData(true, true, false, 2, 0)]
@@ -20,6 +21,7 @@ public sealed class KickSavePolicyTests
         Assert.Equal((KickAction)expected, actual);
     }
 
+    // Verifies that a rejected player is kicked without creating a character save.
     [Fact]
     public void RejectedPlayerNeverWaitsForCharacterSave()
     {
@@ -29,6 +31,7 @@ public sealed class KickSavePolicyTests
         Assert.Equal(KickAction.AllowWithoutSave, action);
     }
 
+    // Verifies that a permitted player must save successfully before the server kick proceeds.
     [Fact]
     public void PermittedPlayerRequiresSaveBeforeKick()
     {

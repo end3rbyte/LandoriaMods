@@ -6,6 +6,7 @@ public sealed class BackupRetentionEdgeTests
 {
     private const string Profile = "Steam_1_Hero";
 
+    // Verifies that the protected five most recent backups are never removed.
     [Fact]
     public void FiveOrFewerBackupsAreNeverDeleted()
     {
@@ -19,6 +20,7 @@ public sealed class BackupRetentionEdgeTests
         });
     }
 
+    // Verifies that retention caps a character's valid backup set at fifteen files.
     [Fact]
     public void RetentionNeverKeepsMoreThanFifteenBackups()
     {
@@ -35,6 +37,7 @@ public sealed class BackupRetentionEdgeTests
         });
     }
 
+    // Verifies that another profile and malformed timestamps remain untouched.
     [Fact]
     public void UnrelatedAndMalformedFilesAreIgnored()
     {

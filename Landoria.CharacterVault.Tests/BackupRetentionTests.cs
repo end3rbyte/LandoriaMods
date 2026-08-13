@@ -33,6 +33,7 @@ public sealed class BackupRetentionTests
         "05/08/2026 12h", "04/08/2026 10h", "03/08/2026 11h"
     ];
 
+    // Verifies the full retention example and confirms that reprocessing is idempotent.
     [Fact]
     public void ApplyExcludesTheFifthBackupsDayFromDailyRetention()
     {

@@ -4,6 +4,7 @@ namespace Landoria.CharacterVault;
 
 public sealed class CharacterAdmissionPolicyTests
 {
+    // Verifies every supported profile, enrollment, and multiple-character admission outcome.
     [Theory]
     [InlineData(true, false, false, true, false, 0)]
     [InlineData(true, true, true, true, true, 0)]
@@ -21,6 +22,7 @@ public sealed class CharacterAdmissionPolicyTests
         Assert.Equal((CharacterAdmission)expected, actual);
     }
 
+    // Verifies that all three server-side session gates are required before persistence.
     [Theory]
     [InlineData(false, false, false, false)]
     [InlineData(true, false, false, false)]
@@ -39,6 +41,7 @@ public sealed class CharacterAdmissionPolicyTests
         Assert.Equal(expected, state.CanSave);
     }
 
+    // Verifies that removing server permission immediately disables further saves.
     [Fact]
     public void PermissionRevocationImmediatelyBlocksServerSaves()
     {
