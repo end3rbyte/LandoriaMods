@@ -141,6 +141,17 @@ namespace Landoria.CharacterVault
             return peer?.m_rpc != null && _sessions.ContainsKey(peer.m_rpc);
         }
 
+        internal bool SaveManualClientProfile()
+        {
+            if (!_clientActive || ZNet.instance?.IsServer() != false || Game.instance == null)
+            {
+                return false;
+            }
+
+            Game.instance.SavePlayerProfile(true);
+            return true;
+        }
+
         internal void UploadSavedProfile(PlayerProfile profile)
         {
             if (_suppressNextClientUpload)

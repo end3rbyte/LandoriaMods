@@ -5,6 +5,15 @@ using UnityEngine;
 
 namespace Landoria.CharacterVault
 {
+    [HarmonyPatch(typeof(ZNet), "SaveWorldAndPlayerProfiles")]
+    internal static class CharacterVaultManualSavePatch
+    {
+        private static void Postfix()
+        {
+            CharacterVaultPlugin.Transfers?.SaveManualClientProfile();
+        }
+    }
+
     [HarmonyPatch(typeof(Minimap), "Start")]
     internal static class CharacterVaultSaveStatusPatch
     {
