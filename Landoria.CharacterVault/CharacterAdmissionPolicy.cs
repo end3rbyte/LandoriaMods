@@ -1,5 +1,10 @@
 namespace Landoria.CharacterVault
 {
+    internal interface ICharacterProfileCatalog
+    {
+        bool HasProfile(string accountId);
+    }
+
     internal enum CharacterAdmission
     {
         ExistingProfile,
@@ -28,6 +33,25 @@ namespace Landoria.CharacterVault
             }
             return enrollmentAvailable ? CharacterAdmission.NewEnrollment
                 : CharacterAdmission.RejectConcurrentEnrollment;
+        }
+    }
+
+    internal sealed class CharacterAdmissionEvaluator
+    {
+        private readonly ICharacterProfileCatalog _profiles;
+
+        internal CharacterAdmissionEvaluator(ICharacterProfileCatalog profiles)
+        {
+            _profiles = profiles;
+        }
+
+        internal CharacterAdmission Decide(bool hasStoredProfile, string accountId,
+            bool createdThisSession, bool allowMultipleCharacters, bool enrollmentAvailable)
+        {
+            bool accountHasProfile = !hasStoredProfile && createdThisSession &&
+                !allowMultipleCharacters && _profiles.HasProfile(accountId);
+            return CharacterAdmissionPolicy.Decide(hasStoredProfile, createdThisSession,
+                allowMultipleCharacters, accountHasProfile, enrollmentAvailable);
         }
     }
 

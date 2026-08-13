@@ -32,6 +32,7 @@ namespace Landoria.CharacterVault
         private bool _commitWorkerRunning;
         private readonly SynchronizationContext _unityContext;
         private readonly VaultStorage _storage = new VaultStorage();
+        private readonly CharacterAdmissionEvaluator _admission;
         private IncomingTransfer _download;
         private bool _clientUploadBusy;
         private bool _suppressNextClientUpload;
@@ -42,6 +43,7 @@ namespace Landoria.CharacterVault
         internal ProfileTransferService(SynchronizationContext unityContext)
         {
             _unityContext = unityContext ?? throw new ArgumentNullException(nameof(unityContext));
+            _admission = new CharacterAdmissionEvaluator(_storage);
         }
 
         internal void Register(ZNet network, ZNetPeer peer)
@@ -328,8 +330,8 @@ namespace Landoria.CharacterVault
         private bool AdmitEnrollment(ZRpc rpc, VaultSession session)
         {
             bool allowMultiple = CharacterVaultPlugin.Settings.AllowMultipleCharacters;
-            CharacterAdmission admission = CharacterAdmissionPolicy.Decide(false,
-                session.NewCharacter, allowMultiple, _storage.HasProfile(session.AccountId), true);
+            CharacterAdmission admission = _admission.Decide(false, session.AccountId,
+                session.NewCharacter, allowMultiple, true);
             if (admission == CharacterAdmission.NewEnrollment && !ReserveEnrollment(rpc, session))
             {
                 admission = CharacterAdmission.RejectConcurrentEnrollment;

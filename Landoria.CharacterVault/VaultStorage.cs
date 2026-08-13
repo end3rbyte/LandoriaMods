@@ -6,9 +6,11 @@ using System.Security.Cryptography;
 
 namespace Landoria.CharacterVault
 {
-    internal sealed class VaultStorage
+    internal sealed class VaultStorage : ICharacterProfileCatalog
     {
         private const string BackupDirectory = "backups";
+
+        bool ICharacterProfileCatalog.HasProfile(string accountId) => HasProfile(accountId);
 
         internal bool TryRead(string accountId, string name, out byte[] data)
         {
