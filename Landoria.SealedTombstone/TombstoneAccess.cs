@@ -11,10 +11,8 @@ namespace Landoria.SealedTombstone
         private const string IdentityRpc = "Landoria_SealedTombstone_Identity";
         private const string RequestRpc = "Landoria_SealedTombstone_Request";
         private const string AvailabilityRpc = "Landoria_SealedTombstone_Availability";
+        private const string DecisionSubmitRpc = "Landoria_SealedTombstone_DecisionSubmit";
         private const string DecisionRpc = "Landoria_SealedTombstone_Decision";
-        private const int UnlockAfterDays = 10;
-        private const int RequestExpirySeconds = 30;
-        private const int RequestCooldownSeconds = 120;
 
         private static PendingRequest _pendingRequest;
         private static DateTime _lastRequestAt = DateTime.MinValue;
@@ -34,6 +32,8 @@ namespace Landoria.SealedTombstone
             rpc.Register<long>(IdentityRpc, ReceiveIdentity);
             rpc.Register<long, string, ZDOID, long>(RequestRpc, ReceiveRequest);
             rpc.Register<bool>(AvailabilityRpc, ReceiveAvailability);
+            rpc.Register<long, ZDOID, bool, string, long>(
+                DecisionSubmitRpc, ReceiveDecisionSubmission);
             rpc.Register<long, ZDOID, bool, string>(DecisionRpc, ReceiveDecision);
             _registeredRpc = rpc;
             SealedTombstonePlugin.Log.LogDebug("Tombstone access RPCs registered for the current session.");
@@ -72,13 +72,16 @@ namespace Landoria.SealedTombstone
                 return true;
             }
 
+            long playerId = player.GetPlayerID();
             long ownerId = zdo.GetLong(ZDOVars.s_owner, 0L);
-            if (ownerId == 0L || ownerId == player.GetPlayerID() || IsExpired(zdo))
+            TombstoneInteraction interaction = TombstoneAccessPolicy.Evaluate(
+                true, ownerId, playerId, zdo.GetLong(LockDayKey, -1L), CurrentDay(),
+                IsBlocked(zdo, playerId));
+            if (interaction == TombstoneInteraction.Allow)
             {
                 return true;
             }
-
-            if (IsBlocked(zdo, player.GetPlayerID()))
+            if (interaction == TombstoneInteraction.Block)
             {
                 player.Message(MessageHud.MessageType.Center,
                     "You cannot request access to this tombstone.");
@@ -106,7 +109,7 @@ namespace Landoria.SealedTombstone
 
         private static void RequestAccess(Player requester, long ownerId, ZDOID tombstoneId)
         {
-            if ((DateTime.UtcNow - _lastRequestAt).TotalSeconds < RequestCooldownSeconds)
+            if (TombstoneAccessPolicy.IsCooldownActive(_lastRequestAt, DateTime.UtcNow))
             {
                 requester.Message(MessageHud.MessageType.Center, "Please wait before sending another request.");
                 return;
@@ -227,23 +230,21 @@ namespace Landoria.SealedTombstone
             {
                 return;
             }
-            if (!ownerOnline)
-            {
-                requester.Message(MessageHud.MessageType.Center, "The tombstone owner is offline.");
-                return;
-            }
-            _lastRequestAt = DateTime.UtcNow;
-            requester.Message(MessageHud.MessageType.Center, "Access request sent to the tombstone owner.");
+            TombstoneAvailabilityResult result = TombstoneRequestPolicy.ApplyAvailability(
+                ownerOnline, _lastRequestAt, DateTime.UtcNow);
+            _lastRequestAt = result.LastRequestAt;
+            requester.Message(MessageHud.MessageType.Center, result.Message);
+            if (!ownerOnline) return;
             SealedTombstonePlugin.Log.LogInfo($"Player {requester.GetPlayerID()} requested tombstone access.");
         }
 
         private static bool IsServerResponse(long sender)
         {
-            if (ZNet.instance == null)
-            {
-                return false;
-            }
-            return ZNet.instance.IsServer() ? sender == 0L : ZNet.instance.GetServerPeer()?.m_uid == sender;
+            ZNet network = ZNet.instance;
+            if (network == null) return false;
+            ZNetPeer server = network.GetServerPeer();
+            return TombstoneDecisionPolicy.IsTrustedResponse(
+                network.IsServer(), sender, server != null, server?.m_uid ?? 0L);
         }
 
         private static void ReceiveRequest(
@@ -266,6 +267,7 @@ namespace Landoria.SealedTombstone
             {
                 RequesterPlayerId = requesterId,
                 RequesterName = SafeName(requesterName),
+                OwnerPlayerId = ownerId,
                 TombstoneId = tombstoneId,
                 CreatedAt = DateTime.UtcNow
             };
@@ -281,8 +283,9 @@ namespace Landoria.SealedTombstone
                 return;
             }
 
-            string text = $"Allow {request.RequesterName} to loot this tombstone?";
-            UnifiedPopup.Push(new YesNoPopup("Tombstone access request", text,
+            TombstoneRequestPresentation presentation =
+                TombstonePresentationPolicy.Build(request.RequesterName);
+            UnifiedPopup.Push(new YesNoPopup(presentation.Title, presentation.Message,
                 () => Decide(request, accepted: true),
                 () => Decide(request, accepted: false), localizeText: false));
         }
@@ -311,9 +314,50 @@ namespace Landoria.SealedTombstone
                 return;
             }
 
-            ZRoutedRpc.instance.InvokeRoutedRPC(ZRoutedRpc.Everybody, DecisionRpc,
-                request.RequesterPlayerId, request.TombstoneId, accepted, owner.GetPlayerName());
+            ZNet network = ZNet.instance;
+            if (network == null) return;
+            if (network.IsServer())
+            {
+                ForwardDecision(0L, request.RequesterPlayerId, request.TombstoneId,
+                    accepted, owner.GetPlayerName(), request.OwnerPlayerId);
+            }
+            else if (network.GetServerPeer() is ZNetPeer server)
+            {
+                ZRoutedRpc.instance.InvokeRoutedRPC(server.m_uid, DecisionSubmitRpc,
+                    request.RequesterPlayerId, request.TombstoneId, accepted,
+                    owner.GetPlayerName(), request.OwnerPlayerId);
+            }
             SealedTombstonePlugin.Log.LogInfo($"Tombstone request from {request.RequesterPlayerId} accepted={accepted}.");
+        }
+
+        private static void ReceiveDecisionSubmission(long sender, long requesterId,
+            ZDOID tombstoneId, bool accepted, string ownerName, long ownerId)
+        {
+            ForwardDecision(sender, requesterId, tombstoneId, accepted, ownerName, ownerId);
+        }
+
+        private static void ForwardDecision(long sender, long requesterId, ZDOID tombstoneId,
+            bool accepted, string ownerName, long ownerId)
+        {
+            ZNet network = ZNet.instance;
+            ZDO tombstone = ZDOMan.instance?.GetZDO(tombstoneId);
+            long mappedOwner = sender == 0L ? ownerId :
+                (PeerPlayers.TryGetValue(sender, out long playerId) ? playerId : 0L);
+            bool senderExists = sender == 0L || network?.GetPeer(sender) != null;
+            if (!TombstoneDecisionPolicy.CanForward(network?.IsServer() == true,
+                    senderExists, mappedOwner, ownerId,
+                    tombstone?.GetLong(ZDOVars.s_owner, 0L) ?? 0L)) return;
+            long requesterPeer = FindOnlinePeer(requesterId);
+            if (requesterPeer == 0L && Player.m_localPlayer?.GetPlayerID() == requesterId)
+            {
+                ReceiveDecision(0L, requesterId, tombstoneId, accepted, ownerName);
+                return;
+            }
+            if (requesterPeer != 0L)
+            {
+                ZRoutedRpc.instance.InvokeRoutedRPC(requesterPeer, DecisionRpc,
+                    requesterId, tombstoneId, accepted, ownerName);
+            }
         }
 
         private static void ReceiveDecision(
@@ -324,20 +368,19 @@ namespace Landoria.SealedTombstone
             string ownerName)
         {
             Player requester = Player.m_localPlayer;
-            if (requester == null || requester.GetPlayerID() != requesterId)
+            if (requester == null || requester.GetPlayerID() != requesterId ||
+                !IsServerResponse(sender))
             {
                 return;
             }
 
-            if (accepted)
+            if (TombstoneDecisionPolicy.ShouldUnlock(accepted))
             {
                 Unlock(tombstoneId);
             }
 
-            string message = accepted
-                ? $"{SafeName(ownerName)} granted access to the tombstone."
-                : $"{SafeName(ownerName)} denied or did not answer the request.";
-            requester.Message(MessageHud.MessageType.Center, message);
+            requester.Message(MessageHud.MessageType.Center,
+                TombstoneRequestPolicy.DecisionMessage(accepted, ownerName));
         }
 
         private static void Unlock(ZDOID tombstoneId)
@@ -360,13 +403,6 @@ namespace Landoria.SealedTombstone
                 tombstone.GetString(BlockedPlayersKey), playerId);
         }
 
-        private static bool IsExpired(ZDO tombstone)
-        {
-            long lockDay = tombstone.GetLong(LockDayKey, -1L);
-            long currentDay = CurrentDay();
-            return lockDay >= 0L && currentDay >= 0L && currentDay - lockDay >= UnlockAfterDays;
-        }
-
         private static long CurrentDay()
         {
             return EnvMan.instance != null ? EnvMan.instance.GetDay() : -1L;
@@ -374,18 +410,12 @@ namespace Landoria.SealedTombstone
 
         private static bool HasExpired(PendingRequest request)
         {
-            return (DateTime.UtcNow - request.CreatedAt).TotalSeconds > RequestExpirySeconds;
+            return TombstoneAccessPolicy.HasRequestExpired(request.CreatedAt, DateTime.UtcNow);
         }
 
         private static string SafeName(string name)
         {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                return "A player";
-            }
-
-            string safeName = name.Replace("<", string.Empty).Replace(">", string.Empty);
-            return safeName.Length <= 64 ? safeName : safeName.Substring(0, 64);
+            return TombstoneAccessPolicy.SafeName(name);
         }
 
         private static void ClosePopup()

@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 
 namespace Landoria.SealedTombstone
 {
     internal static class RecentAttackers
     {
-        private static readonly TimeSpan Window = TimeSpan.FromMinutes(2);
         private static readonly Dictionary<long, DateTime> LastHits =
             new Dictionary<long, DateTime>();
 
@@ -16,16 +13,14 @@ namespace Landoria.SealedTombstone
         internal static void Record(Player victim, HitData hit)
         {
             Player attacker = hit?.GetAttacker() as Player;
-            if (victim != Player.m_localPlayer || attacker == null)
+            long attackerId = attacker?.GetPlayerID() ?? 0L;
+            if (!RecentAttackerPolicy.ShouldRecord(
+                    victim == Player.m_localPlayer, attacker != null,
+                    victim.GetPlayerID(), attackerId))
             {
                 return;
             }
-
-            long attackerId = attacker.GetPlayerID();
-            if (attackerId != 0L && attackerId != victim.GetPlayerID())
-            {
-                LastHits[attackerId] = DateTime.UtcNow;
-            }
+            LastHits[attackerId] = DateTime.UtcNow;
         }
 
         internal static void SnapshotForDeath(Player player)
@@ -35,30 +30,21 @@ namespace Landoria.SealedTombstone
                 return;
             }
 
-            DateTime threshold = DateTime.UtcNow - Window;
-            _deathSnapshot = LastHits.Where(entry => entry.Value >= threshold)
-                .Select(entry => entry.Key).ToArray();
+            _deathSnapshot = RecentAttackerPolicy.Snapshot(LastHits, DateTime.UtcNow);
             LastHits.Clear();
             SealedTombstonePlugin.Log.LogDebug($"Captured {_deathSnapshot.Length} recent PvP attackers.");
         }
 
         internal static string ConsumeSnapshot()
         {
-            string value = string.Join(",", _deathSnapshot.Select(id =>
-                id.ToString(CultureInfo.InvariantCulture)));
+            string value = RecentAttackerPolicy.Serialize(_deathSnapshot);
             _deathSnapshot = new long[0];
             return value;
         }
 
         internal static bool Contains(string serializedIds, long playerId)
         {
-            if (string.IsNullOrEmpty(serializedIds))
-            {
-                return false;
-            }
-
-            string expected = playerId.ToString(CultureInfo.InvariantCulture);
-            return serializedIds.Split(',').Any(id => id == expected);
+            return RecentAttackerPolicy.Contains(serializedIds, playerId);
         }
 
         internal static void Reset()
