@@ -13,7 +13,8 @@ namespace Landoria.CharacterVault
             new Dictionary<ZRpc, float>();
         private static readonly HashSet<string> PermittedListRejections =
             new HashSet<string>();
-        private static string _clientMessage;
+        private static readonly CharacterRejectionMessageState ClientMessage =
+            new CharacterRejectionMessageState();
         private static float _clientDeadline;
         private static bool _returnToMenu;
 
@@ -46,14 +47,13 @@ namespace Landoria.CharacterVault
             string hostName = rpc?.GetSocket()?.GetHostName();
             if (hostName != null && PermittedListRejections.Remove(hostName))
             {
-                Reject(rpc, "Steam account not registered for this server.");
+                Reject(rpc, CharacterRejectionMessages.PermittedListDenied);
             }
         }
 
         internal static bool TryGetMessage(out string message)
         {
-            message = _clientMessage;
-            return !string.IsNullOrWhiteSpace(message);
+            return ClientMessage.TryGet(out message);
         }
 
         internal static void Remove(ZRpc rpc)
@@ -76,7 +76,7 @@ namespace Landoria.CharacterVault
 
         private static void ReceiveMessage(ZRpc rpc, string message)
         {
-            _clientMessage = message;
+            ClientMessage.Receive(message);
             _returnToMenu = true;
             _clientDeadline = Time.unscaledTime + DisconnectFallbackSeconds;
             CharacterVaultPlugin.Log.LogWarning($"Server rejected the character: {message}");
@@ -137,7 +137,7 @@ namespace Landoria.CharacterVault
 
         private static void ClearClient()
         {
-            _clientMessage = null;
+            ClientMessage.Clear();
             _returnToMenu = false;
         }
     }
