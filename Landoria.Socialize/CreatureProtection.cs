@@ -5,10 +5,10 @@ namespace Landoria.Socialize
 {
     internal static class CreatureProtection
     {
-        private static bool IsProtected(StaticTarget target)
+        private static float GetActivity(StaticTarget target)
         {
             Piece piece = target?.GetComponentInParent<Piece>();
-            return DecayProtection.GetActivityMultiplier(piece) <= 0f;
+            return DecayProtection.GetActivityMultiplier(piece);
         }
 
         [HarmonyPatch(typeof(StaticTarget), nameof(StaticTarget.IsPriorityTarget))]
@@ -16,10 +16,8 @@ namespace Landoria.Socialize
         {
             private static void Postfix(StaticTarget __instance, ref bool __result)
             {
-                if (__result && IsProtected(__instance))
-                {
-                    __result = false;
-                }
+                __result = CreatureProtectionPolicy.CanTarget(
+                    __result, GetActivity(__instance));
             }
         }
 
@@ -28,10 +26,8 @@ namespace Landoria.Socialize
         {
             private static void Postfix(StaticTarget __instance, ref bool __result)
             {
-                if (__result && IsProtected(__instance))
-                {
-                    __result = false;
-                }
+                __result = CreatureProtectionPolicy.CanTarget(
+                    __result, GetActivity(__instance));
             }
         }
 
@@ -40,10 +36,8 @@ namespace Landoria.Socialize
         {
             private static void Postfix(StaticTarget target, ref bool __result)
             {
-                if (__result && IsProtected(target))
-                {
-                    __result = false;
-                }
+                __result = CreatureProtectionPolicy.CanTarget(
+                    __result, GetActivity(target));
             }
         }
     }
