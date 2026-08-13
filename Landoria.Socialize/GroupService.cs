@@ -294,29 +294,14 @@ namespace Landoria.Socialize
         private static void SendGroupChat(long sender, long actor, string message)
         {
             SocialGroup group = GroupState.GetGroup(actor);
-            if (group == null)
+            GroupChatResult result = GroupChatPolicy.Prepare(group, actor, message,
+                member => FindPeer(member) != 0L, ChatFormatting.FormatGroup);
+            if (!result.Broadcast)
             {
-                SendMessage(sender, "You are not in a group.");
+                SendMessage(sender, result.Message);
                 return;
             }
-            if (!HasOtherOnlineMember(group, actor))
-            {
-                SendMessage(sender, "No other group member is connected.");
-                return;
-            }
-            Broadcast(group, ChatFormatting.FormatGroup(group.Members[actor], message));
-        }
-
-        private static bool HasOtherOnlineMember(SocialGroup group, long actor)
-        {
-            foreach (long member in group.Members.Keys)
-            {
-                if (member != actor && FindPeer(member) != 0L)
-                {
-                    return true;
-                }
-            }
-            return false;
+            Broadcast(group, result.Message);
         }
 
         private static void SendInfo(long sender, long playerId)

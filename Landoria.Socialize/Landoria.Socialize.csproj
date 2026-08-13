@@ -80,6 +80,7 @@
     <Compile Include="CreatorActivityPolicy.cs" />
     <Compile Include="DecayProtection.cs" />
     <Compile Include="GroupCommands.cs" />
+    <Compile Include="GroupChatPolicy.cs" />
     <Compile Include="GroupAcceptancePolicy.cs" />
     <Compile Include="GroupInfoPolicy.cs" />
     <Compile Include="GroupInvitationPolicy.cs" />
