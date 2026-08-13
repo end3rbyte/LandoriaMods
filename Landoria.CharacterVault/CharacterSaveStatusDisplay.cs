@@ -24,7 +24,7 @@ namespace Landoria.CharacterVault
             rect.anchorMin = new Vector2(0.5f, 0.5f);
             rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.pivot = new Vector2(0.5f, 1f);
-            rect.sizeDelta = new Vector2(240f, 30f);
+            rect.sizeDelta = new Vector2(480f, 30f);
             RectTransform mapRect = minimap.m_mapImageSmall.rectTransform;
             rect.position = mapRect.TransformPoint(
                 new Vector3(mapRect.rect.center.x, mapRect.rect.yMin - 8f, 0f));
@@ -34,6 +34,10 @@ namespace Landoria.CharacterVault
             _label.font = minimap.m_biomeNameSmall.font;
             _label.fontSharedMaterial = minimap.m_biomeNameSmall.fontSharedMaterial;
             _label.fontSize = minimap.m_biomeNameSmall.fontSize;
+            _label.fontSizeMax = minimap.m_biomeNameSmall.fontSize;
+            _label.fontSizeMin = 8f;
+            _label.enableAutoSizing = true;
+            _label.textWrappingMode = TextWrappingModes.NoWrap;
             _label.fontStyle = FontStyles.Bold;
             _label.alignment = TextAlignmentOptions.Center;
             _label.color = Color.white;
@@ -44,12 +48,17 @@ namespace Landoria.CharacterVault
 
         internal void ShowSaving()
         {
-            ShowForTwoSeconds("Saving character...");
+            ShowForThreeSeconds("Saving character..");
         }
 
-        internal void ShowSaved()
+        internal void ShowAccepted()
         {
-            ShowForTwoSeconds("Character saved");
+            ShowForThreeSeconds("Saving character....");
+        }
+
+        internal void ShowCommitted()
+        {
+            ShowForThreeSeconds("Character saved");
         }
 
         internal void Hide()
@@ -71,7 +80,7 @@ namespace Landoria.CharacterVault
             }
         }
 
-        private void ShowForTwoSeconds(string message)
+        private void ShowForThreeSeconds(string message)
         {
             _stateVersion++;
             Attach(Minimap.instance);

@@ -390,7 +390,7 @@ namespace Landoria.CharacterVault
         private void ReceiveSaveAck(ZRpc rpc, string requestId)
         {
             _clientUploadBusy = false;
-            CharacterVaultPlugin.SaveStatus?.ShowSaved();
+            CharacterVaultPlugin.SaveStatus?.ShowAccepted();
             CharacterVaultPlugin.Log.LogInfo(
                 $"Server accepted character save request {requestId}.");
             CharacterVaultPlugin.DisconnectCoordinator?.RecordSaveCommitted(requestId);
@@ -402,6 +402,7 @@ namespace Landoria.CharacterVault
 
         private void ReceiveCommitAck(ZRpc rpc, string requestId)
         {
+            CharacterVaultPlugin.SaveStatus?.ShowCommitted();
             CharacterVaultPlugin.Log.LogInfo(
                 $"Server confirmed durable character save request {requestId}.");
         }
