@@ -1,7 +1,7 @@
 using System;
 using HarmonyLib;
 
-namespace Landoria.Parked
+namespace Landoria.StructureProtection
 {
     internal static class CreatureProtection
     {
@@ -17,6 +17,7 @@ namespace Landoria.Parked
             private static void Postfix(StaticTarget __instance, ref bool __result)
             {
                 __result = CreatureProtectionPolicy.CanTarget(
+                    StructureProtectionPlugin.Settings.CreatureTargetingEnabled,
                     __result, GetActivity(__instance));
             }
         }
@@ -27,6 +28,7 @@ namespace Landoria.Parked
             private static void Postfix(StaticTarget __instance, ref bool __result)
             {
                 __result = CreatureProtectionPolicy.CanTarget(
+                    StructureProtectionPlugin.Settings.CreatureTargetingEnabled,
                     __result, GetActivity(__instance));
             }
         }
@@ -37,6 +39,7 @@ namespace Landoria.Parked
             private static void Postfix(StaticTarget target, ref bool __result)
             {
                 __result = CreatureProtectionPolicy.CanTarget(
+                    StructureProtectionPlugin.Settings.CreatureTargetingEnabled,
                     __result, GetActivity(target));
             }
         }

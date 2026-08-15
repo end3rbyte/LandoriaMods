@@ -45,9 +45,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.Socialize", "Lando
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.HammerFreedom.Tests", "Landoria.HammerFreedom.Tests\Landoria.HammerFreedom.Tests.csproj", "{EE0CC157-A0F1-48C2-8DDF-E041DA9B6708}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.Parked", "Landoria.Parked\Landoria.Parked.csproj", "{C6FAAFDF-2D25-4CD3-BD71-59BAA98F1D20}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.StructureProtection", "Landoria.StructureProtection\Landoria.StructureProtection.csproj", "{C6FAAFDF-2D25-4CD3-BD71-59BAA98F1D20}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.Parked.Tests", "Landoria.Parked.Tests\Landoria.Parked.Tests.csproj", "{05A0E072-1A2F-4E27-AC63-E2EA102A8F9D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.StructureProtection.Tests", "Landoria.StructureProtection.Tests\Landoria.StructureProtection.Tests.csproj", "{05A0E072-1A2F-4E27-AC63-E2EA102A8F9D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.DecayControl", "Landoria.DecayControl\Landoria.DecayControl.csproj", "{0F691AC2-F9E1-45CB-B34E-7B57171ADCE7}"
 EndProject

@@ -31,7 +31,6 @@ namespace Landoria.Socialize
             GroupState.ClearAll();
             SocializePlugin.Settings?.ResetState();
             SocialChatSender.ApplyRangesToLoadedTalkers();
-            ParkedIntegration.Reset();
         }
 
         internal static bool IsLocalPlayerInGroup()
@@ -114,7 +113,6 @@ namespace Landoria.Socialize
             GroupState.ClearAll();
             SocializePlugin.Settings?.ResetState();
             SocialChatSender.ApplyRangesToLoadedTalkers();
-            ParkedIntegration.Reset();
         }
 
         private static void RegisterRpcs(ZRoutedRpc rpc)
@@ -340,7 +338,6 @@ namespace Landoria.Socialize
                 }
             }
             SocializePlugin.Settings.WriteState(response);
-            ParkedIntegration.WriteSnapshot(response);
             ZRoutedRpc.instance.InvokeRoutedRPC(peer, ResponseRpc, response);
         }
 
@@ -359,7 +356,6 @@ namespace Landoria.Socialize
             }
             SocializePlugin.Settings.ReadState(package);
             SocialChatSender.ApplyRangesToLoadedTalkers();
-            ParkedIntegration.ReadSnapshot(package);
         }
 
         private static void ShowInvite(string inviterId, string inviterName)

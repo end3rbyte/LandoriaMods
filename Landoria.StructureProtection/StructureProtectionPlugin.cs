@@ -1,33 +1,37 @@
 using BepInEx;
 using Landoria.SharedLib;
 
-namespace Landoria.Parked
+namespace Landoria.StructureProtection
 {
     [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
-    public sealed class ParkedPlugin : LandoriaPlugin
+    public sealed class StructureProtectionPlugin : LandoriaPlugin
     {
-        private const string PluginGuid = "Landoria.Parked";
-        private const string PluginName = "Landoria.Parked";
+        private const string PluginGuid = "Landoria.StructureProtection";
+        private const string PluginName = "Landoria.StructureProtection";
         private const string PluginVersion = "1.0.0";
 
         internal static ModLog Log { get; private set; }
+        internal static StructureProtectionSettings Settings { get; private set; }
 
         private void Awake()
         {
             Log = InitializePlugin(PluginGuid);
+            Settings = new StructureProtectionSettings();
+            Settings.InitializeServer(Log);
             Log.LogInfo($"{PluginName} {PluginVersion} is loaded.");
         }
 
         private void Update()
         {
-            ParkedSession.Update();
+            StructureProtectionSession.Update();
         }
 
         private void OnDestroy()
         {
-            ParkedSession.Reset();
+            StructureProtectionSession.Reset();
             Log?.LogInfo($"{PluginName} {PluginVersion} is unloaded.");
             ShutdownPlugin();
+            Settings = null;
             Log = null;
         }
     }

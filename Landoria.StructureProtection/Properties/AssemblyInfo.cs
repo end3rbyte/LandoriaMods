@@ -1,11 +1,11 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Landoria.Parked")]
-[assembly: AssemblyDescription("Protects player-built pieces according to whether their creator is connected.")]
+[assembly: AssemblyTitle("Landoria.StructureProtection")]
+[assembly: AssemblyDescription("Prevents deliberate creature targeting while a piece creator is offline.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Landoria")]
-[assembly: AssemblyProduct("Landoria.Parked")]
+[assembly: AssemblyProduct("Landoria.StructureProtection")]
 [assembly: AssemblyCopyright("Copyright © 2026 End3rbyte")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

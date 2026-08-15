@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace Landoria.Parked;
+namespace Landoria.StructureProtection;
 
 public sealed class CreatorActivityPolicyTests
 {

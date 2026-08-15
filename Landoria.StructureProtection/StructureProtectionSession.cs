@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using HarmonyLib;
 
-namespace Landoria.Parked
+namespace Landoria.StructureProtection
 {
-    internal static class ParkedSession
+    internal static class StructureProtectionSession
     {
-        private const string IdentityRpc = "Landoria_Parked_Identity";
-        private const string SnapshotRpc = "Landoria_Parked_Snapshot";
+        private const string IdentityRpc = "Landoria_StructureProtection_Identity";
+        private const string SnapshotRpc = "Landoria_StructureProtection_Snapshot";
         private static readonly Dictionary<long, long> PeerPlayers = new Dictionary<long, long>();
-        private static readonly Dictionary<long, string> PlayerNames = new Dictionary<long, string>();
         private static readonly HashSet<long> OnlinePlayers = new HashSet<long>();
         private static ZRoutedRpc registeredRpc;
         private static long identityServer;
@@ -33,23 +32,13 @@ namespace Landoria.Parked
         private static void ClearState()
         {
             PeerPlayers.Clear();
-            PlayerNames.Clear();
             OnlinePlayers.Clear();
+            StructureProtectionPlugin.Settings?.ResetClientState();
         }
 
         internal static HashSet<long> GetOnlinePlayers()
         {
             return new HashSet<long>(OnlinePlayers);
-        }
-
-        internal static long ResolvePeerPlayer(long peer)
-        {
-            return PeerPlayers.TryGetValue(peer, out long player) ? player : 0L;
-        }
-
-        internal static string GetKnownPlayerName(long player)
-        {
-            return PlayerNames.TryGetValue(player, out string name) ? name : null;
         }
 
         private static void RegisterRpcs()
@@ -59,7 +48,7 @@ namespace Landoria.Parked
             {
                 return;
             }
-            rpc.Register<long, string>(IdentityRpc, ReceiveIdentity);
+            rpc.Register<long>(IdentityRpc, ReceiveIdentity);
             rpc.Register<ZPackage>(SnapshotRpc, ReceiveSnapshot);
             ClearState();
             registeredRpc = rpc;
@@ -80,11 +69,10 @@ namespace Landoria.Parked
                 return;
             }
             identityServer = server.m_uid;
-            registeredRpc.InvokeRoutedRPC(
-                server.m_uid, IdentityRpc, player.GetPlayerID(), player.GetPlayerName());
+            registeredRpc.InvokeRoutedRPC(server.m_uid, IdentityRpc, player.GetPlayerID());
         }
 
-        private static void ReceiveIdentity(long sender, long playerId, string playerName)
+        private static void ReceiveIdentity(long sender, long playerId)
         {
             if (ZNet.instance == null || !ZNet.instance.IsServer() ||
                 ZNet.instance.GetPeer(sender) == null || playerId == 0L)
@@ -92,7 +80,6 @@ namespace Landoria.Parked
                 return;
             }
             PeerPlayers[sender] = playerId;
-            PlayerNames[playerId] = playerName ?? string.Empty;
             OnlinePlayers.Add(playerId);
             BroadcastSnapshot();
         }
@@ -126,12 +113,11 @@ namespace Landoria.Parked
 
         private static void WriteMappings(ZPackage package)
         {
+            StructureProtectionPlugin.Settings.WriteClientState(package);
             package.Write(PeerPlayers.Count);
             foreach (KeyValuePair<long, long> mapping in PeerPlayers)
             {
-                package.Write(mapping.Key);
                 package.Write(mapping.Value);
-                package.Write(GetKnownPlayerName(mapping.Value) ?? string.Empty);
             }
         }
 
@@ -141,16 +127,13 @@ namespace Landoria.Parked
             {
                 return;
             }
-            PeerPlayers.Clear();
+            StructureProtectionPlugin.Settings.ReadClientState(package);
             OnlinePlayers.Clear();
             int count = package.ReadInt();
             for (int index = 0; index < count; index++)
             {
-                long peer = package.ReadLong();
                 long player = package.ReadLong();
-                PeerPlayers[peer] = player;
                 OnlinePlayers.Add(player);
-                PlayerNames[player] = package.ReadString();
             }
         }
 

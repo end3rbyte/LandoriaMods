@@ -1,4 +1,4 @@
-namespace Landoria.Parked
+namespace Landoria.StructureProtection
 {
     internal static class PieceActivity
     {
@@ -14,7 +14,7 @@ namespace Landoria.Parked
                 return 1f;
             }
             return CreatorActivityPolicy.IsCreatorActive(
-                creator, ParkedSession.GetOnlinePlayers()) ? 1f : 0f;
+                creator, StructureProtectionSession.GetOnlinePlayers()) ? 1f : 0f;
         }
     }
 }
