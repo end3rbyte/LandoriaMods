@@ -34,18 +34,9 @@ On a peer-hosted world, remote players are monitored. The hosting player is not 
 
 ## Configuration
 
-The server creates `BepInEx/config/Landoria.AfkDetector.cfg` after the first launch.
-
-| BepInEx setting | Default | Purpose |
-|---|---:|---|
-| `Detection.TimeoutMinutes` | `30` | Minutes without qualifying movement or chat before disconnecting a player. Values below one minute are treated as one minute. |
-| `Detection.MovementToleranceMeters` | `0.75` | Minimum distance from the last active position that resets the timer. Values below 0.1 metres are treated as 0.1 metres. |
-
-Configuration changes are applied without restarting the server.
-
-The server command-line switch `--afktimeout <minutes>` takes precedence over
-`Detection.TimeoutMinutes`. Landoria test servers launch with `--afktimeout 5`;
-production servers launch with `--afktimeout 30`.
+The server reads `--afktimeout <minutes>` once when its network session starts.
+The default is `30` minutes, and `-1` disables AFK detection. Other values must be
+at least one minute. Movement tolerance is fixed at `0.75` metres.
 
 ## Detection limits
 

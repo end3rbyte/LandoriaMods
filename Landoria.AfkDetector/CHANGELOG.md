@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.5
+
+- Make the AFK timeout server-command-line-only and allow `-1` to disable detection.
+- Fix movement tolerance at 0.75 metres and remove BepInEx settings.
+
 ## 1.0.4
 
 - Updated documentation

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.20
+
+- Update AfkDetector to version 1.0.5.
+
 ## 1.0.19
 
 - Update Socialize to version 1.0.12.
