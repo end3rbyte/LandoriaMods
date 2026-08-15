@@ -58,6 +58,10 @@ Group data is serialized in a persistent server-owned ZDO stored with the world.
 |---|---|---:|---|
 | `Map.RestrictPublicPositions` | `--socialize-restrict-public-positions true\|false` | `true` | Hides and disables vanilla public-position sharing. |
 | `Map.RestrictPublicPings` | `--socialize-restrict-public-pings true\|false` | `true` | Restricts the public map-ping button and delivery to group members. |
+| `Chat.ShoutDistance` | `--socialize-shout-distance <metres>` | `30` | Sets the shout delivery distance in metres. |
+| `Chat.SayDistance` | `--socialize-say-distance <metres>` | `15` | Sets the normal speech delivery distance in metres. |
+
+Distance values must be positive finite numbers. The server synchronizes its effective values to clients.
 
 Command-line values override the BepInEx configuration. The server synchronizes the effective values to connected clients.
 

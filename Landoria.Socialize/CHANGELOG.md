@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.11
+
+- Add configurable shout and normal speech distances with command-line overrides.
+
 ## 1.0.10
 
 - Add configurable public-position and public-ping restrictions with command-line overrides.

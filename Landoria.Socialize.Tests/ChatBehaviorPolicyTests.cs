@@ -40,13 +40,6 @@ public sealed class ChatBehaviorPolicyTests
             (PersistentChatChannel)channel, redirecting, text));
     }
 
-    // Verifies that Socialize doubles Valheim's normal chat range for shouts.
-    [Fact]
-    public void ShoutRangeIsTwiceNormalRange()
-    {
-        Assert.Equal(30f, ChatBehaviorPolicy.GetShoutDistance(15f));
-    }
-
     // Verifies the error returned when a whisper target is not connected.
     [Fact]
     public void WhisperToMissingPlayerIsRejected()

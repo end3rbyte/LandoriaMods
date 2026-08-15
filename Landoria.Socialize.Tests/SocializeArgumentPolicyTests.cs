@@ -48,4 +48,31 @@ public sealed class SocializeArgumentPolicyTests
                 new[] { "--setting", "true", "--setting", "false" },
                 "--setting", true));
     }
+
+    [Fact]
+    public void PositiveFloatSwitchOverridesConfiguredValue()
+    {
+        Assert.Equal(42.5f, SocializeArgumentPolicy.ResolvePositiveFloat(
+            new[] { "--distance", "42.5" }, "--distance", 15f));
+    }
+
+    [Fact]
+    public void MissingFloatSwitchUsesConfiguredValue()
+    {
+        Assert.Equal(15f, SocializeArgumentPolicy.ResolvePositiveFloat(
+            System.Array.Empty<string>(), "--distance", 15f));
+    }
+
+    [Theory]
+    [InlineData("0")]
+    [InlineData("-1")]
+    [InlineData("NaN")]
+    [InlineData("Infinity")]
+    [InlineData("invalid")]
+    public void NonPositiveOrNonFiniteFloatIsRejected(string value)
+    {
+        Assert.Throws<System.InvalidOperationException>(() =>
+            SocializeArgumentPolicy.ResolvePositiveFloat(
+                new[] { "--distance", value }, "--distance", 15f));
+    }
 }
