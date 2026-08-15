@@ -13,7 +13,7 @@ Adds persistent player groups, private messaging, map sharing, and expanded chat
 
 - Creates persistent server-owned groups of up to five players.
 - Gives leaders invite, remove, and promotion controls.
-- Adds nearby, shout, whisper, private ping, and group chat channels.
+- Adds nearby, shout, server-wide, whisper, private ping, and group chat channels.
 - Keeps the selected shout, whisper, or group channel active.
 - Automatically shares connected group members' map positions.
 - Restricts public map positions and pings outside groups.
@@ -24,7 +24,8 @@ Adds persistent player groups, private messaging, map sharing, and expanded chat
 | Command | Purpose | Display |
 |---|---|---|
 | `/s <message>` or `/say <message>` | Sends normal nearby chat. | Vanilla white |
-| `/sh <message>` or `/shout <message>` | Shouts within twice the normal say range. | Orange sender, yellow text |
+| `/sh <message>` or `/shout <message>` | Shouts within the configured local range. | Orange sender, yellow text |
+| `/all <message>` | Uses vanilla shout delivery to reach every connected player without changing the selected channel. | Vanilla shout style |
 | `/w <PlayerName> <message>` | Sends a world-wide private message. | Green |
 | `/wping <PlayerName> <message>` | Sends a private message and animated map ping. | Green with yellow label |
 | `/g <message>` | Sends a message to connected group members. | Blue |
@@ -54,16 +55,16 @@ Group data is serialized in a persistent server-owned ZDO stored with the world.
 
 ## Configuration
 
-| BepInEx setting | Command-line override | Default | Behavior |
-|---|---|---:|---|
-| `Map.RestrictPublicPositions` | `--socialize-restrict-public-positions true\|false` | `true` | Hides and disables vanilla public-position sharing. |
-| `Map.RestrictPublicPings` | `--socialize-restrict-public-pings true\|false` | `true` | Restricts the public map-ping button and delivery to group members. |
-| `Chat.ShoutDistance` | `--socialize-shout-distance <metres>` | `30` | Sets the shout delivery distance in metres. |
-| `Chat.SayDistance` | `--socialize-say-distance <metres>` | `15` | Sets the normal speech delivery distance in metres. |
+| Dedicated-server switch | Default | Behavior |
+|---|---:|---|
+| `--socialize-restrict-public-positions true\|false` | `true` | Hides and disables vanilla public-position sharing. |
+| `--socialize-restrict-public-pings true\|false` | `true` | Restricts the public map-ping button and delivery to group members. |
+| `--socialize-shout-distance <metres>` | `30` | Sets the shout delivery distance in metres. |
+| `--socialize-say-distance <metres>` | `15` | Sets the normal speech delivery distance in metres. |
+| `--socialize-all-channel-enabled true\|false` | `false` | Enables the one-shot `/all` command. |
 
-Distance values must be positive finite numbers. The server synchronizes its effective values to clients.
-
-Command-line values override the BepInEx configuration. The server synchronizes the effective values to connected clients.
+Distance values must be positive finite numbers. The server reads these switches once,
+keeps the effective configuration in memory, and sends it to each client after spawning.
 
 ## Installation
 

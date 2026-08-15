@@ -23,6 +23,18 @@ namespace Landoria.Socialize
         }
     }
 
+    [HarmonyPatch(typeof(Player), "OnSpawned")]
+    internal static class RequestSocialStateOnSpawnPatch
+    {
+        private static void Postfix(Player __instance)
+        {
+            if (__instance == Player.m_localPlayer)
+            {
+                GroupService.RequestInitialState();
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(Chat), "AddInworldText")]
     internal static class DisablePrivateWorldTextPatch
     {
@@ -99,7 +111,7 @@ namespace Landoria.Socialize
     {
         private static bool Prefix(Talker.Type type, string text)
         {
-            if (type == Talker.Type.Shout)
+            if (type == Talker.Type.Shout && !SocialChatSender.IsSendingAll)
             {
                 SocialChatSender.SendShout(text);
                 return false;

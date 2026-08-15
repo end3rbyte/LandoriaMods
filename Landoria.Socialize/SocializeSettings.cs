@@ -1,53 +1,44 @@
-using BepInEx.Configuration;
 using Landoria.SharedLib;
 
 namespace Landoria.Socialize
 {
     internal sealed class SocializeSettings
     {
-        private const string PositionArgument = "--socialize-restrict-public-positions";
-        private const string PingArgument = "--socialize-restrict-public-pings";
-        private const string ShoutDistanceArgument = "--socialize-shout-distance";
-        private const string SayDistanceArgument = "--socialize-say-distance";
-        private readonly bool configuredPositions;
-        private readonly bool configuredPings;
-        private readonly float configuredShoutDistance;
-        private readonly float configuredSayDistance;
+        private readonly string[] arguments;
+        private bool serverInitialized;
 
-        private SocializeSettings(bool positions, bool pings, float shoutDistance, float sayDistance)
+        internal SocializeSettings(string[] arguments)
         {
-            configuredPositions = positions;
-            configuredPings = pings;
-            RestrictPublicPositions = positions;
-            RestrictPublicPings = pings;
-            configuredShoutDistance = shoutDistance;
-            configuredSayDistance = sayDistance;
-            ShoutDistance = shoutDistance;
-            SayDistance = sayDistance;
+            this.arguments = arguments;
+            ResetState();
         }
 
         internal bool RestrictPublicPositions { get; private set; }
         internal bool RestrictPublicPings { get; private set; }
         internal float ShoutDistance { get; private set; }
         internal float SayDistance { get; private set; }
+        internal bool AllChannelEnabled { get; private set; }
 
-        internal static SocializeSettings Load(
-            ConfigFile config, string[] arguments, ModLog logger)
+        internal void InitializeServer(ModLog logger)
         {
-            bool positions = config.Bind("Map", "RestrictPublicPositions", true).Value;
-            bool pings = config.Bind("Map", "RestrictPublicPings", true).Value;
-            float shoutDistance = config.Bind("Chat", "ShoutDistance", 30f).Value;
-            float sayDistance = config.Bind("Chat", "SayDistance", 15f).Value;
-            positions = SocializeArgumentPolicy.Resolve(arguments, PositionArgument, positions);
-            pings = SocializeArgumentPolicy.Resolve(arguments, PingArgument, pings);
-            shoutDistance = SocializeArgumentPolicy.ResolvePositiveFloat(
-                arguments, ShoutDistanceArgument, shoutDistance);
-            sayDistance = SocializeArgumentPolicy.ResolvePositiveFloat(
-                arguments, SayDistanceArgument, sayDistance);
-            logger.LogInfo($"Effective map settings: restrictPublicPositions={positions}, " +
-                $"restrictPublicPings={pings}.");
-            logger.LogInfo($"Effective chat distances: shout={shoutDistance}, say={sayDistance}.");
-            return new SocializeSettings(positions, pings, shoutDistance, sayDistance);
+            if (serverInitialized) return;
+            SocializeServerConfiguration configuration =
+                SocializeServerConfiguration.FromArguments(arguments);
+            RestrictPublicPositions = configuration.RestrictPublicPositions;
+            RestrictPublicPings = configuration.RestrictPublicPings;
+            ShoutDistance = configuration.ShoutDistance;
+            SayDistance = configuration.SayDistance;
+            AllChannelEnabled = configuration.AllChannelEnabled;
+            serverInitialized = true;
+            LogSettings(logger);
+        }
+
+        private void LogSettings(ModLog logger)
+        {
+            logger.LogInfo($"Effective map settings: restrictPublicPositions=" +
+                $"{RestrictPublicPositions}, restrictPublicPings={RestrictPublicPings}.");
+            logger.LogInfo($"Effective chat settings: shoutDistance={ShoutDistance}, " +
+                $"sayDistance={SayDistance}, allChannelEnabled={AllChannelEnabled}.");
         }
 
         internal void WriteState(ZPackage package)
@@ -56,6 +47,7 @@ namespace Landoria.Socialize
             package.Write(RestrictPublicPings);
             package.Write(ShoutDistance);
             package.Write(SayDistance);
+            package.Write(AllChannelEnabled);
         }
 
         internal void ReadState(ZPackage package)
@@ -64,14 +56,17 @@ namespace Landoria.Socialize
             RestrictPublicPings = package.ReadBool();
             ShoutDistance = package.ReadSingle();
             SayDistance = package.ReadSingle();
+            AllChannelEnabled = package.ReadBool();
         }
 
         internal void ResetState()
         {
-            RestrictPublicPositions = configuredPositions;
-            RestrictPublicPings = configuredPings;
-            ShoutDistance = configuredShoutDistance;
-            SayDistance = configuredSayDistance;
+            if (serverInitialized) return;
+            RestrictPublicPositions = true;
+            RestrictPublicPings = true;
+            ShoutDistance = 30f;
+            SayDistance = 15f;
+            AllChannelEnabled = false;
         }
     }
 }
