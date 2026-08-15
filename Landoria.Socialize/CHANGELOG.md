@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.10
+
+- Remove the global chat command.
+
 ## 1.0.9
 
 - Remove the global chat command.
