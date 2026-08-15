@@ -74,9 +74,6 @@ When CharacterVault refuses admission, Valheim returns to the main menu and disp
 The server creates `BepInEx/config/Landoria.CharacterVault.cfg`:
 
 ```ini
-[Characters]
-AllowMultipleCharactersPerSteamId = true
-
 [New Characters]
 StartingItems =
 ```
@@ -87,11 +84,13 @@ Starting items use comma-separated prefab and quantity pairs:
 StartingItems = hammer:1,wood:10,stone:10
 ```
 
-Command-line switches override the configuration file:
+The multiple-character policy is read only from the dedicated-server command line.
+It defaults to `true` and is stored in server memory for the network session.
+The starting-items switch continues to override its BepInEx setting:
 
 | Switch | Example |
 |---|---|
-| `--charactervault-allow-multiple-characters` | `--charactervault-allow-multiple-characters true` |
+| `--charactervault-allow-multiple-characters` | `--charactervault-allow-multiple-characters false` |
 | `--charactervault-starting-items` | `--charactervault-starting-items hammer:1,wood:10,stone:10` |
 
 When multiple characters are disabled, an account with an enrolled character

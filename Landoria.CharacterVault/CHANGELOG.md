@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.12
+
+- Make the multiple-character policy a server-only command-line setting with a true default.
+
 ## 1.0.11
 
 - Add unit tests.

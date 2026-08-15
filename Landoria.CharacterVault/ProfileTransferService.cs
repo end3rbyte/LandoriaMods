@@ -287,6 +287,7 @@ namespace Landoria.CharacterVault
 
         private void RegisterServer(ZRpc rpc)
         {
+            CharacterVaultPlugin.Settings.InitializeServer();
             CharacterVaultRejection.RegisterServer(rpc);
             rpc.Register<ZPackage>(HelloRpc, ReceiveHello);
             rpc.Register<ZPackage>(UploadBeginRpc, ReceiveUploadBegin);
