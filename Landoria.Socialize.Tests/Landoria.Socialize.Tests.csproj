@@ -26,5 +26,6 @@
     <Compile Include="../Landoria.Socialize/GroupPolicy.cs" Link="GroupPolicy.cs" />
     <Compile Include="../Landoria.Socialize/MapSharingPolicy.cs" Link="MapSharingPolicy.cs" />
     <Compile Include="../Landoria.Socialize/SocialGroup.cs" Link="SocialGroup.cs" />
+    <Compile Include="../Landoria.Socialize/SocializeArgumentPolicy.cs" Link="SocializeArgumentPolicy.cs" />
   </ItemGroup>
 </Project>

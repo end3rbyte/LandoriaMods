@@ -43,6 +43,15 @@ Adds persistent player groups, private messaging, map sharing, and expanded chat
 - Invitations use Valheim's Yes/No popup.
 - Friendly-fire rules, permissions, and teleportation are not included.
 
+## Configuration
+
+| BepInEx setting | Command-line override | Default |
+|---|---|---:|
+| `Map.RestrictPublicPositions` | `--socialize-restrict-public-positions true\|false` | `true` |
+| `Map.RestrictPublicPings` | `--socialize-restrict-public-pings true\|false` | `true` |
+
+Command-line values override the BepInEx configuration and are synchronized by the server.
+
 ## Installation
 
 | Client required | Server required |

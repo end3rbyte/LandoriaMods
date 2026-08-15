@@ -52,6 +52,15 @@ Groups with fewer than two members are disbanded automatically. Invitations use 
 
 Group data is serialized in a persistent server-owned ZDO stored with the world. No separate configuration or group file is created.
 
+## Configuration
+
+| BepInEx setting | Command-line override | Default | Behavior |
+|---|---|---:|---|
+| `Map.RestrictPublicPositions` | `--socialize-restrict-public-positions true\|false` | `true` | Hides and disables vanilla public-position sharing. |
+| `Map.RestrictPublicPings` | `--socialize-restrict-public-pings true\|false` | `true` | Restricts the public map-ping button and delivery to group members. |
+
+Command-line values override the BepInEx configuration. The server synchronizes the effective values to connected clients.
+
 ## Installation
 
 | Client required | Server required |

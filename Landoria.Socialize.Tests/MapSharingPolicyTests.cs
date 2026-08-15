@@ -5,20 +5,26 @@ namespace Landoria.Socialize;
 
 public sealed class MapSharingPolicyTests
 {
-    // Verifies that Socialize always disables vanilla public position sharing.
-    [Fact]
-    public void PublicPositionIsAlwaysDisabled()
+    [Theory]
+    [InlineData(true, true, false)]
+    [InlineData(true, false, false)]
+    [InlineData(false, true, true)]
+    [InlineData(false, false, false)]
+    public void PublicPositionFollowsSetting(
+        bool restricted, bool requested, bool expected)
     {
-        Assert.False(MapSharingPolicy.GetPublicPosition());
+        Assert.Equal(expected, MapSharingPolicy.GetPublicPosition(restricted, requested));
     }
 
     // Verifies that public map pings require group membership.
     [Theory]
-    [InlineData(false, false)]
-    [InlineData(true, true)]
-    public void PublicPingVisibilityFollowsGroupMembership(bool inGroup, bool expected)
+    [InlineData(true, false, false)]
+    [InlineData(true, true, true)]
+    [InlineData(false, false, true)]
+    public void PublicPingVisibilityFollowsSettingAndMembership(
+        bool restricted, bool inGroup, bool expected)
     {
-        Assert.Equal(expected, MapSharingPolicy.CanSendPublicPing(inGroup));
+        Assert.Equal(expected, MapSharingPolicy.CanSendPublicPing(restricted, inGroup));
     }
 
     // Verifies that a connected group member missing from the public list is added.

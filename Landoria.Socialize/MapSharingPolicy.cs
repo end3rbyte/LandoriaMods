@@ -4,9 +4,11 @@ namespace Landoria.Socialize
 {
     internal static class MapSharingPolicy
     {
-        internal static bool CanSendPublicPing(bool isInGroup) => isInGroup;
+        internal static bool CanSendPublicPing(bool restricted, bool isInGroup) =>
+            !restricted || isInGroup;
 
-        internal static bool GetPublicPosition() => false;
+        internal static bool GetPublicPosition(bool restricted, bool requested) =>
+            restricted ? false : requested;
 
         internal static bool ShouldAddGroupMember(
             long playerId, long localPlayerId, ISet<long> visiblePlayerIds)

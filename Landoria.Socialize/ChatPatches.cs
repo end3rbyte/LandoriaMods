@@ -37,7 +37,12 @@ namespace Landoria.Socialize
     {
         private static bool Prefix(Vector3 position)
         {
-            if (!MapSharingPolicy.CanSendPublicPing(GroupService.IsLocalPlayerInGroup()))
+            if (!SocializePlugin.Settings.RestrictPublicPings)
+            {
+                return true;
+            }
+            if (!MapSharingPolicy.CanSendPublicPing(
+                    true, GroupService.IsLocalPlayerInGroup()))
             {
                 SocializePlugin.Log.LogDebug(
                     "Map ping ignored because the local player is not in a group.");

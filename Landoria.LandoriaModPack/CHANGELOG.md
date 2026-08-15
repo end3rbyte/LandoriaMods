@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.17
+
+- Update Socialize to version 1.0.10.
+
 ## 1.0.16
 
 - Add Parked and update Socialize to version 1.0.9.
