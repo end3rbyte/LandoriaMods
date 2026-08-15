@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Threading;
 using BepInEx;
-using BepInEx.Configuration;
 using Landoria.SharedLib;
 using UnityEngine;
 
@@ -13,7 +12,7 @@ namespace Landoria.CharacterVault
     {
         private const string PluginGuid = "Landoria.CharacterVault";
         private const string PluginName = "Landoria.CharacterVault";
-        private const string PluginVersion = "1.0.12";
+        private const string PluginVersion = "1.0.13";
         internal static ModLog Log { get; private set; }
         internal static GracefulShutdownCoordinator Coordinator { get; private set; }
         internal static VoluntaryDisconnectCoordinator DisconnectCoordinator { get; private set; }
@@ -27,7 +26,7 @@ namespace Landoria.CharacterVault
         {
             Instance = this;
             Log = InitializePlugin(PluginGuid);
-            Settings = CharacterVaultSettings.Load(Config);
+            Settings = new CharacterVaultSettings();
             Transfers = new ProfileTransferService(SynchronizationContext.Current);
             Coordinator = new GracefulShutdownCoordinator(SynchronizationContext.Current);
             DisconnectCoordinator = new VoluntaryDisconnectCoordinator();

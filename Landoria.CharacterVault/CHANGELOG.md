@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.13
+
+- Make starting items server-command-line-only and send them only during new-character admission.
+
 ## 1.0.12
 
 - Make the multiple-character policy a server-only command-line setting with a true default.

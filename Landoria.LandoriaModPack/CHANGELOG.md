@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.22
+
+- Update CharacterVault to version 1.0.13.
+
 ## 1.0.21
 
 - Update CharacterVault to version 1.0.12.

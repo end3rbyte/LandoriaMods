@@ -31,4 +31,21 @@ public sealed class CharacterVaultArgumentPolicyTests
                 "--charactervault-allow-multiple-characters", value
             }));
     }
+
+    [Fact]
+    public void MissingStartingItemsSwitchUsesEmptyListText()
+    {
+        Assert.Equal("", CharacterVaultArgumentPolicy.ResolveStartingItems(
+            System.Array.Empty<string>()));
+    }
+
+    [Fact]
+    public void StartingItemsSwitchReturnsServerValue()
+    {
+        Assert.Equal("hammer:1,wood:10",
+            CharacterVaultArgumentPolicy.ResolveStartingItems(new[]
+            {
+                "--charactervault-starting-items", "hammer:1,wood:10"
+            }));
+    }
 }
