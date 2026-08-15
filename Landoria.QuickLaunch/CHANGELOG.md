@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4
+
+- Make the automatic session resume description clearer for players.
+
 ## 1.0.3
 
 - Remove QuickLaunch option escape

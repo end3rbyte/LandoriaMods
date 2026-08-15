@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.6
+
+- Clarify how boss trophies return after selecting a Forsaken power.
+
 ## 1.0.5
 
 - Document Valheim version compatibility
