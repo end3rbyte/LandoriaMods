@@ -1,17 +1,8 @@
 # Changelog
 
-## 1.0.10
-
-- Make groups temporary for missions and end membership when players disconnect.
-
 ## 1.0.9
 
-- Move player-built piece permissions and offline protection to Parked.
-- Add configurable public-position, public-ping, shout-distance, and speech-distance server switches.
-- Add an optional one-shot `/all` command using vanilla server-wide shout delivery.
-- Synchronize only client-relevant Socialize settings after player spawn.
-- Read server command-line settings only on dedicated servers.
-- Use the shared dedicated-server role check.
+- Make groups temporary for missions and end membership when players disconnect.
 
 ## 1.0.8
 
