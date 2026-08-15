@@ -186,8 +186,12 @@ namespace Landoria.HammerFreedom
 
         internal static bool Enter()
         {
-            if (!HammerFreedomAuthorization.IsAuthorized(
-                    HammerFreedomCapabilities.RecoverBuildMaterials))
+            bool authorized = HammerFreedomAuthorization.IsAuthorized(
+                HammerFreedomCapabilities.RecoverBuildMaterials);
+            bool noBuildCost = ZoneSystem.instance != null &&
+                ZoneSystem.instance.GetGlobalKey(GlobalKeys.NoBuildCost);
+            if (!HammerFreedomBehaviorPolicy.ShouldRecoverBuildMaterials(
+                    authorized, noBuildCost))
             {
                 return false;
             }
@@ -238,7 +242,7 @@ namespace Landoria.HammerFreedom
     {
         private static void Postfix(GlobalKeys key, ref bool __result)
         {
-            bool freeBuildKey = key == GlobalKeys.NoBuildCost || key == GlobalKeys.NoCraftCost;
+            bool freeBuildKey = key == GlobalKeys.NoBuildCost;
             if (HammerFreedomBehaviorPolicy.ShouldIgnoreFreeBuildKey(
                     BuildMaterialRecoveryScope.IsActive,
                     HammerFreedomAuthorization.IsAuthorized(

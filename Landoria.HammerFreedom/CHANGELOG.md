@@ -2,7 +2,7 @@
 
 ## 1.0.2
 
-- Make Hammer capabilities dedicated-server-authorized and disabled by default.
+- Make Hammer capabilities server-authorized, including No Build Cost material recovery.
 
 ## 1.0.1
 

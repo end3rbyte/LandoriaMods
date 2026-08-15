@@ -25,5 +25,11 @@ namespace Landoria.HammerFreedom
         {
             return recoveryScope && recoveryAuthorized && freeBuildKey;
         }
+
+        internal static bool ShouldRecoverBuildMaterials(
+            bool recoveryAuthorized, bool noBuildCostActive)
+        {
+            return recoveryAuthorized && noBuildCostActive;
+        }
     }
 }

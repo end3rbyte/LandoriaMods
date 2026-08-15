@@ -64,4 +64,16 @@ public sealed class HammerFreedomBehaviorPolicyTests
         Assert.Equal(expected, HammerFreedomBehaviorPolicy.ShouldIgnoreFreeBuildKey(
             scope, authorized, freeBuildKey));
     }
+
+    // Verifies that material recovery is limited to authorized No Build Cost worlds.
+    [Theory]
+    [InlineData(true, true, true)]
+    [InlineData(true, false, false)]
+    [InlineData(false, true, false)]
+    public void MaterialRecoveryRequiresNoBuildCost(
+        bool authorized, bool noBuildCost, bool expected)
+    {
+        Assert.Equal(expected, HammerFreedomBehaviorPolicy.ShouldRecoverBuildMaterials(
+            authorized, noBuildCost));
+    }
 }

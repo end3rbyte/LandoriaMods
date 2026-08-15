@@ -8,7 +8,8 @@ namespace Landoria.HammerFreedom
         private const string FallDamageArgument = "--hammerfreedom-fall-damage-immunity";
         private const string StaminaArgument = "--hammerfreedom-unlimited-stamina";
         private const string DurabilityArgument = "--hammerfreedom-no-durability-loss";
-        private const string RecoveryArgument = "--hammerfreedom-recover-build-materials";
+        private const string RecoveryArgument =
+            "--hammerfreedom-no-build-cost-recover-materials";
 
         internal bool Flight { get; private set; }
         internal bool FallDamageImmunity { get; private set; }

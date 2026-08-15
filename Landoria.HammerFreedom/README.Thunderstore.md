@@ -16,13 +16,13 @@ Hammer worlds without enabling debug mode, developer commands, or administrator 
 - Provides separate `--hammerfreedom-fly`, `--hammerfreedom-fall-damage-immunity`, and
   `--hammerfreedom-unlimited-stamina` server switches, plus
   `--hammerfreedom-no-durability-loss` and
-  `--hammerfreedom-recover-build-materials`; each is enabled by default.
+  `--hammerfreedom-no-build-cost-recover-materials`; each is disabled by default.
 - Requires the Hammer world modifiers before the server grants any capability.
 - Prevents all fall damage, regardless of fall height, when authorized.
 - Prevents all stamina use when authorized, regardless of the action.
 - Prevents durability loss for tools, weapons, shields, armor, and other durable equipment.
-- Returns vanilla recoverable materials when a piece is dismantled with a hammer, even when
-  building or crafting costs are disabled.
+- Returns vanilla recoverable materials when a piece is dismantled with a hammer while
+  authorized `NoBuildCost` material recovery is active.
 - Disables capabilities immediately when authorization is removed or the server changes.
 - Hides the `fly` command until authorization is granted.
 - Supports `fly`, `fly on`, `fly off`, and the fixed native `Z` toggle shortcut.
