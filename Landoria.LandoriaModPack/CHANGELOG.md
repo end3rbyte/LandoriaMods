@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.21
+
+- Update CharacterVault to version 1.0.12.
+
 ## 1.0.20
 
 - Update AfkDetector to version 1.0.5.

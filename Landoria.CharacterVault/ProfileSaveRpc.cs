@@ -26,8 +26,12 @@ namespace Landoria.CharacterVault
     [HarmonyPatch(typeof(ZNet), "Start")]
     internal static class PendingExitRequestPatch
     {
-        private static void Postfix()
+        private static void Postfix(ZNet __instance)
         {
+            if (__instance.IsServer())
+            {
+                CharacterVaultPlugin.Settings?.InitializeServer();
+            }
             CharacterVaultPlugin.Coordinator?.ProcessPendingExitRequest();
         }
     }

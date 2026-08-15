@@ -6,45 +6,34 @@ namespace Landoria.CharacterVault
 {
     internal sealed class CharacterVaultSettings
     {
-        private const string MultipleArgument = "--charactervault-allow-multiple-characters";
         private const string ItemsArgument = "--charactervault-starting-items";
+        private bool serverInitialized;
 
-        private CharacterVaultSettings(bool allowMultiple, string startingItems)
+        private CharacterVaultSettings(string startingItems)
         {
-            AllowMultipleCharacters = allowMultiple;
             StartingItems = ParseItems(startingItems);
         }
 
-        internal bool AllowMultipleCharacters { get; }
+        internal bool AllowMultipleCharacters { get; private set; } = true;
         internal IReadOnlyList<StartingItem> StartingItems { get; }
 
         internal static CharacterVaultSettings Load(ConfigFile config)
         {
-            bool configuredMultiple = config.Bind("Characters", "AllowMultipleCharactersPerSteamId",
-                true, "Allow one Steam account to register multiple characters.").Value;
             string configuredItems = config.Bind("New Characters", "StartingItems", string.Empty,
                 "Comma-separated prefab and quantity pairs, for example hammer:1,wood:10.").Value;
-            bool multiple = ReadBoolArgument(MultipleArgument) ?? configuredMultiple;
             string items = ReadArgument(ItemsArgument) ?? configuredItems;
-            CharacterVaultPlugin.Log.LogInfo(
-                $"Effective settings: allowMultipleCharacters={multiple}, startingItems='{items}'.");
-            return new CharacterVaultSettings(multiple, items);
+            CharacterVaultPlugin.Log.LogInfo($"Effective starting items: '{items}'.");
+            return new CharacterVaultSettings(items);
         }
 
-        private static bool? ReadBoolArgument(string name)
+        internal void InitializeServer()
         {
-            string value = ReadArgument(name);
-            if (value == null)
-            {
-                return null;
-            }
-
-            if (!bool.TryParse(value, out bool parsed))
-            {
-                throw new InvalidOperationException($"Command-line switch {name} requires true or false.");
-            }
-
-            return parsed;
+            if (serverInitialized) return;
+            AllowMultipleCharacters = CharacterVaultArgumentPolicy.ResolveAllowMultiple(
+                Environment.GetCommandLineArgs());
+            serverInitialized = true;
+            CharacterVaultPlugin.Log.LogInfo(
+                $"Server allowMultipleCharacters={AllowMultipleCharacters}.");
         }
 
         private static string ReadArgument(string name)
