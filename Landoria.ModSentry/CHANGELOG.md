@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.7
+
+- Explain mod compatibility checks more clearly for players.
+
 ## 1.0.6
 
 - Add unit tests.

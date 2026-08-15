@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.6
+
+- Clarify tombstone protection and trusted-player access.
+
 ## 1.0.5
 
 - Add unit tests.

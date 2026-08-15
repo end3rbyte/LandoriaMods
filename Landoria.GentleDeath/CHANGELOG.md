@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.8
+
+- Make the Thunderstore description clearer for players.
+
 ## 1.0.7
 
 - Document Valheim version compatibility
