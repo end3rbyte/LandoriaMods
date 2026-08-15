@@ -23,7 +23,7 @@ Protects player-built pieces according to their creator's Socialize group activi
 |---|---|
 | Yes | Yes |
 
-Socialize 1.0.12 or later is required on the server and every participating client.
+Socialize 1.0.13 or later is required on the server and every participating client.
 
 Read the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.Parked/README.md) on GitHub.
 

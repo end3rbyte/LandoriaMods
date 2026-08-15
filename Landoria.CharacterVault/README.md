@@ -79,7 +79,7 @@ Starting items use comma-separated prefab and quantity pairs on the server comma
 
 The multiple-character policy is read only from the dedicated-server command line.
 It defaults to `true` and is stored in server memory for the network session.
-The server reads both switches once and keeps their values in memory:
+The dedicated server reads both switches once and keeps their values in memory:
 
 | Switch | Example |
 |---|---|

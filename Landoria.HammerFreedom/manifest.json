@@ -1,6 +1,6 @@
 {
   "name": "HammerFreedom",
-  "version_number": "1.0.2",
+  "version_number": "1.0.3",
   "website_url": "https://valheim.landoria-gaming.com/",
   "description": "Adds server-authorized creative freedoms to Hammer worlds.",
   "dependencies": [

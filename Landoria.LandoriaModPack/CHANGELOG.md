@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.24
+
+- Restrict AfkDetector and CharacterVault server settings to dedicated servers.
+
+## 1.0.23
+
+- Update server-authorized mods to read switches only on dedicated servers.
+
 ## 1.0.22
 
 - Update CharacterVault to version 1.0.13.

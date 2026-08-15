@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.6
+
+- Read and apply the AFK timeout only on dedicated servers.
+
 ## 1.0.5
 
 - Make the AFK timeout server-command-line-only and allow `-1` to disable detection.

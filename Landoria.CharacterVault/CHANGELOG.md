@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.14
+
+- Read server command-line settings only on dedicated servers.
+
 ## 1.0.13
 
 - Make starting items server-command-line-only and send them only during new-character admission.
