@@ -51,4 +51,17 @@ public sealed class HammerFreedomBehaviorPolicyTests
         Assert.Equal(expected, HammerFreedomBehaviorPolicy.ShouldPreserveDurability(
             localPlayer, authorized));
     }
+
+    // Verifies that only an authorized free-build check inside recovery is ignored.
+    [Theory]
+    [InlineData(true, true, true, true)]
+    [InlineData(false, true, true, false)]
+    [InlineData(true, false, true, false)]
+    [InlineData(true, true, false, false)]
+    public void FreeBuildKeyOverrideRequiresAuthorizedRecoveryScope(
+        bool scope, bool authorized, bool freeBuildKey, bool expected)
+    {
+        Assert.Equal(expected, HammerFreedomBehaviorPolicy.ShouldIgnoreFreeBuildKey(
+            scope, authorized, freeBuildKey));
+    }
 }

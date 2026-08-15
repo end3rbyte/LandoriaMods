@@ -19,5 +19,11 @@ namespace Landoria.HammerFreedom
         {
             return isLocalPlayer && noDurabilityLossAuthorized;
         }
+
+        internal static bool ShouldIgnoreFreeBuildKey(
+            bool recoveryScope, bool recoveryAuthorized, bool freeBuildKey)
+        {
+            return recoveryScope && recoveryAuthorized && freeBuildKey;
+        }
     }
 }
