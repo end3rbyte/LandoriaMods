@@ -20,6 +20,8 @@ Discover the worlds, choose your game mode, and learn how to join at [valheim.la
 |---|---|---|
 | Yes | Yes | Not Supported |
 
+Read the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.LandoriaModPack/README.md) on GitHub.
+
 ## Contact
 
 Report bugs through [GitHub Issues](https://github.com/landoria-gaming/LandoriaMods/issues). For other conversations, use [GitHub Discussions](https://github.com/landoria-gaming/LandoriaMods/discussions).
