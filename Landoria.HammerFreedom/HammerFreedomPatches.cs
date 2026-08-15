@@ -3,6 +3,18 @@ using UnityEngine;
 
 namespace Landoria.HammerFreedom
 {
+    [HarmonyPatch(typeof(Player), "OnSpawned")]
+    internal static class HammerFreedomAuthorizationOnSpawnPatch
+    {
+        private static void Postfix(Player __instance)
+        {
+            if (__instance == Player.m_localPlayer)
+            {
+                HammerFreedomAuthorization.RequestOnSpawn();
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(Terminal), "InitTerminal")]
     internal static class FlyCommandRegistrationPatch
     {

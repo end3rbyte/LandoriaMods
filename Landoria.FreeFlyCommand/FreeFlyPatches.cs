@@ -2,6 +2,18 @@ using HarmonyLib;
 
 namespace Landoria.FreeFlyCommand
 {
+    [HarmonyPatch(typeof(Player), "OnSpawned")]
+    internal static class FreeFlyAuthorizationOnSpawnPatch
+    {
+        private static void Postfix(Player __instance)
+        {
+            if (__instance == Player.m_localPlayer)
+            {
+                FreeFlyAuthorization.RequestOnSpawn();
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(Terminal), "InitTerminal")]
     internal static class FreeFlyCommandRegistrationPatch
     {

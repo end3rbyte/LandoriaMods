@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.6
+
+- Request administrator authorization once after the local player spawns.
+
 ## 1.0.5
 
 - Document Valheim version compatibility

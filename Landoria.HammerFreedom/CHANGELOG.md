@@ -5,6 +5,7 @@
 - Limit authorized flight to 4 metres per second normally and 7 metres per second while sprinting.
 - Read capability switches only on dedicated servers and fail closed elsewhere.
 - Use the shared dedicated-server role check.
+- Request capabilities once after the local player spawns.
 
 ## 1.0.1
 

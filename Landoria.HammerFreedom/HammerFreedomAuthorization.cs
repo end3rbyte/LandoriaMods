@@ -1,6 +1,5 @@
 using System;
 using Landoria.SharedLib;
-using UnityEngine;
 
 namespace Landoria.HammerFreedom
 {
@@ -8,12 +7,9 @@ namespace Landoria.HammerFreedom
     {
         private const string RequestRpc = "Landoria_HammerFreedom_Request";
         private const string ResponseRpc = "Landoria_HammerFreedom_Response";
-        private const float RetrySeconds = 2f;
-
         private static ZRoutedRpc _registeredRpc;
         private static ZNetPeer _serverPeer;
-        private static HammerFreedomCapabilities? _serverCapabilities;
-        private static float _nextRequestAt;
+        private static bool _requestSent;
         private static HammerFreedomCapabilities _authorizedCapabilities;
 
         internal static bool IsAuthorized(HammerFreedomCapabilities capability)
@@ -42,8 +38,26 @@ namespace Landoria.HammerFreedom
 
         internal static void ResetSession()
         {
-            _serverCapabilities = null;
             ResetConnection();
+        }
+
+        internal static void RequestOnSpawn()
+        {
+            RegisterRpcs();
+            if (ZNet.instance == null || ZNet.instance.IsServer() ||
+                ZRoutedRpc.instance == null || _requestSent)
+            {
+                return;
+            }
+
+            _serverPeer = ZNet.instance.GetServerPeer();
+            if (_serverPeer == null)
+            {
+                return;
+            }
+
+            _requestSent = true;
+            ZRoutedRpc.instance.InvokeRoutedRPC(_serverPeer.m_uid, RequestRpc);
         }
 
         private static void RegisterRpcs()
@@ -69,16 +83,6 @@ namespace Landoria.HammerFreedom
             HammerFreedomPlugin.InitializeDedicatedServerSettings();
             HammerFreedomCapabilities capabilities = ResolveServerCapabilities();
             SetAuthorized(capabilities);
-            if (_serverCapabilities == capabilities)
-            {
-                return;
-            }
-
-            _serverCapabilities = capabilities;
-            ZRoutedRpc.instance.InvokeRoutedRPC(
-                ZRoutedRpc.Everybody, ResponseRpc, (int)capabilities);
-            HammerFreedomPlugin.ModLogger.LogInfo(
-                $"Server HammerFreedom capabilities changed to {capabilities}.");
         }
 
         private static void UpdateClientAuthorization()
@@ -95,12 +99,6 @@ namespace Landoria.HammerFreedom
                 _serverPeer = currentServer;
             }
 
-            if (_serverPeer != null && _authorizedCapabilities == HammerFreedomCapabilities.None &&
-                Time.unscaledTime >= _nextRequestAt)
-            {
-                _nextRequestAt = Time.unscaledTime + RetrySeconds;
-                ZRoutedRpc.instance.InvokeRoutedRPC(_serverPeer.m_uid, RequestRpc);
-            }
         }
 
         private static void ReceiveRequest(long sender)
@@ -143,7 +141,7 @@ namespace Landoria.HammerFreedom
         private static void ResetConnection()
         {
             _serverPeer = null;
-            _nextRequestAt = 0f;
+            _requestSent = false;
             FlyController.SetEnabled(false);
             SetAuthorized(HammerFreedomCapabilities.None);
         }
