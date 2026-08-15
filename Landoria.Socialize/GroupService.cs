@@ -36,6 +36,7 @@ namespace Landoria.Socialize
             GroupStorage.Reset();
             GroupState.ClearAll();
             SocializePlugin.Settings?.ResetState();
+            SocialChatSender.ApplyRangesToLoadedTalkers();
             ParkedIntegration.Reset();
         }
 
@@ -113,6 +114,7 @@ namespace Landoria.Socialize
             GroupStorage.Reset();
             GroupState.ClearAll();
             SocializePlugin.Settings?.ResetState();
+            SocialChatSender.ApplyRangesToLoadedTalkers();
             ParkedIntegration.Reset();
         }
 
@@ -357,6 +359,7 @@ namespace Landoria.Socialize
                 GroupMapSharing.ReadPosition(package, playerId, playerName);
             }
             SocializePlugin.Settings.ReadState(package);
+            SocialChatSender.ApplyRangesToLoadedTalkers();
             ParkedIntegration.ReadSnapshot(package);
         }
 

@@ -22,7 +22,6 @@ namespace Landoria.Socialize
                    !string.IsNullOrWhiteSpace(text);
         }
 
-        internal static float GetShoutDistance(float normalDistance) => normalDistance * 2f;
     }
 
     internal static class PrivateChatPolicy

@@ -49,6 +49,10 @@ Adds persistent player groups, private messaging, map sharing, and expanded chat
 |---|---|---:|
 | `Map.RestrictPublicPositions` | `--socialize-restrict-public-positions true\|false` | `true` |
 | `Map.RestrictPublicPings` | `--socialize-restrict-public-pings true\|false` | `true` |
+| `Chat.ShoutDistance` | `--socialize-shout-distance <metres>` | `30` |
+| `Chat.SayDistance` | `--socialize-say-distance <metres>` | `15` |
+
+Distance values must be positive finite numbers. The server synchronizes its effective values to clients.
 
 Command-line values override the BepInEx configuration and are synchronized by the server.
 
