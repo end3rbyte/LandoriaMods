@@ -68,27 +68,6 @@ namespace Landoria.Socialize
 
     internal static class SocialChatSender
     {
-        private static bool sendingAll;
-
-        internal static bool IsSendingAll => sendingAll;
-
-        internal static void SendAll(string text)
-        {
-            if (Chat.instance == null)
-            {
-                return;
-            }
-            sendingAll = true;
-            try
-            {
-                Chat.instance.SendText(Talker.Type.Shout, text);
-            }
-            finally
-            {
-                sendingAll = false;
-            }
-        }
-
         internal static void SendShout(string text)
         {
             Talker talker = Player.m_localPlayer != null
@@ -101,24 +80,9 @@ namespace Landoria.Socialize
             talker.Say(Talker.Type.Shout, text);
         }
 
-        internal static void ApplyRanges(Talker talker)
+        internal static void ApplyShoutRange(Talker talker)
         {
-            talker.m_normalDistance = SocializePlugin.Settings.SayDistance;
-            talker.m_shoutDistance = SocializePlugin.Settings.ShoutDistance;
-        }
-
-        internal static void ApplyRangesToLoadedTalkers()
-        {
-            if (SocializePlugin.Settings == null)
-            {
-                return;
-            }
-            Talker[] talkers = UnityEngine.Object.FindObjectsByType<Talker>(
-                UnityEngine.FindObjectsSortMode.None);
-            foreach (Talker talker in talkers)
-            {
-                ApplyRanges(talker);
-            }
+            talker.m_shoutDistance = ChatBehaviorPolicy.GetShoutDistance(talker.m_normalDistance);
         }
     }
 }

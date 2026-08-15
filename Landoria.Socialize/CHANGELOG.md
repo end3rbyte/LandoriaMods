@@ -2,7 +2,7 @@
 
 ## 1.0.9
 
-- Make groups temporary for missions and end membership when players disconnect.
+- Remove global chat and restore the original local shout behavior.
 
 ## 1.0.8
 

@@ -111,7 +111,7 @@ namespace Landoria.Socialize
     {
         private static bool Prefix(Talker.Type type, string text)
         {
-            if (type == Talker.Type.Shout && !SocialChatSender.IsSendingAll)
+            if (type == Talker.Type.Shout)
             {
                 SocialChatSender.SendShout(text);
                 return false;
@@ -121,11 +121,11 @@ namespace Landoria.Socialize
     }
 
     [HarmonyPatch(typeof(Talker), "Awake")]
-    internal static class SocialChatRangePatch
+    internal static class SocialShoutRangePatch
     {
         private static void Postfix(Talker __instance)
         {
-            SocialChatSender.ApplyRanges(__instance);
+            SocialChatSender.ApplyShoutRange(__instance);
         }
     }
 
