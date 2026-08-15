@@ -61,6 +61,182 @@ namespace Landoria.HammerFreedom
         }
     }
 
+    internal struct DurabilitySnapshot
+    {
+        private readonly ItemDrop.ItemData _item;
+        private readonly float _durability;
+
+        internal DurabilitySnapshot(ItemDrop.ItemData item, bool preserve)
+        {
+            _item = preserve ? item : null;
+            _durability = item?.m_durability ?? 0f;
+        }
+
+        internal void Restore()
+        {
+            if (_item != null)
+            {
+                _item.m_durability = _durability;
+            }
+        }
+    }
+
+    internal static class DurabilityProtection
+    {
+        internal static bool IsActive(Humanoid humanoid)
+        {
+            return HammerFreedomBehaviorPolicy.ShouldPreserveDurability(
+                humanoid == Player.m_localPlayer,
+                HammerFreedomAuthorization.IsAuthorized(
+                    HammerFreedomCapabilities.NoDurabilityLoss));
+        }
+    }
+
+    [HarmonyPatch(typeof(Attack), "OnAttackTrigger")]
+    internal static class AttackDurabilityPatch
+    {
+        private static void Prefix(Humanoid ___m_character, ItemDrop.ItemData ___m_weapon,
+            out DurabilitySnapshot __state)
+        {
+            __state = new DurabilitySnapshot(
+                ___m_weapon, DurabilityProtection.IsActive(___m_character));
+        }
+
+        private static void Postfix(DurabilitySnapshot __state)
+        {
+            __state.Restore();
+        }
+    }
+
+    [HarmonyPatch(typeof(Player), "UpdatePlacement")]
+    internal static class PlacementDurabilityPatch
+    {
+        private static void Prefix(Player __instance, ItemDrop.ItemData ___m_rightItem,
+            out DurabilitySnapshot __state)
+        {
+            __state = new DurabilitySnapshot(
+                ___m_rightItem, DurabilityProtection.IsActive(__instance));
+        }
+
+        private static void Postfix(DurabilitySnapshot __state)
+        {
+            __state.Restore();
+        }
+    }
+
+    [HarmonyPatch(typeof(Humanoid), "BlockAttack")]
+    internal static class BlockDurabilityPatch
+    {
+        private static void Prefix(Humanoid __instance, ItemDrop.ItemData ___m_rightItem,
+            ItemDrop.ItemData ___m_leftItem, out DurabilitySnapshot[] __state)
+        {
+            bool preserve = DurabilityProtection.IsActive(__instance);
+            __state = new[]
+            {
+                new DurabilitySnapshot(___m_rightItem, preserve),
+                new DurabilitySnapshot(___m_leftItem, preserve)
+            };
+        }
+
+        private static void Postfix(DurabilitySnapshot[] __state)
+        {
+            foreach (DurabilitySnapshot snapshot in __state)
+            {
+                snapshot.Restore();
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Humanoid), "DrainEquipedItemDurability")]
+    internal static class EquippedDurabilityPatch
+    {
+        private static bool Prefix(Humanoid __instance)
+        {
+            return !DurabilityProtection.IsActive(__instance);
+        }
+    }
+
+    [HarmonyPatch(typeof(Player), "DamageArmorDurability")]
+    internal static class ArmorDurabilityPatch
+    {
+        private static bool Prefix(Player __instance)
+        {
+            return !DurabilityProtection.IsActive(__instance);
+        }
+    }
+
+    internal static class BuildMaterialRecoveryScope
+    {
+        private static int _depth;
+
+        internal static bool IsActive => _depth > 0;
+
+        internal static bool Enter()
+        {
+            if (!HammerFreedomAuthorization.IsAuthorized(
+                    HammerFreedomCapabilities.RecoverBuildMaterials))
+            {
+                return false;
+            }
+
+            _depth++;
+            return true;
+        }
+
+        internal static void Exit(bool entered)
+        {
+            if (entered)
+            {
+                _depth--;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Player), "RemovePiece")]
+    internal static class PlayerBuildMaterialRecoveryPatch
+    {
+        private static void Prefix(out bool __state)
+        {
+            __state = BuildMaterialRecoveryScope.Enter();
+        }
+
+        private static void Postfix(bool __state)
+        {
+            BuildMaterialRecoveryScope.Exit(__state);
+        }
+    }
+
+    [HarmonyPatch(typeof(WearNTear), "RPC_Remove")]
+    internal static class OwnedBuildMaterialRecoveryPatch
+    {
+        private static void Prefix(out bool __state)
+        {
+            __state = BuildMaterialRecoveryScope.Enter();
+        }
+
+        private static void Postfix(bool __state)
+        {
+            BuildMaterialRecoveryScope.Exit(__state);
+        }
+    }
+
+    [HarmonyPatch(typeof(ZoneSystem), "GetGlobalKey", new[] { typeof(GlobalKeys) })]
+    internal static class BuildMaterialFreeKeyPatch
+    {
+        private static void Postfix(GlobalKeys key, ref bool __result)
+        {
+            bool freeBuildKey = key == GlobalKeys.NoBuildCost || key == GlobalKeys.NoCraftCost;
+            if (HammerFreedomBehaviorPolicy.ShouldIgnoreFreeBuildKey(
+                    BuildMaterialRecoveryScope.IsActive,
+                    HammerFreedomAuthorization.IsAuthorized(
+                        HammerFreedomCapabilities.RecoverBuildMaterials),
+                    freeBuildKey))
+            {
+                __result = false;
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(ZNet), "OnDestroy")]
     internal static class HammerFreedomDisconnectPatch
     {

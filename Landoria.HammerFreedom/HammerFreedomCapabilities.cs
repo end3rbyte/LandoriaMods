@@ -8,13 +8,16 @@ namespace Landoria.HammerFreedom
         None = 0,
         Flight = 1,
         FallDamageImmunity = 2,
-        UnlimitedStamina = 4
+        UnlimitedStamina = 4,
+        NoDurabilityLoss = 8,
+        RecoverBuildMaterials = 16
     }
 
     internal static class HammerFreedomCapabilityPolicy
     {
         internal static HammerFreedomCapabilities Resolve(
-            bool hammerWorld, bool flight, bool fallDamageImmunity, bool unlimitedStamina)
+            bool hammerWorld, bool flight, bool fallDamageImmunity, bool unlimitedStamina,
+            bool noDurabilityLoss, bool recoverBuildMaterials)
         {
             if (!hammerWorld)
             {
@@ -25,6 +28,9 @@ namespace Landoria.HammerFreedom
             if (flight) capabilities |= HammerFreedomCapabilities.Flight;
             if (fallDamageImmunity) capabilities |= HammerFreedomCapabilities.FallDamageImmunity;
             if (unlimitedStamina) capabilities |= HammerFreedomCapabilities.UnlimitedStamina;
+            if (noDurabilityLoss) capabilities |= HammerFreedomCapabilities.NoDurabilityLoss;
+            if (recoverBuildMaterials)
+                capabilities |= HammerFreedomCapabilities.RecoverBuildMaterials;
             return capabilities;
         }
     }

@@ -1,8 +1,8 @@
 {
   "name": "HammerFreedom",
-  "version_number": "1.0.0",
+  "version_number": "1.1.0",
   "website_url": "https://valheim.landoria-gaming.com/",
-  "description": "Adds server-authorized flight, fall immunity, and unlimited stamina to Hammer worlds.",
+  "description": "Adds server-authorized creative freedoms to Hammer worlds.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333"
   ],
