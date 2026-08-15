@@ -13,5 +13,5 @@ using System.Runtime.CompilerServices;
 [assembly: ComVisible(false)]
 [assembly: Guid("DA5DE9DF-7727-4D5F-8274-896B8EB80ED3")]
 [assembly: InternalsVisibleTo("Landoria.Parked")]
-[assembly: AssemblyVersion("1.0.9.*")]
-[assembly: AssemblyFileVersion("1.0.9")]
+[assembly: AssemblyVersion("1.0.10.*")]
+[assembly: AssemblyFileVersion("1.0.10")]

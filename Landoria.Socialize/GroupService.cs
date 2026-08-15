@@ -35,6 +35,7 @@ namespace Landoria.Socialize
             nextStateRequest = 0f;
             GroupStorage.Reset();
             GroupState.ClearAll();
+            SocializePlugin.Settings?.ResetState();
             ParkedIntegration.Reset();
         }
 
@@ -111,6 +112,7 @@ namespace Landoria.Socialize
             }
             GroupStorage.Reset();
             GroupState.ClearAll();
+            SocializePlugin.Settings?.ResetState();
             ParkedIntegration.Reset();
         }
 
@@ -336,6 +338,7 @@ namespace Landoria.Socialize
                     GroupMapSharing.WritePosition(response, member.Key);
                 }
             }
+            SocializePlugin.Settings.WriteState(response);
             ParkedIntegration.WriteSnapshot(response);
             ZRoutedRpc.instance.InvokeRoutedRPC(peer, ResponseRpc, response);
         }
@@ -353,6 +356,7 @@ namespace Landoria.Socialize
                 GroupState.LocalMembers.Add(playerId);
                 GroupMapSharing.ReadPosition(package, playerId, playerName);
             }
+            SocializePlugin.Settings.ReadState(package);
             ParkedIntegration.ReadSnapshot(package);
         }
 
