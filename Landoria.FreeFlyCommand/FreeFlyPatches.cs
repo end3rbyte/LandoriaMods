@@ -1,4 +1,5 @@
 using HarmonyLib;
+using UnityEngine;
 
 namespace Landoria.FreeFlyCommand
 {
@@ -46,10 +47,20 @@ namespace Landoria.FreeFlyCommand
     }
 
     [HarmonyPatch(typeof(GameCamera), "UpdateFreeFly")]
-    internal static class FreeFlyDistancePatch
+    internal static class FreeFlyMovementPatch
     {
-        private static void Postfix(GameCamera __instance)
+        private static void Prefix(
+            GameCamera __instance, ref float ___m_freeFlySpeed, out Vector3 __state)
         {
+            ___m_freeFlySpeed = FreeFlyController.ClampSpeed(___m_freeFlySpeed);
+            __state = __instance.transform.position;
+        }
+
+        private static void Postfix(
+            GameCamera __instance, float dt, ref float ___m_freeFlySpeed, Vector3 __state)
+        {
+            ___m_freeFlySpeed = FreeFlyController.ClampSpeed(___m_freeFlySpeed);
+            FreeFlyController.ClampFrameMovement(__instance, __state, dt);
             FreeFlyController.ClampToPlayer(__instance);
         }
     }
