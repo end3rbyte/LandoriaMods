@@ -42,10 +42,10 @@ developer commands, or administrator access.
 |---|---|
 | `fly`, `fly on`, `fly off` | Toggle, enable, or disable authorized flight. |
 | `Z` | Toggle flight. |
-| Movement keys | Fly horizontally using vanilla movement. |
+| Movement keys | Fly horizontally at up to 4 metres per second. |
 | Jump / Space | Ascend. |
 | Left Control | Descend. |
-| Run / Shift | Fly faster. |
+| Run / Shift | Fly at up to 7 metres per second. |
 
 The `Z` shortcut is fixed to match Valheim's native debug-flight control.
 

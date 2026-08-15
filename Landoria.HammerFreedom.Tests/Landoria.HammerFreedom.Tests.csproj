@@ -19,5 +19,6 @@
     <Compile Include="../Landoria.HammerFreedom/HammerFreedomBehaviorPolicy.cs" Link="HammerFreedomBehaviorPolicy.cs" />
     <Compile Include="../Landoria.HammerFreedom/HammerFreedomArgumentPolicy.cs" Link="HammerFreedomArgumentPolicy.cs" />
     <Compile Include="../Landoria.HammerFreedom/HammerFreedomCapabilities.cs" Link="HammerFreedomCapabilities.cs" />
+    <Compile Include="../Landoria.HammerFreedom/FlightSpeedPolicy.cs" Link="FlightSpeedPolicy.cs" />
   </ItemGroup>
 </Project>
