@@ -2,11 +2,7 @@
 
 ## 1.0.5
 
-- Read the authorization switch only on dedicated servers and fail closed elsewhere.
-- Use the shared dedicated-server role check.
-- Request authorization once after the local player spawns.
-- Limit free-camera movement to 20 metres per second.
-- Use a one-metre-radius collision sphere to prevent the free camera from passing through terrain and solid objects.
+- Add terrain collision and cap free-camera movement at 20 metres per second.
 
 ## 1.0.4
 

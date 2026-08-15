@@ -2,11 +2,7 @@
 
 ## 1.0.16
 
-- Add StructureProtection and update Socialize to version 1.0.9.
-- Update AfkDetector, CharacterVault, ExpandedServer, FreeFlyCommand, and HammerFreedom.
-- Update Moderator to version 1.0.6.
-- Restrict server switches to dedicated servers through SharedLib role detection.
-- Request client authorizations once after the local player spawns.
+- Update the Landoria mod set and its dedicated-server-authorized behavior.
 
 ## 1.0.15
 
