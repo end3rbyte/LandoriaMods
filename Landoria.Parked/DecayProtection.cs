@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using HarmonyLib;
+using Landoria.Socialize;
 using UnityEngine;
 
-namespace Landoria.Socialize
+namespace Landoria.Parked
 {
     internal static class DecayProtection
     {

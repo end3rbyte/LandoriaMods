@@ -1,7 +1,7 @@
 using HarmonyLib;
 using TMPro;
 
-namespace Landoria.Socialize
+namespace Landoria.Parked
 {
     internal static class PieceOwnershipDisplay
     {

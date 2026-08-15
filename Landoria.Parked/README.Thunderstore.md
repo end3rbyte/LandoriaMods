@@ -1,17 +1,29 @@
 # Parked
 
-Provides the shared plugin foundation for future Parked features.
+Protects player-built pieces according to their creator's Socialize group activity.
+
+## Valheim compatibility
+
+| Valheim channel | Version | Compatibility |
+|---|---:|---|
+| Current release | `0.221.12` | Compatible |
+| Public Test | `0.221.13` | Compatible |
 
 ## Features
 
-- Loads through `Landoria.SharedLib`.
-- Does not change gameplay yet.
+- Uses vanilla rain wear and fuel consumption while a piece's creator or one of their group members is connected.
+- Stops rain wear and fuel consumption while the creator and their entire group are offline.
+- Prevents creatures from targeting or damaging pieces while the creator and their entire group are offline.
+- Restricts use, refueling, repairs, removal, and player damage for player-built pieces to their creator and group.
+- Shows the creator while hovering over an inaccessible player-built piece.
 
 ## Installation
 
 | Client required | Server required |
 |---|---|
 | Yes | Yes |
+
+Socialize is required on the server and every participating client.
 
 Read the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.Parked/README.md) on GitHub.
 

@@ -17,11 +17,6 @@ Adds persistent player groups, private messaging, map sharing, and expanded chat
 - Keeps the selected shout, whisper, or group channel active.
 - Automatically shares connected group members' map positions.
 - Restricts public map positions and pings outside groups.
-- Uses vanilla rain wear and fuel consumption while a piece's creator or one of their group members is connected.
-- Stops rain wear and fuel consumption for player-built pieces while the creator and their entire group are offline.
-- Prevents creatures from targeting or damaging those pieces while the creator and their entire group are offline.
-- Restricts interaction with player-built pieces to their creator and members of the creator's group.
-- Shows the creator's name while hovering over a player-built piece that the local player cannot use.
 - Supports dedicated servers and peer-hosted worlds.
 
 ## Chat Commands
@@ -56,13 +51,6 @@ Groups with fewer than two members are disbanded automatically. Invitations use 
 - Friendly-fire rules, permissions, and teleportation are provided by other mods.
 
 Group data is serialized in a persistent server-owned ZDO stored with the world. No separate configuration or group file is created.
-
-Pieces without an identifiable player creator retain vanilla behavior.
-Fuel does not catch up retroactively when a protected fireplace or torch is loaded again.
-
-Piece interaction protection includes normal use, using an item on a piece, containers, doors, crafting stations, adding resources or fuel, repairs, hammer removal, and damage caused by a player. Creatures use vanilla targeting and damage whenever the creator or a group member is online, and ignore the piece while the entire group is offline. Environmental damage and interactions with natural or creatorless objects retain vanilla behavior.
-
-Denied interactions are silent. Hovering an inaccessible piece shows its creator instead. New pieces store the creator name directly; legacy pieces use names already known by Socialize and may display `Unknown creator` until the creator is identified.
 
 ## Installation
 

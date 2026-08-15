@@ -35,8 +35,7 @@ namespace Landoria.Socialize
             nextStateRequest = 0f;
             GroupStorage.Reset();
             GroupState.ClearAll();
-            DecayProtection.Reset();
-            PiecePermissions.Reset();
+            ParkedIntegration.Reset();
         }
 
         internal static bool IsLocalPlayerInGroup()
@@ -112,8 +111,7 @@ namespace Landoria.Socialize
             }
             GroupStorage.Reset();
             GroupState.ClearAll();
-            DecayProtection.Reset();
-            PiecePermissions.Reset();
+            ParkedIntegration.Reset();
         }
 
         private static void RegisterRpcs(ZRoutedRpc rpc)
@@ -338,8 +336,7 @@ namespace Landoria.Socialize
                     GroupMapSharing.WritePosition(response, member.Key);
                 }
             }
-            DecayProtection.WriteState(response);
-            PiecePermissions.WriteState(response);
+            ParkedIntegration.WriteSnapshot(response);
             ZRoutedRpc.instance.InvokeRoutedRPC(peer, ResponseRpc, response);
         }
 
@@ -356,8 +353,7 @@ namespace Landoria.Socialize
                 GroupState.LocalMembers.Add(playerId);
                 GroupMapSharing.ReadPosition(package, playerId, playerName);
             }
-            DecayProtection.ReadState(package);
-            PiecePermissions.ReadState(package);
+            ParkedIntegration.ReadSnapshot(package);
         }
 
         private static void ShowInvite(string inviterId, string inviterName)

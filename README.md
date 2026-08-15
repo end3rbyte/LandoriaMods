@@ -18,7 +18,7 @@ Each mod directory includes a technical `README.md`, a player-oriented
 | [QuickLaunch](Landoria.QuickLaunch/) | Client-only | Automatically resumes the last local or multiplayer session by default. |
 | [ExpandedServer](Landoria.ExpandedServer/) | Both | Raises the server player limit. |
 | [NoServerPassword](Landoria.NoServerPassword/) | Server-only | Allows public and crossplay servers to start without a password. |
-| [Parked](Landoria.Parked/) | Both | Provides the foundation for future Parked features. |
+| [Parked](Landoria.Parked/) | Both | Protects player-built pieces according to their creator's Socialize group activity. |
 | [SealedTombstone](Landoria.SealedTombstone/) | Both | Protects tombstones and lets their owners approve access. |
 | [ServerGateway](Landoria.ServerGateway/) | Server | Exposes authenticated local status and save endpoints. |
 | [Socialize](Landoria.Socialize/) | Both | Adds persistent groups, private messaging, map sharing, and expanded chat channels. |

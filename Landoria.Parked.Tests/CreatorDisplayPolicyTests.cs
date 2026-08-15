@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace Landoria.Socialize;
+namespace Landoria.Parked;
 
 public sealed class CreatorDisplayPolicyTests
 {
@@ -11,7 +11,7 @@ public sealed class CreatorDisplayPolicyTests
         Assert.Equal("Stored", CreatorDisplayPolicy.ResolveName("Stored", "Known"));
     }
 
-    // Verifies that legacy pieces use the creator name known by Socialize.
+    // Verifies that legacy pieces use the creator name known by Parked.
     [Fact]
     public void LegacyPieceUsesKnownCreatorName()
     {

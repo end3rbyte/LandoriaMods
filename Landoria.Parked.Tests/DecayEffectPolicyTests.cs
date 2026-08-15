@@ -1,6 +1,7 @@
 using Xunit;
+using Landoria.Socialize;
 
-namespace Landoria.Socialize;
+namespace Landoria.Parked;
 
 public sealed class DecayEffectPolicyTests
 {

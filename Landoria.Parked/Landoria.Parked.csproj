@@ -23,12 +23,35 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="BepInEx"><HintPath>$(BepInExPath)\core\BepInEx.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="0Harmony"><HintPath>$(BepInExPath)\core\0Harmony.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="assembly_valheim"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\assembly_valheim.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="assembly_utils"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\assembly_utils.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Splatform"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\Splatform.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="Unity.TextMeshPro"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\Unity.TextMeshPro.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="UnityEngine"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\UnityEngine.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="UnityEngine.CoreModule"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CreatorActivityPolicy.cs" />
+    <Compile Include="CreatorDisplayPolicy.cs" />
+    <Compile Include="CreatureProtection.cs" />
+    <Compile Include="CreatureProtectionPolicy.cs" />
+    <Compile Include="DecayEffectPolicy.cs" />
+    <Compile Include="DecayProtection.cs" />
     <Compile Include="ParkedPlugin.cs" />
+    <Compile Include="PieceAccessPolicy.cs" />
+    <Compile Include="PieceInteractionPolicy.cs" />
+    <Compile Include="PieceOwnershipDisplay.cs" />
+    <Compile Include="PiecePermissions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Landoria.Socialize\Landoria.Socialize.csproj">
+      <Project>{DA5DE9DF-7727-4D5F-8274-896B8EB80ED3}</Project>
+      <Name>Landoria.Socialize</Name>
+      <Private>false</Private>
+      <AdditionalProperties>EmbedLandoriaSharedLib=false</AdditionalProperties>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="icon.png" />

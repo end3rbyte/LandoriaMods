@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using Landoria.Socialize;
 
-namespace Landoria.Socialize
+namespace Landoria.Parked
 {
     internal static class CreatorActivityPolicy
     {

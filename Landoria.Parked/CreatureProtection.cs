@@ -1,7 +1,7 @@
 using System;
 using HarmonyLib;
 
-namespace Landoria.Socialize
+namespace Landoria.Parked
 {
     internal static class CreatureProtection
     {

@@ -1,6 +1,7 @@
 using Xunit;
+using Landoria.Socialize;
 
-namespace Landoria.Socialize;
+namespace Landoria.Parked;
 
 public sealed class CreatureProtectionPolicyTests
 {
@@ -31,7 +32,7 @@ public sealed class CreatureProtectionPolicyTests
         Assert.True(CreatureProtectionPolicy.CanTarget(true, activity));
     }
 
-    // Verifies Socialize never makes a vanilla-ineligible target aggressive.
+    // Verifies Parked never makes a vanilla-ineligible target aggressive.
     [Fact]
     public void VanillaIneligibleTargetRemainsIgnored()
     {

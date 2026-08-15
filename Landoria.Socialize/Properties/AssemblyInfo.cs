@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle("Landoria.Socialize")]
 [assembly: AssemblyDescription("Adds persistent groups and expanded chat channels to Valheim.")]
@@ -11,5 +12,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("DA5DE9DF-7727-4D5F-8274-896B8EB80ED3")]
-[assembly: AssemblyVersion("1.0.8.*")]
-[assembly: AssemblyFileVersion("1.0.8")]
+[assembly: InternalsVisibleTo("Landoria.Parked")]
+[assembly: AssemblyVersion("1.0.9.*")]
+[assembly: AssemblyFileVersion("1.0.9")]

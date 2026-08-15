@@ -1,8 +1,9 @@
 using System.Collections.Generic;
 using HarmonyLib;
+using Landoria.Socialize;
 using UnityEngine;
 
-namespace Landoria.Socialize
+namespace Landoria.Parked
 {
     internal static class PiecePermissions
     {

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.9
+
+- Move player-built piece permissions and offline protection to Parked.
+
 ## 1.0.8
 
 - Add unit tests.
