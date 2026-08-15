@@ -1,8 +1,8 @@
 {
-  "name": "Parked",
+  "name": "DecayControl",
   "version_number": "1.0.0",
   "website_url": "https://valheim.landoria-gaming.com/",
-  "description": "Protects player-built pieces according to whether their creator is connected.",
+  "description": "Controls rain wear and fuel consumption for player-built pieces.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333"
   ],

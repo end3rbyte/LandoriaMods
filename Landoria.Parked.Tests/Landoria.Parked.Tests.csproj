@@ -12,12 +12,10 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="../Landoria.Parked/CreatorActivityPolicy.cs" Link="CreatorActivityPolicy.cs" />
     <Compile Include="../Landoria.Parked/CreatorDisplayPolicy.cs" Link="CreatorDisplayPolicy.cs" />
     <Compile Include="../Landoria.Parked/CreatureProtectionPolicy.cs" Link="CreatureProtectionPolicy.cs" />
-    <Compile Include="../Landoria.Parked/DecayEffectPolicy.cs" Link="DecayEffectPolicy.cs" />
+    <Compile Include="../Landoria.Parked/CreatorActivityPolicy.cs" Link="CreatorActivityPolicy.cs" />
     <Compile Include="../Landoria.Parked/PieceAccessPolicy.cs" Link="PieceAccessPolicy.cs" />
     <Compile Include="../Landoria.Parked/PieceInteractionPolicy.cs" Link="PieceInteractionPolicy.cs" />
-    <Compile Include="../Landoria.Socialize/SocialGroup.cs" Link="SocialGroup.cs" />
   </ItemGroup>
 </Project>

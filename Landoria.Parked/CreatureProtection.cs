@@ -8,7 +8,7 @@ namespace Landoria.Parked
         private static float GetActivity(StaticTarget target)
         {
             Piece piece = target?.GetComponentInParent<Piece>();
-            return DecayProtection.GetActivityMultiplier(piece);
+            return PieceActivity.GetMultiplier(piece);
         }
 
         [HarmonyPatch(typeof(StaticTarget), nameof(StaticTarget.IsPriorityTarget))]

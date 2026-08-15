@@ -4,13 +4,11 @@ namespace Landoria.Parked;
 
 public sealed class PieceInteractionPolicyTests
 {
-    // Verifies that a player cannot damage a building created outside the group.
+    // Verifies that a player cannot damage another creator's building.
     [Fact]
     public void PlayerCannotDamageForeignBuilding()
     {
-        bool hasAccess = PieceAccessPolicy.CanAccess(
-            placedByPlayer: true, playerId: 1, creator: 2,
-            hasMembershipState: true, areGroupMembers: (_, _) => false);
+        bool hasAccess = PieceAccessPolicy.CanAccess(true, 1, 2);
 
         Assert.False(PieceInteractionPolicy.CanDamage(hasAccess));
     }
@@ -19,31 +17,25 @@ public sealed class PieceInteractionPolicyTests
     [Fact]
     public void PlayerCanDamageOwnBuilding()
     {
-        bool hasAccess = PieceAccessPolicy.CanAccess(
-            placedByPlayer: true, playerId: 1, creator: 1,
-            hasMembershipState: true, areGroupMembers: (_, _) => false);
+        bool hasAccess = PieceAccessPolicy.CanAccess(true, 1, 1);
 
         Assert.True(PieceInteractionPolicy.CanDamage(hasAccess));
     }
 
-    // Verifies that a player can damage a building created by another group member.
+    // Verifies that no relationship grants access to another creator's building.
     [Fact]
-    public void PlayerCanDamageGroupMembersBuilding()
+    public void PlayerCannotDamageAnotherCreatorsBuilding()
     {
-        bool hasAccess = PieceAccessPolicy.CanAccess(
-            placedByPlayer: true, playerId: 1, creator: 2,
-            hasMembershipState: true, areGroupMembers: (_, _) => true);
+        bool hasAccess = PieceAccessPolicy.CanAccess(true, 1, 2);
 
-        Assert.True(PieceInteractionPolicy.CanDamage(hasAccess));
+        Assert.False(PieceInteractionPolicy.CanDamage(hasAccess));
     }
 
-    // Verifies that the hammer cannot destroy a wall created by a player outside the group.
+    // Verifies that the hammer cannot destroy another creator's wall.
     [Fact]
     public void HammerCannotDestroyForeignWall()
     {
-        bool hasAccess = PieceAccessPolicy.CanAccess(
-            placedByPlayer: true, playerId: 1, creator: 2,
-            hasMembershipState: true, areGroupMembers: (_, _) => false);
+        bool hasAccess = PieceAccessPolicy.CanAccess(true, 1, 2);
         bool result = true;
 
         bool runVanillaRemoval = PieceInteractionPolicy.CanRemove(hasAccess, ref result);
@@ -52,13 +44,11 @@ public sealed class PieceInteractionPolicyTests
         Assert.False(result);
     }
 
-    // Verifies that the hammer can destroy a wall created by another group member.
+    // Verifies that the creator can destroy their own wall.
     [Fact]
-    public void HammerCanDestroyGroupMembersWall()
+    public void CreatorCanDestroyOwnWall()
     {
-        bool hasAccess = PieceAccessPolicy.CanAccess(
-            placedByPlayer: true, playerId: 1, creator: 2,
-            hasMembershipState: true, areGroupMembers: (_, _) => true);
+        bool hasAccess = PieceAccessPolicy.CanAccess(true, 1, 1);
         bool result = false;
 
         bool runVanillaRemoval = PieceInteractionPolicy.CanRemove(hasAccess, ref result);
@@ -67,24 +57,20 @@ public sealed class PieceInteractionPolicyTests
         Assert.False(result);
     }
 
-    // Verifies that a door created by a player outside the group cannot be opened.
+    // Verifies that another creator's door cannot be opened.
     [Fact]
     public void PlayerCannotOpenForeignDoor()
     {
-        bool hasAccess = PieceAccessPolicy.CanAccess(
-            placedByPlayer: true, playerId: 1, creator: 2,
-            hasMembershipState: true, areGroupMembers: (_, _) => false);
+        bool hasAccess = PieceAccessPolicy.CanAccess(true, 1, 2);
 
         Assert.False(PieceInteractionPolicy.CanUse(hasAccess));
     }
 
-    // Verifies that a door created by another group member can be opened.
+    // Verifies that the creator can open their own door.
     [Fact]
-    public void PlayerCanOpenGroupMembersDoor()
+    public void CreatorCanOpenOwnDoor()
     {
-        bool hasAccess = PieceAccessPolicy.CanAccess(
-            placedByPlayer: true, playerId: 1, creator: 2,
-            hasMembershipState: true, areGroupMembers: (_, _) => true);
+        bool hasAccess = PieceAccessPolicy.CanAccess(true, 1, 1);
 
         Assert.True(PieceInteractionPolicy.CanUse(hasAccess));
     }

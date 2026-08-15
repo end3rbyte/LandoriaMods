@@ -1,11 +1,8 @@
-using System;
-
 namespace Landoria.Parked
 {
     internal static class PieceAccessPolicy
     {
-        internal static bool CanAccess(bool placedByPlayer, long playerId, long creator,
-            bool hasMembershipState, Func<long, long, bool> areGroupMembers)
+        internal static bool CanAccess(bool placedByPlayer, long playerId, long creator)
         {
             if (!placedByPlayer)
             {
@@ -19,7 +16,7 @@ namespace Landoria.Parked
             {
                 return true;
             }
-            return hasMembershipState && areGroupMembers(playerId, creator);
+            return false;
         }
     }
 }
