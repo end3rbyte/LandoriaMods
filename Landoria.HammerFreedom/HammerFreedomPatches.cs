@@ -273,6 +273,24 @@ namespace Landoria.HammerFreedom
         }
     }
 
+    [HarmonyPatch(typeof(Character), "Jump")]
+    internal static class FlyingJumpPatch
+    {
+        private static bool Prefix(Character __instance)
+        {
+            return FlyInput.ShouldApplyGroundAction(__instance);
+        }
+    }
+
+    [HarmonyPatch(typeof(Player), "SetCrouch")]
+    internal static class FlyingCrouchPatch
+    {
+        private static bool Prefix(Player __instance, bool crouch)
+        {
+            return !crouch || FlyInput.ShouldApplyGroundAction(__instance);
+        }
+    }
+
     [HarmonyPatch(typeof(ZNet), "OnDestroy")]
     internal static class HammerFreedomDisconnectPatch
     {
