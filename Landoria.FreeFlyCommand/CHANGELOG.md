@@ -5,6 +5,7 @@
 - Read the authorization switch only on dedicated servers and fail closed elsewhere.
 - Use the shared dedicated-server role check.
 - Request authorization once after the local player spawns.
+- Limit free-camera movement to 40 metres per second.
 
 ## 1.0.4
 

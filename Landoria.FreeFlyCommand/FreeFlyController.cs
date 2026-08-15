@@ -5,6 +5,22 @@ namespace Landoria.FreeFlyCommand
     internal static class FreeFlyController
     {
         internal const float MaximumDistance = 50f;
+        internal const float MaximumSpeed = 40f;
+
+        internal static float ClampSpeed(float speed)
+        {
+            return Mathf.Clamp(speed, 1f, MaximumSpeed);
+        }
+
+        internal static void ClampFrameMovement(GameCamera camera, Vector3 origin, float deltaTime)
+        {
+            Vector3 movement = camera.transform.position - origin;
+            float maximumMovement = MaximumSpeed * deltaTime;
+            if (movement.sqrMagnitude > maximumMovement * maximumMovement)
+            {
+                camera.transform.position = origin + movement.normalized * maximumMovement;
+            }
+        }
 
         internal static void Toggle()
         {
