@@ -16,6 +16,7 @@ developer commands, or administrator access.
 - The server controls flight with `--hammerfreedom-fly true|false`.
 - The server controls fall damage immunity with `--hammerfreedom-fall-damage-immunity true|false`.
 - The server controls unlimited stamina with `--hammerfreedom-unlimited-stamina true|false`.
+- The server controls durability loss with `--hammerfreedom-no-durability-loss true|false`.
 - Each switch defaults to `true`.
 - The server authorizes capabilities only while both `NoBuildCost` and `PassiveMobs` are active.
 - No response, an explicit denial, a modifier change, or a server change immediately removes every capability.
@@ -27,6 +28,8 @@ developer commands, or administrator access.
 - Any fall deals zero damage when fall damage immunity is authorized.
 - No action consumes stamina when unlimited stamina is authorized, including
   running, building, gardening, combat, jumping, swimming, and dodging.
+- Tools, weapons, shields, armor, and other durable equipment do not lose durability when
+  durability protection is authorized. Existing wear is preserved rather than repaired.
 
 ## Controls
 

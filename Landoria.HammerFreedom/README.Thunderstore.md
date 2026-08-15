@@ -1,6 +1,6 @@
 # HammerFreedom
 
-Adds flight, fall damage immunity, and unlimited stamina to authorized
+Adds flight, fall damage immunity, unlimited stamina, and durability protection to authorized
 Hammer worlds without enabling debug mode, developer commands, or administrator access.
 
 ## Valheim compatibility
@@ -14,10 +14,12 @@ Hammer worlds without enabling debug mode, developer commands, or administrator 
 
 - Requires an explicit authorization response from the connected server.
 - Provides separate `--hammerfreedom-fly`, `--hammerfreedom-fall-damage-immunity`, and
-  `--hammerfreedom-unlimited-stamina` server switches, each enabled by default.
+  `--hammerfreedom-unlimited-stamina` server switches, plus
+  `--hammerfreedom-no-durability-loss`; each is enabled by default.
 - Requires the Hammer world modifiers before the server grants any capability.
 - Prevents all fall damage, regardless of fall height, when authorized.
 - Prevents all stamina use when authorized, regardless of the action.
+- Prevents durability loss for tools, weapons, shields, armor, and other durable equipment.
 - Disables capabilities immediately when authorization is removed or the server changes.
 - Hides the `fly` command until authorization is granted.
 - Supports `fly`, `fly on`, `fly off`, and the fixed native `Z` toggle shortcut.

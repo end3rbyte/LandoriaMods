@@ -39,4 +39,16 @@ public sealed class HammerFreedomBehaviorPolicyTests
     {
         Assert.True(HammerFreedomBehaviorPolicy.ShouldConsumeStamina(localPlayer, authorized));
     }
+
+    // Verifies that durability is preserved only for an authorized local player.
+    [Theory]
+    [InlineData(true, true, true)]
+    [InlineData(true, false, false)]
+    [InlineData(false, true, false)]
+    public void DurabilityProtectionRequiresLocalAuthorization(
+        bool localPlayer, bool authorized, bool expected)
+    {
+        Assert.Equal(expected, HammerFreedomBehaviorPolicy.ShouldPreserveDurability(
+            localPlayer, authorized));
+    }
 }

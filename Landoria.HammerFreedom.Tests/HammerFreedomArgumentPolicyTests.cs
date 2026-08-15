@@ -20,6 +20,7 @@ public sealed class HammerFreedomArgumentPolicyTests
     [InlineData("--hammerfreedom-fly")]
     [InlineData("--hammerfreedom-fall-damage-immunity")]
     [InlineData("--hammerfreedom-unlimited-stamina")]
+    [InlineData("--hammerfreedom-no-durability-loss")]
     public void ExplicitFalseDisablesCapability(string name)
     {
         bool enabled = HammerFreedomArgumentPolicy.Resolve(

@@ -13,5 +13,11 @@ namespace Landoria.HammerFreedom
         {
             return !isLocalPlayer || !unlimitedStaminaAuthorized;
         }
+
+        internal static bool ShouldPreserveDurability(
+            bool isLocalPlayer, bool noDurabilityLossAuthorized)
+        {
+            return isLocalPlayer && noDurabilityLossAuthorized;
+        }
     }
 }
