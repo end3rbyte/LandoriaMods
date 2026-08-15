@@ -4,12 +4,10 @@ namespace Landoria.Socialize
 {
     internal sealed class SocializeSettings
     {
-        private readonly string[] arguments;
         private bool serverInitialized;
 
-        internal SocializeSettings(string[] arguments)
+        internal SocializeSettings()
         {
-            this.arguments = arguments;
             ResetState();
         }
 
@@ -21,9 +19,11 @@ namespace Landoria.Socialize
 
         internal void InitializeServer(ModLog logger)
         {
-            if (serverInitialized) return;
+            if (serverInitialized || ZNet.instance == null ||
+                !ZNet.instance.IsServer() || !ZNet.instance.IsDedicated()) return;
             SocializeServerConfiguration configuration =
-                SocializeServerConfiguration.FromArguments(arguments);
+                SocializeServerConfiguration.FromArguments(
+                    System.Environment.GetCommandLineArgs());
             RestrictPublicPositions = configuration.RestrictPublicPositions;
             RestrictPublicPings = configuration.RestrictPublicPings;
             ShoutDistance = configuration.ShoutDistance;

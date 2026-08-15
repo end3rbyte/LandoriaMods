@@ -9,22 +9,29 @@ namespace Landoria.HammerFreedom
     {
         internal const string PluginGuid = "Landoria.HammerFreedom";
         internal const string PluginName = "Landoria.HammerFreedom";
-        internal const string PluginVersion = "1.0.1";
+        internal const string PluginVersion = "1.0.3";
         private static readonly KeyboardShortcut ToggleShortcut =
             new KeyboardShortcut(UnityEngine.KeyCode.Z);
 
         internal static ModLog ModLogger { get; private set; }
         internal static HammerFreedomSettings Settings { get; private set; }
+        private static bool settingsInitialized;
 
         private void Awake()
         {
             ModLogger = InitializePlugin(PluginGuid);
+            Settings = new HammerFreedomSettings();
+            FlyCommand.Register();
+            ModLogger.LogInfo($"{PluginName} {PluginVersion} is loaded.");
+        }
+
+        internal static void InitializeDedicatedServerSettings()
+        {
+            if (settingsInitialized || ZNet.instance == null ||
+                !ZNet.instance.IsServer() || !ZNet.instance.IsDedicated()) return;
             Settings = HammerFreedomSettings.FromArguments(
                 System.Environment.GetCommandLineArgs(), ModLogger);
-            FlyCommand.Register();
-            ModLogger.LogInfo($"{PluginName} {PluginVersion} is loaded; " +
-                $"flight={Settings.Flight}, fall damage immunity={Settings.FallDamageImmunity}, " +
-                $"unlimited stamina={Settings.UnlimitedStamina}.");
+            settingsInitialized = true;
         }
 
         private void Update()
@@ -52,6 +59,7 @@ namespace Landoria.HammerFreedom
             ModLogger?.LogInfo($"{PluginName} {PluginVersion} is unloaded.");
             ShutdownPlugin();
             Settings = null;
+            settingsInitialized = false;
             ModLogger = null;
         }
     }

@@ -9,20 +9,34 @@ namespace Landoria.ExpandedServer
     {
         private const string PluginGuid = "Landoria.ExpandedServer";
         private const string PluginName = "Landoria.ExpandedServer";
-        private const string PluginVersion = "1.0.5";
+        private const string PluginVersion = "1.0.6";
         private const int DefaultMaxPlayers = 20;
         private const int MaximumMaxPlayers = 100;
 
         internal static int MaxPlayers { get; private set; } = DefaultMaxPlayers;
         internal static bool IsLocalServer => ZNet.instance != null && ZNet.instance.IsServer();
+        private static bool settingsInitialized;
 
         internal static ModLog Log { get; private set; }
 
         private void Awake()
         {
             Log = InitializePlugin(PluginGuid);
+            Log.LogInfo($"{PluginName} {PluginVersion} is loaded.");
+        }
+
+        private void Update()
+        {
+            InitializeDedicatedServerSettings();
+        }
+
+        internal static void InitializeDedicatedServerSettings()
+        {
+            if (settingsInitialized || ZNet.instance == null ||
+                !ZNet.instance.IsServer() || !ZNet.instance.IsDedicated()) return;
             MaxPlayers = ReadMaxPlayers();
-            Log.LogInfo($"{PluginName} {PluginVersion} is loaded with a {MaxPlayers}-player limit.");
+            settingsInitialized = true;
+            Log.LogInfo($"Dedicated server player limit is {MaxPlayers}.");
         }
 
         private static int ReadMaxPlayers()
@@ -56,6 +70,8 @@ namespace Landoria.ExpandedServer
         {
             Log?.LogInfo($"{PluginName} {PluginVersion} is unloaded.");
             ShutdownPlugin();
+            MaxPlayers = DefaultMaxPlayers;
+            settingsInitialized = false;
             Log = null;
         }
     }

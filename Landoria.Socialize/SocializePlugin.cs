@@ -8,7 +8,7 @@ namespace Landoria.Socialize
     {
         private const string PluginGuid = "Landoria.Socialize";
         private const string PluginName = "Landoria.Socialize";
-        private const string PluginVersion = "1.0.12";
+        private const string PluginVersion = "1.0.13";
 
         internal static ModLog Log { get; private set; }
         internal static SocializeSettings Settings { get; private set; }
@@ -16,7 +16,7 @@ namespace Landoria.Socialize
         private void Awake()
         {
             Log = InitializePlugin(PluginGuid);
-            Settings = new SocializeSettings(System.Environment.GetCommandLineArgs());
+            Settings = new SocializeSettings();
             Log.LogInfo($"{PluginName} {PluginVersion} is loaded.");
         }
 

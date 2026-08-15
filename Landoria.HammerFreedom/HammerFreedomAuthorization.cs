@@ -60,6 +60,12 @@ namespace Landoria.HammerFreedom
 
         private static void UpdateServerAuthorization()
         {
+            if (!ZNet.instance.IsDedicated())
+            {
+                SetAuthorized(HammerFreedomCapabilities.None);
+                return;
+            }
+            HammerFreedomPlugin.InitializeDedicatedServerSettings();
             HammerFreedomCapabilities capabilities = ResolveServerCapabilities();
             SetAuthorized(capabilities);
             if (_serverCapabilities == capabilities)
@@ -99,6 +105,7 @@ namespace Landoria.HammerFreedom
         private static void ReceiveRequest(long sender)
         {
             if (ZNet.instance == null || !ZNet.instance.IsServer() ||
+                !ZNet.instance.IsDedicated() ||
                 ZNet.instance.GetPeer(sender) == null || ZRoutedRpc.instance == null)
             {
                 return;

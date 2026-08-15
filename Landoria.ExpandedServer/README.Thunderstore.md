@@ -13,14 +13,14 @@ Raises Valheim's server capacity to a configurable player limit.
 
 - Increases server capacity to up to 100 players, with a default limit of 20.
 - Updates admission checks and advertised Steam or PlayFab capacity.
-- Supports dedicated servers and peer-hosted worlds.
+- Applies its expanded capacity on dedicated servers.
 - Caps the configured limit at 100 players.
 
 ## Valheim.exe Command Switches
 
 | Switch | Default | Purpose |
 |---|---:|---|
-| `--maxplayer <1-100>` | `20` | Sets the server or host capacity. Joining clients do not use it. |
+| `--maxplayer <1-100>` | `20` | Sets dedicated-server capacity. Joining clients do not use it. |
 
 - Every connecting player needs a compatible mod setup.
 - Larger populations increase server, network, and simulation load.

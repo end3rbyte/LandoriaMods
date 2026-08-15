@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.5
+
+- Read the authorization switch only on dedicated servers and fail closed elsewhere.
+
 ## 1.0.4
 
 - Document Valheim version compatibility

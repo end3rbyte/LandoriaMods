@@ -9,18 +9,26 @@ namespace Landoria.FreeFlyCommand
     {
         internal const string PluginGuid = "Landoria.FreeFlyCommand";
         internal const string PluginName = "Landoria.FreeFlyCommand";
-        internal const string PluginVersion = "1.0.4";
+        internal const string PluginVersion = "1.0.5";
         private const string EnabledArgument = "--freeflycommand";
 
         internal static ModLog ModLogger { get; private set; }
-        internal static bool ServerEnabled { get; private set; } = true;
+        internal static bool ServerEnabled { get; private set; }
+        private static bool settingsInitialized;
 
         private void Awake()
         {
             ModLogger = InitializePlugin(PluginGuid);
-            ServerEnabled = ReadServerEnabled();
             FreeFlyCommands.Register();
-            ModLogger.LogInfo($"{PluginName} {PluginVersion} is loaded; server enabled={ServerEnabled}.");
+            ModLogger.LogInfo($"{PluginName} {PluginVersion} is loaded.");
+        }
+
+        internal static void InitializeDedicatedServerSettings()
+        {
+            if (settingsInitialized || ZNet.instance == null ||
+                !ZNet.instance.IsServer() || !ZNet.instance.IsDedicated()) return;
+            ServerEnabled = ReadServerEnabled();
+            settingsInitialized = true;
         }
 
         private void Update()
@@ -57,6 +65,8 @@ namespace Landoria.FreeFlyCommand
             FreeFlyAuthorization.ResetSession();
             ModLogger?.LogInfo($"{PluginName} {PluginVersion} is unloaded.");
             ShutdownPlugin();
+            ServerEnabled = false;
+            settingsInitialized = false;
             ModLogger = null;
         }
     }

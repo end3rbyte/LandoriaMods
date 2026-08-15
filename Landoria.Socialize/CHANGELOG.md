@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.13
+
+- Read server command-line settings only on dedicated servers.
+
 ## 1.0.12
 
 - Add an optional one-shot `/all` command using vanilla server-wide shout delivery.

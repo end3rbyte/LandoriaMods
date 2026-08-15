@@ -17,7 +17,8 @@ namespace Landoria.CharacterVault
 
         internal void InitializeServer()
         {
-            if (serverInitialized) return;
+            if (serverInitialized || ZNet.instance == null ||
+                !ZNet.instance.IsServer() || !ZNet.instance.IsDedicated()) return;
             string[] arguments = Environment.GetCommandLineArgs();
             AllowMultipleCharacters =
                 CharacterVaultArgumentPolicy.ResolveAllowMultiple(arguments);

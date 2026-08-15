@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.6
+
+- Read the player-limit switch only on dedicated servers.
+
 ## 1.0.5
 
 - Document Valheim version compatibility

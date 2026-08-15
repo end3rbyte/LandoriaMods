@@ -13,10 +13,10 @@ developer commands, or administrator access.
 ## Authorization
 
 - The client starts denied and explicitly requests authorization from the connected server.
-- The server controls flight with `--hammerfreedom-fly true|false`.
-- The server controls fall damage immunity with `--hammerfreedom-fall-damage-immunity true|false`.
-- The server controls unlimited stamina with `--hammerfreedom-unlimited-stamina true|false`.
-- The server controls durability loss with `--hammerfreedom-no-durability-loss true|false`.
+- The dedicated server controls flight with `--hammerfreedom-fly true|false`.
+- The dedicated server controls fall damage immunity with `--hammerfreedom-fall-damage-immunity true|false`.
+- The dedicated server controls unlimited stamina with `--hammerfreedom-unlimited-stamina true|false`.
+- The dedicated server controls durability loss with `--hammerfreedom-no-durability-loss true|false`.
 - The server controls build-material recovery with
   `--hammerfreedom-recover-build-materials true|false`.
 - Each switch defaults to `true`.

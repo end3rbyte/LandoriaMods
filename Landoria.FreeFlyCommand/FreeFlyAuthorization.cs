@@ -55,6 +55,12 @@ namespace Landoria.FreeFlyCommand
 
         private static void UpdateServerAuthorization()
         {
+            if (!ZNet.instance.IsDedicated())
+            {
+                SetAuthorized(false);
+                return;
+            }
+            FreeFlyCommandPlugin.InitializeDedicatedServerSettings();
             bool allowed = FreeFlyCommandPlugin.ServerEnabled;
             SetAuthorized(allowed);
             if (_serverAllowed == allowed)
@@ -91,6 +97,7 @@ namespace Landoria.FreeFlyCommand
         private static void ReceiveRequest(long sender)
         {
             if (ZNet.instance == null || !ZNet.instance.IsServer() ||
+                !ZNet.instance.IsDedicated() ||
                 ZNet.instance.GetPeer(sender) == null || ZRoutedRpc.instance == null)
             {
                 return;

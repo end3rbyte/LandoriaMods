@@ -1,6 +1,6 @@
 {
   "name": "FreeFlyCommand",
-  "version_number": "1.0.4",
+  "version_number": "1.0.5",
   "website_url": "https://valheim.landoria-gaming.com/",
   "description": "Allows server-authorized native freefly and ffsmooth commands within 50 metres of the player.",
   "dependencies": [
