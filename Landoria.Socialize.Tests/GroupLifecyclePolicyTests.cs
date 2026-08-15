@@ -43,10 +43,21 @@ public sealed class GroupLifecyclePolicyTests
         Assert.Equal(2, group.Leader);
     }
 
+    // Verifies that leadership follows join order rather than player identifier order.
+    [Fact]
+    public void DepartingLeaderPromotesOldestRemainingMember()
+    {
+        SocialGroup group = Group(leader: 10, (10, "Leader"), (30, "Oldest"), (20, "Newest"));
+
+        GroupLifecyclePolicy.Remove(group, 10);
+
+        Assert.Equal(30, group.Leader);
+    }
+
     private static SocialGroup Group(long leader, params (long Id, string Name)[] members)
     {
         SocialGroup group = new() { Id = 1, Leader = leader };
-        foreach ((long id, string name) in members) group.Members[id] = name;
+        foreach ((long id, string name) in members) group.AddMember(id, name);
         return group;
     }
 }

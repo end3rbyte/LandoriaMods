@@ -35,7 +35,7 @@ namespace Landoria.Socialize
                 return Reject("That group is no longer available.");
             }
 
-            group.Members[playerId] = playerName;
+            group.AddMember(playerId, playerName);
             playerGroups[playerId] = group.Id;
             invitations.Remove(playerId);
             return new GroupAcceptanceResult(true, group, null);

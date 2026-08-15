@@ -82,7 +82,7 @@ public sealed class GroupAcceptancePolicyTests
         SocialGroup group = new() { Id = 7, Leader = leader };
         for (int player = 1; player <= memberCount; player++)
         {
-            group.Members[player] = "Player" + player;
+            group.AddMember(player, "Player" + player);
         }
         return group;
     }

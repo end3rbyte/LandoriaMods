@@ -1,6 +1,6 @@
 # Socialize
 
-Adds persistent player groups, private messaging, map sharing, and expanded chat channels.
+Adds temporary player groups for missions and expeditions, private messaging, map sharing, and expanded chat channels.
 
 ## Valheim compatibility
 
@@ -11,7 +11,7 @@ Adds persistent player groups, private messaging, map sharing, and expanded chat
 
 ## Features
 
-- Creates persistent groups of up to five players.
+- Lets up to five connected players form a temporary group for a mission or expedition.
 - Gives group leaders invite, remove, and promotion controls.
 - Adds nearby, shout, server-wide, private, private-ping, and group chat.
 - Keeps the selected chat channel active.
@@ -40,7 +40,9 @@ Adds persistent player groups, private messaging, map sharing, and expanded chat
 | `/group promote <PlayerName>` | Transfers leadership. |
 | `/group info` | Lists group members and status. |
 
-- Groups persist in the world and disband below two members.
+- Group membership lasts only for the current connection: players leave when they disconnect and are not placed back in the group when they reconnect.
+- When the leader disconnects, the longest-standing remaining member becomes the new leader.
+- Groups are kept only in server memory and disband below two members.
 - Invitations use Valheim's Yes/No popup.
 - Friendly-fire rules, permissions, and teleportation are not included.
 
