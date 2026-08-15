@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using HarmonyLib;
+using Landoria.SharedLib;
 using Landoria.Socialize;
 using UnityEngine;
 
@@ -88,7 +89,7 @@ namespace Landoria.Parked
                     players.Add(mapping.Value);
                 }
             }
-            if (!ZNet.instance.IsDedicated() && Game.instance != null)
+            if (!ServerRole.IsDedicatedServer && Game.instance != null)
             {
                 players.Add(Game.instance.GetPlayerProfile().GetPlayerID());
             }

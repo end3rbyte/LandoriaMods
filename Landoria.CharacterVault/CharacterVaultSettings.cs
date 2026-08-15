@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Landoria.SharedLib;
 
 namespace Landoria.CharacterVault
 {
@@ -17,8 +18,7 @@ namespace Landoria.CharacterVault
 
         internal void InitializeServer()
         {
-            if (serverInitialized || ZNet.instance == null ||
-                !ZNet.instance.IsServer() || !ZNet.instance.IsDedicated()) return;
+            if (serverInitialized || !ServerRole.IsDedicatedServer) return;
             string[] arguments = Environment.GetCommandLineArgs();
             AllowMultipleCharacters =
                 CharacterVaultArgumentPolicy.ResolveAllowMultiple(arguments);

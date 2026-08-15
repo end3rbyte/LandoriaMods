@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4
+
+- Use the shared dedicated-server role check.
+
 ## 1.0.3
 
 - Read capability switches only on dedicated servers and fail closed elsewhere.

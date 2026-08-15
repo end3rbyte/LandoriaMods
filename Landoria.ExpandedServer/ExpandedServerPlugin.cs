@@ -9,7 +9,7 @@ namespace Landoria.ExpandedServer
     {
         private const string PluginGuid = "Landoria.ExpandedServer";
         private const string PluginName = "Landoria.ExpandedServer";
-        private const string PluginVersion = "1.0.6";
+        private const string PluginVersion = "1.0.7";
         private const int DefaultMaxPlayers = 20;
         private const int MaximumMaxPlayers = 100;
 
@@ -32,8 +32,7 @@ namespace Landoria.ExpandedServer
 
         internal static void InitializeDedicatedServerSettings()
         {
-            if (settingsInitialized || ZNet.instance == null ||
-                !ZNet.instance.IsServer() || !ZNet.instance.IsDedicated()) return;
+            if (settingsInitialized || !ServerRole.IsDedicatedServer) return;
             MaxPlayers = ReadMaxPlayers();
             settingsInitialized = true;
             Log.LogInfo($"Dedicated server player limit is {MaxPlayers}.");

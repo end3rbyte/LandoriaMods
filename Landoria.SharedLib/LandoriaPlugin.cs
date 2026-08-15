@@ -13,7 +13,7 @@ namespace Landoria.SharedLib
         protected ModLog InitializePlugin(string pluginGuid)
         {
             ModLog log = new ModLog(Logger);
-            Version assemblyVersion = GetType().Assembly.GetName().Version;
+            System.Version assemblyVersion = GetType().Assembly.GetName().Version;
             log.LogInfo($"AssemblyVersion: {assemblyVersion}.");
             _harmony = new Harmony(pluginGuid);
             PatchOwnNamespace(log);

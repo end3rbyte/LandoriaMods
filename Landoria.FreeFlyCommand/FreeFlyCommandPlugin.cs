@@ -9,7 +9,7 @@ namespace Landoria.FreeFlyCommand
     {
         internal const string PluginGuid = "Landoria.FreeFlyCommand";
         internal const string PluginName = "Landoria.FreeFlyCommand";
-        internal const string PluginVersion = "1.0.5";
+        internal const string PluginVersion = "1.0.6";
         private const string EnabledArgument = "--freeflycommand";
 
         internal static ModLog ModLogger { get; private set; }
@@ -25,8 +25,7 @@ namespace Landoria.FreeFlyCommand
 
         internal static void InitializeDedicatedServerSettings()
         {
-            if (settingsInitialized || ZNet.instance == null ||
-                !ZNet.instance.IsServer() || !ZNet.instance.IsDedicated()) return;
+            if (settingsInitialized || !ServerRole.IsDedicatedServer) return;
             ServerEnabled = ReadServerEnabled();
             settingsInitialized = true;
         }

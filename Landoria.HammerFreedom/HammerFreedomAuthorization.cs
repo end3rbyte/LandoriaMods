@@ -1,4 +1,5 @@
 using System;
+using Landoria.SharedLib;
 using UnityEngine;
 
 namespace Landoria.HammerFreedom
@@ -60,7 +61,7 @@ namespace Landoria.HammerFreedom
 
         private static void UpdateServerAuthorization()
         {
-            if (!ZNet.instance.IsDedicated())
+            if (!ServerRole.IsDedicatedServer)
             {
                 SetAuthorized(HammerFreedomCapabilities.None);
                 return;
@@ -104,8 +105,7 @@ namespace Landoria.HammerFreedom
 
         private static void ReceiveRequest(long sender)
         {
-            if (ZNet.instance == null || !ZNet.instance.IsServer() ||
-                !ZNet.instance.IsDedicated() ||
+            if (!ServerRole.IsDedicatedServer ||
                 ZNet.instance.GetPeer(sender) == null || ZRoutedRpc.instance == null)
             {
                 return;

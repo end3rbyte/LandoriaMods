@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.14
+
+- Use the shared dedicated-server role check.
+
 ## 1.0.13
 
 - Read server command-line settings only on dedicated servers.

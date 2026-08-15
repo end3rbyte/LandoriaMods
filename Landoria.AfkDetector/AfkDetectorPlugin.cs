@@ -11,7 +11,7 @@ namespace Landoria.AfkDetector
         internal const string DisconnectReasonRpc = "Landoria_AfkDisconnectReason";
         private const string PluginGuid = "Landoria.AfkDetector";
         private const string PluginName = "Landoria.AfkDetector";
-        private const string PluginVersion = "1.0.6";
+        private const string PluginVersion = "1.0.7";
         private const int DefaultTimeoutMinutes = 30;
         private const string TimeoutArgument = "--afktimeout";
         private const float DefaultMovementTolerance = 0.75f;
@@ -119,8 +119,7 @@ namespace Landoria.AfkDetector
 
         private static bool IsReadyDedicatedServer()
         {
-            return ZNet.instance != null && ZNet.instance.IsServer() &&
-                ZNet.instance.IsDedicated();
+            return ServerRole.IsDedicatedServer;
         }
 
         private static void DisconnectPlayer(ZNetPeer peer)

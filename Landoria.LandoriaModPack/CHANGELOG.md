@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.25
+
+- Centralize dedicated-server role detection in SharedLib.
+
 ## 1.0.24
 
 - Restrict AfkDetector and CharacterVault server settings to dedicated servers.
