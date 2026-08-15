@@ -21,9 +21,9 @@ Equipable items follow Valheim's `ItemData.IsEquipable()` classification.
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | No |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | No | Not Supported |
 
 ## Contact
 

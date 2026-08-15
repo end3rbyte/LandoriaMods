@@ -36,9 +36,9 @@ Provides server-authorized commands and tools for Valheim administrators.
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | Yes |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 Matching versions must be installed on the server and every client.
 

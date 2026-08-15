@@ -34,9 +34,9 @@ Tombstones created before a lock day was recorded remain protected until their o
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | Yes |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 Every participating client and the server must install matching versions.
 

@@ -14,6 +14,12 @@ Everyone can begin their Landoria journey with a free 30-day trial.
 
 Discover the worlds, choose your game mode, and learn how to join at [valheim.landoria-gaming.com](https://valheim.landoria-gaming.com/).
 
+## Installation
+
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
+
 ## Contact
 
 Report bugs through [GitHub Issues](https://github.com/landoria-gaming/LandoriaMods/issues). For other conversations, use [GitHub Discussions](https://github.com/landoria-gaming/LandoriaMods/discussions).

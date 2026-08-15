@@ -17,9 +17,9 @@ Installs the mods required to join the Landoria Valheim server.
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | Yes |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 Install this modpack with r2modman, select its profile, and use **Start modded**.
 

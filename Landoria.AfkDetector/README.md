@@ -21,16 +21,14 @@ Disconnects players who remain motionless and silent beyond a configurable timeo
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | Yes |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 The client component only receives the disconnect reason and replaces Valheim's
 generic kick message. Detection, configuration, and the decision to disconnect
 remain server-authoritative. CharacterVault is optional. When installed, it
 intercepts the normal Valheim kick and waits for a confirmed final save.
-
-On a peer-hosted world, remote players are monitored. The hosting player is not a remote peer and cannot be disconnected from their own world by this mod.
 
 ## Configuration
 

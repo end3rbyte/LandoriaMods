@@ -30,9 +30,9 @@ Protects recent tombstones from unauthorized players while allowing owner-approv
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | Yes |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 Install matching versions on the server and every participating client.
 

@@ -21,9 +21,9 @@ Disconnects players who remain motionless and silent beyond a configurable timeo
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | Yes |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 The client component only displays the server-provided disconnect reason. See the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.AfkDetector/README.md) for configuration and detection limits.
 

@@ -15,13 +15,13 @@ Exposes live Valheim server information and authenticated commands through a loc
 - Reports the current in-game day.
 - Queues immediate vanilla world saves through an authenticated local command.
 - Listens only on `127.0.0.1` for an on-machine website backend.
-- Supports dedicated servers and peer-hosted worlds.
+- Supports dedicated servers.
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| No | Yes |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| No | Yes | Not Supported |
 
 ## Configuration
 

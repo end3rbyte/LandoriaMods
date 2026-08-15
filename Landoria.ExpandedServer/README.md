@@ -26,9 +26,9 @@ Joining clients need the mod but do not use the switch. PlayFab Party may impose
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | Yes |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 ## Contact
 

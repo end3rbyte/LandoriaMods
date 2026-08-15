@@ -51,9 +51,9 @@ The `Z` shortcut is fixed to match Valheim's native debug-flight control.
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | Yes, wherever HammerFreedom is authorized |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 ## Contact
 
