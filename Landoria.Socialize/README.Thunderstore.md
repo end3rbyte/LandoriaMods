@@ -24,7 +24,6 @@ Adds temporary player groups for missions and expeditions, private messaging, ma
 |---|---|
 | `/s <message>` or `/say <message>` | Sends nearby chat. |
 | `/sh <message>` or `/shout <message>` | Shouts within the configured local range. |
-| `/all <message>` | Reaches every connected player without changing the selected channel. |
 | `/w <PlayerName> <message>` | Sends a world-wide private message. |
 | `/wping <PlayerName> <message>` | Sends a private message and animated ping. |
 | `/g <message>` | Messages connected group members. |
@@ -52,9 +51,6 @@ Adds temporary player groups for missions and expeditions, private messaging, ma
 |---|---:|
 | `--socialize-restrict-public-positions true\|false` | `true` |
 | `--socialize-restrict-public-pings true\|false` | `true` |
-| `--socialize-shout-distance <metres>` | `30` |
-| `--socialize-say-distance <metres>` | `15` |
-| `--socialize-all-channel-enabled true\|false` | `false` |
 
 Distance values must be positive finite numbers. The server reads these switches once
 and sends its in-memory configuration to each client after spawning.

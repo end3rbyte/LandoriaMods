@@ -12,20 +12,5 @@ public sealed class SocializeServerConfigurationTests
 
         Assert.True(configuration.RestrictPublicPositions);
         Assert.True(configuration.RestrictPublicPings);
-        Assert.Equal(30f, configuration.ShoutDistance);
-        Assert.Equal(15f, configuration.SayDistance);
-        Assert.False(configuration.AllChannelEnabled);
-    }
-
-    [Fact]
-    public void AllChannelCanBeEnabledByServerSwitch()
-    {
-        SocializeServerConfiguration configuration =
-            SocializeServerConfiguration.FromArguments(new[]
-            {
-                "--socialize-all-channel-enabled", "true"
-            });
-
-        Assert.True(configuration.AllChannelEnabled);
     }
 }
