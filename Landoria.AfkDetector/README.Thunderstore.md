@@ -13,10 +13,10 @@ Disconnects players who remain motionless and silent beyond a configurable timeo
 
 - Keeps inactivity detection authoritative on the server.
 - Uses server-visible movement and chat activity.
-- Filters position jitter with a configurable movement tolerance.
+- Filters position jitter with a fixed 0.75-metre movement tolerance.
 - Shows a specific inactivity message after disconnecting the client.
 - Defaults to a 30-minute timeout.
-- Supports a server command-line timeout override for managed deployments.
+- Reads `--afktimeout <minutes>` from the server command line; `-1` disables detection.
 - Lets CharacterVault wait for a confirmed final save when that optional mod is installed.
 
 ## Installation

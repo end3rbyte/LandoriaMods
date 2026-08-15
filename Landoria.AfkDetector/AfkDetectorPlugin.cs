@@ -1,6 +1,5 @@
 using System;
 using BepInEx;
-using BepInEx.Configuration;
 using Landoria.SharedLib;
 using UnityEngine;
 
@@ -12,15 +11,13 @@ namespace Landoria.AfkDetector
         internal const string DisconnectReasonRpc = "Landoria_AfkDisconnectReason";
         private const string PluginGuid = "Landoria.AfkDetector";
         private const string PluginName = "Landoria.AfkDetector";
-        private const string PluginVersion = "1.0.4";
+        private const string PluginVersion = "1.0.5";
         private const int DefaultTimeoutMinutes = 30;
         private const string TimeoutArgument = "--afktimeout";
         private const float DefaultMovementTolerance = 0.75f;
         private const float ScanIntervalSeconds = 2f;
 
-        private ConfigEntry<int> _timeoutMinutes;
-        private int? _commandLineTimeoutMinutes;
-        private ConfigEntry<float> _movementTolerance;
+        private int? _timeoutMinutes;
         private ActivityMonitor _monitor;
         private float _nextScan;
         internal static AfkDetectorPlugin Instance { get; private set; }
@@ -30,23 +27,17 @@ namespace Landoria.AfkDetector
         {
             Instance = this;
             Log = InitializePlugin(PluginGuid);
-            BindConfiguration();
             Log.LogInfo($"{PluginName} {PluginVersion} is loaded.");
-        }
-
-        private void BindConfiguration()
-        {
-            _timeoutMinutes = Config.Bind("Detection", "TimeoutMinutes", DefaultTimeoutMinutes,
-                "Minutes without movement or chat before the server disconnects a player.");
-            _commandLineTimeoutMinutes = ReadCommandLineTimeout();
-            _movementTolerance = Config.Bind("Detection", "MovementToleranceMeters",
-                DefaultMovementTolerance,
-                "Minimum distance that resets the inactivity timer and filters position jitter.");
         }
 
         private void Update()
         {
-            if (!IsReadyServer() || Time.unscaledTime < _nextScan)
+            if (!IsReadyServer())
+            {
+                return;
+            }
+            InitializeServerTimeout();
+            if (_timeoutMinutes == -1 || Time.unscaledTime < _nextScan)
             {
                 return;
             }
@@ -57,25 +48,32 @@ namespace Landoria.AfkDetector
 
         private ActivityMonitor EnsureMonitor()
         {
-            float timeout = Mathf.Max(1, EffectiveTimeoutMinutes()) * 60f;
-            float tolerance = Mathf.Max(0.1f, _movementTolerance.Value);
+            float timeout = _timeoutMinutes.Value * 60f;
             if (_monitor == null)
             {
-                _monitor = new ActivityMonitor(timeout, tolerance, DisconnectPlayer);
+                _monitor = new ActivityMonitor(
+                    timeout, DefaultMovementTolerance, DisconnectPlayer);
             }
             else
             {
-                _monitor.Configure(timeout, tolerance);
+                _monitor.Configure(timeout, DefaultMovementTolerance);
             }
             return _monitor;
         }
 
-        private int EffectiveTimeoutMinutes()
+        private void InitializeServerTimeout()
         {
-            return _commandLineTimeoutMinutes ?? _timeoutMinutes.Value;
+            if (_timeoutMinutes.HasValue)
+            {
+                return;
+            }
+            _timeoutMinutes = ReadCommandLineTimeout();
+            Log.LogInfo(_timeoutMinutes == -1
+                ? "AFK timeout is disabled."
+                : $"AFK timeout is {_timeoutMinutes} minutes.");
         }
 
-        private static int? ReadCommandLineTimeout()
+        private static int ReadCommandLineTimeout()
         {
             string[] arguments = Environment.GetCommandLineArgs();
             for (int index = 0; index < arguments.Length; index++)
@@ -89,26 +87,32 @@ namespace Landoria.AfkDetector
                 return ParseCommandLineTimeout(arguments, index);
             }
 
-            return null;
+            return DefaultTimeoutMinutes;
         }
 
-        private static int? ParseCommandLineTimeout(string[] arguments, int index)
+        private static int ParseCommandLineTimeout(string[] arguments, int index)
         {
             if (index + 1 < arguments.Length &&
-                int.TryParse(arguments[index + 1], out int minutes) && minutes >= 1)
+                int.TryParse(arguments[index + 1], out int minutes) &&
+                (minutes == -1 || minutes >= 1))
             {
                 Log.LogInfo($"Received command-line switch: {TimeoutArgument} {minutes}.");
                 return minutes;
             }
 
-            Log.LogWarning($"Invalid {TimeoutArgument} value; using the BepInEx configuration.");
-            return null;
+            Log.LogWarning($"Invalid {TimeoutArgument} value; using {DefaultTimeoutMinutes} minutes.");
+            return DefaultTimeoutMinutes;
         }
 
         internal void RecordChat(long peerId)
         {
             if (IsReadyServer())
             {
+                InitializeServerTimeout();
+                if (_timeoutMinutes == -1)
+                {
+                    return;
+                }
                 EnsureMonitor().RecordChat(peerId, Time.unscaledTime);
             }
         }
