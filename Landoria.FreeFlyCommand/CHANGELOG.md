@@ -6,6 +6,7 @@
 - Use the shared dedicated-server role check.
 - Request authorization once after the local player spawns.
 - Limit free-camera movement to 40 metres per second.
+- Prevent the free camera from passing through terrain and solid objects.
 
 ## 1.0.4
 

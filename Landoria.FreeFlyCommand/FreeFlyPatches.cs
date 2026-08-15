@@ -61,6 +61,7 @@ namespace Landoria.FreeFlyCommand
         {
             ___m_freeFlySpeed = FreeFlyController.ClampSpeed(___m_freeFlySpeed);
             FreeFlyController.ClampFrameMovement(__instance, __state, dt);
+            FreeFlyController.ClampToCollision(__instance, __state);
             FreeFlyController.ClampToPlayer(__instance);
         }
     }
