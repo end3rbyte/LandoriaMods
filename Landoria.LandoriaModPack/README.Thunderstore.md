@@ -6,6 +6,8 @@ Beyond the mist, new worlds wait beneath Yggdrasil. Gather your fellow Vikings, 
 
 Use this modpack to enter a Landoria game mode and join one of its Valheim worlds. Landoria offers persistent community worlds where you can meet other players, build lasting homes, and share adventures.
 
+Everyone can begin their Landoria journey with a free 30-day trial.
+
 - **Normal** keeps the familiar Valheim journey: survive, explore every biome, face the Forsaken, and progress together.
 - **Hammer** is made for creative building, with the freedom to create villages, longhouses, and monuments alongside other builders.
 - **Hard** is coming later for Vikings seeking a more demanding and competitive survival adventure.
