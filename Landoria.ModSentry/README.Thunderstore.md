@@ -1,6 +1,6 @@
 # Landoria ModSentry
 
-Makes sure every player joins with the correct mod versions, keeping shared worlds consistent and avoiding confusing loading failures.
+Guarantees that every player uses the same approved mods, versions, and files, so everyone enters the world under the same conditions.
 
 ## Valheim compatibility
 
@@ -9,8 +9,8 @@ Makes sure every player joins with the correct mod versions, keeping shared worl
 | Current release | `0.221.12` | Compatible |
 | Public Test | `0.221.13` | Compatible |
 
-- Checks every required and optional mod before entering the world.
-- Verifies the exact version and package contents expected by the server.
+- Checks every player's complete mod setup before they enter the world.
+- Allows only the exact mods, versions, and files approved by the server.
 - Returns the player to the main menu with a clear explanation when a mod must be updated.
 - Gives server administrators complete diagnostics for resolving mismatches.
 

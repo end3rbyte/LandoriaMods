@@ -2,7 +2,7 @@
 
 ## 1.0.7
 
-- Explain mod compatibility checks more clearly for players.
+- Emphasize identical mod setups and playing conditions for every player.
 
 ## 1.0.6
 
