@@ -18,7 +18,6 @@ Allows Valheim's native `freefly` and `ffsmooth` commands only after explicit se
 - Limits free-camera movement to 20 metres per second.
 - Uses a one-metre-radius collision sphere to prevent the free camera from passing through terrain and solid objects.
 - Limits the camera to 50 metres from the player.
-- Disables free camera immediately when authorization is removed.
 
 ## Installation
 
