@@ -58,6 +58,8 @@ Group data is held only in server memory and is not stored with the world. Playe
 |---|---:|---|
 | `--socialize-restrict-public-positions true\|false` | `true` | Hides and disables vanilla public-position sharing. |
 | `--socialize-restrict-public-pings true\|false` | `true` | Restricts the public map-ping button and delivery to group members. |
+| `--socialize-shout-distance <metres>` | `30` | Sets the shout delivery distance in metres. |
+| `--socialize-say-distance <metres>` | `15` | Sets the normal speech delivery distance in metres. |
 
 Distance values must be positive finite numbers. The server reads these switches once,
 keeps the effective configuration in memory, and sends it to each client after spawning.

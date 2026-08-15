@@ -2,7 +2,7 @@
 
 ## 1.0.9
 
-- Remove global chat and restore the original local shout behavior.
+- Remove the global chat command.
 
 ## 1.0.8
 

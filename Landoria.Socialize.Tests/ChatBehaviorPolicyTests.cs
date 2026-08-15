@@ -4,12 +4,6 @@ namespace Landoria.Socialize;
 
 public sealed class ChatBehaviorPolicyTests
 {
-    [Fact]
-    public void ShoutDistanceIsTwiceTheNormalDistance()
-    {
-        Assert.Equal(30f, ChatBehaviorPolicy.GetShoutDistance(15f));
-    }
-
     // Verifies the prompt displayed for every persistent chat channel.
     [Theory]
     [InlineData(0, "", "Speaking...")]

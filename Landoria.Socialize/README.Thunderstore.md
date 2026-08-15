@@ -51,6 +51,8 @@ Adds temporary player groups for missions and expeditions, private messaging, ma
 |---|---:|
 | `--socialize-restrict-public-positions true\|false` | `true` |
 | `--socialize-restrict-public-pings true\|false` | `true` |
+| `--socialize-shout-distance <metres>` | `30` |
+| `--socialize-say-distance <metres>` | `15` |
 
 Distance values must be positive finite numbers. The server reads these switches once
 and sends its in-memory configuration to each client after spawning.
