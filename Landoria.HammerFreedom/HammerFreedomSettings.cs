@@ -10,11 +10,11 @@ namespace Landoria.HammerFreedom
         private const string DurabilityArgument = "--hammerfreedom-no-durability-loss";
         private const string RecoveryArgument = "--hammerfreedom-recover-build-materials";
 
-        internal bool Flight { get; private set; } = true;
-        internal bool FallDamageImmunity { get; private set; } = true;
-        internal bool UnlimitedStamina { get; private set; } = true;
-        internal bool NoDurabilityLoss { get; private set; } = true;
-        internal bool RecoverBuildMaterials { get; private set; } = true;
+        internal bool Flight { get; private set; }
+        internal bool FallDamageImmunity { get; private set; }
+        internal bool UnlimitedStamina { get; private set; }
+        internal bool NoDurabilityLoss { get; private set; }
+        internal bool RecoverBuildMaterials { get; private set; }
 
         internal static HammerFreedomSettings FromArguments(string[] arguments, ModLog logger)
         {
@@ -33,7 +33,7 @@ namespace Landoria.HammerFreedom
             bool enabled = HammerFreedomArgumentPolicy.Resolve(arguments, name, out bool valid);
             if (!valid)
             {
-                logger.LogWarning($"Invalid {name} value; using true.");
+                logger.LogWarning($"Invalid {name} value; using false.");
             }
             return enabled;
         }

@@ -6,6 +6,7 @@
 - Read capability switches only on dedicated servers and fail closed elsewhere.
 - Use the shared dedicated-server role check.
 - Request capabilities once after the local player spawns.
+- Disable every capability by default unless its Hammer-mode switch enables it.
 
 ## 1.0.1
 

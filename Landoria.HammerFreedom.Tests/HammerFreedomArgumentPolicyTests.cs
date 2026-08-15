@@ -4,15 +4,15 @@ namespace Landoria.HammerFreedom;
 
 public sealed class HammerFreedomArgumentPolicyTests
 {
-    // Verifies that an omitted server switch enables its capability by default.
+    // Verifies that an omitted server switch disables its capability by default.
     [Fact]
-    public void MissingSwitchDefaultsToEnabled()
+    public void MissingSwitchDefaultsToDisabled()
     {
         bool enabled = HammerFreedomArgumentPolicy.Resolve(
             Array.Empty<string>(), "--hammerfreedom-fly", out bool valid);
 
         Assert.True(valid);
-        Assert.True(enabled);
+        Assert.False(enabled);
     }
 
     // Verifies that every HammerFreedom switch can independently disable its capability.
@@ -31,15 +31,15 @@ public sealed class HammerFreedomArgumentPolicyTests
         Assert.False(enabled);
     }
 
-    // Verifies that an invalid switch value is reported and falls back to enabled.
+    // Verifies that an invalid switch value is reported and falls back to disabled.
     [Fact]
-    public void InvalidValueFallsBackToEnabled()
+    public void InvalidValueFallsBackToDisabled()
     {
         bool enabled = HammerFreedomArgumentPolicy.Resolve(
             new[] { "--hammerfreedom-fly", "invalid" },
             "--hammerfreedom-fly", out bool valid);
 
         Assert.False(valid);
-        Assert.True(enabled);
+        Assert.False(enabled);
     }
 }
