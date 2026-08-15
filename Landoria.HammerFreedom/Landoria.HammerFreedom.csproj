@@ -32,6 +32,7 @@
   <ItemGroup>
     <Compile Include="FlyCommand.cs" />
     <Compile Include="FlyController.cs" /><Compile Include="FlyInput.cs" />
+    <Compile Include="FlightGroundActionPolicy.cs" />
     <Compile Include="FlightSpeedPolicy.cs" />
     <Compile Include="HammerFreedomAuthorization.cs" />
     <Compile Include="HammerFreedomArgumentPolicy.cs" />

@@ -7,6 +7,7 @@
 - Use the shared dedicated-server role check.
 - Request capabilities once after the local player spawns.
 - Disable every capability by default unless its Hammer-mode switch enables it.
+- Prevent ascent from jumping and descent from crouching while flying.
 
 ## 1.0.1
 

@@ -48,6 +48,7 @@ developer commands, or administrator access.
 | Run / Shift | Fly at up to 7 metres per second. |
 
 The `Z` shortcut is fixed to match Valheim's native debug-flight control.
+While flying, ascent does not trigger a jump and descent does not trigger crouching.
 
 ## Installation
 
