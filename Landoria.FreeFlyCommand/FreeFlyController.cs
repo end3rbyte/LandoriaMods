@@ -5,8 +5,8 @@ namespace Landoria.FreeFlyCommand
     internal static class FreeFlyController
     {
         internal const float MaximumDistance = 50f;
-        internal const float MaximumSpeed = 40f;
-        internal const float CollisionRadius = 0.2f;
+        internal const float MaximumSpeed = 20f;
+        internal const float CollisionRadius = 1f;
         internal const float CollisionClearance = 0.05f;
 
         internal static float ClampSpeed(float speed)
