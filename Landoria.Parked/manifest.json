@@ -1,0 +1,16 @@
+{
+  "name": "Parked",
+  "version_number": "1.0.0",
+  "website_url": "https://valheim.landoria-gaming.com/",
+  "description": "Provides the foundation for Parked features.",
+  "dependencies": [
+    "denikson-BepInExPack_Valheim-5.4.2333"
+  ],
+  "categories": [
+    "ai-generated",
+    "mods",
+    "client-side",
+    "server-side",
+    "utility"
+  ]
+}
