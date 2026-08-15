@@ -31,7 +31,7 @@ Denied interactions are silent. Hovering an inaccessible piece shows its creator
 |---|---|---|
 | Yes | Yes | Not Supported |
 
-Install matching versions of Parked and Socialize on the server and every participating client. Socialize 1.0.14 or later is required.
+Install matching versions of Parked and Socialize on the server and every participating client. Socialize 1.0.9 or later is required.
 
 ## Contact
 

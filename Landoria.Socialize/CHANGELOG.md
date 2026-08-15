@@ -1,29 +1,13 @@
 # Changelog
 
-## 1.0.14
-
-- Use the shared dedicated-server role check.
-
-## 1.0.13
-
-- Read server command-line settings only on dedicated servers.
-
-## 1.0.12
-
-- Add an optional one-shot `/all` command using vanilla server-wide shout delivery.
-- Make all Socialize settings server command-line switches synchronized after player spawn.
-
-## 1.0.11
-
-- Add configurable shout and normal speech distances with command-line overrides.
-
-## 1.0.10
-
-- Add configurable public-position and public-ping restrictions with command-line overrides.
-
 ## 1.0.9
 
 - Move player-built piece permissions and offline protection to Parked.
+- Add configurable public-position, public-ping, shout-distance, and speech-distance server switches.
+- Add an optional one-shot `/all` command using vanilla server-wide shout delivery.
+- Synchronize only client-relevant Socialize settings after player spawn.
+- Read server command-line settings only on dedicated servers.
+- Use the shared dedicated-server role check.
 
 ## 1.0.8
 

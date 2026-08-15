@@ -1,12 +1,9 @@
 # Changelog
 
-## 1.0.6
-
-- Use the shared dedicated-server role check.
-
 ## 1.0.5
 
 - Read the authorization switch only on dedicated servers and fail closed elsewhere.
+- Use the shared dedicated-server role check.
 
 ## 1.0.4
 

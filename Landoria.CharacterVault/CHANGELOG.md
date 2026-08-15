@@ -1,20 +1,11 @@
 # Changelog
 
-## 1.0.15
-
-- Use the shared dedicated-server role check.
-
-## 1.0.14
-
-- Read server command-line settings only on dedicated servers.
-
-## 1.0.13
-
-- Make starting items server-command-line-only and send them only during new-character admission.
-
 ## 1.0.12
 
 - Make the multiple-character policy a server-only command-line setting with a true default.
+- Make starting items server-command-line-only and send them only during new-character admission.
+- Read server command-line settings only on dedicated servers.
+- Use the shared dedicated-server role check.
 
 ## 1.0.11
 

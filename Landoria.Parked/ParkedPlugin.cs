@@ -10,7 +10,7 @@ namespace Landoria.Parked
     {
         private const string PluginGuid = "Landoria.Parked";
         private const string PluginName = "Landoria.Parked";
-        private const string PluginVersion = "1.0.1";
+        private const string PluginVersion = "1.0.0";
 
         internal static ModLog Log { get; private set; }
 
