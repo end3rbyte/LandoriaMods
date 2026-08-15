@@ -1,61 +1,32 @@
 using System;
 using System.Collections.Generic;
-using BepInEx.Configuration;
 
 namespace Landoria.CharacterVault
 {
     internal sealed class CharacterVaultSettings
     {
-        private const string ItemsArgument = "--charactervault-starting-items";
         private bool serverInitialized;
 
-        private CharacterVaultSettings(string startingItems)
+        internal CharacterVaultSettings()
         {
-            StartingItems = ParseItems(startingItems);
+            StartingItems = new List<StartingItem>();
         }
 
         internal bool AllowMultipleCharacters { get; private set; } = true;
-        internal IReadOnlyList<StartingItem> StartingItems { get; }
-
-        internal static CharacterVaultSettings Load(ConfigFile config)
-        {
-            string configuredItems = config.Bind("New Characters", "StartingItems", string.Empty,
-                "Comma-separated prefab and quantity pairs, for example hammer:1,wood:10.").Value;
-            string items = ReadArgument(ItemsArgument) ?? configuredItems;
-            CharacterVaultPlugin.Log.LogInfo($"Effective starting items: '{items}'.");
-            return new CharacterVaultSettings(items);
-        }
+        internal IReadOnlyList<StartingItem> StartingItems { get; private set; }
 
         internal void InitializeServer()
         {
             if (serverInitialized) return;
-            AllowMultipleCharacters = CharacterVaultArgumentPolicy.ResolveAllowMultiple(
-                Environment.GetCommandLineArgs());
+            string[] arguments = Environment.GetCommandLineArgs();
+            AllowMultipleCharacters =
+                CharacterVaultArgumentPolicy.ResolveAllowMultiple(arguments);
+            StartingItems = ParseItems(
+                CharacterVaultArgumentPolicy.ResolveStartingItems(arguments));
             serverInitialized = true;
             CharacterVaultPlugin.Log.LogInfo(
-                $"Server allowMultipleCharacters={AllowMultipleCharacters}.");
-        }
-
-        private static string ReadArgument(string name)
-        {
-            string[] arguments = Environment.GetCommandLineArgs();
-            string found = null;
-            for (int index = 0; index < arguments.Length; index++)
-            {
-                if (!string.Equals(arguments[index], name, StringComparison.OrdinalIgnoreCase))
-                {
-                    continue;
-                }
-
-                if (found != null || index + 1 >= arguments.Length)
-                {
-                    throw new InvalidOperationException($"Command-line switch {name} is missing or duplicated.");
-                }
-
-                found = arguments[++index];
-            }
-
-            return found;
+                $"Server allowMultipleCharacters={AllowMultipleCharacters}, " +
+                $"startingItemCount={StartingItems.Count}.");
         }
 
         private static IReadOnlyList<StartingItem> ParseItems(string value)
