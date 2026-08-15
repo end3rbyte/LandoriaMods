@@ -2,7 +2,7 @@
 
 ## 1.0.16
 
-- Update the Landoria mod set and its dedicated-server-authorized behavior.
+- Add First Person and update the Landoria mod set.
 
 ## 1.0.15
 
