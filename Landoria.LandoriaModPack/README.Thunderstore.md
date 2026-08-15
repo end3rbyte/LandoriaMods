@@ -1,6 +1,6 @@
 # LandoriaModPack
 
-Beyond the mist, new worlds wait beneath Yggdrasil. Gather your fellow Vikings, choose your path, and begin a shared saga in Landoria.
+Beyond the mist, new worlds wait beneath Yggdrasil. Gather your fellow Vikings, choose your path, and begin a shared saga in [Landoria](https://valheim.landoria-gaming.com/).
 
 ## Enter the worlds of Landoria
 
