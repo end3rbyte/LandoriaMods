@@ -1,6 +1,6 @@
 # ExpandedServer
 
-Raises Valheim's server capacity to a configurable player limit.
+Lets larger communities play together by raising Valheim's server capacity to a configurable player limit.
 
 ## Valheim compatibility
 
@@ -12,7 +12,7 @@ Raises Valheim's server capacity to a configurable player limit.
 ## Features
 
 - Increases server capacity to up to 100 players, with a default limit of 20.
-- Updates admission checks and advertised Steam or PlayFab capacity.
+- Shows the expanded capacity correctly through Steam or PlayFab and admits players up to the configured limit.
 - Applies its expanded capacity on dedicated servers.
 - Caps the configured limit at 100 players.
 

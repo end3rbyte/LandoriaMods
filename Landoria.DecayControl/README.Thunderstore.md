@@ -1,14 +1,14 @@
 # DecayControl
 
-Controls rain wear and fuel consumption for player-built pieces.
+Controls how rain affects player-built structures and how quickly their fires and torches consume fuel.
 
 ## Features
 
-- Independently controls fuel consumption and environmental wear for player-built pieces.
-- Can preserve vanilla behavior, apply an effect only while the creator is connected, or
-  disable the effect entirely.
-- In `player-online` mode, considers only the creator's connection state; group membership
-  has no effect.
+- Controls building wear and fuel use independently.
+- Can keep the original Valheim behavior, pause each effect while the builder is offline,
+  or disable it entirely for player-built structures.
+- In `player-online` mode, only the original builder's connection matters; joining a group
+  does not change the behavior.
 
 ## Dedicated server settings
 
@@ -18,8 +18,9 @@ Controls rain wear and fuel consumption for player-built pieces.
 | `--decay-control-environmental-building-wear` | `default`, `player-online`, `disabled` | `default` |
 
 Settings are read once by the dedicated server and sent to clients after player spawn.
-They are not BepInEx settings. `default` is vanilla, `player-online` requires the creator
-to be connected, and `disabled` stops the effect for player-built pieces.
+They are not BepInEx settings. `default` keeps the original Valheim behavior,
+`player-online` requires the builder to be connected, and `disabled` stops the effect
+for player-built structures.
 
 ## Installation
 

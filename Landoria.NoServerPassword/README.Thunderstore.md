@@ -1,6 +1,6 @@
 # NoServerPassword
 
-Allows public or crossplay Valheim servers to start with an empty password.
+Lets public or crossplay Valheim servers welcome players without requiring a password.
 
 ## Valheim compatibility
 
@@ -16,7 +16,7 @@ Allows public or crossplay Valheim servers to start with an empty password.
 - Supports dedicated servers.
 - Requires no installation on joining clients.
 
-- Anyone who discovers a password-free server can attempt to join it.
+- Anyone who discovers a password-free server can try to join it.
 - Use normal moderation tools when open access is intentional.
 
 ## Installation

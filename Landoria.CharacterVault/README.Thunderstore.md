@@ -8,10 +8,10 @@ with another save or a restored backup.
 
 | Event | What CharacterVault does |
 |---|---|
-| First enrollment | Waits for `Player.OnSpawned()`, then validates and saves the new character. |
+| First enrollment | Validates and saves the new character after they safely enter the world. |
 | Automatic world save | Saves every connected character with the world. |
 | Manual `save` command | Saves the world and every connected character. |
-| Pause-menu Save button | Saves the character through CharacterVault and retains the vanilla save behavior. |
+| Pause-menu Save button | Saves the trusted server copy while keeping the familiar Valheim save behavior. |
 | Log out | Sends and validates a final character save before disconnecting. |
 | Quit from the menu | After entering the world, waits at most 10 seconds to save your character before closing Valheim. |
 | Server kick | Saves the affected character before the server disconnects it. |
@@ -21,7 +21,7 @@ with another save or a restored backup.
 ## What players should know
 
 - The server loads its latest trusted copy before your character enters the world; local saves still work normally.
-- The status below the minimap progresses from `Saving character...` to `Saving character......`, then `Character saved` once the server has written the save.
+- A status below the minimap shows when the character is saving and confirms when the save is complete.
 - `Failed` appears when the server does not confirm the save in time.
 - The server keeps up to 15 automatic backups per character, including the 5 most recent saves and older daily snapshots.
 - Rejected accounts are never saved and receive a clear error. New characters must be created during the current game session; character limits and starting items depend on the server.

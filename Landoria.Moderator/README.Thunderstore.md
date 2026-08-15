@@ -1,6 +1,6 @@
 # Moderator
 
-Provides server-authorized commands and tools for Valheim administrators.
+Gives trusted Valheim moderators server-authorized tools for helping players and managing the world.
 
 ## Valheim compatibility
 
@@ -11,13 +11,13 @@ Provides server-authorized commands and tools for Valheim administrators.
 
 ## Features
 
-- Adds an administrator-validated moderator mode that starts disabled.
+- Adds a protected moderator mode that starts disabled until an administrator activates it.
 - Enables god and ghost modes for active moderators.
 - Hides and blocks vanilla cheats and `devcommands`.
 - Tracks connected players after revealing the map.
 - Supports Shift-click map teleportation.
-- Displays a replicated green `[Moderator]` name suffix.
-- Audits every Moderator command invocation.
+- Shows a green `[Moderator]` label beside active moderators' names.
+- Records every moderator command for accountability.
 
 ## Commands
 

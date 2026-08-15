@@ -13,7 +13,7 @@ Adds temporary player groups for missions and expeditions, private messaging, ma
 
 - Lets up to five connected players form a temporary group for a mission or expedition.
 - Gives group leaders invite, remove, and promotion controls.
-- Adds nearby, shout, server-wide, private, private-ping, and group chat.
+- Adds nearby, shout, server-wide, group, and private chat, with optional private map pings.
 - Keeps the selected chat channel active.
 - Shares connected group members' map positions automatically.
 - Restricts public positions and map pings outside groups.
@@ -42,7 +42,7 @@ Adds temporary player groups for missions and expeditions, private messaging, ma
 
 - Group membership lasts only for the current connection: players leave when they disconnect and are not placed back in the group when they reconnect.
 - When the leader disconnects, the longest-standing remaining member becomes the new leader.
-- Groups are kept only in server memory and disband below two members.
+- A group ends when fewer than two members remain connected.
 - Invitations use Valheim's Yes/No popup.
 - Friendly-fire rules, permissions, and teleportation are not included.
 

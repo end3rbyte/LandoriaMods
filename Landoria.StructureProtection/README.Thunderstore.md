@@ -1,6 +1,6 @@
 # Structure Protection
 
-Protects offline players' structures from deliberate creature targeting and player weapon damage within unattended active wards.
+Protects offline players' structures from deliberate creature targeting and blocks player weapon damage inside active wards when no authorized player is online.
 
 ## Valheim compatibility
 
@@ -11,11 +11,11 @@ Protects offline players' structures from deliberate creature targeting and play
 
 ## Features
 
-- Prevents creatures from deliberately targeting pieces while their creator is offline, without blocking incidental creature damage.
-- Blocks player weapon damage inside active wards while their creator and all permitted players are offline.
+- Prevents creatures from deliberately targeting player-built structures while their creator is offline, without blocking damage if a creature happens to hit them.
+- Protects structures inside an active ward from player weapon damage while its creator and all permitted players are offline.
 - Keeps vanilla player access, interaction, and creator-name display behavior.
 
-Dedicated servers can disable either feature with `--structure-protection-creature-targeting false` or `--structure-protection-ward-player-damage false`. Both default to `true`.
+Both protections are enabled by default. Dedicated-server administrators can configure them separately with `--structure-protection-creature-targeting` and `--structure-protection-ward-player-damage`.
 
 ## Installation
 
