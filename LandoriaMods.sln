@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.Socialize", "Lando
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.HammerFreedom.Tests", "Landoria.HammerFreedom.Tests\Landoria.HammerFreedom.Tests.csproj", "{EE0CC157-A0F1-48C2-8DDF-E041DA9B6708}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.Parked", "Landoria.Parked\Landoria.Parked.csproj", "{C6FAAFDF-2D25-4CD3-BD71-59BAA98F1D20}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -307,6 +309,18 @@ Global
 		{EE0CC157-A0F1-48C2-8DDF-E041DA9B6708}.Release|x64.Build.0 = Release|Any CPU
 		{EE0CC157-A0F1-48C2-8DDF-E041DA9B6708}.Release|x86.ActiveCfg = Release|Any CPU
 		{EE0CC157-A0F1-48C2-8DDF-E041DA9B6708}.Release|x86.Build.0 = Release|Any CPU
+		{C6FAAFDF-2D25-4CD3-BD71-59BAA98F1D20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6FAAFDF-2D25-4CD3-BD71-59BAA98F1D20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6FAAFDF-2D25-4CD3-BD71-59BAA98F1D20}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C6FAAFDF-2D25-4CD3-BD71-59BAA98F1D20}.Debug|x64.Build.0 = Debug|Any CPU
+		{C6FAAFDF-2D25-4CD3-BD71-59BAA98F1D20}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C6FAAFDF-2D25-4CD3-BD71-59BAA98F1D20}.Debug|x86.Build.0 = Debug|Any CPU
+		{C6FAAFDF-2D25-4CD3-BD71-59BAA98F1D20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6FAAFDF-2D25-4CD3-BD71-59BAA98F1D20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6FAAFDF-2D25-4CD3-BD71-59BAA98F1D20}.Release|x64.ActiveCfg = Release|Any CPU
+		{C6FAAFDF-2D25-4CD3-BD71-59BAA98F1D20}.Release|x64.Build.0 = Release|Any CPU
+		{C6FAAFDF-2D25-4CD3-BD71-59BAA98F1D20}.Release|x86.ActiveCfg = Release|Any CPU
+		{C6FAAFDF-2D25-4CD3-BD71-59BAA98F1D20}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
