@@ -9,7 +9,7 @@ namespace Landoria.HammerFreedom
     {
         internal const string PluginGuid = "Landoria.HammerFreedom";
         internal const string PluginName = "Landoria.HammerFreedom";
-        internal const string PluginVersion = "1.0.3";
+        internal const string PluginVersion = "1.0.4";
         private static readonly KeyboardShortcut ToggleShortcut =
             new KeyboardShortcut(UnityEngine.KeyCode.Z);
 
@@ -27,8 +27,7 @@ namespace Landoria.HammerFreedom
 
         internal static void InitializeDedicatedServerSettings()
         {
-            if (settingsInitialized || ZNet.instance == null ||
-                !ZNet.instance.IsServer() || !ZNet.instance.IsDedicated()) return;
+            if (settingsInitialized || !ServerRole.IsDedicatedServer) return;
             Settings = HammerFreedomSettings.FromArguments(
                 System.Environment.GetCommandLineArgs(), ModLogger);
             settingsInitialized = true;

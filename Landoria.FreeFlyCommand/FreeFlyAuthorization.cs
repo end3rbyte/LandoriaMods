@@ -1,4 +1,5 @@
 using System;
+using Landoria.SharedLib;
 using UnityEngine;
 
 namespace Landoria.FreeFlyCommand
@@ -55,7 +56,7 @@ namespace Landoria.FreeFlyCommand
 
         private static void UpdateServerAuthorization()
         {
-            if (!ZNet.instance.IsDedicated())
+            if (!ServerRole.IsDedicatedServer)
             {
                 SetAuthorized(false);
                 return;
@@ -96,8 +97,7 @@ namespace Landoria.FreeFlyCommand
 
         private static void ReceiveRequest(long sender)
         {
-            if (ZNet.instance == null || !ZNet.instance.IsServer() ||
-                !ZNet.instance.IsDedicated() ||
+            if (!ServerRole.IsDedicatedServer ||
                 ZNet.instance.GetPeer(sender) == null || ZRoutedRpc.instance == null)
             {
                 return;

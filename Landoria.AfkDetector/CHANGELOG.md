@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.7
+
+- Use the shared dedicated-server role check.
+
 ## 1.0.6
 
 - Read and apply the AFK timeout only on dedicated servers.

@@ -19,8 +19,7 @@ namespace Landoria.Socialize
 
         internal void InitializeServer(ModLog logger)
         {
-            if (serverInitialized || ZNet.instance == null ||
-                !ZNet.instance.IsServer() || !ZNet.instance.IsDedicated()) return;
+            if (serverInitialized || !ServerRole.IsDedicatedServer) return;
             SocializeServerConfiguration configuration =
                 SocializeServerConfiguration.FromArguments(
                     System.Environment.GetCommandLineArgs());
