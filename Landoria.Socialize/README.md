@@ -1,6 +1,6 @@
 # Socialize
 
-Adds persistent player groups, private messaging, map sharing, and expanded chat channels.
+Adds temporary player groups for missions and expeditions, private messaging, map sharing, and expanded chat channels.
 
 ## Valheim compatibility
 
@@ -11,7 +11,7 @@ Adds persistent player groups, private messaging, map sharing, and expanded chat
 
 ## Features
 
-- Creates persistent server-owned groups of up to five players.
+- Lets up to five connected players form a temporary group for a mission or expedition.
 - Gives leaders invite, remove, and promotion controls.
 - Adds nearby, shout, server-wide, whisper, private ping, and group chat channels.
 - Keeps the selected shout, whisper, or group channel active.
@@ -41,7 +41,7 @@ Adds persistent player groups, private messaging, map sharing, and expanded chat
 | `/group promote <PlayerName>` | Transfers leadership. | Leader |
 | `/group info` | Lists members, connection state, and leader. | Member |
 
-Groups with fewer than two members are disbanded automatically. Invitations use Valheim's Yes/No popup.
+Groups last only for the current connection. A player leaves their group automatically when they disconnect and is not placed back in that group when they reconnect. If the leader disconnects, the longest-standing remaining member becomes the new leader. Groups with fewer than two members are disbanded automatically. Invitations use Valheim's Yes/No popup.
 
 ## Map Sharing
 
@@ -51,7 +51,7 @@ Groups with fewer than two members are disbanded automatically. Invitations use 
 - `/wping` remains available without a group.
 - Friendly-fire rules, permissions, and teleportation are provided by other mods.
 
-Group data is serialized in a persistent server-owned ZDO stored with the world. No separate configuration or group file is created.
+Group data is held only in server memory and is not stored with the world. Player membership ends on disconnect, and all remaining group data is cleared when the server stops.
 
 ## Configuration
 

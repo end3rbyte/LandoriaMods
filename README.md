@@ -21,7 +21,7 @@ Each mod directory includes a technical `README.md`, a player-oriented
 | [Structure Protection](Landoria.StructureProtection/) | Both | Protects structures while their authorized players are offline. |
 | [SealedTombstone](Landoria.SealedTombstone/) | Both | Protects tombstones and lets their owners approve access. |
 | [ServerGateway](Landoria.ServerGateway/) | Server | Exposes authenticated local status and save endpoints. |
-| [Socialize](Landoria.Socialize/) | Both | Adds persistent groups, private messaging, map sharing, and expanded chat channels. |
+| [Socialize](Landoria.Socialize/) | Both | Adds temporary groups for missions and expeditions, private messaging, map sharing, and expanded chat channels. |
 
 ## Shared library
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.10
+
+- Keep groups only for the current server session.
+- Remove players from their group when they disconnect.
+- Clear stale memberships defensively when players reconnect.
+- Promote the longest-standing remaining member when the leader disconnects.
+
 ## 1.0.9
 
 - Move player-built piece permissions and offline protection to Parked.

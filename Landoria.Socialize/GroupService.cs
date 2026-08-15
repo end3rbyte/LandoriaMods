@@ -20,14 +20,12 @@ namespace Landoria.Socialize
             if (ZNet.instance.IsServer())
             {
                 SocializePlugin.Settings.InitializeServer(SocializePlugin.Log);
-                GroupStorage.TryLoad();
             }
         }
 
         internal static void Reset()
         {
             registeredRpc = null;
-            GroupStorage.Reset();
             GroupState.ClearAll();
             SocializePlugin.Settings?.ResetState();
             SocialChatSender.ApplyRangesToLoadedTalkers();
@@ -71,7 +69,7 @@ namespace Landoria.Socialize
 
         internal static void Dispatch(long sender, long playerId, string playerName, string action, string argument)
         {
-            GroupState.PeerPlayers[sender] = playerId;
+            RegisterSession(sender, playerId);
             switch (action)
             {
                 case "state": SendSnapshot(sender, playerId); break;
@@ -109,7 +107,6 @@ namespace Landoria.Socialize
             {
                 return;
             }
-            GroupStorage.Reset();
             GroupState.ClearAll();
             SocializePlugin.Settings?.ResetState();
             SocialChatSender.ApplyRangesToLoadedTalkers();
@@ -160,7 +157,7 @@ namespace Landoria.Socialize
                 SendMessage(sender, result.Message);
                 return;
             }
-            SaveAndBroadcast(result.Group, playerName + " joined the group.");
+            BroadcastChange(result.Group, playerName + " joined the group.");
         }
 
         private static SocialGroup GetOrCreateGroup(long inviter)
@@ -171,7 +168,7 @@ namespace Landoria.Socialize
                 return group.Leader == inviter ? group : null;
             }
             group = new SocialGroup { Id = GroupState.GetNextGroupId(), Leader = inviter };
-            group.Members[inviter] = GetPlayerName(inviter);
+            group.AddMember(inviter, GetPlayerName(inviter));
             GroupState.Groups[group.Id] = group;
             GroupState.PlayerGroups[inviter] = group.Id;
             return group;
@@ -198,7 +195,6 @@ namespace Landoria.Socialize
             string name = group.Members[playerId];
             GroupState.PlayerGroups.Remove(playerId);
             ApplyRemoval(group, GroupLifecyclePolicy.Remove(group, playerId));
-            GroupStorage.Save();
             SendMessage(sender, "You left the group.");
             Broadcast(group, name + " left the group.");
             BroadcastSnapshots(group);
@@ -216,7 +212,6 @@ namespace Landoria.Socialize
             string name = group.Members[target];
             GroupState.PlayerGroups.Remove(target);
             ApplyRemoval(group, GroupLifecyclePolicy.Remove(group, target));
-            GroupStorage.Save();
             SendMessage(FindPeer(target), "You were removed from the group.");
             Broadcast(group, name + " was removed from the group.");
             BroadcastSnapshots(group);
@@ -233,7 +228,6 @@ namespace Landoria.Socialize
                 SendMessage(sender, decision.Message);
                 return;
             }
-            GroupStorage.Save();
             Broadcast(group, group.Members[target] + " is now the group leader.");
             BroadcastSnapshots(group);
         }
@@ -298,12 +292,85 @@ namespace Landoria.Socialize
             SendMessage(sender, GroupInfoPolicy.Build(group, member => FindPeer(member) != 0L));
         }
 
-        private static void SaveAndBroadcast(SocialGroup group, string message)
+        private static void BroadcastChange(SocialGroup group, string message)
         {
-            GroupStorage.Save();
             Broadcast(group, message);
             BroadcastSnapshots(group);
             SocializePlugin.Log.LogInfo(message);
+        }
+
+        internal static void BeginPeerSession(long peer)
+        {
+            if (ZNet.instance != null && ZNet.instance.IsServer() &&
+                GroupState.PeerPlayers.ContainsKey(peer))
+            {
+                DisconnectPeer(peer);
+            }
+        }
+
+        internal static void DisconnectPeer(long peer)
+        {
+            if (ZNet.instance == null || !ZNet.instance.IsServer() ||
+                !GroupState.PeerPlayers.TryGetValue(peer, out long playerId))
+            {
+                return;
+            }
+            GroupState.PeerPlayers.Remove(peer);
+            RemovePlayerSession(playerId);
+        }
+
+        private static void RegisterSession(long peer, long playerId)
+        {
+            bool sameSession = GroupState.PeerPlayers.TryGetValue(peer, out long registered) &&
+                               registered == playerId;
+            if (!sameSession)
+            {
+                if (registered != 0L)
+                {
+                    RemovePlayerSession(registered);
+                }
+                RemovePlayerSession(playerId);
+            }
+            GroupState.PeerPlayers[peer] = playerId;
+        }
+
+        private static void RemovePlayerSession(long playerId)
+        {
+            RemovePeerMappings(playerId);
+            RemoveInvitations(playerId);
+            SocialGroup group = GroupState.GetGroup(playerId);
+            if (group == null)
+            {
+                return;
+            }
+            string name = group.Members[playerId];
+            GroupState.PlayerGroups.Remove(playerId);
+            ApplyRemoval(group, GroupLifecyclePolicy.Remove(group, playerId));
+            Broadcast(group, name + " left the group.");
+            BroadcastSnapshots(group);
+        }
+
+        private static void RemovePeerMappings(long playerId)
+        {
+            foreach (long peer in new List<long>(GroupState.PeerPlayers.Keys))
+            {
+                if (GroupState.PeerPlayers[peer] == playerId)
+                {
+                    GroupState.PeerPlayers.Remove(peer);
+                }
+            }
+        }
+
+        private static void RemoveInvitations(long playerId)
+        {
+            GroupState.Invitations.Remove(playerId);
+            foreach (long target in new List<long>(GroupState.Invitations.Keys))
+            {
+                if (GroupState.Invitations[target] == playerId)
+                {
+                    GroupState.Invitations.Remove(target);
+                }
+            }
         }
 
         private static void BroadcastSnapshots(SocialGroup group)

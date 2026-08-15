@@ -13,7 +13,7 @@ namespace Landoria.Socialize
     {
         internal static GroupRemovalResult Remove(SocialGroup group, long playerId)
         {
-            group.Members.Remove(playerId);
+            group.RemoveMember(playerId);
             GroupRemovalResult result = new GroupRemovalResult();
             if (group.Members.Count <= 1)
             {
@@ -24,11 +24,7 @@ namespace Landoria.Socialize
             }
             if (!group.Members.ContainsKey(group.Leader))
             {
-                foreach (long member in group.Members.Keys)
-                {
-                    group.Leader = member;
-                    break;
-                }
+                group.Leader = group.GetOldestMember();
             }
             result.NewLeader = group.Leader;
             result.RemainingMembers.AddRange(group.Members.Keys);
