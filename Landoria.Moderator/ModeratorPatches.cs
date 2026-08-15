@@ -35,11 +35,15 @@ namespace Landoria.Moderator
         }
     }
 
-    [HarmonyPatch(typeof(Player), "SetLocalPlayer")]
+    [HarmonyPatch(typeof(Player), "OnSpawned")]
     internal static class LocalModeratorStatePatch
     {
-        private static void Postfix()
+        private static void Postfix(Player __instance)
         {
+            if (__instance != Player.m_localPlayer)
+            {
+                return;
+            }
             ModeratorState.SetEnabled(false);
             AdminAccess.RequestStatus();
         }

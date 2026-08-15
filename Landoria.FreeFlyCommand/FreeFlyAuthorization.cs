@@ -1,6 +1,5 @@
 using System;
 using Landoria.SharedLib;
-using UnityEngine;
 
 namespace Landoria.FreeFlyCommand
 {
@@ -8,12 +7,9 @@ namespace Landoria.FreeFlyCommand
     {
         private const string RequestRpc = "Landoria_FreeFlyCommand_Request";
         private const string ResponseRpc = "Landoria_FreeFlyCommand_Response";
-        private const float RetrySeconds = 2f;
-
         private static ZRoutedRpc _registeredRpc;
         private static ZNetPeer _serverPeer;
-        private static bool? _serverAllowed;
-        private static float _nextRequestAt;
+        private static bool _requestSent;
         internal static bool IsAuthorized { get; private set; }
 
         internal static void Update()
@@ -37,8 +33,26 @@ namespace Landoria.FreeFlyCommand
 
         internal static void ResetSession()
         {
-            _serverAllowed = null;
             ResetConnection();
+        }
+
+        internal static void RequestOnSpawn()
+        {
+            RegisterRpcs();
+            if (ZNet.instance == null || ZNet.instance.IsServer() ||
+                ZRoutedRpc.instance == null || _requestSent)
+            {
+                return;
+            }
+
+            _serverPeer = ZNet.instance.GetServerPeer();
+            if (_serverPeer == null)
+            {
+                return;
+            }
+
+            _requestSent = true;
+            ZRoutedRpc.instance.InvokeRoutedRPC(_serverPeer.m_uid, RequestRpc);
         }
 
         private static void RegisterRpcs()
@@ -64,14 +78,6 @@ namespace Landoria.FreeFlyCommand
             FreeFlyCommandPlugin.InitializeDedicatedServerSettings();
             bool allowed = FreeFlyCommandPlugin.ServerEnabled;
             SetAuthorized(allowed);
-            if (_serverAllowed == allowed)
-            {
-                return;
-            }
-
-            _serverAllowed = allowed;
-            ZRoutedRpc.instance.InvokeRoutedRPC(ZRoutedRpc.Everybody, ResponseRpc, allowed);
-            FreeFlyCommandPlugin.ModLogger.LogInfo($"Server free-camera authorization changed to {allowed}.");
         }
 
         private static void UpdateClientAuthorization()
@@ -88,11 +94,6 @@ namespace Landoria.FreeFlyCommand
                 _serverPeer = currentServer;
             }
 
-            if (_serverPeer != null && !IsAuthorized && Time.unscaledTime >= _nextRequestAt)
-            {
-                _nextRequestAt = Time.unscaledTime + RetrySeconds;
-                ZRoutedRpc.instance.InvokeRoutedRPC(_serverPeer.m_uid, RequestRpc);
-            }
         }
 
         private static void ReceiveRequest(long sender)
@@ -121,7 +122,7 @@ namespace Landoria.FreeFlyCommand
         private static void ResetConnection()
         {
             _serverPeer = null;
-            _nextRequestAt = 0f;
+            _requestSent = false;
             FreeFlyController.Disable();
             SetAuthorized(false);
         }

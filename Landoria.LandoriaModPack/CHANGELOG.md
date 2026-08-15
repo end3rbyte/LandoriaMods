@@ -4,7 +4,9 @@
 
 - Add Parked and update Socialize to version 1.0.9.
 - Update AfkDetector, CharacterVault, ExpandedServer, FreeFlyCommand, and HammerFreedom.
+- Update Moderator to version 1.0.6.
 - Restrict server switches to dedicated servers through SharedLib role detection.
+- Request client authorizations once after the local player spawns.
 
 ## 1.0.15
 

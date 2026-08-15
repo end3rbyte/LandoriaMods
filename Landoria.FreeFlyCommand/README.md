@@ -11,7 +11,7 @@ Allows Valheim's native `freefly` and `ffsmooth` camera commands after explicit 
 
 ## Authorization
 
-- The client starts denied and requests authorization from the connected server.
+- The client starts denied and requests authorization once after the local player spawns.
 - The dedicated server controls authorization with `--freeflycommand true|false`; the default is `true`.
 - No response, an explicit denial, or a server change immediately disables free camera mode.
 - The mod is required on the server and every participating client.

@@ -9,6 +9,7 @@ namespace Landoria.Moderator
 
         private static ZRoutedRpc _registeredRpc;
         private static bool _serverConfirmedAdmin;
+        private static bool _requestSent;
 
         internal static bool LocalPlayerIsAdminOrHost()
         {
@@ -32,12 +33,14 @@ namespace Landoria.Moderator
 
         internal static void RequestStatus()
         {
-            if (ZNet.instance == null || ZNet.instance.IsServer() || ZRoutedRpc.instance == null)
+            if (ZNet.instance == null || ZNet.instance.IsServer() ||
+                ZRoutedRpc.instance == null || _requestSent)
             {
                 return;
             }
 
             _serverConfirmedAdmin = false;
+            _requestSent = true;
             ZRoutedRpc.instance.InvokeRoutedRPC(RequestRpc);
             ModeratorPlugin.ModLogger.LogDebug("Requested administrator validation from the server.");
         }
@@ -46,6 +49,7 @@ namespace Landoria.Moderator
         {
             _registeredRpc = null;
             _serverConfirmedAdmin = false;
+            _requestSent = false;
         }
 
         private static void ReceiveRequest(long sender)
