@@ -8,9 +8,9 @@ Use this modpack to enter a Landoria game mode and join one of its Valheim world
 
 Everyone can begin their Landoria journey with a free 30-day trial.
 
-- **Normal** keeps the familiar Valheim journey: survive, explore every biome, face the Forsaken, and progress together.
-- **Hammer** is made for creative building, with the freedom to create villages, longhouses, and monuments alongside other builders.
-- **Hard** is coming later for Vikings seeking a more demanding and competitive survival adventure.
+- **[Normal](https://valheim.landoria-gaming.com/en/gamemode/normal)** keeps the familiar Valheim journey: survive, explore every biome, face the Forsaken, and progress together.
+- **[Hammer](https://valheim.landoria-gaming.com/en/gamemode/hammer)** is made for creative building, with the freedom to create villages, longhouses, and monuments alongside other builders.
+- **[Hard](https://valheim.landoria-gaming.com/en/gamemode/hard)** is coming later for Vikings seeking a more demanding and competitive survival adventure.
 
 Discover the worlds, choose your game mode, and learn how to join at [valheim.landoria-gaming.com](https://valheim.landoria-gaming.com/).
 
