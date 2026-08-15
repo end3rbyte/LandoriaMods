@@ -30,6 +30,8 @@ to be connected, and `disabled` stops the effect for player-built pieces.
 Install matching versions of DecayControl on the server and every participating client.
 DecayControl has no dependency on Socialize.
 
+Read the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.DecayControl/README.md) on GitHub.
+
 ## Contact
 
 Report bugs through [GitHub Issues](https://github.com/landoria-gaming/LandoriaMods/issues).
