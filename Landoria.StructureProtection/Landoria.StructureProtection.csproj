@@ -7,8 +7,8 @@
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
     <ProjectGuid>{C6FAAFDF-2D25-4CD3-BD71-59BAA98F1D20}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Landoria.Parked</RootNamespace>
-    <AssemblyName>Landoria.Parked</AssemblyName>
+    <RootNamespace>Landoria.StructureProtection</RootNamespace>
+    <AssemblyName>Landoria.StructureProtection</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
@@ -26,23 +26,21 @@
     <Reference Include="0Harmony"><HintPath>$(BepInExPath)\core\0Harmony.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="assembly_valheim"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\assembly_valheim.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="assembly_utils"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\assembly_utils.dll</HintPath><Private>false</Private></Reference>
-    <Reference Include="Splatform"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\Splatform.dll</HintPath><Private>false</Private></Reference>
-    <Reference Include="Unity.TextMeshPro"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\Unity.TextMeshPro.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="UnityEngine"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\UnityEngine.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="UnityEngine.CoreModule"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CreatorActivityPolicy.cs" />
-    <Compile Include="CreatorDisplayPolicy.cs" />
     <Compile Include="CreatureProtection.cs" />
     <Compile Include="CreatureProtectionPolicy.cs" />
-    <Compile Include="ParkedPlugin.cs" />
-    <Compile Include="ParkedSession.cs" />
-    <Compile Include="PieceAccessPolicy.cs" />
-    <Compile Include="PieceInteractionPolicy.cs" />
-    <Compile Include="PieceOwnershipDisplay.cs" />
+    <Compile Include="StructureProtectionPlugin.cs" />
+    <Compile Include="StructureProtectionArgumentPolicy.cs" />
+    <Compile Include="StructureProtectionServerConfiguration.cs" />
+    <Compile Include="StructureProtectionSession.cs" />
+    <Compile Include="StructureProtectionSettings.cs" />
     <Compile Include="PieceActivity.cs" />
-    <Compile Include="PiecePermissions.cs" />
+    <Compile Include="WardProtection.cs" />
+    <Compile Include="WardProtectionPolicy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

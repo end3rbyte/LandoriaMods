@@ -96,7 +96,6 @@
     <Compile Include="RpcRegistry.cs" />
     <Compile Include="MapPrivacyPatches.cs" />
     <Compile Include="MapSharingPolicy.cs" />
-    <Compile Include="ParkedIntegration.cs" />
     <Compile Include="SocializePlugin.cs" />
     <Compile Include="SocializeArgumentPolicy.cs" />
     <Compile Include="SocializeSettings.cs" />

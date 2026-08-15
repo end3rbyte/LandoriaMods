@@ -2,7 +2,7 @@
 
 ## 1.0.16
 
-- Add Parked and update Socialize to version 1.0.9.
+- Add StructureProtection and update Socialize to version 1.0.9.
 - Update AfkDetector, CharacterVault, ExpandedServer, FreeFlyCommand, and HammerFreedom.
 - Update Moderator to version 1.0.6.
 - Restrict server switches to dedicated servers through SharedLib role detection.
