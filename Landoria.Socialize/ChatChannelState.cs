@@ -80,9 +80,24 @@ namespace Landoria.Socialize
             talker.Say(Talker.Type.Shout, text);
         }
 
-        internal static void ApplyShoutRange(Talker talker)
+        internal static void ApplyRanges(Talker talker)
         {
-            talker.m_shoutDistance = ChatBehaviorPolicy.GetShoutDistance(talker.m_normalDistance);
+            talker.m_normalDistance = SocializePlugin.Settings.SayDistance;
+            talker.m_shoutDistance = SocializePlugin.Settings.ShoutDistance;
+        }
+
+        internal static void ApplyRangesToLoadedTalkers()
+        {
+            if (SocializePlugin.Settings == null)
+            {
+                return;
+            }
+            Talker[] talkers = UnityEngine.Object.FindObjectsByType<Talker>(
+                UnityEngine.FindObjectsSortMode.None);
+            foreach (Talker talker in talkers)
+            {
+                ApplyRanges(talker);
+            }
         }
     }
 }

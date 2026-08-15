@@ -12,5 +12,7 @@ public sealed class SocializeServerConfigurationTests
 
         Assert.True(configuration.RestrictPublicPositions);
         Assert.True(configuration.RestrictPublicPings);
+        Assert.Equal(30f, configuration.ShoutDistance);
+        Assert.Equal(15f, configuration.SayDistance);
     }
 }

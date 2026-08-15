@@ -121,11 +121,11 @@ namespace Landoria.Socialize
     }
 
     [HarmonyPatch(typeof(Talker), "Awake")]
-    internal static class SocialShoutRangePatch
+    internal static class SocialChatRangePatch
     {
         private static void Postfix(Talker __instance)
         {
-            SocialChatSender.ApplyShoutRange(__instance);
+            SocialChatSender.ApplyRanges(__instance);
         }
     }
 

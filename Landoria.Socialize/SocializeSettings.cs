@@ -13,6 +13,8 @@ namespace Landoria.Socialize
 
         internal bool RestrictPublicPositions { get; private set; }
         internal bool RestrictPublicPings { get; private set; }
+        internal float ShoutDistance { get; private set; }
+        internal float SayDistance { get; private set; }
 
         internal void InitializeServer(ModLog logger)
         {
@@ -22,6 +24,8 @@ namespace Landoria.Socialize
                     System.Environment.GetCommandLineArgs());
             RestrictPublicPositions = configuration.RestrictPublicPositions;
             RestrictPublicPings = configuration.RestrictPublicPings;
+            ShoutDistance = configuration.ShoutDistance;
+            SayDistance = configuration.SayDistance;
             serverInitialized = true;
             LogSettings(logger);
         }
@@ -30,18 +34,24 @@ namespace Landoria.Socialize
         {
             logger.LogInfo($"Effective map settings: restrictPublicPositions=" +
                 $"{RestrictPublicPositions}, restrictPublicPings={RestrictPublicPings}.");
+            logger.LogInfo($"Effective chat settings: shoutDistance={ShoutDistance}, " +
+                $"sayDistance={SayDistance}.");
         }
 
         internal void WriteState(ZPackage package)
         {
             package.Write(RestrictPublicPositions);
             package.Write(RestrictPublicPings);
+            package.Write(ShoutDistance);
+            package.Write(SayDistance);
         }
 
         internal void ReadState(ZPackage package)
         {
             RestrictPublicPositions = package.ReadBool();
             RestrictPublicPings = package.ReadBool();
+            ShoutDistance = package.ReadSingle();
+            SayDistance = package.ReadSingle();
         }
 
         internal void ResetState()
@@ -49,6 +59,8 @@ namespace Landoria.Socialize
             if (serverInitialized) return;
             RestrictPublicPositions = true;
             RestrictPublicPings = true;
+            ShoutDistance = 30f;
+            SayDistance = 15f;
         }
     }
 }
