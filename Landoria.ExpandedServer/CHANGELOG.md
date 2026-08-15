@@ -1,12 +1,9 @@
 # Changelog
 
-## 1.0.7
-
-- Use the shared dedicated-server role check.
-
 ## 1.0.6
 
 - Read the player-limit switch only on dedicated servers.
+- Use the shared dedicated-server role check.
 
 ## 1.0.5
 

@@ -1,44 +1,10 @@
 # Changelog
 
-## 1.0.25
-
-- Centralize dedicated-server role detection in SharedLib.
-
-## 1.0.24
-
-- Restrict AfkDetector and CharacterVault server settings to dedicated servers.
-
-## 1.0.23
-
-- Update server-authorized mods to read switches only on dedicated servers.
-
-## 1.0.22
-
-- Update CharacterVault to version 1.0.13.
-
-## 1.0.21
-
-- Update CharacterVault to version 1.0.12.
-
-## 1.0.20
-
-- Update AfkDetector to version 1.0.5.
-
-## 1.0.19
-
-- Update Socialize to version 1.0.12.
-
-## 1.0.18
-
-- Update Socialize to version 1.0.11.
-
-## 1.0.17
-
-- Update Socialize to version 1.0.10.
-
 ## 1.0.16
 
 - Add Parked and update Socialize to version 1.0.9.
+- Update AfkDetector, CharacterVault, ExpandedServer, FreeFlyCommand, and HammerFreedom.
+- Restrict server switches to dedicated servers through SharedLib role detection.
 
 ## 1.0.15
 

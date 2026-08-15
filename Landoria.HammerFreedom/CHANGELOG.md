@@ -1,16 +1,10 @@
 # Changelog
 
-## 1.0.4
-
-- Use the shared dedicated-server role check.
-
-## 1.0.3
-
-- Read capability switches only on dedicated servers and fail closed elsewhere.
-
 ## 1.0.2
 
 - Limit authorized flight to 4 metres per second normally and 7 metres per second while sprinting.
+- Read capability switches only on dedicated servers and fail closed elsewhere.
+- Use the shared dedicated-server role check.
 
 ## 1.0.1
 
