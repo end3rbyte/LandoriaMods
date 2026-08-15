@@ -2,8 +2,7 @@
 
 ## 1.0.6
 
-- Read the player-limit switch only on dedicated servers.
-- Use the shared dedicated-server role check.
+- Read the player limit exclusively from dedicated-server command-line settings.
 
 ## 1.0.5
 

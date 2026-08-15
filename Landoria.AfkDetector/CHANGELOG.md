@@ -2,10 +2,7 @@
 
 ## 1.0.5
 
-- Make the AFK timeout server-command-line-only and allow `-1` to disable detection.
-- Fix movement tolerance at 0.75 metres and remove BepInEx settings.
-- Read and apply the AFK timeout only on dedicated servers.
-- Use the shared dedicated-server role check.
+- Configure AFK detection exclusively through dedicated-server command-line settings.
 
 ## 1.0.4
 

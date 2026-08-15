@@ -2,7 +2,7 @@
 
 ## 1.0.6
 
-- Request administrator authorization once after the local player spawns.
+- Request administrator authorization after the local player spawns.
 
 ## 1.0.5
 

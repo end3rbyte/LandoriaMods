@@ -2,10 +2,7 @@
 
 ## 1.0.10
 
-- Keep groups only for the current server session.
-- Remove players from their group when they disconnect.
-- Clear stale memberships defensively when players reconnect.
-- Promote the longest-standing remaining member when the leader disconnects.
+- Make groups temporary for missions and end membership when players disconnect.
 
 ## 1.0.9
 
