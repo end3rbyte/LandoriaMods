@@ -17,9 +17,9 @@ developer commands, or administrator access.
 - The dedicated server controls fall damage immunity with `--hammerfreedom-fall-damage-immunity true|false`.
 - The dedicated server controls unlimited stamina with `--hammerfreedom-unlimited-stamina true|false`.
 - The dedicated server controls durability loss with `--hammerfreedom-no-durability-loss true|false`.
-- The server controls build-material recovery with
-  `--hammerfreedom-recover-build-materials true|false`.
-- Each switch defaults to `true`.
+- The dedicated server controls material recovery while `NoBuildCost` is active with
+  `--hammerfreedom-no-build-cost-recover-materials true|false`.
+- Each switch defaults to `false`.
 - The server authorizes capabilities only while both `NoBuildCost` and `PassiveMobs` are active.
 - No response, an explicit denial, a modifier change, or a server change immediately removes every capability.
 - The `fly` command is hidden and invalid until the server explicitly authorizes it.
@@ -32,9 +32,8 @@ developer commands, or administrator access.
   running, building, gardening, combat, jumping, swimming, and dodging.
 - Tools, weapons, shields, armor, and other durable equipment do not lose durability when
   durability protection is authorized. Existing wear is preserved rather than repaired.
-- Hammer dismantling returns the vanilla recoverable materials when build-material recovery
-  is authorized, even while `NoBuildCost` or `NoCraftCost` is active. Other destruction does
-  not receive this exception.
+- Hammer dismantling returns the vanilla recoverable materials when recovery is authorized
+  and `NoBuildCost` is active. `NoCraftCost` and other destruction retain vanilla behavior.
 
 ## Controls
 
