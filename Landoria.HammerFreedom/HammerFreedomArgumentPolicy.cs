@@ -10,14 +10,14 @@ namespace Landoria.HammerFreedom
             {
                 if (!string.Equals(arguments[index], name, StringComparison.OrdinalIgnoreCase))
                     continue;
-                bool enabled = true;
+                bool enabled = false;
                 valid = index + 1 < arguments.Length &&
                     bool.TryParse(arguments[index + 1], out enabled);
-                return valid ? enabled : true;
+                return valid && enabled;
             }
 
             valid = true;
-            return true;
+            return false;
         }
     }
 }
