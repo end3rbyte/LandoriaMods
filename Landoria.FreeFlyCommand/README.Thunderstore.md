@@ -16,6 +16,7 @@ Allows Valheim's native `freefly` and `ffsmooth` commands only after explicit se
 - Keeps the native `ffsmooth` command available while authorized.
 - Documents Valheim's complementary vanilla `fov <degrees>` command for adjusting the free-camera field of view.
 - Limits free-camera movement to 40 metres per second.
+- Prevents the free camera from passing through terrain and solid objects.
 - Limits the camera to 50 metres from the player.
 - Disables free camera immediately when authorization is removed.
 

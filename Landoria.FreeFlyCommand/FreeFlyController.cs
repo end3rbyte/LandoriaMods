@@ -6,6 +6,8 @@ namespace Landoria.FreeFlyCommand
     {
         internal const float MaximumDistance = 50f;
         internal const float MaximumSpeed = 40f;
+        internal const float CollisionRadius = 0.2f;
+        internal const float CollisionClearance = 0.05f;
 
         internal static float ClampSpeed(float speed)
         {
@@ -19,6 +21,24 @@ namespace Landoria.FreeFlyCommand
             if (movement.sqrMagnitude > maximumMovement * maximumMovement)
             {
                 camera.transform.position = origin + movement.normalized * maximumMovement;
+            }
+        }
+
+        internal static void ClampToCollision(GameCamera camera, Vector3 origin)
+        {
+            Vector3 movement = camera.transform.position - origin;
+            float distance = movement.magnitude;
+            if (distance <= 0.001f)
+            {
+                return;
+            }
+
+            if (Physics.SphereCast(origin, CollisionRadius, movement / distance,
+                out RaycastHit hit, distance, camera.m_blockCameraMask,
+                QueryTriggerInteraction.Ignore))
+            {
+                float allowedDistance = Mathf.Max(0f, hit.distance - CollisionClearance);
+                camera.transform.position = origin + movement.normalized * allowedDistance;
             }
         }
 
