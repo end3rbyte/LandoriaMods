@@ -1,33 +1,38 @@
 using BepInEx;
 using Landoria.SharedLib;
 
-namespace Landoria.Parked
+namespace Landoria.DecayControl
 {
     [BepInPlugin(PluginGuid, PluginName, PluginVersion)]
-    public sealed class ParkedPlugin : LandoriaPlugin
+    public sealed class DecayControlPlugin : LandoriaPlugin
     {
-        private const string PluginGuid = "Landoria.Parked";
-        private const string PluginName = "Landoria.Parked";
+        private const string PluginGuid = "Landoria.DecayControl";
+        private const string PluginName = "Landoria.DecayControl";
         private const string PluginVersion = "1.0.0";
 
         internal static ModLog Log { get; private set; }
+        internal static DecayControlSettings Settings { get; private set; }
 
         private void Awake()
         {
             Log = InitializePlugin(PluginGuid);
+            Settings = new DecayControlSettings();
+            Settings.InitializeServer(Log);
             Log.LogInfo($"{PluginName} {PluginVersion} is loaded.");
         }
 
         private void Update()
         {
-            ParkedSession.Update();
+            DecayStateRpc.Update();
         }
 
         private void OnDestroy()
         {
-            ParkedSession.Reset();
+            DecayStateRpc.ResetSession();
+            DecayProtection.Reset();
             Log?.LogInfo($"{PluginName} {PluginVersion} is unloaded.");
             ShutdownPlugin();
+            Settings = null;
             Log = null;
         }
     }

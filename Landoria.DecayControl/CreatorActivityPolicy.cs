@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Landoria.Parked
+namespace Landoria.DecayControl
 {
     internal static class CreatorActivityPolicy
     {

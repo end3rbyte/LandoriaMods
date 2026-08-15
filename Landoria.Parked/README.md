@@ -1,6 +1,6 @@
 # Parked
 
-Protects player-built pieces according to their creator's Socialize group activity.
+Protects player-built pieces according to whether their creator is connected.
 
 ## Valheim compatibility
 
@@ -11,17 +11,14 @@ Protects player-built pieces according to their creator's Socialize group activi
 
 ## Features
 
-- Uses vanilla rain wear and fuel consumption while a piece's creator or one of their group members is connected.
-- Stops rain wear and fuel consumption for player-built pieces while the creator and their entire group are offline.
-- Prevents creatures from targeting or damaging those pieces while the creator and their entire group are offline.
-- Restricts interaction with player-built pieces to their creator and members of the creator's group.
+- Prevents creatures from targeting or damaging those pieces while their creator is offline.
+- Restricts interaction with player-built pieces to their creator.
 - Shows the creator's name while hovering over a player-built piece that the local player cannot use.
 - Supports dedicated servers.
 
 Pieces without an identifiable player creator retain vanilla behavior.
-Fuel does not catch up retroactively when a protected fireplace or torch is loaded again.
 
-Piece interaction protection includes normal use, using an item on a piece, containers, doors, crafting stations, adding resources or fuel, repairs, hammer removal, and damage caused by a player. Creatures use vanilla targeting and damage whenever the creator or a group member is online, and ignore the piece while the entire group is offline. Environmental damage and interactions with natural or creatorless objects retain vanilla behavior.
+Piece interaction protection includes normal use, using an item on a piece, containers, doors, crafting stations, adding resources or fuel, repairs, hammer removal, and damage caused by a player. Creatures use vanilla targeting and damage whenever the creator is online, and ignore the piece while the creator is offline. Environmental damage and interactions with natural or creatorless objects retain vanilla behavior.
 
 Denied interactions are silent. Hovering an inaccessible piece shows its creator instead. New pieces store the creator name directly; legacy pieces use names already known by Parked and may display `Unknown creator` until the creator is identified.
 
@@ -31,7 +28,7 @@ Denied interactions are silent. Hovering an inaccessible piece shows its creator
 |---|---|---|
 | Yes | Yes | Not Supported |
 
-Install matching versions of Parked and Socialize on the server and every participating client. Socialize 1.0.9 or later is required.
+Install matching versions of Parked on the server and every participating client.
 
 ## Contact
 

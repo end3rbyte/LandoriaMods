@@ -5,10 +5,10 @@
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
     <Platform Condition="'$(Platform)' == ''">AnyCPU</Platform>
-    <ProjectGuid>{C6FAAFDF-2D25-4CD3-BD71-59BAA98F1D20}</ProjectGuid>
+    <ProjectGuid>{0F691AC2-F9E1-45CB-B34E-7B57171ADCE7}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Landoria.Parked</RootNamespace>
-    <AssemblyName>Landoria.Parked</AssemblyName>
+    <RootNamespace>Landoria.DecayControl</RootNamespace>
+    <AssemblyName>Landoria.DecayControl</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
@@ -20,34 +20,28 @@
     <OutputPath>bin\Release\</OutputPath><DefineConstants>TRACE</DefineConstants><WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <Reference Include="System" /><Reference Include="System.Core" />
     <Reference Include="BepInEx"><HintPath>$(BepInExPath)\core\BepInEx.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="0Harmony"><HintPath>$(BepInExPath)\core\0Harmony.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="assembly_valheim"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\assembly_valheim.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="assembly_utils"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\assembly_utils.dll</HintPath><Private>false</Private></Reference>
-    <Reference Include="Splatform"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\Splatform.dll</HintPath><Private>false</Private></Reference>
-    <Reference Include="Unity.TextMeshPro"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\Unity.TextMeshPro.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="UnityEngine"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\UnityEngine.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="UnityEngine.CoreModule"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CreatorActivityPolicy.cs" />
-    <Compile Include="CreatorDisplayPolicy.cs" />
-    <Compile Include="CreatureProtection.cs" />
-    <Compile Include="CreatureProtectionPolicy.cs" />
-    <Compile Include="ParkedPlugin.cs" />
-    <Compile Include="ParkedSession.cs" />
-    <Compile Include="PieceAccessPolicy.cs" />
-    <Compile Include="PieceInteractionPolicy.cs" />
-    <Compile Include="PieceOwnershipDisplay.cs" />
-    <Compile Include="PieceActivity.cs" />
-    <Compile Include="PiecePermissions.cs" />
+    <Compile Include="DecayControlArgumentPolicy.cs" />
+    <Compile Include="DecayControlMode.cs" />
+    <Compile Include="DecayEffectPolicy.cs" />
+    <Compile Include="DecayProtection.cs" />
+    <Compile Include="DecayControlPatches.cs" />
+    <Compile Include="DecayStateRpc.cs" />
+    <Compile Include="DecayControlPlugin.cs" />
+    <Compile Include="DecayControlServerConfiguration.cs" />
+    <Compile Include="DecayControlSettings.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="icon.png" />
-    <Content Include="LICENSE" />
     <Content Include="manifest.json" />
     <Content Include="README.md" />
     <Content Include="README.Thunderstore.md" />

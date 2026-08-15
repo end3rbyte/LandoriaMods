@@ -2,10 +2,9 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using HarmonyLib;
 using Landoria.SharedLib;
-using Landoria.Socialize;
 using UnityEngine;
 
-namespace Landoria.Parked
+namespace Landoria.DecayControl
 {
     internal static class DecayProtection
     {
@@ -64,14 +63,12 @@ namespace Landoria.Parked
         private static HashSet<long> GetActiveCreators()
         {
             HashSet<long> onlinePlayers = GetOnlinePlayers();
-            return CreatorActivityPolicy.GetActiveCreators(
-                onlinePlayers, GroupState.Groups.Values);
+            return CreatorActivityPolicy.GetActiveCreators(onlinePlayers);
         }
 
         private static bool IsCreatorActive(long creator, HashSet<long> onlinePlayers)
         {
-            SocialGroup group = GroupState.GetGroup(creator);
-            return CreatorActivityPolicy.IsCreatorActive(creator, onlinePlayers, group);
+            return CreatorActivityPolicy.IsCreatorActive(creator, onlinePlayers);
         }
 
         private static HashSet<long> GetOnlinePlayers()
@@ -81,12 +78,11 @@ namespace Landoria.Parked
             {
                 return players;
             }
-            foreach (KeyValuePair<long, long> mapping in GroupState.PeerPlayers)
+            foreach (ZNetPeer peer in ZNet.instance.GetPeers())
             {
-                ZNetPeer peer = ZNet.instance.GetPeer(mapping.Key);
-                if (peer != null && peer.IsReady())
+                if (peer.IsReady() && !peer.m_characterID.IsNone())
                 {
-                    players.Add(mapping.Value);
+                    players.Add(peer.m_characterID.UserID);
                 }
             }
             if (!ServerRole.IsDedicatedServer && Game.instance != null)
@@ -105,9 +101,12 @@ namespace Landoria.Parked
                 bool isVanillaRainTick = hitData == null && __instance.IsWet() &&
                     __instance.GetHealthPercentage() > 0.5f &&
                     Mathf.Approximately(damage, rainDamage);
-                float activity = GetActivityMultiplier(__instance.GetComponent<Piece>());
-                return DecayEffectPolicy.ShouldApplyRainDamage(
-                    isVanillaRainTick, activity);
+                Piece piece = __instance.GetComponent<Piece>();
+                bool isPlayerBuilt = piece != null && piece.IsPlacedByPlayer();
+                float activity = GetActivityMultiplier(piece);
+                return DecayEffectPolicy.ShouldApplyEnvironmentalWear(isVanillaRainTick,
+                    isPlayerBuilt, DecayControlPlugin.Settings.EnvironmentalBuildingWear,
+                    activity);
             }
         }
 
@@ -118,14 +117,16 @@ namespace Landoria.Parked
             {
                 __state = __instance.m_secPerFuel;
                 Piece piece = __instance.GetComponent<Piece>();
-                bool firstUpdate = piece != null && piece.IsPlacedByPlayer() &&
+                bool isPlayerBuilt = piece != null && piece.IsPlacedByPlayer();
+                bool firstUpdate = isPlayerBuilt &&
                     !initializedFireplaces.TryGetValue(__instance, out _);
                 if (firstUpdate)
                 {
                     initializedFireplaces.Add(__instance, new object());
                 }
                 float activity = GetActivityMultiplier(piece);
-                if (DecayEffectPolicy.ShouldPauseFuel(firstUpdate, activity))
+                if (DecayEffectPolicy.ShouldPauseFuel(isPlayerBuilt, firstUpdate,
+                    DecayControlPlugin.Settings.FuelConsumption, activity))
                 {
                     __instance.m_secPerFuel = float.PositiveInfinity;
                 }
