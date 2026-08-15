@@ -2,7 +2,7 @@
   "name": "StructureProtection",
   "version_number": "1.0.0",
   "website_url": "https://valheim.landoria-gaming.com/",
-  "description": "Protects offline players' structures from deliberate creature targeting and player weapon damage within unattended active wards.",
+  "description": "Protects offline players' structures from deliberate creature targeting and blocks player weapon damage inside active wards when no authorized player is online.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333"
   ],

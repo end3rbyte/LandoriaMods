@@ -1,6 +1,6 @@
 # Landoria ModSentry
 
-Strictly validates required and optional client mods before a Valheim server accepts the connection.
+Makes sure every player joins with the correct mod versions, keeping shared worlds consistent and avoiding confusing loading failures.
 
 ## Valheim compatibility
 
@@ -9,11 +9,10 @@ Strictly validates required and optional client mods before a Valheim server acc
 | Current release | `0.221.12` | Compatible |
 | Public Test | `0.221.13` | Compatible |
 
-- BepInEx GUID validation
-- complete version validation
-- mandatory SHA-256 validation
-- clear mismatch messages at the main menu with the affected mod and expected version
-- complete server-side diagnostics
+- Checks every required and optional mod before entering the world.
+- Verifies the exact version and package contents expected by the server.
+- Returns the player to the main menu with a clear explanation when a mod must be updated.
+- Gives server administrators complete diagnostics for resolving mismatches.
 
 All other client mods are rejected. If a mod does not match, Valheim returns to the main menu and explains what must be updated instead of remaining on a black loading screen.
 

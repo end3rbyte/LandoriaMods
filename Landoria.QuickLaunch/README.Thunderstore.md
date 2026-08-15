@@ -1,6 +1,6 @@
 # QuickLaunch
 
-Automatically resumes the last local or multiplayer Valheim session.
+Gets you back into Valheim faster by automatically resuming your last local or multiplayer session.
 
 ## Valheim compatibility
 

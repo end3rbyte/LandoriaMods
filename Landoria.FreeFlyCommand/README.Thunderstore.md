@@ -1,6 +1,6 @@
 # FreeFlyCommand
 
-Allows Valheim's native `freefly` and `ffsmooth` commands only after explicit server authorization, without enabling `devcommands` or `debugmode`.
+Gives authorized players a controlled free camera for exploring and filming Valheim without opening developer or debug modes.
 
 ## Valheim compatibility
 
@@ -11,10 +11,9 @@ Allows Valheim's native `freefly` and `ffsmooth` commands only after explicit se
 
 ## Features
 
-- Starts denied until the connected server authorizes the client.
-- Enables native smoothing automatically when free camera mode starts.
-- Keeps the native `ffsmooth` command available while authorized.
-- Documents Valheim's complementary vanilla `fov <degrees>` command for adjusting the free-camera field of view.
+- Keeps the free camera unavailable until the connected server authorizes it.
+- Smooths camera movement automatically when free camera mode starts.
+- Lets authorized players adjust smoothing with `ffsmooth` and field of view with Valheim's `fov <degrees>` command.
 - Limits free-camera movement to 20 metres per second.
 - Uses a one-metre-radius collision sphere to prevent the free camera from passing through terrain and solid objects.
 - Limits the camera to 50 metres from the player.

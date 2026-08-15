@@ -1,6 +1,6 @@
 # GentleDeath
 
-Keeps equipable items after death while moving other inventory items to the tombstone.
+Keeps the gear you rely on after death while moving resources, treasure, and other inventory items to the tombstone.
 
 ## Valheim compatibility
 
@@ -14,8 +14,8 @@ Keeps equipable items after death while moving other inventory items to the tomb
 - Keeps weapons, tools, armor, shields, ammunition, utility items, and trinkets.
 - Preserves equipped items after respawning.
 - Moves treasures and raw materials to the tombstone.
-- Safely retains items when the tombstone has no room.
-- Replaces the world's vanilla inventory death penalty.
+- Keeps protected gear safely even when the tombstone has no room.
+- Applies this gentler death rule throughout the world.
 
 ## Installation
 

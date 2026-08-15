@@ -1,6 +1,6 @@
 # SealedTombstone
 
-Protects recent tombstones from unauthorized players while allowing owner-approved access.
+Keeps your recent tombstone safe from other players while letting you approve someone you trust to recover it.
 
 ## Valheim compatibility
 
@@ -11,7 +11,7 @@ Protects recent tombstones from unauthorized players while allowing owner-approv
 
 ## Features
 
-- Locks recent tombstones to their owners.
+- Keeps recent tombstones locked to their owners.
 - Uses a vanilla Yes/No popup for access requests.
 - Permanently unlocks a tombstone after approval.
 - Expires requests after 30 seconds and applies a two-minute cooldown.
