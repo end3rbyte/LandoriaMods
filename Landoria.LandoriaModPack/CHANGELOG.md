@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.17
+
+- Update Socialize to 1.0.10.
+
 ## 1.0.16
 
 - Add First Person and update the Landoria mod set.
