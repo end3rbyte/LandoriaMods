@@ -17,7 +17,7 @@ Adds persistent player groups, private messaging, map sharing, and expanded chat
 - Keeps the selected shout, whisper, or group channel active.
 - Automatically shares connected group members' map positions.
 - Restricts public map positions and pings outside groups.
-- Supports dedicated servers and peer-hosted worlds.
+- Supports dedicated servers.
 
 ## Chat Commands
 
@@ -68,9 +68,9 @@ keeps the effective configuration in memory, and sends it to each client after s
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | Yes |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 Install matching versions on the server and every participating client.
 

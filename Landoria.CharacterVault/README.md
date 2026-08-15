@@ -62,9 +62,9 @@ wait for the durable commit internally.
 
 ## Installation
 
-| Client | Server |
-|---|---|
-| Required | Required |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 Install matching CharacterVault and ModSentry versions on every client and server.
 When CharacterVault refuses admission, Valheim returns to the main menu and displays the server's reason.

@@ -59,9 +59,9 @@ and sends its in-memory configuration to each client after spawning.
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | Yes |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 See the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.Socialize/README.md).
 

@@ -26,9 +26,9 @@ Automatically resumes the last local or multiplayer Valheim session.
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | No |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | No | Not Supported |
 
 ## Contact
 

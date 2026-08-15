@@ -36,9 +36,9 @@ All commands except `moderator` require active moderator mode. The server valida
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | Yes |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 Matching versions must be installed on the server and every client.
 

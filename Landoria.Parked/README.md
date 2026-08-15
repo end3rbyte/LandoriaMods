@@ -16,7 +16,7 @@ Protects player-built pieces according to their creator's Socialize group activi
 - Prevents creatures from targeting or damaging those pieces while the creator and their entire group are offline.
 - Restricts interaction with player-built pieces to their creator and members of the creator's group.
 - Shows the creator's name while hovering over a player-built piece that the local player cannot use.
-- Supports dedicated servers and peer-hosted worlds.
+- Supports dedicated servers.
 
 Pieces without an identifiable player creator retain vanilla behavior.
 Fuel does not catch up retroactively when a protected fireplace or torch is loaded again.
@@ -27,9 +27,9 @@ Denied interactions are silent. Hovering an inaccessible piece shows its creator
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | Yes |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 Install matching versions of Parked and Socialize on the server and every participating client. Socialize 1.0.14 or later is required.
 

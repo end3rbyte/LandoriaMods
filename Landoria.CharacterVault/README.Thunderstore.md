@@ -37,9 +37,9 @@ CharacterVault supports local and Steam Cloud characters.
 
 ## Installation
 
-| Client | Server |
-|---|---|
-| Required | Required |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 Install matching versions of CharacterVault and Landoria.ModSentry on the
 server and every client.

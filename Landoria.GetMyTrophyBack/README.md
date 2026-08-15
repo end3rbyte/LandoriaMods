@@ -29,9 +29,9 @@ Returns a boss trophy after its Sacrificial Stone power is selected.
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | Yes |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 ## Contact
 

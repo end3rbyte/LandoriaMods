@@ -13,18 +13,17 @@ Allows public or crossplay Valheim servers to start with an empty password.
 
 - Accepts an empty password in the server creation screen.
 - Preserves vanilla checks for non-empty passwords.
-- Supports dedicated servers and peer-hosted worlds.
+- Supports dedicated servers.
 - Requires no installation on joining clients.
 
 - Anyone who discovers a password-free server can attempt to join it.
 - Use normal moderation tools when open access is intentional.
-- The hosting player needs the mod because their client acts as the server.
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| No | Yes |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| No | Yes | Not Supported |
 
 Read the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.NoServerPassword/README.md) on GitHub.
 

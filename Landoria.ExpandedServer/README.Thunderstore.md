@@ -28,9 +28,9 @@ Raises Valheim's server capacity to a configurable player limit.
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | Yes |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 Read the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.ExpandedServer/README.md) on GitHub.
 

@@ -14,18 +14,16 @@ Allows public or crossplay Valheim servers to start with an empty password.
 - Accepts an empty password in Valheim's server creation screen.
 - Preserves vanilla validation for non-empty passwords and world names.
 - Keeps normal start checks when world save data has an error.
-- Supports dedicated servers and peer-hosted worlds.
+- Supports dedicated servers.
 - Requires no installation on joining clients.
 
 A password-free public server can be reached by anyone who discovers it. Use normal access-control and moderation tools when open access is intentional.
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| No | Yes |
-
-The hosting client counts as the server in a peer-hosted world.
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| No | Yes | Not Supported |
 
 ## Contact
 

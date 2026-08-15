@@ -19,9 +19,9 @@ Protects player-built pieces according to their creator's Socialize group activi
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | Yes |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 Socialize 1.0.14 or later is required on the server and every participating client.
 

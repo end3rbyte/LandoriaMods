@@ -31,9 +31,9 @@ Hammer worlds without enabling debug mode, developer commands, or administrator 
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | Yes, wherever HammerFreedom is authorized |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 See the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.HammerFreedom/README.md).
 

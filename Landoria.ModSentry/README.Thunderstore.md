@@ -17,6 +17,12 @@ Strictly validates required and optional client mods before a Valheim server acc
 
 All other client mods are rejected. If a mod does not match, Valheim returns to the main menu and explains what must be updated instead of remaining on a black loading screen.
 
+## Installation
+
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
+
 [Read the complete documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.ModSentry/README.md).
 
 ## Contact

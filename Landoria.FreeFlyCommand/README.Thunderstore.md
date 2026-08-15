@@ -20,9 +20,9 @@ Allows Valheim's native `freefly` and `ffsmooth` commands only after explicit se
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | Yes |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 See the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.FreeFlyCommand/README.md).
 

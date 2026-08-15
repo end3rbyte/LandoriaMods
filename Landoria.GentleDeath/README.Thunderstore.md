@@ -19,9 +19,9 @@ Keeps equipable items after death while moving other inventory items to the tomb
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | No |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | No | Not Supported |
 
 Read the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.GentleDeath/README.md) on GitHub.
 

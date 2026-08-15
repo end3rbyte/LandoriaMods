@@ -26,9 +26,9 @@ Allows Valheim's native `freefly` and `ffsmooth` camera commands after explicit 
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| Yes | Yes |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| Yes | Yes | Not Supported |
 
 ## Contact
 

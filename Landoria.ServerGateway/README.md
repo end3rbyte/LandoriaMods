@@ -16,13 +16,13 @@ Exposes live Valheim server information and authenticated commands through a loc
 - Queues an immediate vanilla world save from an authenticated local request.
 - Listens only on `127.0.0.1` so an on-machine website backend can query it safely.
 - Returns `worldCreatedAt` as `null` because Valheim does not store a creation date in its world save.
-- Supports dedicated servers and peer-hosted worlds.
+- Supports dedicated servers.
 
 ## Installation
 
-| Client required | Server required |
-|---|---|
-| No | Yes |
+| Client required | Server required (dedicated) | Player-hosted server |
+|---|---|---|
+| No | Yes | Not Supported |
 
 ## Configuration
 
