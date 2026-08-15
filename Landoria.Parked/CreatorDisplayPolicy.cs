@@ -1,4 +1,4 @@
-namespace Landoria.Socialize
+namespace Landoria.Parked
 {
     internal static class CreatorDisplayPolicy
     {

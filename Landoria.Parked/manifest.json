@@ -2,9 +2,10 @@
   "name": "Parked",
   "version_number": "1.0.0",
   "website_url": "https://valheim.landoria-gaming.com/",
-  "description": "Provides the foundation for Parked features.",
+  "description": "Protects player-built pieces according to their creator's Socialize group activity.",
   "dependencies": [
-    "denikson-BepInExPack_Valheim-5.4.2333"
+    "denikson-BepInExPack_Valheim-5.4.2333",
+    "Landoria-Socialize-1.0.9"
   ],
   "categories": [
     "ai-generated",

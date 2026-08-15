@@ -1,7 +1,7 @@
 using Moq;
 using Xunit;
 
-namespace Landoria.Socialize;
+namespace Landoria.Parked;
 
 public sealed class PieceAccessPolicyTests
 {

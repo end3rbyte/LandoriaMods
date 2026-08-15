@@ -15,10 +15,6 @@
     <Compile Include="../Landoria.Socialize/ChatCommandParser.cs" Link="ChatCommandParser.cs" />
     <Compile Include="../Landoria.Socialize/ChatBehaviorPolicy.cs" Link="ChatBehaviorPolicy.cs" />
     <Compile Include="../Landoria.Socialize/ChatFormattingPolicy.cs" Link="ChatFormattingPolicy.cs" />
-    <Compile Include="../Landoria.Socialize/CreatorDisplayPolicy.cs" Link="CreatorDisplayPolicy.cs" />
-    <Compile Include="../Landoria.Socialize/CreatorActivityPolicy.cs" Link="CreatorActivityPolicy.cs" />
-    <Compile Include="../Landoria.Socialize/CreatureProtectionPolicy.cs" Link="CreatureProtectionPolicy.cs" />
-    <Compile Include="../Landoria.Socialize/DecayEffectPolicy.cs" Link="DecayEffectPolicy.cs" />
     <Compile Include="../Landoria.Socialize/GroupAcceptancePolicy.cs" Link="GroupAcceptancePolicy.cs" />
     <Compile Include="../Landoria.Socialize/GroupChatPolicy.cs" Link="GroupChatPolicy.cs" />
     <Compile Include="../Landoria.Socialize/GroupInfoPolicy.cs" Link="GroupInfoPolicy.cs" />
@@ -29,8 +25,6 @@
     <Compile Include="../Landoria.Socialize/GroupPromotionPolicy.cs" Link="GroupPromotionPolicy.cs" />
     <Compile Include="../Landoria.Socialize/GroupPolicy.cs" Link="GroupPolicy.cs" />
     <Compile Include="../Landoria.Socialize/MapSharingPolicy.cs" Link="MapSharingPolicy.cs" />
-    <Compile Include="../Landoria.Socialize/PieceAccessPolicy.cs" Link="PieceAccessPolicy.cs" />
-    <Compile Include="../Landoria.Socialize/PieceInteractionPolicy.cs" Link="PieceInteractionPolicy.cs" />
     <Compile Include="../Landoria.Socialize/SocialGroup.cs" Link="SocialGroup.cs" />
   </ItemGroup>
 </Project>

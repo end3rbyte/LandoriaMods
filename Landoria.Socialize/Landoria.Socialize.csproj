@@ -78,12 +78,6 @@
     <Compile Include="ChatFormatting.cs" />
     <Compile Include="ChatFormattingPolicy.cs" />
     <Compile Include="ChatPatches.cs" />
-    <Compile Include="CreatureProtection.cs" />
-    <Compile Include="CreatureProtectionPolicy.cs" />
-    <Compile Include="CreatorActivityPolicy.cs" />
-    <Compile Include="CreatorDisplayPolicy.cs" />
-    <Compile Include="DecayEffectPolicy.cs" />
-    <Compile Include="DecayProtection.cs" />
     <Compile Include="GroupCommands.cs" />
     <Compile Include="GroupChatPolicy.cs" />
     <Compile Include="GroupAcceptancePolicy.cs" />
@@ -102,10 +96,7 @@
     <Compile Include="RpcRegistry.cs" />
     <Compile Include="MapPrivacyPatches.cs" />
     <Compile Include="MapSharingPolicy.cs" />
-    <Compile Include="PiecePermissions.cs" />
-    <Compile Include="PieceOwnershipDisplay.cs" />
-    <Compile Include="PieceAccessPolicy.cs" />
-    <Compile Include="PieceInteractionPolicy.cs" />
+    <Compile Include="ParkedIntegration.cs" />
     <Compile Include="SocializePlugin.cs" />
     <Compile Include="SocialGroup.cs" />
     <Compile Include="TargetPingService.cs" />

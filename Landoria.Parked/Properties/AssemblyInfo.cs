@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Landoria.Parked")]
-[assembly: AssemblyDescription("Provides the foundation for Parked features.")]
+[assembly: AssemblyDescription("Protects player-built pieces according to their creator's Socialize group activity.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Landoria")]
 [assembly: AssemblyProduct("Landoria.Parked")]

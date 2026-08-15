@@ -1,6 +1,6 @@
 using System;
 
-namespace Landoria.Socialize
+namespace Landoria.Parked
 {
     internal static class PieceAccessPolicy
     {
