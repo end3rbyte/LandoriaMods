@@ -12,6 +12,7 @@ namespace Landoria.Socialize
             Register("say", SendSay);
             Register("w", SendWhisper);
             Register("wping", SendTargetPing);
+            Register("all", SendAll);
         }
 
         private static void Register(string name, Terminal.ConsoleEventFailable handler)
@@ -28,6 +29,10 @@ namespace Landoria.Socialize
             if (name == "wping")
             {
                 return "[player] [message] sends a private message with a ping";
+            }
+            if (name == "all")
+            {
+                return "";
             }
             return "[message] " + (name == "s" || name == "say"
                 ? "says something to nearby players"
@@ -55,6 +60,17 @@ namespace Landoria.Socialize
             }
             ChatChannelState.SetNormal();
             Chat.instance.SendText(Talker.Type.Normal, message);
+            return true;
+        }
+
+        private static object SendAll(Terminal.ConsoleEventArgs args)
+        {
+            if (!SocializePlugin.Settings.AllChannelEnabled ||
+                !TryGetMessage(args, out string message))
+            {
+                return true;
+            }
+            SocialChatSender.SendAll(message);
             return true;
         }
 

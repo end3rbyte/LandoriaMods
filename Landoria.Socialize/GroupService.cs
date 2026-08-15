@@ -9,7 +9,6 @@ namespace Landoria.Socialize
         internal const string RequestRpc = "Landoria_Social_GroupRequest";
         internal const string ResponseRpc = "Landoria_Social_GroupResponse";
         private static ZRoutedRpc registeredRpc;
-        private static float nextStateRequest;
 
         internal static void Update()
         {
@@ -20,19 +19,14 @@ namespace Landoria.Socialize
             }
             if (ZNet.instance.IsServer())
             {
+                SocializePlugin.Settings.InitializeServer(SocializePlugin.Log);
                 GroupStorage.TryLoad();
-            }
-            if (Player.m_localPlayer != null && Time.unscaledTime >= nextStateRequest)
-            {
-                nextStateRequest = Time.unscaledTime + 1f;
-                SendRequest("state", "");
             }
         }
 
         internal static void Reset()
         {
             registeredRpc = null;
-            nextStateRequest = 0f;
             GroupStorage.Reset();
             GroupState.ClearAll();
             SocializePlugin.Settings?.ResetState();
@@ -69,6 +63,11 @@ namespace Landoria.Socialize
             package.Write(Game.instance.GetPlayerProfile().GetName());
             package.Write(argument ?? "");
             ZRoutedRpc.instance.InvokeRoutedRPC(RequestRpc, package);
+        }
+
+        internal static void RequestInitialState()
+        {
+            SendRequest("state", "");
         }
 
         internal static void Dispatch(long sender, long playerId, string playerName, string action, string argument)

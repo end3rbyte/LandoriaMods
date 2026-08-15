@@ -68,6 +68,27 @@ namespace Landoria.Socialize
 
     internal static class SocialChatSender
     {
+        private static bool sendingAll;
+
+        internal static bool IsSendingAll => sendingAll;
+
+        internal static void SendAll(string text)
+        {
+            if (Chat.instance == null)
+            {
+                return;
+            }
+            sendingAll = true;
+            try
+            {
+                Chat.instance.SendText(Talker.Type.Shout, text);
+            }
+            finally
+            {
+                sendingAll = false;
+            }
+        }
+
         internal static void SendShout(string text)
         {
             Talker talker = Player.m_localPlayer != null

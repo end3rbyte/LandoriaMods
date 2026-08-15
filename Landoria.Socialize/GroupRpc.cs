@@ -8,6 +8,7 @@ namespace Landoria.Socialize
             {
                 return;
             }
+            SocializePlugin.Settings.InitializeServer(SocializePlugin.Log);
             string action = package.ReadString();
             long playerId = package.ReadLong();
             string playerName = package.ReadString();

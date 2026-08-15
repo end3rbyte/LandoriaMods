@@ -100,6 +100,7 @@
     <Compile Include="SocializePlugin.cs" />
     <Compile Include="SocializeArgumentPolicy.cs" />
     <Compile Include="SocializeSettings.cs" />
+    <Compile Include="SocializeServerConfiguration.cs" />
     <Compile Include="SocialGroup.cs" />
     <Compile Include="TargetPingService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

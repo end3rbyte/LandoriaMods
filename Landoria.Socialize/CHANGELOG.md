@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.12
+
+- Add an optional one-shot `/all` command using vanilla server-wide shout delivery.
+- Make all Socialize settings server command-line switches synchronized after player spawn.
+
 ## 1.0.11
 
 - Add configurable shout and normal speech distances with command-line overrides.
