@@ -2,7 +2,7 @@
   "name": "HammerFreedom",
   "version_number": "1.0.2",
   "website_url": "https://valheim.landoria-gaming.com/",
-  "description": "Adds server-authorized creative freedoms to Hammer worlds.",
+  "description": "Adds creative flight, stamina, durability, and building freedoms to Hammer worlds.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333"
   ],

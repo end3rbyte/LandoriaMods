@@ -1,6 +1,6 @@
 # Structure Protection
 
-Prevents creatures from deliberately targeting player-built pieces while their creator is offline.
+Protects offline players' structures from deliberate creature targeting and player weapon damage within unattended active wards.
 
 ## Valheim compatibility
 

@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Landoria.StructureProtection")]
-[assembly: AssemblyDescription("Prevents deliberate creature targeting while a piece creator is offline.")]
+[assembly: AssemblyDescription("Protects offline players' structures from deliberate creature targeting and player weapon damage within unattended active wards.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Landoria")]
 [assembly: AssemblyProduct("Landoria.StructureProtection")]
