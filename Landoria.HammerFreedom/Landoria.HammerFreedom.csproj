@@ -27,10 +27,12 @@
     <Reference Include="assembly_utils"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\assembly_utils.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="UnityEngine"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\UnityEngine.dll</HintPath><Private>false</Private></Reference>
     <Reference Include="UnityEngine.CoreModule"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\UnityEngine.CoreModule.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="UnityEngine.PhysicsModule"><HintPath>$(ValheimGamePath)\valheim_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath><Private>false</Private></Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FlyCommand.cs" />
     <Compile Include="FlyController.cs" /><Compile Include="FlyInput.cs" />
+    <Compile Include="FlightSpeedPolicy.cs" />
     <Compile Include="HammerFreedomAuthorization.cs" />
     <Compile Include="HammerFreedomArgumentPolicy.cs" />
     <Compile Include="HammerFreedomBehaviorPolicy.cs" />

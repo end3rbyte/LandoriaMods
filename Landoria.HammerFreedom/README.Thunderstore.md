@@ -26,6 +26,7 @@ Hammer worlds without enabling debug mode, developer commands, or administrator 
 - Disables capabilities immediately when authorization is removed or the server changes.
 - Hides the `fly` command until authorization is granted.
 - Supports `fly`, `fly on`, `fly off`, and the fixed native `Z` toggle shortcut.
+- Limits flight to 4 metres per second normally and 7 metres per second while sprinting.
 - Keeps vanilla movement: Space ascends, Left Control descends, and Shift increases speed.
 
 ## Installation

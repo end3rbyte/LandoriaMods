@@ -1,4 +1,5 @@
 using HarmonyLib;
+using UnityEngine;
 
 namespace Landoria.HammerFreedom
 {
@@ -233,6 +234,29 @@ namespace Landoria.HammerFreedom
                     freeBuildKey))
             {
                 __result = false;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Character), "UpdateDebugFly")]
+    internal static class FlightSpeedPatch
+    {
+        private static void Postfix(
+            Character __instance, bool ___m_run, ref Vector3 ___m_currentVel,
+            Rigidbody ___m_body)
+        {
+            if (__instance != Player.m_localPlayer ||
+                !HammerFreedomAuthorization.IsAuthorized(HammerFreedomCapabilities.Flight))
+            {
+                return;
+            }
+
+            float scale = FlightSpeedPolicy.ResolveScale(
+                ___m_currentVel.magnitude, ___m_run);
+            if (scale < 1f)
+            {
+                ___m_currentVel *= scale;
+                ___m_body.linearVelocity = ___m_currentVel;
             }
         }
     }
