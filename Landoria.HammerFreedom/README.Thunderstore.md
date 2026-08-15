@@ -23,7 +23,7 @@ Hammer worlds without enabling debug mode, developer commands, or administrator 
 - Prevents durability loss for tools, weapons, shields, armor, and other durable equipment.
 - Returns vanilla recoverable materials when a piece is dismantled with a hammer while
   authorized `NoBuildCost` material recovery is active.
-- Disables capabilities immediately when authorization is removed or the server changes.
+- Disables capabilities immediately when the server changes.
 - Hides the `fly` command until authorization is granted.
 - Supports `fly`, `fly on`, `fly off`, and the fixed native `Z` toggle shortcut.
 - Limits flight to 4 metres per second normally and 7 metres per second while sprinting.

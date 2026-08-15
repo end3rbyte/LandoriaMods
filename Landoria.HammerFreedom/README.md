@@ -21,7 +21,7 @@ developer commands, or administrator access.
   `--hammerfreedom-no-build-cost-recover-materials true|false`.
 - Each switch defaults to `false`.
 - The server authorizes capabilities only while both `NoBuildCost` and `PassiveMobs` are active.
-- No response, an explicit denial, a modifier change, or a server change immediately removes every capability.
+- No response, an explicit denial, or a server change immediately removes every capability.
 - The `fly` command is hidden and invalid until the server explicitly authorizes it.
 - The mod is required on the server and every participating client.
 
