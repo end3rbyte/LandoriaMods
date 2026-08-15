@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.15
+
+- Updated documentation.
+
 ## 1.0.14
 
 - Replace FlyCommand with HammerFreedom.
