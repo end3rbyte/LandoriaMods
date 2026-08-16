@@ -15,6 +15,11 @@ namespace Landoria.ModSentry
 
             foreach (PluginDescriptor expected in policy.Required)
             {
+                if (!expected.IsBepInPlugin)
+                {
+                    continue;
+                }
+
                 if (!installed.TryGetValue(expected.Guid, out PluginDescriptor found))
                 {
                     return Missing(expected);

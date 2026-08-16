@@ -38,18 +38,27 @@ namespace Landoria.ModSentry
                     .SelectMany(type => type.CustomAttributes)
                     .SingleOrDefault(item =>
                         item.AttributeType.FullName == typeof(BepInPlugin).FullName);
+
+                if (attribute == null || attribute.ConstructorArguments.Count < 3)
+                {
+                    return CreateFallbackDescriptor(assembly, path);
+                }
+
                 return CreateDescriptor(path, attribute);
             }
         }
 
+        private static PluginDescriptor CreateFallbackDescriptor(AssemblyDefinition assembly, string path)
+        {
+            string name = assembly?.Name?.Name ?? Path.GetFileNameWithoutExtension(path);
+            string guid = $"Landoria.NonBepInPlugin.{name}";
+            string version = assembly?.Name?.Version?.ToString() ?? "0.0.0";
+
+            return new PluginDescriptor(guid, name, version, PluginInventory.Sha256(path), false);
+        }
+
         private static PluginDescriptor CreateDescriptor(string path, CustomAttribute attribute)
         {
-            if (attribute == null || attribute.ConstructorArguments.Count < 3)
-            {
-                throw new InvalidDataException(
-                    $"No BepInPlugin metadata was found in {Path.GetFileName(path)}.");
-            }
-
             string guid = (string)attribute.ConstructorArguments[0].Value;
             string name = (string)attribute.ConstructorArguments[1].Value;
             string version = (string)attribute.ConstructorArguments[2].Value;
