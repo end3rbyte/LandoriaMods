@@ -1,6 +1,6 @@
 {
   "name": "LandoriaModPack",
-  "version_number": "1.0.18",
+  "version_number": "1.0.19",
   "website_url": "https://valheim.landoria-gaming.com/",
   "description": "Installs the mods required to join the Landoria Valheim server.",
   "dependencies": [
@@ -9,7 +9,7 @@
     "Landoria-AfkDetector-1.0.5",
     "Landoria-HammerFreedom-1.0.2",
     "Landoria-FreeFlyCommand-1.0.5",
-    "Landoria-FirstPerson-1.0.1",
+    "Landoria-FirstPerson-1.0.2",
     "Landoria-Moderator-1.0.6",
     "Landoria-GetMyTrophyBack-1.0.6",
     "Landoria-ExpandedServer-1.0.6",
