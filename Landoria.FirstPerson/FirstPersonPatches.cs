@@ -31,9 +31,11 @@ namespace Landoria.FirstPerson
             if (shouldApply)
             {
                 FirstPersonViewController.Apply(__instance, player);
+                FirstPersonHelmetLightController.Apply(__instance, player);
             }
             else
             {
+                FirstPersonHelmetLightController.Restore();
                 FirstPersonHeadLookPatch.ResetTarget();
             }
         }
@@ -78,7 +80,7 @@ namespace Landoria.FirstPerson
             }
 
             animator.SetLookAtPosition(smoothedLookAt);
-            animator.SetLookAtWeight(1f, 0f, 1f, 0f, 0f);
+            animator.SetLookAtWeight(0.8f, 0f, 0.8f, 0f, 0f);
         }
     }
 
@@ -103,7 +105,18 @@ namespace Landoria.FirstPerson
             if (FirstPersonMode.Active && player == Player.m_localPlayer)
             {
                 FirstPersonVisibilityController.Refresh(player);
+                FirstPersonHelmetLightController.Refresh(player);
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(MonoUpdaters), "LateUpdate")]
+    internal static class FirstPersonHelmetLightLateUpdatePatch
+    {
+        private static void Postfix()
+        {
+            FirstPersonHelmetLightController.Apply(
+                GameCamera.instance, Player.m_localPlayer);
         }
     }
 
@@ -168,6 +181,7 @@ namespace Landoria.FirstPerson
     {
         private static void Prefix()
         {
+            FirstPersonHelmetLightController.Restore();
             FirstPersonVisibilityController.Restore();
             FirstPersonMode.ResetSession();
         }

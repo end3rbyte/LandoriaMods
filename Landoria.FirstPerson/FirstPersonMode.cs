@@ -54,6 +54,7 @@ namespace Landoria.FirstPerson
 
         internal static void Reset()
         {
+            FirstPersonHelmetLightController.Restore();
             FirstPersonVisibilityController.Restore();
             if (distanceCaptured && GameCamera.instance)
             {

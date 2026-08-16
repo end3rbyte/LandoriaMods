@@ -14,6 +14,7 @@ first-person camera at the closest mouse-wheel zoom level.
 
 - Places the camera at eye level and follows the complete look direction.
 - Hides the local player's body and equipped items to keep the view unobstructed.
+- Stabilizes helmet lights against movement and animation flicker in first person.
 - Restores the complete character when returning to third person or free fly.
 - Provides one persistent FOV setting for first person, third person, and free fly.
 - Does not hide the character from any other player.
