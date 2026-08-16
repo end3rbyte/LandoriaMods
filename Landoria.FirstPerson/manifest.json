@@ -1,8 +1,8 @@
 {
   "name": "FirstPerson",
-  "version_number": "1.0.0",
+  "version_number": "1.0.1",
   "website_url": "https://valheim.landoria-gaming.com/",
-  "description": "Adds a first-person camera at minimum zoom while hiding only the local player model.",
+  "description": "Adds a fixed camera above the local player's head and turns the body with horizontal mouse movement.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333"
   ],
