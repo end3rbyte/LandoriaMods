@@ -88,7 +88,7 @@ namespace Landoria.FirstPerson
         {
             if (FirstPersonMode.Active && __instance == Player.m_localPlayer)
             {
-                visible = true;
+                visible = false;
             }
         }
     }
