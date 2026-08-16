@@ -1,6 +1,6 @@
 {
   "name": "QuickLaunch",
-  "version_number": "1.0.4",
+  "version_number": "1.0.5",
   "website_url": "https://valheim.landoria-gaming.com/",
   "description": "Automatically resume your last local or multiplayer Valheim session, with an option to disable it.",
   "dependencies": [
