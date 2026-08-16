@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.8
+
+- Accept non-BepInEx DLLs when explicitly listed in optional or required policy entries.
+
 ## 1.0.7
 
 - Emphasize identical mod setups and playing conditions for every player.
