@@ -3,6 +3,7 @@
 ## 1.0.18
 
 - Update FirstPerson to 1.0.1.
+- Remove the installation section from the package description.
 
 ## 1.0.17
 

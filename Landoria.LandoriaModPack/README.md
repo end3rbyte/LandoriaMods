@@ -15,14 +15,6 @@ Installs the mods required to join the Landoria Valheim server.
 - Keeps all players on the same declared dependency set.
 - Includes a minimal BepInEx plugin without gameplay patches or configuration.
 
-## Installation
-
-| Client required | Server required (dedicated) | Player-hosted server |
-|---|---|---|
-| Yes | Yes | Not Supported |
-
-Install this modpack with r2modman, select its profile, and use **Start modded**.
-
 ## Contact
 
 Report bugs through [GitHub Issues](https://github.com/landoria-gaming/LandoriaMods/issues).
