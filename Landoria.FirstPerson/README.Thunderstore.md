@@ -14,7 +14,7 @@ Adds a fixed camera above the local player's head at the closest mouse-wheel zoo
 - Fixes the first-person camera above the local player's head.
 - Turns the complete player body with horizontal camera movement.
 - Keeps vertical camera movement independent from body rotation.
-- Hides the local character and equipment only for the local player while in first person.
+- Keeps the local player body visible in first person.
 - Restores the character when zooming out or entering free-fly mode.
 - Keeps Valheim's `fov <degrees>` setting active in first-person and third-person gameplay.
 - Requires no server installation or configuration.
