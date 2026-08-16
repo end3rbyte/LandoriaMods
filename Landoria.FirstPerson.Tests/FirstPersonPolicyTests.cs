@@ -16,6 +16,19 @@ public sealed class FirstPersonPolicyTests
             command, argumentCount, parsed, fieldOfView));
     }
 
+    [Theory]
+    [InlineData("fov", 2, "reset", true)]
+    [InlineData("fov", 2, "RESET", true)]
+    [InlineData("fov", 1, null, false)]
+    [InlineData("fov", 2, "65", false)]
+    [InlineData("firstperson", 2, "reset", false)]
+    public void IdentifiesFieldOfViewReset(
+        string command, int argumentCount, string value, bool expected)
+    {
+        Assert.Equal(expected, FirstPersonPolicy.ShouldResetFieldOfView(
+            command, argumentCount, value));
+    }
+
     [Fact]
     public void HidesLivingLocalPlayerAtMinimumDistance()
     {

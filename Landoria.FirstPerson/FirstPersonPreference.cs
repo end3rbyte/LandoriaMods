@@ -4,6 +4,8 @@ namespace Landoria.FirstPerson
 {
     internal static class FirstPersonPreference
     {
+        internal const float DefaultFieldOfView = 65f;
+
         private static ConfigEntry<bool> enabled;
         private static ConfigEntry<float> fieldOfView;
 
@@ -16,7 +18,7 @@ namespace Landoria.FirstPerson
                 "Camera", "FirstPersonEnabled", false,
                 "Whether first-person view is enabled at minimum camera zoom.");
             fieldOfView = config.Bind(
-                "Camera", "FieldOfView", 65f,
+                "Camera", "FieldOfView", DefaultFieldOfView,
                 "Field of view shared by first-person, third-person, and free-fly cameras.");
         }
 
