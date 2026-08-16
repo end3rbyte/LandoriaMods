@@ -94,8 +94,8 @@ namespace Landoria.FirstPerson
         }
     }
 
-    [HarmonyPatch(typeof(VisEquipment), "UpdateEquipmentVisuals")]
-    internal static class FirstPersonEquipmentVisibilityPatch
+    [HarmonyPatch(typeof(VisEquipment), "UpdateVisuals")]
+    internal static class FirstPersonVisualVisibilityPatch
     {
         private static void Postfix(VisEquipment __instance)
         {

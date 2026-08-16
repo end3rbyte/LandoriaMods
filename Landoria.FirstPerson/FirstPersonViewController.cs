@@ -4,8 +4,8 @@ namespace Landoria.FirstPerson
 {
     internal static class FirstPersonViewController
     {
-        private const float EyeForwardOffset = 0.1f;
-        private const float ChinVerticalOffset = 0.1f;
+        private const float HeadVerticalOffset = 0.1f;
+        private const float HeadBackwardOffset = 0.1f;
 
         internal static void Apply(GameCamera camera, Player player)
         {
@@ -24,8 +24,8 @@ namespace Landoria.FirstPerson
             }
 
             camera.transform.position =
-                player.GetEyePoint() - Vector3.up * ChinVerticalOffset +
-                lookDirection * EyeForwardOffset;
+                player.GetHeadPoint() + Vector3.up * HeadVerticalOffset -
+                lookDirection * HeadBackwardOffset;
             camera.transform.rotation = cameraRotation;
         }
     }
