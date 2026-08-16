@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.11
+
+- Fix boolean command-switch table rendering on Thunderstore.
+
 ## 1.0.10
 
 - Remove the global chat command.

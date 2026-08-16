@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.21
+
+- Update Socialize to 1.0.11 and StructureProtection to 1.0.1.
+
 ## 1.0.20
 
 - Update FirstPerson to 1.0.3, HammerFreedom to 1.0.3, and FreeFlyCommand to 1.0.6.
