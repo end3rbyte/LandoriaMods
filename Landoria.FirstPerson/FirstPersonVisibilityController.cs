@@ -1,0 +1,82 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace Landoria.FirstPerson
+{
+    internal static class FirstPersonVisibilityController
+    {
+        private static readonly HashSet<Renderer> HiddenRenderers =
+            new HashSet<Renderer>();
+        private static readonly Dictionary<Animator, AnimatorCullingMode> AnimatorModes =
+            new Dictionary<Animator, AnimatorCullingMode>();
+        private static Player hiddenPlayer;
+
+        internal static void SetHidden(Player player, bool hidden)
+        {
+            if (!hidden || !player)
+            {
+                Restore();
+                return;
+            }
+
+            if (hiddenPlayer != player)
+            {
+                Restore();
+                hiddenPlayer = player;
+                HideCurrentVisuals();
+            }
+        }
+
+        internal static void Refresh(Player player)
+        {
+            if (player && player == hiddenPlayer)
+            {
+                HideCurrentVisuals();
+            }
+        }
+
+        internal static void Restore()
+        {
+            foreach (Renderer renderer in HiddenRenderers)
+            {
+                if (renderer)
+                {
+                    renderer.forceRenderingOff = false;
+                }
+            }
+
+            foreach (KeyValuePair<Animator, AnimatorCullingMode> animator in AnimatorModes)
+            {
+                if (animator.Key)
+                {
+                    animator.Key.cullingMode = animator.Value;
+                }
+            }
+
+            HiddenRenderers.Clear();
+            AnimatorModes.Clear();
+            hiddenPlayer = null;
+        }
+
+        private static void HideCurrentVisuals()
+        {
+            foreach (Renderer renderer in hiddenPlayer.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer && !renderer.forceRenderingOff)
+                {
+                    renderer.forceRenderingOff = true;
+                    HiddenRenderers.Add(renderer);
+                }
+            }
+
+            foreach (Animator animator in hiddenPlayer.GetComponentsInChildren<Animator>(true))
+            {
+                if (animator && !AnimatorModes.ContainsKey(animator))
+                {
+                    AnimatorModes.Add(animator, animator.cullingMode);
+                    animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+                }
+            }
+        }
+    }
+}

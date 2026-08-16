@@ -54,6 +54,7 @@ namespace Landoria.FirstPerson
 
         internal static void Reset()
         {
+            FirstPersonVisibilityController.Restore();
             if (distanceCaptured && GameCamera.instance)
             {
                 GameCamera.instance.m_minDistance = vanillaMinimumDistance;
