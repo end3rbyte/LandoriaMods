@@ -30,6 +30,11 @@ Each mod directory includes a technical `README.md`, a player-oriented
 plugin base, Harmony registration, and logging. It is an internal component and
 is never installed as a standalone mod.
 
+## Discover the mods
+
+- [Watch Landoria mod demos on YouTube](https://www.youtube.com/watch?v=5MOIaP7fJps&list=PLcK6fTEJy8AU).
+- [Browse all Landoria mods on Thunderstore](https://thunderstore.io/c/valheim/p/Landoria/).
+
 ## Community server
 
 All Landoria mods can be tested on the [Landoria Valheim community server](https://valheim.landoria-gaming.com/).
