@@ -1,6 +1,6 @@
 {
   "name": "FirstPerson",
-  "version_number": "1.0.2",
+  "version_number": "1.0.3",
   "website_url": "https://valheim.landoria-gaming.com/",
   "description": "Adds first-person view and persistent FOV control for the normal gameplay camera.",
   "dependencies": [
