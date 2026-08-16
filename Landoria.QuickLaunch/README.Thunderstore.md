@@ -2,6 +2,10 @@
 
 Gets you back into Valheim faster by automatically resuming your last local or multiplayer session.
 
+## Video demo
+
+[Watch QuickLaunch in action on YouTube](https://youtu.be/5MOIaP7fJps).
+
 ## Valheim compatibility
 
 | Valheim channel | Version | Compatibility |

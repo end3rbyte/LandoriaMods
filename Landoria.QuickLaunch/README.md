@@ -2,6 +2,10 @@
 
 Automatically resumes the last local or multiplayer Valheim session.
 
+## Video demo
+
+[Watch QuickLaunch in action on YouTube](https://youtu.be/5MOIaP7fJps).
+
 ## Valheim compatibility
 
 | Valheim channel | Version | Compatibility |
