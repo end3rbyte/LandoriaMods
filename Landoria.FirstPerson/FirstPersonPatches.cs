@@ -27,6 +27,7 @@ namespace Landoria.FirstPerson
                 FirstPersonMode.Enabled, player, player && player.IsDead(),
                 GameCamera.InFreeFly(), ___m_distance);
             FirstPersonMode.SetActive(shouldApply);
+            FirstPersonVisibilityController.SetHidden(player, shouldApply);
             if (shouldApply)
             {
                 FirstPersonViewController.Apply(__instance, player);
@@ -88,7 +89,20 @@ namespace Landoria.FirstPerson
         {
             if (FirstPersonMode.Active && __instance == Player.m_localPlayer)
             {
-                visible = false;
+                visible = true;
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(VisEquipment), "UpdateEquipmentVisuals")]
+    internal static class FirstPersonEquipmentVisibilityPatch
+    {
+        private static void Postfix(VisEquipment __instance)
+        {
+            Player player = __instance.GetComponentInParent<Player>();
+            if (FirstPersonMode.Active && player == Player.m_localPlayer)
+            {
+                FirstPersonVisibilityController.Refresh(player);
             }
         }
     }
@@ -154,6 +168,7 @@ namespace Landoria.FirstPerson
     {
         private static void Prefix()
         {
+            FirstPersonVisibilityController.Restore();
             FirstPersonMode.ResetSession();
         }
     }
