@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.19
+
+- Update FirstPerson to 1.0.2.
+
 ## 1.0.18
 
 - Update FirstPerson to 1.0.1.
