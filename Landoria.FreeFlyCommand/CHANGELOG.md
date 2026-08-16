@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.6
+
+- Add the FreeFlyCommand video demo to the package documentation.
+
 ## 1.0.5
 
 - Add terrain collision and cap free-camera movement at 20 metres per second.
