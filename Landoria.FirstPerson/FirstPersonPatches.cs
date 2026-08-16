@@ -78,7 +78,7 @@ namespace Landoria.FirstPerson
             }
 
             animator.SetLookAtPosition(smoothedLookAt);
-            animator.SetLookAtWeight(0.8f, 0f, 0.8f, 0f, 0f);
+            animator.SetLookAtWeight(1f, 0f, 1f, 0f, 0f);
         }
     }
 

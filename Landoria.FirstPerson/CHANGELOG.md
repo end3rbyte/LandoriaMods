@@ -6,6 +6,7 @@
 - Keep the first-person camera 10 cm above the animated head point and 10 cm behind the full look direction.
 - Hide the local player body and equipped items in first person.
 - Keep animated equipment transforms active so attached lights follow vertical look movement.
+- Fully align the animated head to prevent attached lights from swaying during strafing and backward movement.
 - Reapply local renderer hiding after complete character visual updates.
 - Align the animated head and attached equipment with the unrestricted first-person look direction.
 - Restore the complete local character outside first person.
