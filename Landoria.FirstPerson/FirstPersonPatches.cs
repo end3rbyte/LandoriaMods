@@ -19,13 +19,17 @@ namespace Landoria.FirstPerson
     [HarmonyPatch(typeof(GameCamera), "UpdateCamera")]
     internal static class FirstPersonCameraUpdatePatch
     {
-        private static void Postfix(float ___m_distance)
+        private static void Postfix(GameCamera __instance, float ___m_distance)
         {
             Player player = Player.m_localPlayer;
             bool shouldHide = FirstPersonPolicy.ShouldHidePlayer(
                 FirstPersonMode.Enabled, player, player && player.IsDead(),
                 GameCamera.InFreeFly(), ___m_distance);
             LocalPlayerVisibility.Update(player, shouldHide);
+            if (shouldHide)
+            {
+                FirstPersonViewController.Apply(__instance, player);
+            }
         }
     }
 
