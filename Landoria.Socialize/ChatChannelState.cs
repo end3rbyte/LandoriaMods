@@ -4,49 +4,42 @@ namespace Landoria.Socialize
 {
     internal static class ChatChannelState
     {
-        private enum Channel { Normal, Shout, Whisper, Group }
-        private static Channel current;
+        private static PersistentChatChannel current;
         private static string whisperTarget = "";
         private static bool redirecting;
 
         internal static void SetNormal()
         {
-            current = Channel.Normal;
+            current = PersistentChatChannel.Normal;
             whisperTarget = "";
         }
 
         internal static void SetShout()
         {
-            current = Channel.Shout;
+            current = PersistentChatChannel.Shout;
             whisperTarget = "";
         }
 
         internal static void SetWhisper(string target)
         {
-            current = Channel.Whisper;
+            current = PersistentChatChannel.Whisper;
             whisperTarget = target ?? "";
         }
 
         internal static void SetGroup()
         {
-            current = Channel.Group;
+            current = PersistentChatChannel.Group;
             whisperTarget = "";
         }
 
         internal static string GetPrompt()
         {
-            switch (current)
-            {
-                case Channel.Shout: return "Shouting...";
-                case Channel.Whisper: return "Talking to " + whisperTarget + "...";
-                case Channel.Group: return "Speaking to the group...";
-                default: return "Speaking...";
-            }
+            return ChatBehaviorPolicy.GetPrompt(current, whisperTarget);
         }
 
         internal static bool TryRedirect(string text)
         {
-            if (redirecting || current == Channel.Normal || string.IsNullOrWhiteSpace(text))
+            if (!ChatBehaviorPolicy.ShouldRedirect(current, redirecting, text))
             {
                 return false;
             }
@@ -65,9 +58,9 @@ namespace Landoria.Socialize
         {
             switch (current)
             {
-                case Channel.Shout: SocialChatSender.SendShout(text); return true;
-                case Channel.Whisper: return PrivateChat.Send(whisperTarget, text, Chat.instance);
-                case Channel.Group: GroupService.SendChat(text); return true;
+                case PersistentChatChannel.Shout: SocialChatSender.SendShout(text); return true;
+                case PersistentChatChannel.Whisper: return PrivateChat.Send(whisperTarget, text, Chat.instance);
+                case PersistentChatChannel.Group: GroupService.SendChat(text); return true;
                 default: return false;
             }
         }
@@ -87,9 +80,24 @@ namespace Landoria.Socialize
             talker.Say(Talker.Type.Shout, text);
         }
 
-        internal static void ApplyShoutRange(Talker talker)
+        internal static void ApplyRanges(Talker talker)
         {
-            talker.m_shoutDistance = talker.m_normalDistance * 2f;
+            talker.m_normalDistance = SocializePlugin.Settings.SayDistance;
+            talker.m_shoutDistance = SocializePlugin.Settings.ShoutDistance;
+        }
+
+        internal static void ApplyRangesToLoadedTalkers()
+        {
+            if (SocializePlugin.Settings == null)
+            {
+                return;
+            }
+            Talker[] talkers = UnityEngine.Object.FindObjectsByType<Talker>(
+                UnityEngine.FindObjectsSortMode.None);
+            foreach (Talker talker in talkers)
+            {
+                ApplyRanges(talker);
+            }
         }
     }
 }

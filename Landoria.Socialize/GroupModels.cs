@@ -2,16 +2,8 @@ using System.Collections.Generic;
 
 namespace Landoria.Socialize
 {
-    internal sealed class SocialGroup
-    {
-        internal int Id;
-        internal long Leader;
-        internal readonly Dictionary<long, string> Members = new Dictionary<long, string>();
-    }
-
     internal static class GroupState
     {
-        internal const int MaximumSize = 5;
         internal static readonly Dictionary<int, SocialGroup> Groups =
             new Dictionary<int, SocialGroup>();
         internal static readonly Dictionary<long, int> PlayerGroups =

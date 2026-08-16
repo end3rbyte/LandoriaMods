@@ -1,9 +1,5 @@
 # Changelog
 
-## 1.0.18
-
-- Update Socialize to 1.0.11.
-
 ## 1.0.17
 
 - Update Socialize to 1.0.10.

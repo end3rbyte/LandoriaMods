@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="Moq" Version="4.20.72" />
+    <PackageReference Include="xunit.v3" Version="3.2.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="../Landoria.Socialize/ChatCommandParser.cs" Link="ChatCommandParser.cs" />
+    <Compile Include="../Landoria.Socialize/ChatBehaviorPolicy.cs" Link="ChatBehaviorPolicy.cs" />
+    <Compile Include="../Landoria.Socialize/ChatFormattingPolicy.cs" Link="ChatFormattingPolicy.cs" />
+    <Compile Include="../Landoria.Socialize/GroupAcceptancePolicy.cs" Link="GroupAcceptancePolicy.cs" />
+    <Compile Include="../Landoria.Socialize/GroupChatPolicy.cs" Link="GroupChatPolicy.cs" />
+    <Compile Include="../Landoria.Socialize/GroupInfoPolicy.cs" Link="GroupInfoPolicy.cs" />
+    <Compile Include="../Landoria.Socialize/GroupLifecyclePolicy.cs" Link="GroupLifecyclePolicy.cs" />
+    <Compile Include="../Landoria.Socialize/InvitationPresentationPolicy.cs" Link="InvitationPresentationPolicy.cs" />
+    <Compile Include="../Landoria.Socialize/GroupInvitationPolicy.cs" Link="GroupInvitationPolicy.cs" />
+    <Compile Include="../Landoria.Socialize/GroupPromotionPolicy.cs" Link="GroupPromotionPolicy.cs" />
+    <Compile Include="../Landoria.Socialize/GroupPolicy.cs" Link="GroupPolicy.cs" />
+    <Compile Include="../Landoria.Socialize/MapSharingPolicy.cs" Link="MapSharingPolicy.cs" />
+    <Compile Include="../Landoria.Socialize/SocialGroup.cs" Link="SocialGroup.cs" />
+    <Compile Include="../Landoria.Socialize/SocializeArgumentPolicy.cs" Link="SocializeArgumentPolicy.cs" />
+    <Compile Include="../Landoria.Socialize/SocializeServerConfiguration.cs" Link="SocializeServerConfiguration.cs" />
+  </ItemGroup>
+</Project>
