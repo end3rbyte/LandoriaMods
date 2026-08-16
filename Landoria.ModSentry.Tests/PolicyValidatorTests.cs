@@ -28,6 +28,28 @@ public sealed class PolicyValidatorTests
         Assert.True(result.Accepted);
     }
 
+    // Verifies that optional libraries that are not plugins do not reject the client.
+    [Fact]
+    public void LibraryPluginInOptionalPolicyIsAccepted()
+    {
+        ValidationResult result = PolicyValidator.Validate(
+            Policy(optional: Library("SharedLib")), Array.Empty<PluginDescriptor>());
+
+        Assert.True(result.Accepted);
+        Assert.Equal(string.Empty, result.PlayerMessage);
+    }
+
+    // Verifies that required libraries without plugin metadata do not reject the client.
+    [Fact]
+    public void LibraryPluginInRequiredPolicyIsIgnored()
+    {
+        ValidationResult result = PolicyValidator.Validate(
+            Policy(required: Library("SharedLib")), Array.Empty<PluginDescriptor>());
+
+        Assert.True(result.Accepted);
+        Assert.Equal(string.Empty, result.PlayerMessage);
+    }
+
     // Verifies the player and technical messages for a missing required mod.
     [Fact]
     public void MissingRequiredPluginIsRejected()
@@ -145,8 +167,14 @@ public sealed class PolicyValidatorTests
         return Descriptor("mod." + name.ToLowerInvariant(), name, "2.0.0", HashB);
     }
 
-    private static PluginDescriptor Descriptor(string guid, string name, string version, string hash)
+    private static PluginDescriptor Library(string name)
     {
-        return new PluginDescriptor(guid, name, version, hash);
+        return Descriptor("library." + name.ToLowerInvariant(), name, "3.0.0", HashA, false);
+    }
+
+    private static PluginDescriptor Descriptor(string guid, string name, string version, string hash,
+        bool isBepInPlugin = true)
+    {
+        return new PluginDescriptor(guid, name, version, hash, isBepInPlugin);
     }
 }
