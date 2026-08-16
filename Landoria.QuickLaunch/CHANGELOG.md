@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.6
+
+- Fix the command-switch table rendering on Thunderstore.
+
 ## 1.0.5
 
 - Add the QuickLaunch video demo.
