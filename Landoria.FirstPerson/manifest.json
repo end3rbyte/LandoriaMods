@@ -2,7 +2,7 @@
   "name": "FirstPerson",
   "version_number": "1.0.0",
   "website_url": "https://valheim.landoria-gaming.com/",
-  "description": "Adds a first-person camera at minimum zoom while hiding only the local player model.",
+  "description": "Adds a first-person camera at minimum zoom with a chin-anchored view while keeping the local player visible.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333"
   ],

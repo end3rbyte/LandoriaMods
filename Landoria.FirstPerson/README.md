@@ -1,6 +1,6 @@
 # First Person
 
-Adds a first-person camera at the closest mouse-wheel zoom level and hides only the local player model.
+Adds a first-person camera at the closest mouse-wheel zoom level and keeps the local player visible with a chin-anchored camera.
 
 ## Valheim compatibility
 
@@ -12,8 +12,8 @@ Adds a first-person camera at the closest mouse-wheel zoom level and hides only 
 ## Features
 
 - Extends the vanilla camera zoom to its existing first-person position.
-- Hides the local character, armor, weapons, and equipment while in first person.
-- Restores the complete local character when zooming out or entering free-fly mode.
+- Keeps the local character body and hands visible while in first person.
+- Keeps the camera locked near the chin while following look direction.
 - Does not hide the character from any other player.
 - Requires no server installation or configuration.
 

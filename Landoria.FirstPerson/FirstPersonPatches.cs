@@ -1,7 +1,34 @@
 using HarmonyLib;
 
+using UnityEngine;
+
 namespace Landoria.FirstPerson
 {
+    internal static class FirstPersonCameraPolicy
+    {
+        private const float EyeForwardOffset = 0.10f;
+        private const float ChinVerticalOffset = 0.10f;
+
+        internal static void ApplyChinLock(GameCamera camera, Player player, float cameraDistance)
+        {
+            if (!FirstPersonMode.Enabled || camera == null || GameCamera.InFreeFly() ||
+                player == null || player.IsDead() || cameraDistance > FirstPersonPolicy.DistanceThreshold)
+            {
+                return;
+            }
+
+            Vector3 lookDirection = camera.transform.forward;
+            if (lookDirection.sqrMagnitude < 0.0001f)
+            {
+                return;
+            }
+
+            Vector3 target = player.GetHeadPoint() - Vector3.up * ChinVerticalOffset +
+                             lookDirection.normalized * EyeForwardOffset;
+            camera.transform.position = target;
+        }
+    }
+
     [HarmonyPatch(typeof(GameCamera), "Awake")]
     internal static class FirstPersonCameraAwakePatch
     {
@@ -19,13 +46,11 @@ namespace Landoria.FirstPerson
     [HarmonyPatch(typeof(GameCamera), "UpdateCamera")]
     internal static class FirstPersonCameraUpdatePatch
     {
-        private static void Postfix(float ___m_distance)
+        private static void Postfix(GameCamera __instance, float ___m_distance)
         {
             Player player = Player.m_localPlayer;
-            bool shouldHide = FirstPersonPolicy.ShouldHidePlayer(
-                FirstPersonMode.Enabled, player, player && player.IsDead(),
-                GameCamera.InFreeFly(), ___m_distance);
-            LocalPlayerVisibility.Update(player, shouldHide);
+            LocalPlayerVisibility.Reset();
+            FirstPersonCameraPolicy.ApplyChinLock(__instance, player, ___m_distance);
         }
     }
 

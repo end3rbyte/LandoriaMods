@@ -26,11 +26,8 @@ namespace Landoria.FirstPerson
         internal static void SetEnabled(bool enabled)
         {
             Enabled = enabled;
+            LocalPlayerVisibility.Reset();
             Apply(GameCamera.instance);
-            if (!enabled)
-            {
-                LocalPlayerVisibility.Reset();
-            }
         }
 
         internal static void ResetSession()
