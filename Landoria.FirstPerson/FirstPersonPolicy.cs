@@ -3,6 +3,7 @@ namespace Landoria.FirstPerson
     internal static class FirstPersonPolicy
     {
         internal const float DistanceThreshold = 0.001f;
+        internal const float MaximumFieldOfView = 100f;
 
         internal static bool ShouldPersistFieldOfView(
             string command, int argumentCount, bool parsed, float fieldOfView)
@@ -15,6 +16,11 @@ namespace Landoria.FirstPerson
         {
             return command == "fov" && argumentCount == 2 &&
                    string.Equals(value, "reset", System.StringComparison.OrdinalIgnoreCase);
+        }
+
+        internal static float ClampFieldOfView(float fieldOfView)
+        {
+            return System.Math.Min(fieldOfView, MaximumFieldOfView);
         }
 
         internal static bool ShouldHidePlayer(

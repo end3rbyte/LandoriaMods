@@ -68,6 +68,7 @@ namespace Landoria.FirstPerson
             if (FirstPersonPolicy.ShouldPersistFieldOfView(
                 __instance.Command, args.Length, parsed, fieldOfView))
             {
+                fieldOfView = FirstPersonPolicy.ClampFieldOfView(fieldOfView);
                 FirstPersonMode.SetFieldOfView(GameCamera.instance, fieldOfView);
                 FirstPersonPreference.SetFieldOfView(fieldOfView);
             }

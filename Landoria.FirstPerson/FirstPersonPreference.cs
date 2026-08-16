@@ -20,6 +20,7 @@ namespace Landoria.FirstPerson
             fieldOfView = config.Bind(
                 "Camera", "FieldOfView", DefaultFieldOfView,
                 "Field of view shared by first-person, third-person, and free-fly cameras.");
+            SetFieldOfView(fieldOfView.Value);
         }
 
         internal static void SetEnabled(bool value)
@@ -29,7 +30,7 @@ namespace Landoria.FirstPerson
 
         internal static void SetFieldOfView(float value)
         {
-            fieldOfView.Value = value;
+            fieldOfView.Value = FirstPersonPolicy.ClampFieldOfView(value);
         }
     }
 }
