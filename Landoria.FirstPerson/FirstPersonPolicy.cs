@@ -23,7 +23,7 @@ namespace Landoria.FirstPerson
             return System.Math.Min(fieldOfView, MaximumFieldOfView);
         }
 
-        internal static bool ShouldHidePlayer(
+        internal static bool ShouldApplyFirstPerson(
             bool modeEnabled, bool hasLocalPlayer, bool isPlayerDead,
             bool isFreeFly, float cameraDistance)
         {

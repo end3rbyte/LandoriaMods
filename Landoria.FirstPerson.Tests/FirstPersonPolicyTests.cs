@@ -41,7 +41,7 @@ public sealed class FirstPersonPolicyTests
     [Fact]
     public void HidesLivingLocalPlayerAtMinimumDistance()
     {
-        Assert.True(FirstPersonPolicy.ShouldHidePlayer(true, true, false, false, 0f));
+        Assert.True(FirstPersonPolicy.ShouldApplyFirstPerson(true, true, false, false, 0f));
     }
 
     [Theory]
@@ -53,7 +53,7 @@ public sealed class FirstPersonPolicyTests
     public void KeepsPlayerVisibleOutsideFirstPerson(
         bool enabled, bool hasPlayer, bool isDead, bool isFreeFly, float distance)
     {
-        Assert.False(FirstPersonPolicy.ShouldHidePlayer(
+        Assert.False(FirstPersonPolicy.ShouldApplyFirstPerson(
             enabled, hasPlayer, isDead, isFreeFly, distance));
     }
 }

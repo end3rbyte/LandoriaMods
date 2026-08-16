@@ -27,10 +27,6 @@ namespace Landoria.FirstPerson
         {
             Enabled = enabled;
             Apply(GameCamera.instance);
-            if (!enabled)
-            {
-                LocalPlayerVisibility.Reset();
-            }
         }
 
         internal static void SetFieldOfView(GameCamera camera, float fieldOfView)
