@@ -39,8 +39,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.SealedTombstone", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.ServerGateway", "Landoria.ServerGateway\Landoria.ServerGateway.csproj", "{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.Socialize.Tests", "Landoria.Socialize.Tests\Landoria.Socialize.Tests.csproj", "{1F2B32A4-4FB0-4FF9-9E3B-825F0188B1FD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.Socialize", "Landoria.Socialize\Landoria.Socialize.csproj", "{DA5DE9DF-7727-4D5F-8274-896B8EB80ED3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.HammerFreedom.Tests", "Landoria.HammerFreedom.Tests\Landoria.HammerFreedom.Tests.csproj", "{EE0CC157-A0F1-48C2-8DDF-E041DA9B6708}"
@@ -283,18 +281,6 @@ Global
 		{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}.Release|x64.Build.0 = Release|Any CPU
 		{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}.Release|x86.ActiveCfg = Release|Any CPU
 		{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}.Release|x86.Build.0 = Release|Any CPU
-		{1F2B32A4-4FB0-4FF9-9E3B-825F0188B1FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1F2B32A4-4FB0-4FF9-9E3B-825F0188B1FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1F2B32A4-4FB0-4FF9-9E3B-825F0188B1FD}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{1F2B32A4-4FB0-4FF9-9E3B-825F0188B1FD}.Debug|x64.Build.0 = Debug|Any CPU
-		{1F2B32A4-4FB0-4FF9-9E3B-825F0188B1FD}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1F2B32A4-4FB0-4FF9-9E3B-825F0188B1FD}.Debug|x86.Build.0 = Debug|Any CPU
-		{1F2B32A4-4FB0-4FF9-9E3B-825F0188B1FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1F2B32A4-4FB0-4FF9-9E3B-825F0188B1FD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1F2B32A4-4FB0-4FF9-9E3B-825F0188B1FD}.Release|x64.ActiveCfg = Release|Any CPU
-		{1F2B32A4-4FB0-4FF9-9E3B-825F0188B1FD}.Release|x64.Build.0 = Release|Any CPU
-		{1F2B32A4-4FB0-4FF9-9E3B-825F0188B1FD}.Release|x86.ActiveCfg = Release|Any CPU
-		{1F2B32A4-4FB0-4FF9-9E3B-825F0188B1FD}.Release|x86.Build.0 = Release|Any CPU
 		{DA5DE9DF-7727-4D5F-8274-896B8EB80ED3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DA5DE9DF-7727-4D5F-8274-896B8EB80ED3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA5DE9DF-7727-4D5F-8274-896B8EB80ED3}.Debug|x64.ActiveCfg = Debug|Any CPU
