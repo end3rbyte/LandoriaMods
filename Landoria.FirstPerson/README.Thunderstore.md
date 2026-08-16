@@ -12,6 +12,7 @@ players see you.
 
 - Enabled by default and instantly toggleable with `firstperson`.
 - Camera positioned exactly at eye level, including when looking up or down.
+- Stable helmet lighting while moving in any direction.
 - One persistent FOV setting for first person, third person, and free fly.
 - Client-side only: no server installation or configuration required.
 
