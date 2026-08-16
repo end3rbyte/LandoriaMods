@@ -3,6 +3,10 @@
 Adds creative freedoms to authorized Hammer worlds without enabling debug mode,
 developer commands, or administrator access.
 
+## Video demo
+
+[Watch HammerFreedom's Fly mode in action on YouTube](https://www.youtube.com/watch?v=PnJOJYb4LwA).
+
 ## Valheim compatibility
 
 | Valheim channel | Version | Compatibility |

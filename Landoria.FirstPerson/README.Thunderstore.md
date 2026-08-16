@@ -7,6 +7,10 @@ Zoom all the way in to enter first person, then scroll back to return to third
 person. Your body is hidden only from your own first-person view, while items
 held in either hand remain visible without changing how other players see you.
 
+## Video demo
+
+[Watch First Person in action on YouTube](https://www.youtube.com/watch?v=Tzb9Hi6qYv4).
+
 ## Highlights
 
 - Enabled by default and instantly toggleable with `firstperson`.

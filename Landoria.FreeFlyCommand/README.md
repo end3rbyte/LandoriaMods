@@ -2,6 +2,10 @@
 
 Allows Valheim's native `freefly` and `ffsmooth` camera commands after explicit authorization from the connected server. It does not enable `devcommands` or `debugmode`.
 
+## Video demo
+
+[Watch FreeFlyCommand in action on YouTube](https://www.youtube.com/watch?v=nDNg8NBXQHg).
+
 ## Valheim compatibility
 
 | Valheim channel | Version | Compatibility |

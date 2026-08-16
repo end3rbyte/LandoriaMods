@@ -2,6 +2,10 @@
 
 Gives authorized players a controlled free camera for exploring and filming Valheim without opening developer or debug modes.
 
+## Video demo
+
+[Watch FreeFlyCommand in action on YouTube](https://www.youtube.com/watch?v=nDNg8NBXQHg).
+
 ## Valheim compatibility
 
 | Valheim channel | Version | Compatibility |
