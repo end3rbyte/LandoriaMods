@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.5
+
+- Add the QuickLaunch video demo.
+
 ## 1.0.4
 
 - Make the automatic session resume description clearer for players.
