@@ -8,7 +8,6 @@
 - Keep animated equipment transforms active so attached lights follow vertical look movement.
 - Stabilize helmet lights at the first-person camera and suppress their local flicker and movement.
 - Reapply local renderer hiding after complete character visual updates.
-- Align the animated head and attached equipment with the unrestricted first-person look direction.
 - Restore the complete local character outside first person.
 - Keep the vanilla `fov` command active in first-person and third-person gameplay, save the FOV and first-person toggle in the local mod configuration, add `fov reset`, and cap the FOV at 100.
 

@@ -38,9 +38,8 @@ The FOV is capped at 100.
 ## Camera behavior
 
 The camera stays exactly at the animated eye point and follows the full look
-direction, including when looking up or down. The character's head and attached
-equipment follow the same direction without the vanilla look clamp. The local
-player and equipped items are hidden only from the local first-person view.
+direction, including when looking up or down. The local player and equipped
+items are hidden only from the local first-person view.
 
 ## Installation
 

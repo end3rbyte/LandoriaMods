@@ -1,5 +1,4 @@
 using HarmonyLib;
-using UnityEngine;
 
 namespace Landoria.FirstPerson
 {
@@ -36,51 +35,7 @@ namespace Landoria.FirstPerson
             else
             {
                 FirstPersonHelmetLightController.Restore();
-                FirstPersonHeadLookPatch.ResetTarget();
             }
-        }
-    }
-
-    [HarmonyPatch(typeof(CharacterAnimEvent), "OnAnimatorIK")]
-    internal static class FirstPersonHeadLookPatch
-    {
-        private const float LookAtSmoothingRate = 18f;
-        private static Vector3 smoothedLookAt;
-        private static bool lookAtInitialized;
-
-        internal static void ResetTarget()
-        {
-            lookAtInitialized = false;
-            smoothedLookAt = Vector3.zero;
-        }
-
-        private static void Postfix(CharacterAnimEvent __instance)
-        {
-            Player player = __instance.GetComponentInParent<Player>();
-            GameCamera camera = GameCamera.instance;
-            if (!FirstPersonMode.Active || player != Player.m_localPlayer || !camera)
-            {
-                return;
-            }
-
-            Animator animator = __instance.GetComponent<Animator>();
-            Vector3 desiredLookAt = player.GetEyePoint() + camera.transform.forward * 10f;
-            float smoothing = 1f - Mathf.Exp(-LookAtSmoothingRate * Time.deltaTime);
-            if (!lookAtInitialized)
-            {
-                smoothedLookAt = desiredLookAt;
-                lookAtInitialized = true;
-            }
-            else
-            {
-                smoothedLookAt = Vector3.Lerp(
-                    smoothedLookAt,
-                    desiredLookAt,
-                    smoothing);
-            }
-
-            animator.SetLookAtPosition(smoothedLookAt);
-            animator.SetLookAtWeight(0.8f, 0f, 0.8f, 0f, 0f);
         }
     }
 
