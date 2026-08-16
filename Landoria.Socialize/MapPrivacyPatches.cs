@@ -10,7 +10,7 @@ namespace Landoria.Socialize
     {
         private static void Postfix(Minimap __instance)
         {
-            HidePublicPositionTogglePatch.UpdateVisibility(__instance);
+            HidePublicPositionTogglePatch.UpdatePingVisibility(__instance);
         }
     }
 
@@ -19,8 +19,7 @@ namespace Landoria.Socialize
     {
         private static void Prefix(ref bool pub)
         {
-            pub = MapSharingPolicy.GetPublicPosition(
-                SocializePlugin.Settings.RestrictPublicPositions, pub);
+            pub = false;
         }
     }
 
@@ -38,27 +37,20 @@ namespace Landoria.Socialize
     {
         private static void Postfix(Minimap __instance)
         {
-            UpdateVisibility(__instance);
+            Toggle toggle = __instance.m_publicPosition;
+            if (toggle != null)
+            {
+                toggle.isOn = false;
+                toggle.gameObject.SetActive(false);
+                HideDedicatedContainer(__instance, toggle);
+            }
+            UpdatePingVisibility(__instance);
         }
 
-        internal static void UpdateVisibility(Minimap minimap)
+        internal static void UpdatePingVisibility(Minimap minimap)
         {
-            UpdatePositionVisibility(minimap);
             if (minimap.m_pingImageObject == null) return;
-            GetPingButton(minimap).SetActive(
-                MapSharingPolicy.CanSendPublicPing(
-                    SocializePlugin.Settings.RestrictPublicPings,
-                    GroupService.IsLocalPlayerInGroup()));
-        }
-
-        private static void UpdatePositionVisibility(Minimap minimap)
-        {
-            Toggle toggle = minimap.m_publicPosition;
-            if (toggle == null) return;
-            bool visible = !SocializePlugin.Settings.RestrictPublicPositions;
-            if (!visible) toggle.isOn = false;
-            toggle.gameObject.SetActive(visible);
-            SetDedicatedContainerVisibility(minimap, toggle, visible);
+            GetPingButton(minimap).SetActive(GroupService.IsLocalPlayerInGroup());
         }
 
         private static GameObject GetPingButton(Minimap minimap)
@@ -77,14 +69,13 @@ namespace Landoria.Socialize
             return minimap.m_pingImageObject.gameObject;
         }
 
-        private static void SetDedicatedContainerVisibility(
-            Minimap minimap, Toggle toggle, bool visible)
+        private static void HideDedicatedContainer(Minimap minimap, Toggle toggle)
         {
             Transform parent = toggle.transform.parent;
             if (parent == null || IsMapRoot(minimap, parent.gameObject)) return;
             bool onlyToggle = parent.GetComponentsInChildren<Toggle>(true).Length == 1;
             bool containsMap = parent.GetComponentsInChildren<RawImage>(true).Length > 0;
-            if (onlyToggle && !containsMap) parent.gameObject.SetActive(visible);
+            if (onlyToggle && !containsMap) parent.gameObject.SetActive(false);
         }
 
         private static bool IsMapRoot(Minimap minimap, GameObject target)

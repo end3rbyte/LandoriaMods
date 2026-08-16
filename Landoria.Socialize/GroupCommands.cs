@@ -23,7 +23,7 @@ namespace Landoria.Socialize
                 ShowHelp(args.Context);
                 return;
             }
-            if (!ChatCommandParser.IsValidGroupAction(action, argument))
+            if (!IsValid(action, argument))
             {
                 ShowHelp(args.Context);
                 return;
@@ -41,6 +41,19 @@ namespace Landoria.Socialize
             }
             ChatChannelState.SetGroup();
             GroupService.SendChat(message);
+        }
+
+        private static bool IsValid(string action, string argument)
+        {
+            switch (action)
+            {
+                case "leave":
+                case "info": return string.IsNullOrEmpty(argument);
+                case "invite":
+                case "remove":
+                case "promote": return !string.IsNullOrEmpty(argument);
+                default: return false;
+            }
         }
 
         private static void ShowHelp(Terminal context)

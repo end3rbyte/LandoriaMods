@@ -72,34 +72,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChatChannelState.cs" />
-    <Compile Include="ChatBehaviorPolicy.cs" />
-    <Compile Include="ChatCommandParser.cs" />
     <Compile Include="ChatCommands.cs" />
     <Compile Include="ChatFormatting.cs" />
-    <Compile Include="ChatFormattingPolicy.cs" />
     <Compile Include="ChatPatches.cs" />
     <Compile Include="GroupCommands.cs" />
-    <Compile Include="GroupChatPolicy.cs" />
-    <Compile Include="GroupConnectionPatches.cs" />
-    <Compile Include="GroupAcceptancePolicy.cs" />
-    <Compile Include="GroupInfoPolicy.cs" />
-    <Compile Include="GroupInvitationPolicy.cs" />
-    <Compile Include="GroupLifecyclePolicy.cs" />
-    <Compile Include="GroupPromotionPolicy.cs" />
     <Compile Include="GroupModels.cs" />
-    <Compile Include="GroupPolicy.cs" />
     <Compile Include="GroupMapSharing.cs" />
     <Compile Include="GroupRpc.cs" />
     <Compile Include="GroupService.cs" />
-    <Compile Include="InvitationPresentationPolicy.cs" />
+    <Compile Include="GroupStorage.cs" />
     <Compile Include="RpcRegistry.cs" />
     <Compile Include="MapPrivacyPatches.cs" />
-    <Compile Include="MapSharingPolicy.cs" />
     <Compile Include="SocializePlugin.cs" />
-    <Compile Include="SocializeArgumentPolicy.cs" />
-    <Compile Include="SocializeSettings.cs" />
-    <Compile Include="SocializeServerConfiguration.cs" />
-    <Compile Include="SocialGroup.cs" />
     <Compile Include="TargetPingService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

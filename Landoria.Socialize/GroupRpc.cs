@@ -4,11 +4,10 @@ namespace Landoria.Socialize
     {
         internal static void RPC_Request(long sender, ZPackage package)
         {
-            if (ZNet.instance == null || !ZNet.instance.IsServer())
+            if (ZNet.instance == null || !ZNet.instance.IsServer() || !GroupStorage.TryLoad())
             {
                 return;
             }
-            SocializePlugin.Settings.InitializeServer(SocializePlugin.Log);
             string action = package.ReadString();
             long playerId = package.ReadLong();
             string playerName = package.ReadString();

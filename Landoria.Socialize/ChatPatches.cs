@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using HarmonyLib;
 using Splatform;
 using TMPro;
@@ -23,18 +22,6 @@ namespace Landoria.Socialize
         }
     }
 
-    [HarmonyPatch(typeof(Player), "OnSpawned")]
-    internal static class RequestSocialStateOnSpawnPatch
-    {
-        private static void Postfix(Player __instance)
-        {
-            if (__instance == Player.m_localPlayer)
-            {
-                GroupService.RequestInitialState();
-            }
-        }
-    }
-
     [HarmonyPatch(typeof(Chat), "AddInworldText")]
     internal static class DisablePrivateWorldTextPatch
     {
@@ -47,45 +34,12 @@ namespace Landoria.Socialize
     [HarmonyPatch(typeof(Chat), "SendPing")]
     internal static class LimitMapPingToGroupPatch
     {
-        private static bool Prefix(Vector3 position)
+        private static bool Prefix()
         {
-            if (!SocializePlugin.Settings.RestrictPublicPings)
-            {
-                return true;
-            }
-            if (!MapSharingPolicy.CanSendPublicPing(
-                    true, GroupService.IsLocalPlayerInGroup()))
-            {
-                SocializePlugin.Log.LogDebug(
-                    "Map ping ignored because the local player is not in a group.");
-                return false;
-            }
-            GroupPingSender.Send(position);
+            if (GroupService.IsLocalPlayerInGroup()) return true;
+            SocializePlugin.Log.LogDebug(
+                "Map ping ignored because the local player is not in a group.");
             return false;
-        }
-    }
-
-    internal static class GroupPingSender
-    {
-        internal static void Send(Vector3 position)
-        {
-            if (Player.m_localPlayer == null || ZNet.instance == null || ZRoutedRpc.instance == null)
-            {
-                return;
-            }
-            long localPlayerId = ZNet.instance.LocalPlayerCharacterID.UserID;
-            List<long> connected = new List<long>();
-            foreach (ZNet.PlayerInfo player in ZNet.instance.GetPlayerList())
-            {
-                connected.Add(player.m_characterID.UserID);
-            }
-            position.y = Player.m_localPlayer.transform.position.y;
-            foreach (long recipient in MapSharingPolicy.GetGroupPingRecipients(
-                         localPlayerId, GroupState.LocalMembers, connected))
-            {
-                ZRoutedRpc.instance.InvokeRoutedRPC(recipient, "ChatMessage", position,
-                    (int)Talker.Type.Ping, UserInfo.GetLocalUser(), "");
-            }
         }
     }
 
@@ -121,11 +75,11 @@ namespace Landoria.Socialize
     }
 
     [HarmonyPatch(typeof(Talker), "Awake")]
-    internal static class SocialChatRangePatch
+    internal static class SocialShoutRangePatch
     {
         private static void Postfix(Talker __instance)
         {
-            SocialChatSender.ApplyRanges(__instance);
+            SocialChatSender.ApplyShoutRange(__instance);
         }
     }
 

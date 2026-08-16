@@ -9,6 +9,7 @@ namespace Landoria.Socialize
         internal const string RequestRpc = "Landoria_Social_GroupRequest";
         internal const string ResponseRpc = "Landoria_Social_GroupResponse";
         private static ZRoutedRpc registeredRpc;
+        private static float nextStateRequest;
 
         internal static void Update()
         {
@@ -19,16 +20,21 @@ namespace Landoria.Socialize
             }
             if (ZNet.instance.IsServer())
             {
-                SocializePlugin.Settings.InitializeServer(SocializePlugin.Log);
+                GroupStorage.TryLoad();
+            }
+            if (Player.m_localPlayer != null && Time.unscaledTime >= nextStateRequest)
+            {
+                nextStateRequest = Time.unscaledTime + 1f;
+                SendRequest("state", "");
             }
         }
 
         internal static void Reset()
         {
             registeredRpc = null;
+            nextStateRequest = 0f;
+            GroupStorage.Reset();
             GroupState.ClearAll();
-            SocializePlugin.Settings?.ResetState();
-            SocialChatSender.ApplyRangesToLoadedTalkers();
         }
 
         internal static bool IsLocalPlayerInGroup()
@@ -62,14 +68,9 @@ namespace Landoria.Socialize
             ZRoutedRpc.instance.InvokeRoutedRPC(RequestRpc, package);
         }
 
-        internal static void RequestInitialState()
-        {
-            SendRequest("state", "");
-        }
-
         internal static void Dispatch(long sender, long playerId, string playerName, string action, string argument)
         {
-            RegisterSession(sender, playerId);
+            GroupState.PeerPlayers[sender] = playerId;
             switch (action)
             {
                 case "state": SendSnapshot(sender, playerId); break;
@@ -107,9 +108,8 @@ namespace Landoria.Socialize
             {
                 return;
             }
+            GroupStorage.Reset();
             GroupState.ClearAll();
-            SocializePlugin.Settings?.ResetState();
-            SocialChatSender.ApplyRangesToLoadedTalkers();
         }
 
         private static void RegisterRpcs(ZRoutedRpc rpc)
@@ -121,25 +121,16 @@ namespace Landoria.Socialize
         private static void Invite(long sender, long inviter, string inviterName, string targetName)
         {
             long targetPeer = FindPeerByName(targetName);
-            bool targetReady = TryGetPlayerForPeer(targetPeer, out long target);
-            GroupDecision targetDecision = GroupPolicy.CanInviteTarget(targetReady);
-            if (!targetDecision.Allowed)
+            if (!TryGetPlayerForPeer(targetPeer, out long target))
             {
-                SendMessage(sender, targetDecision.Message);
+                SendMessage(sender, "Player not found or not ready.");
                 return;
             }
-            SocialGroup inviterGroup = GroupState.GetGroup(inviter);
-            GroupDecision decision = GroupInvitationPolicy.TryInvite(
-                inviterGroup, inviter, target, GroupState.PlayerGroups.ContainsKey(target),
-                GroupState.Invitations);
-            if (!decision.Allowed)
+            if (!CanInvite(sender, inviter, target))
             {
-                if (decision.Message != null)
-                {
-                    SendMessage(sender, decision.Message);
-                }
                 return;
             }
+            GroupState.Invitations[target] = inviter;
             ZPackage response = NewResponse("invite");
             response.Write(inviter.ToString());
             response.Write(inviterName);
@@ -147,17 +138,45 @@ namespace Landoria.Socialize
             SendMessage(sender, "Group invitation sent.");
         }
 
+        private static bool CanInvite(long sender, long inviter, long target)
+        {
+            SocialGroup inviterGroup = GroupState.GetGroup(inviter);
+            if (GroupState.PlayerGroups.ContainsKey(target))
+            {
+                SendMessage(sender, "That player is already in a group.");
+                return false;
+            }
+            if (inviterGroup != null && inviterGroup.Leader != inviter)
+            {
+                SendMessage(sender, "Only the group leader can invite players.");
+                return false;
+            }
+            if (inviterGroup != null && inviterGroup.Members.Count >= GroupState.MaximumSize)
+            {
+                SendMessage(sender, "Your group is full.");
+                return false;
+            }
+            return inviter != target;
+        }
+
         private static void Accept(long sender, long playerId, string playerName, string inviterText)
         {
-            GroupAcceptanceResult result = GroupAcceptancePolicy.Accept(
-                playerId, playerName, inviterText, GroupState.Invitations,
-                GetOrCreateGroup, GroupState.PlayerGroups);
-            if (!result.Accepted)
+            if (!long.TryParse(inviterText, out long inviter) ||
+                !GroupState.Invitations.TryGetValue(playerId, out long expected) || expected != inviter)
             {
-                SendMessage(sender, result.Message);
+                SendMessage(sender, "That group invitation is no longer valid.");
                 return;
             }
-            BroadcastChange(result.Group, playerName + " joined the group.");
+            SocialGroup group = GetOrCreateGroup(inviter);
+            if (group == null || group.Members.Count >= GroupState.MaximumSize)
+            {
+                SendMessage(sender, "That group is no longer available.");
+                return;
+            }
+            group.Members[playerId] = playerName;
+            GroupState.PlayerGroups[playerId] = group.Id;
+            GroupState.Invitations.Remove(playerId);
+            SaveAndBroadcast(group, playerName + " joined the group.");
         }
 
         private static SocialGroup GetOrCreateGroup(long inviter)
@@ -168,7 +187,7 @@ namespace Landoria.Socialize
                 return group.Leader == inviter ? group : null;
             }
             group = new SocialGroup { Id = GroupState.GetNextGroupId(), Leader = inviter };
-            group.AddMember(inviter, GetPlayerName(inviter));
+            group.Members[inviter] = GetPlayerName(inviter);
             GroupState.Groups[group.Id] = group;
             GroupState.PlayerGroups[inviter] = group.Id;
             return group;
@@ -193,8 +212,10 @@ namespace Landoria.Socialize
                 return;
             }
             string name = group.Members[playerId];
+            group.Members.Remove(playerId);
             GroupState.PlayerGroups.Remove(playerId);
-            ApplyRemoval(group, GroupLifecyclePolicy.Remove(group, playerId));
+            NormalizeAfterRemoval(group);
+            GroupStorage.Save();
             SendMessage(sender, "You left the group.");
             Broadcast(group, name + " left the group.");
             BroadcastSnapshots(group);
@@ -210,8 +231,10 @@ namespace Landoria.Socialize
                 return;
             }
             string name = group.Members[target];
+            group.Members.Remove(target);
             GroupState.PlayerGroups.Remove(target);
-            ApplyRemoval(group, GroupLifecyclePolicy.Remove(group, target));
+            NormalizeAfterRemoval(group);
+            GroupStorage.Save();
             SendMessage(FindPeer(target), "You were removed from the group.");
             Broadcast(group, name + " was removed from the group.");
             BroadcastSnapshots(group);
@@ -221,13 +244,13 @@ namespace Landoria.Socialize
         {
             SocialGroup group = GroupState.GetGroup(actor);
             long target = FindMember(group, targetName);
-            GroupDecision decision = GroupPromotionPolicy.TryPromote(
-                group, actor, target, targetName);
-            if (!decision.Allowed)
+            if (!ValidateLeaderAction(sender, actor, targetName, group, target)
+                || !ValidatePromoteTarget(sender, actor, target))
             {
-                SendMessage(sender, decision.Message);
                 return;
             }
+            group.Leader = target;
+            GroupStorage.Save();
             Broadcast(group, group.Members[target] + " is now the group leader.");
             BroadcastSnapshots(group);
         }
@@ -235,142 +258,114 @@ namespace Landoria.Socialize
         private static bool ValidateLeaderAction(
             long sender, long actor, string targetName, SocialGroup group, long target)
         {
-            GroupDecision decision = GroupPolicy.CanTargetMember(
-                group, actor, target, targetName);
-            if (!decision.Allowed)
+            if (group == null)
             {
-                SendMessage(sender, decision.Message);
+                SendMessage(sender, "You are not in a group.");
+                return false;
             }
-            return decision.Allowed;
+            if (group.Leader != actor)
+            {
+                SendMessage(sender, "Only the group leader can do that.");
+                return false;
+            }
+            if (target == 0L)
+            {
+                SendMessage(sender, "Player not found in your group: " + targetName);
+                return false;
+            }
+            return true;
         }
 
         private static bool ValidateRemoveTarget(long sender, long actor, long target)
         {
-            return ValidateTargetDecision(sender, GroupPolicy.CanRemove(actor, target));
+            if (target != actor) return true;
+            SendMessage(sender, "You cannot remove yourself.");
+            return false;
         }
 
-        private static bool ValidateTargetDecision(long sender, GroupDecision decision)
+        private static bool ValidatePromoteTarget(long sender, long actor, long target)
         {
-            if (!decision.Allowed)
-            {
-                SendMessage(sender, decision.Message);
-            }
-            return decision.Allowed;
+            if (target != actor) return true;
+            SendMessage(sender, "You are already group leader.");
+            return false;
         }
 
-        private static void ApplyRemoval(SocialGroup group, GroupRemovalResult result)
+        private static void NormalizeAfterRemoval(SocialGroup group)
         {
-            if (!result.Disbanded)
+            if (group.Members.Count <= 1)
             {
+                foreach (long member in group.Members.Keys)
+                {
+                    GroupState.PlayerGroups.Remove(member);
+                    SendMessage(FindPeer(member), "The group was disbanded.");
+                    SendSnapshot(FindPeer(member), member);
+                }
+                GroupState.Groups.Remove(group.Id);
+                group.Members.Clear();
                 return;
             }
-            foreach (long member in result.RemainingMembers)
+            if (!group.Members.ContainsKey(group.Leader))
             {
-                GroupState.PlayerGroups.Remove(member);
-                SendMessage(FindPeer(member), "The group was disbanded.");
-                SendSnapshot(FindPeer(member), member);
+                foreach (long member in group.Members.Keys)
+                {
+                    group.Leader = member;
+                    break;
+                }
             }
-            GroupState.Groups.Remove(group.Id);
         }
 
         private static void SendGroupChat(long sender, long actor, string message)
         {
             SocialGroup group = GroupState.GetGroup(actor);
-            GroupChatResult result = GroupChatPolicy.Prepare(group, actor, message,
-                member => FindPeer(member) != 0L, ChatFormatting.FormatGroup);
-            if (!result.Broadcast)
+            if (group == null)
             {
-                SendMessage(sender, result.Message);
+                SendMessage(sender, "You are not in a group.");
                 return;
             }
-            Broadcast(group, result.Message);
+            if (!HasOtherOnlineMember(group, actor))
+            {
+                SendMessage(sender, "No other group member is connected.");
+                return;
+            }
+            Broadcast(group, ChatFormatting.FormatGroup(group.Members[actor], message));
+        }
+
+        private static bool HasOtherOnlineMember(SocialGroup group, long actor)
+        {
+            foreach (long member in group.Members.Keys)
+            {
+                if (member != actor && FindPeer(member) != 0L)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private static void SendInfo(long sender, long playerId)
         {
             SocialGroup group = GroupState.GetGroup(playerId);
-            SendMessage(sender, GroupInfoPolicy.Build(group, member => FindPeer(member) != 0L));
+            if (group == null)
+            {
+                SendMessage(sender, "You are not in a group.");
+                return;
+            }
+            List<string> lines = new List<string> { "Group members:" };
+            foreach (KeyValuePair<long, string> member in group.Members)
+            {
+                string online = FindPeer(member.Key) != 0L ? "Connected" : "Disconnected";
+                string leader = member.Key == group.Leader ? " - Group Leader" : "";
+                lines.Add(member.Value + " - " + online + leader);
+            }
+            SendMessage(sender, string.Join("\n", lines));
         }
 
-        private static void BroadcastChange(SocialGroup group, string message)
+        private static void SaveAndBroadcast(SocialGroup group, string message)
         {
+            GroupStorage.Save();
             Broadcast(group, message);
             BroadcastSnapshots(group);
             SocializePlugin.Log.LogInfo(message);
-        }
-
-        internal static void BeginPeerSession(long peer)
-        {
-            if (ZNet.instance != null && ZNet.instance.IsServer() &&
-                GroupState.PeerPlayers.ContainsKey(peer))
-            {
-                DisconnectPeer(peer);
-            }
-        }
-
-        internal static void DisconnectPeer(long peer)
-        {
-            if (ZNet.instance == null || !ZNet.instance.IsServer() ||
-                !GroupState.PeerPlayers.TryGetValue(peer, out long playerId))
-            {
-                return;
-            }
-            GroupState.PeerPlayers.Remove(peer);
-            RemovePlayerSession(playerId);
-        }
-
-        private static void RegisterSession(long peer, long playerId)
-        {
-            bool sameSession = GroupState.PeerPlayers.TryGetValue(peer, out long registered) &&
-                               registered == playerId;
-            if (!sameSession)
-            {
-                if (registered != 0L)
-                {
-                    RemovePlayerSession(registered);
-                }
-                RemovePlayerSession(playerId);
-            }
-            GroupState.PeerPlayers[peer] = playerId;
-        }
-
-        private static void RemovePlayerSession(long playerId)
-        {
-            RemovePeerMappings(playerId);
-            RemoveInvitations(playerId);
-            SocialGroup group = GroupState.GetGroup(playerId);
-            if (group == null)
-            {
-                return;
-            }
-            string name = group.Members[playerId];
-            GroupState.PlayerGroups.Remove(playerId);
-            ApplyRemoval(group, GroupLifecyclePolicy.Remove(group, playerId));
-            Broadcast(group, name + " left the group.");
-            BroadcastSnapshots(group);
-        }
-
-        private static void RemovePeerMappings(long playerId)
-        {
-            foreach (long peer in new List<long>(GroupState.PeerPlayers.Keys))
-            {
-                if (GroupState.PeerPlayers[peer] == playerId)
-                {
-                    GroupState.PeerPlayers.Remove(peer);
-                }
-            }
-        }
-
-        private static void RemoveInvitations(long playerId)
-        {
-            GroupState.Invitations.Remove(playerId);
-            foreach (long target in new List<long>(GroupState.Invitations.Keys))
-            {
-                if (GroupState.Invitations[target] == playerId)
-                {
-                    GroupState.Invitations.Remove(target);
-                }
-            }
         }
 
         private static void BroadcastSnapshots(SocialGroup group)
@@ -404,7 +399,6 @@ namespace Landoria.Socialize
                     GroupMapSharing.WritePosition(response, member.Key);
                 }
             }
-            SocializePlugin.Settings.WriteState(response);
             ZRoutedRpc.instance.InvokeRoutedRPC(peer, ResponseRpc, response);
         }
 
@@ -421,18 +415,15 @@ namespace Landoria.Socialize
                 GroupState.LocalMembers.Add(playerId);
                 GroupMapSharing.ReadPosition(package, playerId, playerName);
             }
-            SocializePlugin.Settings.ReadState(package);
-            SocialChatSender.ApplyRangesToLoadedTalkers();
         }
 
         private static void ShowInvite(string inviterId, string inviterName)
         {
-            InvitationPresentation presentation = InvitationPresentationPolicy.Build(inviterName);
             UnifiedPopup.Push(new YesNoPopup(
-                presentation.Title,
-                presentation.Message,
-                () => RespondToInvite(presentation.AcceptAction, inviterId),
-                () => RespondToInvite(presentation.RejectAction, inviterId),
+                "Group invitation",
+                inviterName + " invited you to a group.",
+                () => RespondToInvite("accept", inviterId),
+                () => RespondToInvite("reject", inviterId),
                 localizeText: false));
         }
 
@@ -515,8 +506,7 @@ namespace Landoria.Socialize
         {
             foreach (KeyValuePair<long, long> mapping in GroupState.PeerPlayers)
             {
-                if (mapping.Value == playerId && ZNet.instance != null &&
-                    ZNet.instance.GetPeer(mapping.Key) is ZNetPeer peer && peer.IsReady())
+                if (mapping.Value == playerId)
                 {
                     return mapping.Key;
                 }
