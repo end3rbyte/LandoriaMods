@@ -10,6 +10,21 @@ namespace Landoria.FirstPerson
         private static readonly Dictionary<Animator, AnimatorCullingMode> AnimatorModes =
             new Dictionary<Animator, AnimatorCullingMode>();
         private static Player hiddenPlayer;
+        private static Player equippedPlayer;
+        private static GameObject leftHandItem;
+        private static GameObject rightHandItem;
+
+        internal static void TrackHeldItems(
+            Player player, GameObject leftItem, GameObject rightItem)
+        {
+            equippedPlayer = player;
+            leftHandItem = leftItem;
+            rightHandItem = rightItem;
+            if (player && player == hiddenPlayer)
+            {
+                HideCurrentVisuals();
+            }
+        }
 
         internal static void SetHidden(Player player, bool hidden)
         {
@@ -75,6 +90,28 @@ namespace Landoria.FirstPerson
                 {
                     AnimatorModes.Add(animator, animator.cullingMode);
                     animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+                }
+            }
+
+            if (hiddenPlayer == equippedPlayer)
+            {
+                ShowHeldItem(leftHandItem);
+                ShowHeldItem(rightHandItem);
+            }
+        }
+
+        private static void ShowHeldItem(GameObject item)
+        {
+            if (!item)
+            {
+                return;
+            }
+
+            foreach (Renderer renderer in item.GetComponentsInChildren<Renderer>(true))
+            {
+                if (renderer && HiddenRenderers.Remove(renderer))
+                {
+                    renderer.forceRenderingOff = false;
                 }
             }
         }

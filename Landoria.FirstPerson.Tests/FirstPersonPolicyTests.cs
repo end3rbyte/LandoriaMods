@@ -6,6 +6,7 @@ public sealed class FirstPersonPolicyTests
 {
     [Theory]
     [InlineData("fov", 2, true, 90f, true)]
+    [InlineData("fov", 2, true, 91f, false)]
     [InlineData("fov", 1, false, 0f, false)]
     [InlineData("fov", 2, true, 5f, false)]
     [InlineData("firstperson", 2, true, 90f, false)]
@@ -13,6 +14,18 @@ public sealed class FirstPersonPolicyTests
         string command, int argumentCount, bool parsed, float fieldOfView, bool expected)
     {
         Assert.Equal(expected, FirstPersonPolicy.ShouldPersistFieldOfView(
+            command, argumentCount, parsed, fieldOfView));
+    }
+
+    [Theory]
+    [InlineData("fov", 2, true, 90f, false)]
+    [InlineData("fov", 2, true, 91f, true)]
+    [InlineData("fov", 1, false, 0f, false)]
+    [InlineData("firstperson", 2, true, 91f, false)]
+    public void IdentifiesFieldOfViewValuesAboveMaximum(
+        string command, int argumentCount, bool parsed, float fieldOfView, bool expected)
+    {
+        Assert.Equal(expected, FirstPersonPolicy.ShouldRejectFieldOfView(
             command, argumentCount, parsed, fieldOfView));
     }
 

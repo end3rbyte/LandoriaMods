@@ -8,7 +8,15 @@ namespace Landoria.FirstPerson
         internal static bool ShouldPersistFieldOfView(
             string command, int argumentCount, bool parsed, float fieldOfView)
         {
-            return command == "fov" && argumentCount > 1 && parsed && fieldOfView > 5f;
+            return command == "fov" && argumentCount > 1 && parsed &&
+                   fieldOfView > 5f && fieldOfView <= MaximumFieldOfView;
+        }
+
+        internal static bool ShouldRejectFieldOfView(
+            string command, int argumentCount, bool parsed, float fieldOfView)
+        {
+            return command == "fov" && argumentCount > 1 && parsed &&
+                   fieldOfView > MaximumFieldOfView;
         }
 
         internal static bool ShouldResetFieldOfView(

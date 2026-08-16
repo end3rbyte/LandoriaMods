@@ -1,4 +1,5 @@
 using HarmonyLib;
+using UnityEngine;
 
 namespace Landoria.FirstPerson
 {
@@ -54,12 +55,18 @@ namespace Landoria.FirstPerson
     [HarmonyPatch(typeof(VisEquipment), "UpdateVisuals")]
     internal static class FirstPersonVisualVisibilityPatch
     {
-        private static void Postfix(VisEquipment __instance)
+        private static void Postfix(
+            VisEquipment __instance, GameObject ___m_leftItemInstance,
+            GameObject ___m_rightItemInstance)
         {
             Player player = __instance.GetComponentInParent<Player>();
+            if (player == Player.m_localPlayer)
+            {
+                FirstPersonVisibilityController.TrackHeldItems(
+                    player, ___m_leftItemInstance, ___m_rightItemInstance);
+            }
             if (FirstPersonMode.Active && player == Player.m_localPlayer)
             {
-                FirstPersonVisibilityController.Refresh(player);
                 FirstPersonHelmetLightController.Refresh(player);
             }
         }
@@ -94,7 +101,15 @@ namespace Landoria.FirstPerson
             if (!FirstPersonPolicy.ShouldResetFieldOfView(
                     __instance.Command, args.Length, value))
             {
-                return true;
+                bool parsed = args.TryParameterFloat(1, out float requestedFieldOfView);
+                if (!FirstPersonPolicy.ShouldRejectFieldOfView(
+                        __instance.Command, args.Length, parsed, requestedFieldOfView))
+                {
+                    return true;
+                }
+
+                args.Context?.AddString(FirstPersonMessages.FieldOfViewAboveMaximum);
+                return false;
             }
 
             float fieldOfView = FirstPersonPreference.DefaultFieldOfView;
@@ -110,7 +125,6 @@ namespace Landoria.FirstPerson
             if (FirstPersonPolicy.ShouldPersistFieldOfView(
                 __instance.Command, args.Length, parsed, fieldOfView))
             {
-                fieldOfView = FirstPersonPolicy.ClampFieldOfView(fieldOfView);
                 FirstPersonMode.SetFieldOfView(GameCamera.instance, fieldOfView);
                 FirstPersonPreference.SetFieldOfView(fieldOfView);
             }
