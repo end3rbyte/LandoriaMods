@@ -4,6 +4,12 @@ namespace Landoria.FirstPerson
     {
         internal const float DistanceThreshold = 0.001f;
 
+        internal static bool ShouldPersistFieldOfView(
+            string command, int argumentCount, bool parsed, float fieldOfView)
+        {
+            return command == "fov" && argumentCount > 1 && parsed && fieldOfView > 5f;
+        }
+
         internal static bool ShouldHidePlayer(
             bool modeEnabled, bool hasLocalPlayer, bool isPlayerDead,
             bool isFreeFly, float cameraDistance)
