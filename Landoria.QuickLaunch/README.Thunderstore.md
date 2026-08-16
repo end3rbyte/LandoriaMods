@@ -25,7 +25,7 @@ Gets you back into Valheim faster by automatically resuming your last local or m
 
 | Switch | Default | Purpose |
 |---|---:|---|
-| `--quicklaunch <true|false>` | `true` | Controls automatic session resume. |
+| `--quicklaunch <true or false>` | `true` | Controls automatic session resume. |
 
 ## Installation
 
