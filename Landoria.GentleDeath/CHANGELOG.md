@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.9
+
+- Add the GentleDeath video demo.
+
 ## 1.0.8
 
 - Make the Thunderstore description clearer for players.
