@@ -10,6 +10,13 @@ namespace Landoria.FirstPerson
             return command == "fov" && argumentCount > 1 && parsed && fieldOfView > 5f;
         }
 
+        internal static bool ShouldResetFieldOfView(
+            string command, int argumentCount, string value)
+        {
+            return command == "fov" && argumentCount == 2 &&
+                   string.Equals(value, "reset", System.StringComparison.OrdinalIgnoreCase);
+        }
+
         internal static bool ShouldHidePlayer(
             bool modeEnabled, bool hasLocalPlayer, bool isPlayerDead,
             bool isFreeFly, float cameraDistance)
