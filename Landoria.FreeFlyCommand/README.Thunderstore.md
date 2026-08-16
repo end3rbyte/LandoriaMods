@@ -4,7 +4,7 @@ Gives authorized players a controlled free camera for exploring and filming Valh
 
 ## Video demo
 
-[Watch FreeFlyCommand in action on YouTube](https://www.youtube.com/watch?v=nDNg8NBXQHg).
+[Watch FreeFlyCommand in action on YouTube](https://youtu.be/b-QKtuCQGU0).
 
 ## Valheim compatibility
 

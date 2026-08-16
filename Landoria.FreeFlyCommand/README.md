@@ -4,7 +4,7 @@ Allows Valheim's native `freefly` and `ffsmooth` camera commands after explicit 
 
 ## Video demo
 
-[Watch FreeFlyCommand in action on YouTube](https://www.youtube.com/watch?v=nDNg8NBXQHg).
+[Watch FreeFlyCommand in action on YouTube](https://youtu.be/b-QKtuCQGU0).
 
 ## Valheim compatibility
 
