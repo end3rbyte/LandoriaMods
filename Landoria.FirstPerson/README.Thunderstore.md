@@ -11,7 +11,7 @@ players see you.
 ## Highlights
 
 - Enabled by default and instantly toggleable with `firstperson`.
-- Camera positioned above and behind the head, including when looking up or down.
+- Camera positioned exactly at eye level, including when looking up or down.
 - One persistent FOV setting for first person, third person, and free fly.
 - Client-side only: no server installation or configuration required.
 

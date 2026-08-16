@@ -3,7 +3,7 @@
 ## 1.0.1
 
 - Lock the camera to the player's animated head position and turn the body with horizontal camera movement.
-- Keep the first-person camera 10 cm above the animated head point and 10 cm behind the full look direction.
+- Keep the first-person camera exactly at the animated eye point along the full look direction.
 - Hide the local player body and equipped items in first person.
 - Keep animated equipment transforms active so attached lights follow vertical look movement.
 - Fully align the animated head to prevent attached lights from swaying during strafing and backward movement.
