@@ -33,7 +33,7 @@ first-person camera at the closest mouse-wheel zoom level.
 
 First person is enabled by default. The toggle and FOV are saved locally in the
 mod's BepInEx configuration and apply to every character on that installation.
-The FOV is capped at 100.
+The FOV is capped at 90.
 
 ## Camera behavior
 
