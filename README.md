@@ -42,7 +42,7 @@ is never installed as a standalone mod.
 
 ## Discover the mods
 
-- [Watch Landoria mod demos on YouTube](https://www.youtube.com/watch?v=5MOIaP7fJps&list=PLcK6fTEJy8AU).
+- [Watch Landoria mod demos on YouTube](https://www.youtube.com/channel/UC7JKJ6QyDyFbWrgQGg8k5jQ).
 - [Browse all Landoria mods on Thunderstore](https://thunderstore.io/c/valheim/p/Landoria/).
 
 ## Community server
