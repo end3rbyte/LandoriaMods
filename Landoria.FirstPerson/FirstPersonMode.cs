@@ -6,6 +6,7 @@ namespace Landoria.FirstPerson
         private static bool distanceCaptured;
 
         internal static bool Enabled { get; private set; }
+        internal static bool Active { get; private set; }
 
         internal static void CaptureVanillaDistance(GameCamera camera)
         {
@@ -26,7 +27,16 @@ namespace Landoria.FirstPerson
         internal static void SetEnabled(bool enabled)
         {
             Enabled = enabled;
+            if (!enabled)
+            {
+                Active = false;
+            }
             Apply(GameCamera.instance);
+        }
+
+        internal static void SetActive(bool active)
+        {
+            Active = active;
         }
 
         internal static void SetFieldOfView(GameCamera camera, float fieldOfView)
@@ -50,6 +60,7 @@ namespace Landoria.FirstPerson
             }
 
             ResetSession();
+            Active = false;
             distanceCaptured = false;
         }
     }

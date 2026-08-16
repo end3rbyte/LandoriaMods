@@ -1,4 +1,5 @@
 using HarmonyLib;
+using UnityEngine;
 
 namespace Landoria.FirstPerson
 {
@@ -25,9 +26,41 @@ namespace Landoria.FirstPerson
             bool shouldApply = FirstPersonPolicy.ShouldApplyFirstPerson(
                 FirstPersonMode.Enabled, player, player && player.IsDead(),
                 GameCamera.InFreeFly(), ___m_distance);
+            FirstPersonMode.SetActive(shouldApply);
             if (shouldApply)
             {
                 FirstPersonViewController.Apply(__instance, player);
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(CharacterAnimEvent), "OnAnimatorIK")]
+    internal static class FirstPersonHeadLookPatch
+    {
+        private static void Postfix(CharacterAnimEvent __instance)
+        {
+            Player player = __instance.GetComponentInParent<Player>();
+            GameCamera camera = GameCamera.instance;
+            if (!FirstPersonMode.Active || player != Player.m_localPlayer || !camera)
+            {
+                return;
+            }
+
+            Animator animator = __instance.GetComponent<Animator>();
+            animator.SetLookAtPosition(
+                player.GetHeadPoint() + camera.transform.forward * 10f);
+            animator.SetLookAtWeight(1f, 0f, 1f, 0f, 0f);
+        }
+    }
+
+    [HarmonyPatch(typeof(Character), "SetVisible")]
+    internal static class FirstPersonPlayerVisibilityPatch
+    {
+        private static void Prefix(Character __instance, ref bool visible)
+        {
+            if (FirstPersonMode.Active && __instance == Player.m_localPlayer)
+            {
+                visible = true;
             }
         }
     }
