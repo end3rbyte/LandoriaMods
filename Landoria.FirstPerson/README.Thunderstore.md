@@ -21,7 +21,7 @@ Adds a fixed camera above the local player's head at the closest mouse-wheel zoo
 
 Use the mouse wheel to zoom all the way in. Scroll away from the character to return to third person.
 
-First person is disabled by default. Run `firstperson` to toggle the feature. Disabling it immediately restores vanilla camera behavior. The choice is saved locally in the mod's BepInEx configuration and applies to every character on that installation.
+First person is enabled by default. Run `firstperson` to toggle the feature. Disabling it immediately restores vanilla camera behavior. The choice is saved locally in the mod's BepInEx configuration and applies to every character on that installation.
 
 In first person, the camera stays 10 cm below and 10 cm ahead of the eye point, near chin level, and follows the full look direction, including when looking up or down. The character's head and attached equipment follow the same direction without the vanilla look clamp. The player body remains visible, including the arms, despite the vanilla close-camera visibility rule.
 
