@@ -24,6 +24,8 @@ Use the mouse wheel to zoom all the way in. Scroll away from the character to re
 
 First person is disabled by default. Run `firstperson` to toggle the feature. Disabling it immediately restores vanilla camera behavior. The choice is saved locally in the mod's BepInEx configuration and applies to every character on that installation.
 
+In first person, the camera stays at eye level and follows the full look direction, including when looking up or down. The player body remains visible, including the arms.
+
 Run `fov <degrees>` to change the field of view shared by first person, third person, and free fly, up to a maximum of 100. Run `fov reset` to restore the default value of 65, or `fov` without a value to report the current field of view. The selected value is saved in the same local configuration.
 
 ## Installation

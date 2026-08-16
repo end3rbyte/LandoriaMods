@@ -22,11 +22,10 @@ namespace Landoria.FirstPerson
         private static void Postfix(GameCamera __instance, float ___m_distance)
         {
             Player player = Player.m_localPlayer;
-            bool shouldHide = FirstPersonPolicy.ShouldHidePlayer(
+            bool shouldApply = FirstPersonPolicy.ShouldApplyFirstPerson(
                 FirstPersonMode.Enabled, player, player && player.IsDead(),
                 GameCamera.InFreeFly(), ___m_distance);
-            LocalPlayerVisibility.Update(player, shouldHide);
-            if (shouldHide)
+            if (shouldApply)
             {
                 FirstPersonViewController.Apply(__instance, player);
             }
@@ -85,18 +84,6 @@ namespace Landoria.FirstPerson
                 FirstPersonMode.SetEnabled(FirstPersonPreference.Enabled);
                 FirstPersonMode.SetFieldOfView(
                     GameCamera.instance, FirstPersonPreference.FieldOfView);
-            }
-        }
-    }
-
-    [HarmonyPatch(typeof(VisEquipment), "UpdateLodgroup")]
-    internal static class FirstPersonEquipmentUpdatePatch
-    {
-        private static void Postfix(VisEquipment __instance)
-        {
-            if (__instance.GetComponentInParent<Player>() == Player.m_localPlayer)
-            {
-                LocalPlayerVisibility.Refresh();
             }
         }
     }

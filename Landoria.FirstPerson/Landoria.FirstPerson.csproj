@@ -36,7 +36,6 @@
     <Compile Include="FirstPersonPlugin.cs" />
     <Compile Include="FirstPersonPolicy.cs" />
     <Compile Include="FirstPersonViewController.cs" />
-    <Compile Include="LocalPlayerVisibility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
