@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.18
+
+- Update FirstPerson to 1.0.1.
+
 ## 1.0.17
 
 - Update Socialize to 1.0.10.
