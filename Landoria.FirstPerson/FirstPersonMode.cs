@@ -32,6 +32,7 @@ namespace Landoria.FirstPerson
                 Active = false;
             }
             Apply(GameCamera.instance);
+            ApplyConfiguredFieldOfView(GameCamera.instance);
         }
 
         internal static void SetActive(bool active)
@@ -45,6 +46,12 @@ namespace Landoria.FirstPerson
             {
                 camera.m_fov = fieldOfView;
             }
+        }
+
+        internal static void ApplyConfiguredFieldOfView(GameCamera camera)
+        {
+            SetFieldOfView(camera, FirstPersonPolicy.EffectiveFieldOfView(
+                FirstPersonPreference.FieldOfView, Active));
         }
 
         internal static void ResetSession()

@@ -27,6 +27,7 @@ namespace Landoria.FirstPerson
                 FirstPersonMode.Enabled, player, player && player.IsDead(),
                 GameCamera.InFreeFly(), ___m_distance);
             FirstPersonMode.SetActive(shouldApply);
+            FirstPersonMode.ApplyConfiguredFieldOfView(__instance);
             FirstPersonVisibilityController.SetHidden(player, shouldApply);
             if (shouldApply)
             {
@@ -113,8 +114,8 @@ namespace Landoria.FirstPerson
             }
 
             float fieldOfView = FirstPersonPreference.DefaultFieldOfView;
-            FirstPersonMode.SetFieldOfView(GameCamera.instance, fieldOfView);
             FirstPersonPreference.SetFieldOfView(fieldOfView);
+            FirstPersonMode.ApplyConfiguredFieldOfView(GameCamera.instance);
             return false;
         }
 
@@ -125,8 +126,8 @@ namespace Landoria.FirstPerson
             if (FirstPersonPolicy.ShouldPersistFieldOfView(
                 __instance.Command, args.Length, parsed, fieldOfView))
             {
-                FirstPersonMode.SetFieldOfView(GameCamera.instance, fieldOfView);
                 FirstPersonPreference.SetFieldOfView(fieldOfView);
+                FirstPersonMode.ApplyConfiguredFieldOfView(GameCamera.instance);
             }
         }
     }
@@ -139,8 +140,7 @@ namespace Landoria.FirstPerson
             if (__instance == Player.m_localPlayer)
             {
                 FirstPersonMode.SetEnabled(FirstPersonPreference.Enabled);
-                FirstPersonMode.SetFieldOfView(
-                    GameCamera.instance, FirstPersonPreference.FieldOfView);
+                FirstPersonMode.ApplyConfiguredFieldOfView(GameCamera.instance);
             }
         }
     }

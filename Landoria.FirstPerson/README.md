@@ -16,7 +16,7 @@ first-person camera at the closest mouse-wheel zoom level.
 - Hides the local player's body while keeping items held in either hand visible.
 - Stabilizes helmet lights against movement and animation flicker in first person.
 - Restores the complete character when returning to third person or free fly.
-- Provides one persistent FOV setting for first person, third person, and free fly.
+- Saves one FOV setting and adds 15 degrees silently while first person is active.
 - Does not hide the character from any other player.
 - Requires no server installation or configuration.
 
@@ -33,7 +33,8 @@ first-person camera at the closest mouse-wheel zoom level.
 
 First person is enabled by default. The toggle and FOV are saved locally in the
 mod's BepInEx configuration and apply to every character on that installation.
-The FOV is capped at 90.
+The configured FOV is capped at 85. First person adds 15 degrees without
+changing the saved value, for an effective maximum of 100.
 
 ## Camera behavior
 
