@@ -15,6 +15,7 @@ namespace Landoria.FirstPerson
         private void Awake()
         {
             Log = InitializePlugin(PluginGuid);
+            FirstPersonPreference.Initialize(Config);
             FirstPersonCommand.Register();
             Log.LogInfo($"{PluginName} {PluginVersion} is loaded.");
         }

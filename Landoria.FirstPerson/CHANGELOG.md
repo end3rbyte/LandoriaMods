@@ -3,7 +3,7 @@
 ## 1.0.1
 
 - Fix the camera above the player's head and turn the body with horizontal camera movement.
-- Keep the vanilla `fov` command active in first-person and third-person gameplay.
+- Keep the vanilla `fov` command active in first-person and third-person gameplay, and save the FOV and first-person toggle in the local mod configuration.
 
 ## 1.0.0
 

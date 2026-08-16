@@ -22,9 +22,9 @@ Adds a fixed camera above the local player's head at the closest mouse-wheel zoo
 
 Use the mouse wheel to zoom all the way in. Scroll away from the character to return to third person.
 
-First person is disabled by default. Run `firstperson` to toggle the feature. Disabling it immediately restores vanilla camera behavior. The choice is saved separately with each character.
+First person is disabled by default. Run `firstperson` to toggle the feature. Disabling it immediately restores vanilla camera behavior. The choice is saved locally in the mod's BepInEx configuration and applies to every character on that installation.
 
-Run `fov <degrees>` to change the field of view shared by first person, third person, and free fly for the current game session. Run `fov` without a value to report the current field of view.
+Run `fov <degrees>` to change the field of view shared by first person, third person, and free fly. Run `fov` without a value to report the current field of view. The selected value is saved in the same local configuration.
 
 ## Installation
 
