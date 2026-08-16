@@ -29,6 +29,15 @@ public sealed class FirstPersonPolicyTests
             command, argumentCount, value));
     }
 
+    [Theory]
+    [InlineData(90f, 90f)]
+    [InlineData(100f, 100f)]
+    [InlineData(120f, 100f)]
+    public void CapsFieldOfViewAtOneHundred(float value, float expected)
+    {
+        Assert.Equal(expected, FirstPersonPolicy.ClampFieldOfView(value));
+    }
+
     [Fact]
     public void HidesLivingLocalPlayerAtMinimumDistance()
     {
