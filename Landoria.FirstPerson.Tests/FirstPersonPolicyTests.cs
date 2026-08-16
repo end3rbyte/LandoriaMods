@@ -5,11 +5,11 @@ namespace Landoria.FirstPerson.Tests;
 public sealed class FirstPersonPolicyTests
 {
     [Theory]
-    [InlineData("fov", 2, true, 90f, true)]
-    [InlineData("fov", 2, true, 91f, false)]
+    [InlineData("fov", 2, true, 85f, true)]
+    [InlineData("fov", 2, true, 86f, false)]
     [InlineData("fov", 1, false, 0f, false)]
     [InlineData("fov", 2, true, 5f, false)]
-    [InlineData("firstperson", 2, true, 90f, false)]
+    [InlineData("firstperson", 2, true, 85f, false)]
     public void IdentifiesValidFieldOfViewChanges(
         string command, int argumentCount, bool parsed, float fieldOfView, bool expected)
     {
@@ -18,10 +18,10 @@ public sealed class FirstPersonPolicyTests
     }
 
     [Theory]
-    [InlineData("fov", 2, true, 90f, false)]
-    [InlineData("fov", 2, true, 91f, true)]
+    [InlineData("fov", 2, true, 85f, false)]
+    [InlineData("fov", 2, true, 86f, true)]
     [InlineData("fov", 1, false, 0f, false)]
-    [InlineData("firstperson", 2, true, 91f, false)]
+    [InlineData("firstperson", 2, true, 86f, false)]
     public void IdentifiesFieldOfViewValuesAboveMaximum(
         string command, int argumentCount, bool parsed, float fieldOfView, bool expected)
     {
@@ -43,12 +43,23 @@ public sealed class FirstPersonPolicyTests
     }
 
     [Theory]
-    [InlineData(90f, 90f)]
-    [InlineData(100f, 90f)]
-    [InlineData(120f, 90f)]
-    public void CapsFieldOfViewAtNinety(float value, float expected)
+    [InlineData(85f, 85f)]
+    [InlineData(90f, 85f)]
+    [InlineData(120f, 85f)]
+    public void CapsConfiguredFieldOfViewAtEightyFive(float value, float expected)
     {
         Assert.Equal(expected, FirstPersonPolicy.ClampFieldOfView(value));
+    }
+
+    [Theory]
+    [InlineData(65f, false, 65f)]
+    [InlineData(65f, true, 80f)]
+    [InlineData(85f, true, 100f)]
+    public void AddsFifteenDegreesOnlyInFirstPerson(
+        float configured, bool firstPersonActive, float expected)
+    {
+        Assert.Equal(expected, FirstPersonPolicy.EffectiveFieldOfView(
+            configured, firstPersonActive));
     }
 
     [Fact]

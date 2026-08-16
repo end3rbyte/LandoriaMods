@@ -3,7 +3,8 @@
 ## 1.0.2
 
 - Keep items held in either hand visible while hiding the local player's body in first person.
-- Reject FOV values above 90 without changing the current or saved FOV.
+- Reject configured FOV values above 85 without changing the current or saved FOV.
+- Add 15 degrees to the effective FOV only while first person is active, up to 100.
 
 ## 1.0.1
 
