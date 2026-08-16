@@ -49,8 +49,8 @@ Adds temporary player groups for missions and expeditions, private messaging, ma
 
 | Dedicated-server switch | Default |
 |---|---:|
-| `--socialize-restrict-public-positions true\|false` | `true` |
-| `--socialize-restrict-public-pings true\|false` | `true` |
+| `--socialize-restrict-public-positions true or false` | `true` |
+| `--socialize-restrict-public-pings true or false` | `true` |
 | `--socialize-shout-distance <metres>` | `30` |
 | `--socialize-say-distance <metres>` | `15` |
 

@@ -27,8 +27,8 @@ Structure Protection reads these command-line switches only on a dedicated serve
 
 | Switch | Default | Behavior |
 |---|---:|---|
-| `--structure-protection-creature-targeting true\|false` | `true` | Prevents deliberate creature targeting while a piece creator is offline. |
-| `--structure-protection-ward-player-damage true\|false` | `true` | Blocks player weapon damage in an unattended active ward. |
+| `--structure-protection-creature-targeting true or false` | `true` | Prevents deliberate creature targeting while a piece creator is offline. |
+| `--structure-protection-ward-player-damage true or false` | `true` | Blocks player weapon damage in an unattended active ward. |
 
 The server sends only the creature-targeting setting to clients after they spawn. Settings remain unchanged until the dedicated server restarts.
 
