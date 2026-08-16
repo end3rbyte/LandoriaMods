@@ -1,6 +1,6 @@
 {
   "name": "StructureProtection",
-  "version_number": "1.0.0",
+  "version_number": "1.0.1",
   "website_url": "https://valheim.landoria-gaming.com/",
   "description": "Protects offline structures from deliberate creature targeting and player attacks inside active wards when no authorized player is online.",
   "dependencies": [
