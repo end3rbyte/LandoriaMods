@@ -1,41 +1,34 @@
 # First Person
 
-Adds a fixed camera above the local player's head at the closest mouse-wheel zoom level.
+See Valheim through your character's eyes with a stable first-person camera that
+follows your full look direction.
 
-## Valheim compatibility
+Zoom all the way in to enter first person, then scroll back to return to third
+person. Your body and equipped items are hidden only from your own first-person
+view, keeping combat and exploration unobstructed without changing how other
+players see you.
 
-| Valheim channel | Version | Compatibility |
-|---|---:|---|
-| Current release | `0.221.12` | Compatible |
-| Public Test | `0.221.13` | Compatible |
+## Highlights
 
-## Features
+- Enabled by default and instantly toggleable with `firstperson`.
+- Camera positioned near eye level, including when looking up or down.
+- One persistent FOV setting for first person, third person, and free fly.
+- Client-side only: no server installation or configuration required.
 
-- Fixes the first-person camera above the local player's head.
-- Turns the complete player body with horizontal camera movement.
-- Keeps vertical camera movement independent from body rotation.
-- Hides the local player body in first person.
-- Restores the character when zooming out or entering free-fly mode.
-- Keeps Valheim's `fov <degrees>` setting active in first-person and third-person gameplay.
-- Requires no server installation or configuration.
+## Commands
 
-Use the mouse wheel to zoom all the way in. Scroll away from the character to return to third person.
-
-First person is enabled by default. Run `firstperson` to toggle the feature. Disabling it immediately restores vanilla camera behavior. The choice is saved locally in the mod's BepInEx configuration and applies to every character on that installation.
-
-In first person, the camera stays 10 cm below and 10 cm ahead of the eye point, near chin level, and follows the full look direction, including when looking up or down. The character's head and attached equipment follow the same direction without the vanilla look clamp. The local player is hidden in first person, including equipped items.
-
-Run `fov <degrees>` to change the field of view shared by first person, third person, and free fly, up to a maximum of 100. Run `fov reset` to restore the default value of 65, or `fov` without a value to report the current field of view. The selected value is saved in the same local configuration.
-
-## Installation
-
-| Client required | Server required |
+| Command | Action |
 |---|---|
-| Yes | No |
+| `firstperson` | Enable or disable first person |
+| `fov <degrees>` | Set the FOV, up to 100 |
+| `fov` | Show the current FOV |
+| `fov reset` | Restore the default FOV of 65 |
 
-Install First Person only on clients that want to use it.
+Your first-person toggle and FOV are saved locally.
 
-Read the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.FirstPerson/README.md) on GitHub.
+Compatible with Valheim `0.221.12` and Public Test `0.221.13`.
+
+Read the [full documentation](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.FirstPerson/README.md).
 
 ## Contact
 

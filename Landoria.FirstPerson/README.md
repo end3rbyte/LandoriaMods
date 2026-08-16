@@ -1,6 +1,7 @@
 # First Person
 
-Adds a fixed camera above the local player's head at the closest mouse-wheel zoom level.
+Experience Valheim from your character's point of view with a stable, configurable
+first-person camera at the closest mouse-wheel zoom level.
 
 ## Valheim compatibility
 
@@ -11,22 +12,35 @@ Adds a fixed camera above the local player's head at the closest mouse-wheel zoo
 
 ## Features
 
-- Fixes the first-person camera above the local player's head.
-- Turns the complete player body with horizontal camera movement.
-- Keeps vertical camera movement independent from body rotation.
-- Hides the local player's body and equipped items in first person.
-- Restores the complete local character when zooming out or entering free-fly mode.
-- Keeps Valheim's `fov <degrees>` setting active in first-person and third-person gameplay.
+- Places the camera near eye level and follows the complete look direction.
+- Hides the local player's body and equipped items to keep the view unobstructed.
+- Restores the complete character when returning to third person or free fly.
+- Provides one persistent FOV setting for first person, third person, and free fly.
 - Does not hide the character from any other player.
 - Requires no server installation or configuration.
 
-Use the mouse wheel to zoom all the way in. Scroll away from the character to return to third person.
+## Controls
 
-First person is enabled by default. Run `firstperson` to toggle the feature. Disabling it immediately restores vanilla camera behavior. The choice is saved locally in the mod's BepInEx configuration and applies to every character on that installation.
+| Action | Control |
+|---|---|
+| Enter first person | Zoom all the way in with the mouse wheel |
+| Return to third person | Scroll away from the character |
+| Enable or disable first person | `firstperson` |
+| Set the shared FOV | `fov <degrees>` |
+| Show the current FOV | `fov` |
+| Restore the default FOV of 65 | `fov reset` |
 
-In first person, the camera stays 10 cm below and 10 cm ahead of the eye point, near chin level, and follows the full look direction, including when looking up or down. The character's head and attached equipment follow the same direction without the vanilla look clamp. The local player is hidden in first person, including equipped items.
+First person is enabled by default. The toggle and FOV are saved locally in the
+mod's BepInEx configuration and apply to every character on that installation.
+The FOV is capped at 100.
 
-Run `fov <degrees>` to change the field of view shared by first person, third person, and free fly, up to a maximum of 100. Run `fov reset` to restore the default value of 65, or `fov` without a value to report the current field of view. The selected value is saved in the same local configuration.
+## Camera behavior
+
+The camera stays 10 cm below and 10 cm ahead of the eye point, near chin level.
+It follows the full look direction, including when looking up or down. The
+character's head and attached equipment follow the same direction without the
+vanilla look clamp. The local player and equipped items are hidden only from the
+local first-person view.
 
 ## Installation
 
