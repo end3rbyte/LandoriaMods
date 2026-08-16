@@ -3,6 +3,10 @@
 Lets players build freely in authorized Hammer worlds with flight, unlimited stamina,
 fall protection, lasting equipment, and material recovery—without granting administrator access.
 
+## Video demo
+
+[Watch HammerFreedom's Fly mode in action on YouTube](https://www.youtube.com/watch?v=PnJOJYb4LwA).
+
 ## Valheim compatibility
 
 | Valheim channel | Version | Compatibility |

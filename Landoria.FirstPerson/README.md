@@ -3,6 +3,10 @@
 Experience Valheim from your character's point of view with a stable, configurable
 first-person camera at the closest mouse-wheel zoom level.
 
+## Video demo
+
+[Watch First Person in action on YouTube](https://www.youtube.com/watch?v=Tzb9Hi6qYv4).
+
 ## Valheim compatibility
 
 | Valheim channel | Version | Compatibility |
