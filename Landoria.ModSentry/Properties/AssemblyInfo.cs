@@ -8,5 +8,5 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © Landoria Gaming 2026")]
 [assembly: ComVisible(false)]
 [assembly: Guid("dc95b791-79c8-4c9c-9d44-e33e87ad806e")]
-[assembly: AssemblyVersion("1.0.7.*")]
-[assembly: AssemblyFileVersion("1.0.7")]
+[assembly: AssemblyVersion("1.0.8.*")]
+[assembly: AssemblyFileVersion("1.0.8")]
