@@ -30,11 +30,11 @@ Each mod directory includes a technical `README.md`, a player-oriented
 plugin base, Harmony registration, and logging. It is an internal component and
 is never installed as a standalone mod.
 
+## Community server
+
+All Landoria mods can be tested on the [Landoria Valheim community server](https://valheim.landoria-gaming.com/).
+
 ## Contact
 
 Report bugs through [GitHub Issues](https://github.com/landoria-gaming/LandoriaMods/issues).
 For questions, feedback, and other discussions, use [GitHub Discussions](https://github.com/landoria-gaming/LandoriaMods/discussions).
-
-## Community server
-
-All Landoria mods can be tested on the [Landoria Valheim community server](https://valheim.landoria-gaming.com/).
