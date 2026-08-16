@@ -21,7 +21,7 @@ players see you.
 | Command | Action |
 |---|---|
 | `firstperson` | Enable or disable first person |
-| `fov <degrees>` | Set the FOV, up to 100 |
+| `fov <degrees>` | Set the FOV, up to 90 |
 | `fov` | Show the current FOV |
 | `fov reset` | Restore the default FOV of 65 |
 

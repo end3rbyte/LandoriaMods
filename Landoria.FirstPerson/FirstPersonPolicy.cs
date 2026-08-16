@@ -3,7 +3,7 @@ namespace Landoria.FirstPerson
     internal static class FirstPersonPolicy
     {
         internal const float DistanceThreshold = 0.001f;
-        internal const float MaximumFieldOfView = 100f;
+        internal const float MaximumFieldOfView = 90f;
 
         internal static bool ShouldPersistFieldOfView(
             string command, int argumentCount, bool parsed, float fieldOfView)

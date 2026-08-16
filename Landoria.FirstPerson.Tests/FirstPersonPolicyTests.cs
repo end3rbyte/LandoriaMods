@@ -31,9 +31,9 @@ public sealed class FirstPersonPolicyTests
 
     [Theory]
     [InlineData(90f, 90f)]
-    [InlineData(100f, 100f)]
-    [InlineData(120f, 100f)]
-    public void CapsFieldOfViewAtOneHundred(float value, float expected)
+    [InlineData(100f, 90f)]
+    [InlineData(120f, 90f)]
+    public void CapsFieldOfViewAtNinety(float value, float expected)
     {
         Assert.Equal(expected, FirstPersonPolicy.ClampFieldOfView(value));
     }
