@@ -2,6 +2,10 @@
 
 Keeps the gear you rely on after death while moving resources, treasure, and other inventory items to the tombstone.
 
+## Video demo
+
+[Watch GentleDeath in action on YouTube](https://youtu.be/OW3YsvMt_dk).
+
 ## Valheim compatibility
 
 | Valheim channel | Version | Compatibility |
