@@ -11,7 +11,7 @@ namespace Landoria.FirstPerson
         {
             bool enabled = !FirstPersonMode.Enabled;
             FirstPersonMode.SetEnabled(enabled);
-            FirstPersonPreference.Save(Player.m_localPlayer, enabled);
+            FirstPersonPreference.SetEnabled(enabled);
             return true;
         }
     }

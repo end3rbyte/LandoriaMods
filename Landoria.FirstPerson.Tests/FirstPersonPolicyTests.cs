@@ -16,16 +16,6 @@ public sealed class FirstPersonPolicyTests
             command, argumentCount, parsed, fieldOfView));
     }
 
-    [Theory]
-    [InlineData("True", true)]
-    [InlineData("true", true)]
-    [InlineData("False", false)]
-    [InlineData(null, false)]
-    public void ParsesSavedPreference(string value, bool expected)
-    {
-        Assert.Equal(expected, FirstPersonPolicy.IsPreferenceEnabled(value));
-    }
-
     [Fact]
     public void HidesLivingLocalPlayerAtMinimumDistance()
     {

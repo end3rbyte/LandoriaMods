@@ -17,11 +17,5 @@ namespace Landoria.FirstPerson
             return modeEnabled && hasLocalPlayer && !isPlayerDead && !isFreeFly &&
                    cameraDistance <= DistanceThreshold;
         }
-
-        internal static bool IsPreferenceEnabled(string value)
-        {
-            return string.Equals(
-                value, bool.TrueString, System.StringComparison.OrdinalIgnoreCase);
-        }
     }
 }

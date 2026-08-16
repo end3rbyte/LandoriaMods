@@ -53,6 +53,7 @@ namespace Landoria.FirstPerson
                 __instance.Command, args.Length, parsed, fieldOfView))
             {
                 FirstPersonMode.SetFieldOfView(GameCamera.instance, fieldOfView);
+                FirstPersonPreference.SetFieldOfView(fieldOfView);
             }
         }
     }
@@ -64,7 +65,9 @@ namespace Landoria.FirstPerson
         {
             if (__instance == Player.m_localPlayer)
             {
-                FirstPersonMode.SetEnabled(FirstPersonPreference.Load(__instance));
+                FirstPersonMode.SetEnabled(FirstPersonPreference.Enabled);
+                FirstPersonMode.SetFieldOfView(
+                    GameCamera.instance, FirstPersonPreference.FieldOfView);
             }
         }
     }
