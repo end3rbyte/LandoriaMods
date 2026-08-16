@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3
+
+- Add the HammerFreedom Fly video demo to the package documentation.
+
 ## 1.0.2
 
 - Make Hammer capabilities server-authorized, including No Build Cost material recovery.

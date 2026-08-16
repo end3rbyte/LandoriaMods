@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3
+
+- Add the First Person video demo to the package documentation.
+
 ## 1.0.2
 
 - Keep items held in either hand visible while hiding the local player's body in first person.
