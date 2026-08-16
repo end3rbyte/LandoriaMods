@@ -33,6 +33,14 @@ namespace Landoria.FirstPerson
             }
         }
 
+        internal static void SetFieldOfView(GameCamera camera, float fieldOfView)
+        {
+            if (camera)
+            {
+                camera.m_fov = fieldOfView;
+            }
+        }
+
         internal static void ResetSession()
         {
             SetEnabled(false);

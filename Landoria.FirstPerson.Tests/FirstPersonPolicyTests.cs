@@ -5,6 +5,18 @@ namespace Landoria.FirstPerson.Tests;
 public sealed class FirstPersonPolicyTests
 {
     [Theory]
+    [InlineData("fov", 2, true, 90f, true)]
+    [InlineData("fov", 1, false, 0f, false)]
+    [InlineData("fov", 2, true, 5f, false)]
+    [InlineData("firstperson", 2, true, 90f, false)]
+    public void IdentifiesValidFieldOfViewChanges(
+        string command, int argumentCount, bool parsed, float fieldOfView, bool expected)
+    {
+        Assert.Equal(expected, FirstPersonPolicy.ShouldPersistFieldOfView(
+            command, argumentCount, parsed, fieldOfView));
+    }
+
+    [Theory]
     [InlineData("True", true)]
     [InlineData("true", true)]
     [InlineData("False", false)]

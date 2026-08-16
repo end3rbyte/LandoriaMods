@@ -42,6 +42,21 @@ namespace Landoria.FirstPerson
         }
     }
 
+    [HarmonyPatch(typeof(Terminal.ConsoleCommand), "RunAction")]
+    internal static class FirstPersonFieldOfViewCommandPatch
+    {
+        private static void Postfix(
+            Terminal.ConsoleCommand __instance, Terminal.ConsoleEventArgs args)
+        {
+            bool parsed = args.TryParameterFloat(1, out float fieldOfView);
+            if (FirstPersonPolicy.ShouldPersistFieldOfView(
+                __instance.Command, args.Length, parsed, fieldOfView))
+            {
+                FirstPersonMode.SetFieldOfView(GameCamera.instance, fieldOfView);
+            }
+        }
+    }
+
     [HarmonyPatch(typeof(Player), "OnSpawned")]
     internal static class FirstPersonPlayerSpawnPatch
     {

@@ -16,11 +16,14 @@ Adds a fixed camera above the local player's head at the closest mouse-wheel zoo
 - Keeps vertical camera movement independent from body rotation.
 - Hides the local character and equipment only for the local player while in first person.
 - Restores the character when zooming out or entering free-fly mode.
+- Keeps Valheim's `fov <degrees>` setting active in first-person and third-person gameplay.
 - Requires no server installation or configuration.
 
 Use the mouse wheel to zoom all the way in. Scroll away from the character to return to third person.
 
 First person is disabled by default. Run `firstperson` to toggle the feature. Disabling it immediately restores vanilla camera behavior. The choice is saved separately with each character.
+
+Run `fov <degrees>` to change the field of view shared by first person, third person, and free fly for the current game session. Run `fov` without a value to report the current field of view.
 
 ## Installation
 

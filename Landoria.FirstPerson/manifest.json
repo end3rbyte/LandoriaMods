@@ -1,8 +1,8 @@
 {
   "name": "FirstPerson",
-  "version_number": "1.0.1",
+  "version_number": "1.0.2",
   "website_url": "https://valheim.landoria-gaming.com/",
-  "description": "Adds a fixed camera above the local player's head and turns the body with horizontal mouse movement.",
+  "description": "Adds first-person view and persistent FOV control for the normal gameplay camera.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333"
   ],
