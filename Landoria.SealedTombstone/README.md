@@ -2,6 +2,10 @@
 
 Protects recent tombstones from unauthorized players while allowing owner-approved access.
 
+## Video demo
+
+[Watch SealedTombstone in action on YouTube](https://youtu.be/xWD9o9Mworg).
+
 ## Valheim compatibility
 
 | Valheim channel | Version | Compatibility |

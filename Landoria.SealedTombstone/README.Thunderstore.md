@@ -2,6 +2,10 @@
 
 Keeps your recent tombstone safe from other players while letting you approve someone you trust to recover it.
 
+## Video demo
+
+[Watch SealedTombstone in action on YouTube](https://youtu.be/xWD9o9Mworg).
+
 ## Valheim compatibility
 
 | Valheim channel | Version | Compatibility |
