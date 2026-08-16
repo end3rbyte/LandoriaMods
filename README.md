@@ -4,6 +4,16 @@ This repository contains the public source code for Landoria's Valheim mods.
 Each mod directory includes a technical `README.md`, a player-oriented
 `README.Thunderstore.md`, and its changelog.
 
+## Server-driven configuration
+
+Multiplayer rules are controlled by the server, so players never need to copy or
+maintain a separate server configuration on their clients. When a client needs a
+setting to behave consistently, the mod requests the effective value from the
+server after connecting. For example, HammerFreedom asks the server which creative
+capabilities are enabled before allowing Fly, while AfkDetector applies the
+server's inactivity timeout without any client-side setting. Preferences that
+affect only the local player, such as camera options, remain local.
+
 | Mod | Installation side | Description |
 |---|---|---|
 | [AfkDetector](Landoria.AfkDetector/) | Both | Disconnects players who remain motionless and silent, with a clear inactivity message. |
