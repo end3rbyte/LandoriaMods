@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.2
+
+- Keep items held in either hand visible while hiding the local player's body in first person.
+- Reject FOV values above 90 without changing the current or saved FOV.
+
 ## 1.0.1
 
 - Lock the camera to the player's animated head position and turn the body with horizontal camera movement.

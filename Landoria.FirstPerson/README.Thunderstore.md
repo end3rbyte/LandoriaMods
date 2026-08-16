@@ -4,9 +4,8 @@ See Valheim through your character's eyes with a stable first-person camera that
 follows your full look direction.
 
 Zoom all the way in to enter first person, then scroll back to return to third
-person. Your body and equipped items are hidden only from your own first-person
-view, keeping combat and exploration unobstructed without changing how other
-players see you.
+person. Your body is hidden only from your own first-person view, while items
+held in either hand remain visible without changing how other players see you.
 
 ## Highlights
 

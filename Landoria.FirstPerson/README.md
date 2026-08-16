@@ -13,7 +13,7 @@ first-person camera at the closest mouse-wheel zoom level.
 ## Features
 
 - Places the camera at eye level and follows the complete look direction.
-- Hides the local player's body and equipped items to keep the view unobstructed.
+- Hides the local player's body while keeping items held in either hand visible.
 - Stabilizes helmet lights against movement and animation flicker in first person.
 - Restores the complete character when returning to third person or free fly.
 - Provides one persistent FOV setting for first person, third person, and free fly.
@@ -38,8 +38,8 @@ The FOV is capped at 90.
 ## Camera behavior
 
 The camera stays exactly at the animated eye point and follows the full look
-direction, including when looking up or down. The local player and equipped
-items are hidden only from the local first-person view.
+direction, including when looking up or down. The local player's body is hidden
+only from the local first-person view, while held items remain visible.
 
 ## Installation
 
