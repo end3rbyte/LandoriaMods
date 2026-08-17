@@ -25,7 +25,6 @@ with another save or a restored backup.
 - `Failed` appears when the server does not confirm the save in time.
 - The server keeps up to 15 automatic backups per character, including the 5 most recent saves and older daily snapshots.
 - Rejected accounts are never saved and receive a clear error. New characters must be created during the current game session; character limits and starting items depend on the server.
-- Connections carrying the generic temporary-session marker are neither validated nor saved by CharacterVault.
 
 ## Compatibility
 
