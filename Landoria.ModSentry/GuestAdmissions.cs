@@ -11,6 +11,12 @@ namespace Landoria.ModSentry
 
         internal static void Add(ZRpc rpc) => Registry.Add(rpc);
         public static bool IsGuest(ZRpc rpc) => rpc != null && Registry.Contains(rpc);
+
+        public static bool IsGuest(string hostName)
+        {
+            return ZNet.instance?.GetPeers().Any(peer => peer?.m_rpc != null &&
+                peer.m_socket?.GetHostName() == hostName && IsGuest(peer.m_rpc)) == true;
+        }
         internal static void Remove(ZRpc rpc) => Registry.Remove(rpc);
         internal static void Clear() => Registry.Clear();
 

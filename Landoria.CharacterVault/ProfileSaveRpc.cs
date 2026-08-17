@@ -1,4 +1,5 @@
 using HarmonyLib;
+using Landoria.ModSentry;
 using Splatform;
 using TMPro;
 using UnityEngine;
@@ -84,6 +85,13 @@ namespace Landoria.CharacterVault
             Platform ___m_steamPlatform,
             bool __result)
         {
+            if (GuestAdmissions.IsGuest(hostName))
+            {
+                CharacterVaultPlugin.Log.LogDebug(
+                    "Ignoring permitted-list validation for a ModSentry temporary guest.");
+                return;
+            }
+
             CharacterVaultPlugin.Transfers?.RecordPermission(hostName, __result);
             if (__result || IsListed(___m_bannedList, hostName, ___m_steamPlatform) ||
                 ___m_bannedList.Contains(playerName) || ___m_permittedList.Count() == 0 ||

@@ -47,6 +47,7 @@ the receipt acknowledgement, `Failed` replaces the status for three seconds.
 - Supports local and Steam Cloud profiles on stable and public-test Valheim.
 - Grants configured starting items once, during initial enrollment.
 - Skips validation, vault session creation, profile import, and every save for temporary guests explicitly admitted by ModSentry.
+- Leaves permitted-list bypass decisions for temporary guests to ModSentry while preserving Valheim bans.
 
 An acknowledgement for an ordinary or voluntary-disconnect save means the complete
 profile was received and validated. The durable write follows asynchronously; a

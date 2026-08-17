@@ -1,4 +1,5 @@
 using HarmonyLib;
+using Splatform;
 using TMPro;
 using UnityEngine;
 
@@ -10,6 +11,38 @@ namespace Landoria.ModSentry
         private static void Postfix(ZNet __instance, ZNetPeer peer)
         {
             ModSentryHandshake.Register(__instance, peer);
+        }
+    }
+
+    [HarmonyPatch(typeof(ZNet), "IsAllowed")]
+    [HarmonyBefore("Landoria.CharacterVault")]
+    internal static class AllowGuestPastPermittedListPatch
+    {
+        private static void Postfix(string hostName, string playerName,
+            SyncedList ___m_bannedList, Platform ___m_steamPlatform, ref bool __result)
+        {
+            if (!GuestAdmissions.IsGuest(hostName))
+            {
+                return;
+            }
+
+            bool banned = IsListed(___m_bannedList, hostName, ___m_steamPlatform) ||
+                ___m_bannedList.Contains(playerName);
+            __result = GuestPermissionPolicy.Resolve(__result, true, banned);
+            ModSentryPlugin.Log.LogInfo(banned
+                ? "Preserved the banned-list rejection for a temporary guest."
+                : "Allowed a temporary guest past the server permitted list.");
+        }
+
+        private static bool IsListed(SyncedList list, string value, Platform platform)
+        {
+            if (!PlatformUserID.TryParse(value, out PlatformUserID platformId))
+            {
+                platformId = new PlatformUserID(platform, value);
+            }
+
+            return list.Contains(platformId.ToString()) ||
+                platformId.m_platform == platform && list.Contains(platformId.m_userID.ToString());
         }
     }
 

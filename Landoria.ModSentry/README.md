@@ -23,6 +23,8 @@ This option is disabled by default. When enabled, the player receives the config
 registration message in chat and a center-screen countdown, then is disconnected
 30 seconds after their character enters the world. Clients that submit an invalid
 inventory remain rejected before admission.
+Temporary guests bypass the server permitted list during this grace period, while
+the banned list remains fully enforced.
 
 | BepInEx setting | Default | Purpose |
 |---|---|---|
