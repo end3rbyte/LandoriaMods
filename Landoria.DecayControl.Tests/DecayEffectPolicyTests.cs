@@ -23,9 +23,11 @@ public sealed class DecayEffectPolicyTests
     }
 
     [Fact]
-    public void DisabledModeStopsRainWear()
+    public void DisabledModeLeavesRainWearToTheNativeFlag()
     {
-        Assert.False(ShouldWear(DecayControlMode.Disabled, creatorOnline: true));
+        Assert.True(ShouldWear(DecayControlMode.Disabled, creatorOnline: true));
+        Assert.True(DecayEffectPolicy.ShouldDisableNativeRoofWear(
+            true, DecayControlMode.Disabled));
     }
 
     [Fact]
@@ -61,9 +63,11 @@ public sealed class DecayEffectPolicyTests
     }
 
     [Fact]
-    public void DisabledModeStopsFuelConsumption()
+    public void DisabledModeUsesNativeInfiniteFuel()
     {
-        Assert.True(ShouldPauseFuel(DecayControlMode.Disabled, true));
+        Assert.False(ShouldPauseFuel(DecayControlMode.Disabled, true));
+        Assert.True(DecayEffectPolicy.ShouldUseNativeInfiniteFuel(
+            true, DecayControlMode.Disabled));
     }
 
     [Fact]
@@ -71,6 +75,15 @@ public sealed class DecayEffectPolicyTests
     {
         Assert.False(DecayEffectPolicy.ShouldPauseFuel(
             false, false, DecayControlMode.Disabled, 0f));
+    }
+
+    [Fact]
+    public void NativeDisabledMechanismsOnlyApplyToPlayerBuiltPieces()
+    {
+        Assert.False(DecayEffectPolicy.ShouldUseNativeInfiniteFuel(
+            false, DecayControlMode.Disabled));
+        Assert.False(DecayEffectPolicy.ShouldDisableNativeRoofWear(
+            false, DecayControlMode.Disabled));
     }
 
     [Fact]
