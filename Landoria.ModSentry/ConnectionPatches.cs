@@ -44,6 +44,7 @@ namespace Landoria.ModSentry
             {
                 HandshakeState.Remove(peer.m_rpc);
                 PendingDisconnects.Remove(peer.m_rpc);
+                GuestAdmissions.Remove(peer.m_rpc);
             }
         }
     }

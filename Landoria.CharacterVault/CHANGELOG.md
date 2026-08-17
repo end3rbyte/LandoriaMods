@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.13
+
+- Allow temporary ModSentry guests to enter without character validation or persistence.
+
 ## 1.0.12
 
 - Move character admission settings under dedicated-server authority.
