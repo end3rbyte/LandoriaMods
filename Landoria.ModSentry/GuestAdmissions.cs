@@ -1,136 +1,52 @@
 using System.Collections.Generic;
 using System.Linq;
 using Landoria.SharedLib;
-using UnityEngine;
 
 namespace Landoria.ModSentry
 {
     public static class GuestAdmissions
     {
-        private const int DurationSeconds = 120;
-        private static readonly GuestAdmissionRegistry<ZRpc> Registry =
-            new GuestAdmissionRegistry<ZRpc>(() => Time.unscaledTime, DurationSeconds);
-        private static readonly Dictionary<ZRpc, Player> SpawnedPlayers =
-            new Dictionary<ZRpc, Player>();
+        private static readonly HashSet<ZRpc> Guests = new HashSet<ZRpc>();
 
-        internal static void Add(ZRpc rpc)
+        internal static bool TryAdd(ZRpc rpc, out string failure)
         {
+            failure = null;
             TemporaryGuestMarker.Mark(rpc);
-            Registry.Add(rpc);
+            Guests.Add(rpc);
+            if (UnverifiedGuestControllerRegistry.NotifyAdmitted(rpc, out failure))
+            {
+                return true;
+            }
+            Guests.Remove(rpc);
+            TemporaryGuestMarker.Unmark(rpc);
+            return false;
         }
-        public static bool IsGuest(ZRpc rpc) => rpc != null && Registry.Contains(rpc);
+
+        public static bool IsGuest(ZRpc rpc) => rpc != null && Guests.Contains(rpc);
 
         public static bool IsGuest(string hostName)
         {
             return ZNet.instance?.GetPeers().Any(peer => peer?.m_rpc != null &&
                 peer.m_socket?.GetHostName() == hostName && IsGuest(peer.m_rpc)) == true;
         }
+
         internal static void Remove(ZRpc rpc)
         {
-            Registry.Remove(rpc);
-            SpawnedPlayers.Remove(rpc);
+            if (!Guests.Remove(rpc))
+            {
+                return;
+            }
+            UnverifiedGuestControllerRegistry.NotifyDisconnected(rpc);
+            TemporaryGuestMarker.Unmark(rpc);
         }
 
         internal static void Clear()
         {
-            Registry.Clear();
-            SpawnedPlayers.Clear();
-        }
-
-        internal static void Tick()
-        {
-            TeleportNewPlayerInstances();
-            Registry.Tick(IsPlayerReady, Notify, Disconnect);
-        }
-
-        private static void TeleportNewPlayerInstances()
-        {
-            foreach (ZNetPeer peer in ZNet.instance?.GetPeers() ?? Enumerable.Empty<ZNetPeer>())
+            foreach (ZRpc rpc in Guests.ToArray())
             {
-                Player player = FindPlayer(peer);
-                if (!IsGuest(peer?.m_rpc) || player == null ||
-                    SpawnedPlayers.TryGetValue(peer.m_rpc, out Player previous) &&
-                    ReferenceEquals(previous, player))
-                {
-                    continue;
-                }
-
-                SpawnedPlayers[peer.m_rpc] = player;
-                TeleportToPrison(peer);
+                Remove(rpc);
             }
-        }
-
-        private static void Disconnect(ZRpc rpc)
-        {
-            ZNetPeer peer = FindPeer(rpc);
-            ModSentryPlugin.Log.LogInfo(
-                $"Registration grace period expired for temporary guest " +
-                $"{ModSentryHandshake.Describe(peer)}; disconnecting without persistence.");
-            ModSentryHandshake.Disconnect(rpc);
-        }
-
-        private static bool IsPlayerReady(ZRpc rpc) => FindPlayer(rpc) != null;
-
-        private static void Notify(ZRpc rpc, int seconds, bool first)
-        {
-            ZNetPeer peer = FindPeer(rpc);
-            Player player = FindPlayer(peer);
-            if (player == null)
-            {
-                return;
-            }
-
-            string message = ModSentryPlugin.GuestMessage.Value;
-            if (first)
-            {
-                ModSentryPlugin.Log.LogInfo(
-                    $"Started the {DurationSeconds}-second registration grace period for " +
-                    $"temporary guest {ModSentryHandshake.Describe(peer)}.");
-            }
-            player.Message(MessageHud.MessageType.Center,
-                GuestAdmissionMessages.Countdown(message, seconds));
-            if (first && ZRoutedRpc.instance != null)
-            {
-                SendChat(peer, player, message);
-                ModSentryPlugin.Log.LogDebug(
-                    "Sent the registration message through chat and the center-screen countdown.");
-            }
-        }
-
-        private static void TeleportToPrison(ZNetPeer peer)
-        {
-            if (peer == null || ZRoutedRpc.instance == null ||
-                !ModSentryPlugin.TryGetGuestPrison(out Vector3 position))
-            {
-                return;
-            }
-
-            ZRoutedRpc.instance.InvokeRoutedRPC(peer.m_uid, "RPC_TeleportPlayer",
-                position, Quaternion.identity, true);
-            ModSentryPlugin.Log.LogInfo(
-                $"Set the effective spawn or respawn of temporary guest " +
-                $"{ModSentryHandshake.Describe(peer)} to the configured prison position.");
-        }
-
-        private static void SendChat(ZNetPeer peer, Player player, string message)
-        {
-            UserInfo sender = new UserInfo { Name = GuestAdmissionMessages.Sender };
-            ZRoutedRpc.instance.InvokeRoutedRPC(peer.m_uid, "ChatMessage",
-                player.GetCenterPoint(), (int)Talker.Type.Shout, sender, message);
-        }
-
-        private static Player FindPlayer(ZRpc rpc) => FindPlayer(FindPeer(rpc));
-
-        private static Player FindPlayer(ZNetPeer peer)
-        {
-            return peer == null || peer.m_characterID == ZDOID.None
-                ? null : Player.GetPlayer(peer.m_characterID.UserID);
-        }
-
-        private static ZNetPeer FindPeer(ZRpc rpc)
-        {
-            return ZNet.instance?.GetPeers()
-                .FirstOrDefault(peer => ReferenceEquals(peer.m_rpc, rpc));
+            Guests.Clear();
         }
     }
 }

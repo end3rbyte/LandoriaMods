@@ -29,15 +29,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.ModSentry", "Lando
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.Moderator", "Landoria.Moderator\Landoria.Moderator.csproj", "{CA2ABD79-CB95-41E2-999B-52AE9310670C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.NoServerPassword", "Landoria.NoServerPassword\Landoria.NoServerPassword.csproj", "{C424AE43-8596-4E8C-9517-0B4BF2927364}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.QuickLaunch", "Landoria.QuickLaunch\Landoria.QuickLaunch.csproj", "{046ED613-45E5-48D3-9B7B-72703870DA05}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.SealedTombstone.Tests", "Landoria.SealedTombstone.Tests\Landoria.SealedTombstone.Tests.csproj", "{15B06049-0889-429E-8273-9DC9096E203C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.SealedTombstone", "Landoria.SealedTombstone\Landoria.SealedTombstone.csproj", "{37181DCE-EEA5-4CC8-8DF3-32B9AB883DE8}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.ServerGateway", "Landoria.ServerGateway\Landoria.ServerGateway.csproj", "{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Landoria.Socialize.Tests", "Landoria.Socialize.Tests\Landoria.Socialize.Tests.csproj", "{1F2B32A4-4FB0-4FF9-9E3B-825F0188B1FD}"
 EndProject
@@ -223,18 +219,6 @@ Global
 		{CA2ABD79-CB95-41E2-999B-52AE9310670C}.Release|x64.Build.0 = Release|Any CPU
 		{CA2ABD79-CB95-41E2-999B-52AE9310670C}.Release|x86.ActiveCfg = Release|Any CPU
 		{CA2ABD79-CB95-41E2-999B-52AE9310670C}.Release|x86.Build.0 = Release|Any CPU
-		{C424AE43-8596-4E8C-9517-0B4BF2927364}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C424AE43-8596-4E8C-9517-0B4BF2927364}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C424AE43-8596-4E8C-9517-0B4BF2927364}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{C424AE43-8596-4E8C-9517-0B4BF2927364}.Debug|x64.Build.0 = Debug|Any CPU
-		{C424AE43-8596-4E8C-9517-0B4BF2927364}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C424AE43-8596-4E8C-9517-0B4BF2927364}.Debug|x86.Build.0 = Debug|Any CPU
-		{C424AE43-8596-4E8C-9517-0B4BF2927364}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C424AE43-8596-4E8C-9517-0B4BF2927364}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C424AE43-8596-4E8C-9517-0B4BF2927364}.Release|x64.ActiveCfg = Release|Any CPU
-		{C424AE43-8596-4E8C-9517-0B4BF2927364}.Release|x64.Build.0 = Release|Any CPU
-		{C424AE43-8596-4E8C-9517-0B4BF2927364}.Release|x86.ActiveCfg = Release|Any CPU
-		{C424AE43-8596-4E8C-9517-0B4BF2927364}.Release|x86.Build.0 = Release|Any CPU
 		{046ED613-45E5-48D3-9B7B-72703870DA05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{046ED613-45E5-48D3-9B7B-72703870DA05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{046ED613-45E5-48D3-9B7B-72703870DA05}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -271,18 +255,6 @@ Global
 		{37181DCE-EEA5-4CC8-8DF3-32B9AB883DE8}.Release|x64.Build.0 = Release|Any CPU
 		{37181DCE-EEA5-4CC8-8DF3-32B9AB883DE8}.Release|x86.ActiveCfg = Release|Any CPU
 		{37181DCE-EEA5-4CC8-8DF3-32B9AB883DE8}.Release|x86.Build.0 = Release|Any CPU
-		{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}.Debug|x64.Build.0 = Debug|Any CPU
-		{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}.Debug|x86.Build.0 = Debug|Any CPU
-		{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}.Release|x64.ActiveCfg = Release|Any CPU
-		{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}.Release|x64.Build.0 = Release|Any CPU
-		{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}.Release|x86.ActiveCfg = Release|Any CPU
-		{1E1B57B7-5D29-4492-B6DB-E72C68CC6612}.Release|x86.Build.0 = Release|Any CPU
 		{1F2B32A4-4FB0-4FF9-9E3B-825F0188B1FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1F2B32A4-4FB0-4FF9-9E3B-825F0188B1FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F2B32A4-4FB0-4FF9-9E3B-825F0188B1FD}.Debug|x64.ActiveCfg = Debug|Any CPU

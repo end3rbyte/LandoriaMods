@@ -88,7 +88,7 @@ namespace Landoria.CharacterVault
             if (TemporaryGuestMarker.IsMarked(hostName))
             {
                 CharacterVaultPlugin.Log.LogDebug(
-                    "Ignoring permitted-list validation for a ModSentry temporary guest.");
+                    "Ignoring permitted-list validation for a temporary guest session.");
                 return;
             }
 

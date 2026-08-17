@@ -106,7 +106,7 @@ namespace Landoria.CharacterVault
             }
 
             CharacterVaultPlugin.Log.LogInfo(
-                "Recognized a ModSentry temporary guest; skipping character validation, " +
+                "Recognized a temporary guest session; skipping character validation, " +
                 "vault session creation, profile import, and persistence.");
             return true;
         }
