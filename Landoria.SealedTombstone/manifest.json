@@ -1,6 +1,6 @@
 {
   "name": "SealedTombstone",
-  "version_number": "1.0.6",
+  "version_number": "1.0.7",
   "website_url": "https://valheim.landoria-gaming.com/",
   "description": "Protect your tombstones and approve trusted friends through a Valheim Yes or No access request.",
   "dependencies": [

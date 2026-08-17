@@ -1,6 +1,6 @@
 {
   "name": "FreeFlyCommand",
-  "version_number": "1.0.6",
+  "version_number": "1.0.7",
   "website_url": "https://valheim.landoria-gaming.com/",
   "description": "Adds native freefly and ffsmooth camera commands within 50 metres of the player.",
   "dependencies": [
