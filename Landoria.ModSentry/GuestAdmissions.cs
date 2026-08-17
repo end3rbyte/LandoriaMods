@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Landoria.SharedLib;
 using UnityEngine;
 
 namespace Landoria.ModSentry
@@ -12,7 +13,11 @@ namespace Landoria.ModSentry
         private static readonly Dictionary<ZRpc, Player> SpawnedPlayers =
             new Dictionary<ZRpc, Player>();
 
-        internal static void Add(ZRpc rpc) => Registry.Add(rpc);
+        internal static void Add(ZRpc rpc)
+        {
+            TemporaryGuestMarker.Mark(rpc);
+            Registry.Add(rpc);
+        }
         public static bool IsGuest(ZRpc rpc) => rpc != null && Registry.Contains(rpc);
 
         public static bool IsGuest(string hostName)

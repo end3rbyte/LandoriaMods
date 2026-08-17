@@ -62,6 +62,7 @@
         <Compile Include="LandoriaPlugin.cs"/>
         <Compile Include="ModLog.cs"/>
         <Compile Include="ServerRole.cs"/>
+        <Compile Include="TemporaryGuestMarker.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
     <ItemGroup>
