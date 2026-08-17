@@ -51,7 +51,8 @@ namespace Landoria.ModSentry
             }
 
             ValidationResult rejection = HandshakeState.RejectionFor(rpc);
-            if (rejection == null && ModSentryPlugin.AllowUnverifiedGuests.Value)
+            if (rejection == null && ModSentryPlugin.AllowUnverifiedGuests.Value &&
+                ModSentryPlugin.TryGetGuestPrison(out _))
             {
                 GuestAdmissions.Add(rpc);
                 ModSentryPlugin.Log.LogWarning(
@@ -60,8 +61,7 @@ namespace Landoria.ModSentry
             }
             if (rejection == null)
             {
-                ModSentryPlugin.Log.LogWarning(
-                    "Rejecting a client without a ModSentry inventory because temporary guests are disabled.");
+                LogUnavailableGuestAdmission();
             }
             rejection = rejection ?? ValidationResult.Reject(
                 "Mod verification did not complete. Please try again.",
@@ -70,6 +70,15 @@ namespace Landoria.ModSentry
             ModSentryPlugin.Log.LogWarning(rejection.TechnicalMessage);
             PendingDisconnects.Schedule(rpc);
             return false;
+        }
+
+        private static void LogUnavailableGuestAdmission()
+        {
+            string reason = !ModSentryPlugin.AllowUnverifiedGuests.Value
+                ? "temporary guests are disabled"
+                : "the configured prison position is invalid or the Stone Temple is unavailable";
+            ModSentryPlugin.Log.LogWarning(
+                $"Rejecting a client without a ModSentry inventory because {reason}.");
         }
 
         internal static void Disconnect(ZRpc rpc)

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -5,9 +6,11 @@ namespace Landoria.ModSentry
 {
     public static class GuestAdmissions
     {
-        private const int DurationSeconds = 30;
+        private const int DurationSeconds = 120;
         private static readonly GuestAdmissionRegistry<ZRpc> Registry =
             new GuestAdmissionRegistry<ZRpc>(() => Time.unscaledTime, DurationSeconds);
+        private static readonly Dictionary<ZRpc, Player> SpawnedPlayers =
+            new Dictionary<ZRpc, Player>();
 
         internal static void Add(ZRpc rpc) => Registry.Add(rpc);
         public static bool IsGuest(ZRpc rpc) => rpc != null && Registry.Contains(rpc);
@@ -17,12 +20,39 @@ namespace Landoria.ModSentry
             return ZNet.instance?.GetPeers().Any(peer => peer?.m_rpc != null &&
                 peer.m_socket?.GetHostName() == hostName && IsGuest(peer.m_rpc)) == true;
         }
-        internal static void Remove(ZRpc rpc) => Registry.Remove(rpc);
-        internal static void Clear() => Registry.Clear();
+        internal static void Remove(ZRpc rpc)
+        {
+            Registry.Remove(rpc);
+            SpawnedPlayers.Remove(rpc);
+        }
+
+        internal static void Clear()
+        {
+            Registry.Clear();
+            SpawnedPlayers.Clear();
+        }
 
         internal static void Tick()
         {
+            TeleportNewPlayerInstances();
             Registry.Tick(IsPlayerReady, Notify, Disconnect);
+        }
+
+        private static void TeleportNewPlayerInstances()
+        {
+            foreach (ZNetPeer peer in ZNet.instance?.GetPeers() ?? Enumerable.Empty<ZNetPeer>())
+            {
+                Player player = FindPlayer(peer);
+                if (!IsGuest(peer?.m_rpc) || player == null ||
+                    SpawnedPlayers.TryGetValue(peer.m_rpc, out Player previous) &&
+                    ReferenceEquals(previous, player))
+                {
+                    continue;
+                }
+
+                SpawnedPlayers[peer.m_rpc] = player;
+                TeleportToPrison(peer);
+            }
         }
 
         private static void Disconnect(ZRpc rpc)
@@ -60,6 +90,21 @@ namespace Landoria.ModSentry
                 ModSentryPlugin.Log.LogDebug(
                     "Sent the registration message through chat and the center-screen countdown.");
             }
+        }
+
+        private static void TeleportToPrison(ZNetPeer peer)
+        {
+            if (peer == null || ZRoutedRpc.instance == null ||
+                !ModSentryPlugin.TryGetGuestPrison(out Vector3 position))
+            {
+                return;
+            }
+
+            ZRoutedRpc.instance.InvokeRoutedRPC(peer.m_uid, "RPC_TeleportPlayer",
+                position, Quaternion.identity, true);
+            ModSentryPlugin.Log.LogInfo(
+                $"Set the effective spawn or respawn of temporary guest " +
+                $"{ModSentryHandshake.Describe(peer)} to the configured prison position.");
         }
 
         private static void SendChat(ZNetPeer peer, Player player, string message)
