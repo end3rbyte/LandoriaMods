@@ -2,8 +2,10 @@
 
 ## 1.0.9
 
-- Optionally confine clients without ModSentry at a configured spawn and respawn position for two minutes, show a configurable registration message, and then disconnect them.
+- Add a fail-closed registration API for a private server-only guest controller.
+- Enable guest admission from controller presence instead of a command-line switch.
 - Let temporary guests bypass the permitted list while continuing to enforce bans.
+- Mark admitted guest connections with a generic temporary-session marker for optional consumers.
 
 ## 1.0.8
 

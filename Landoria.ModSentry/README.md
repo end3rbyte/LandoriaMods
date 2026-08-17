@@ -18,24 +18,23 @@ Every other client plugin is rejected. Matching uses the BepInEx GUID, complete 
 
 ## Temporary guests
 
-Dedicated servers may temporarily admit clients that provide no ModSentry inventory.
-This option is disabled by default. When enabled, the player receives the configured
-registration message in chat and a center-screen countdown, then is disconnected
-two minutes after their character enters the world. The configured prison position
-is imposed on the player's first spawn and every respawn during that session.
-Clients that submit an invalid
-inventory remain rejected before admission.
-Temporary guests bypass the server permitted list during this grace period, while
-the banned list remains fully enforced.
+ModSentry can identify and admit a client that provides no ModSentry inventory
+only when a compatible server-only guest controller explicitly registers through
+`ModSentryPlugin.RegisterUnverifiedGuestController`. There is no command-line or
+BepInEx setting that enables this path.
 
-| BepInEx setting | Default | Purpose |
-|---|---|---|
-| `Guest admission.Allow unverified guests` | `false` | Enables the temporary guest path. |
-| `Guest admission.Message` | Generic required-modpack notice | Sets the chat and center-screen message. |
-| `Guest admission.Prison position` | Empty | Optional invariant `X,Y,Z` spawn and respawn position; empty uses the world's Stone Temple. |
+Admission is fail closed. A missing, incompatible, or unready controller causes
+the client to be rejected before entering the world. A controller registration
+alone is insufficient: its `IsReady` property must remain true and its admission
+callback must complete successfully. Clients that submit an invalid inventory are
+always rejected and never enter the guest path.
 
-Server logs record admission, countdown start, message delivery, and disconnection.
-A vanilla guest cannot produce ModSentry client logs because the plugin is not installed.
+ModSentry marks admitted connections with a generic temporary-session marker,
+lets them bypass the permitted list, and continues to enforce the banned list.
+Optional consumers such as CharacterVault can use that marker without knowing
+which controller admitted the connection. Physical confinement, world generation,
+invulnerability, messaging, and disconnection policy belong to the registered
+private server controller rather than this public plugin.
 
 ## Installation
 

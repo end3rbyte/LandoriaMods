@@ -28,10 +28,8 @@ affect only the local player, such as camera options, remain local.
 | [Moderator](Landoria.Moderator/) | Both | Adds multiplayer moderation commands gated by server-validated administrator access. |
 | [QuickLaunch](Landoria.QuickLaunch/) | Client-only | Automatically resumes the last local or multiplayer session by default. |
 | [ExpandedServer](Landoria.ExpandedServer/) | Both | Raises the server player limit. |
-| [NoServerPassword](Landoria.NoServerPassword/) | Server-only | Allows public and crossplay servers to start without a password. |
 | [Structure Protection](Landoria.StructureProtection/) | Both | Protects structures while their authorized players are offline. |
 | [SealedTombstone](Landoria.SealedTombstone/) | Both | Protects tombstones and lets their owners approve access. |
-| [ServerGateway](Landoria.ServerGateway/) | Server | Exposes authenticated local status and save endpoints. |
 | [Socialize](Landoria.Socialize/) | Both | Adds temporary groups for missions and expeditions, private messaging, map sharing, and expanded chat channels. |
 
 ## Shared library

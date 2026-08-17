@@ -51,13 +51,18 @@ namespace Landoria.ModSentry
             }
 
             ValidationResult rejection = HandshakeState.RejectionFor(rpc);
-            if (rejection == null && ModSentryPlugin.AllowUnverifiedGuests.Value &&
-                ModSentryPlugin.TryGetGuestPrison(out _))
+            string failure = null;
+            if (rejection == null && UnverifiedGuestControllerRegistry.IsReady &&
+                GuestAdmissions.TryAdd(rpc, out failure))
             {
-                GuestAdmissions.Add(rpc);
                 ModSentryPlugin.Log.LogWarning(
                     "Admitting a client without a ModSentry inventory as a temporary guest.");
                 return true;
+            }
+            if (rejection == null && !string.IsNullOrEmpty(failure))
+            {
+                ModSentryPlugin.Log.LogError(
+                    $"The server-only guest controller rejected admission: {failure}");
             }
             if (rejection == null)
             {
@@ -74,9 +79,11 @@ namespace Landoria.ModSentry
 
         private static void LogUnavailableGuestAdmission()
         {
-            string reason = !ModSentryPlugin.AllowUnverifiedGuests.Value
-                ? "temporary guests are disabled"
-                : "the configured prison position is invalid or the Stone Temple is unavailable";
+            string reason = !UnverifiedGuestControllerRegistry.IsRegistered
+                ? "the server-only guest controller is not registered"
+                : !UnverifiedGuestControllerRegistry.IsReady
+                    ? "the server-only guest controller is not ready"
+                : "the server-only guest controller rejected admission";
             ModSentryPlugin.Log.LogWarning(
                 $"Rejecting a client without a ModSentry inventory because {reason}.");
         }

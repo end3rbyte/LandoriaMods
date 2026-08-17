@@ -14,9 +14,7 @@
   <ItemGroup>
     <Compile Include="../Landoria.ModSentry/ClientRejectionState.cs" Link="ClientRejectionState.cs" />
     <Compile Include="../Landoria.ModSentry/HandshakeRegistry.cs" Link="HandshakeRegistry.cs" />
-    <Compile Include="../Landoria.ModSentry/GuestAdmissionRegistry.cs" Link="GuestAdmissionRegistry.cs" />
     <Compile Include="../Landoria.ModSentry/GuestPermissionPolicy.cs" Link="GuestPermissionPolicy.cs" />
-    <Compile Include="../Landoria.ModSentry/GuestPrisonPosition.cs" Link="GuestPrisonPosition.cs" />
     <Compile Include="../Landoria.ModSentry/PendingDisconnectRegistry.cs" Link="PendingDisconnectRegistry.cs" />
     <Compile Include="../Landoria.ModSentry/PluginDescriptor.cs" Link="PluginDescriptor.cs" />
     <Compile Include="../Landoria.ModSentry/PluginPolicy.cs" Link="PluginPolicy.cs" />

@@ -23,6 +23,11 @@ namespace Landoria.SharedLib
                 out string value) && value == Value;
         }
 
+        public static void Unmark(ZRpc rpc)
+        {
+            FindPeer(rpc)?.m_serverSyncedPlayerData.Remove(Key);
+        }
+
         public static bool IsMarked(string hostName)
         {
             return ZNet.instance?.GetPeers().Any(peer => IsHost(peer, hostName) &&
