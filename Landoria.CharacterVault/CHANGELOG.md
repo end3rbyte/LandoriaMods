@@ -3,6 +3,7 @@
 ## 1.0.13
 
 - Allow temporary ModSentry guests to enter without character validation or persistence.
+- Ignore permitted-list rejection tracking for temporary ModSentry guests.
 
 ## 1.0.12
 
