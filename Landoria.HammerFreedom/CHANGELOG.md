@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4
+
+- Rebuild the test draft with the current shared build dependencies.
+
 ## 1.0.3
 
 - Add the HammerFreedom Fly video demo to the package documentation.
