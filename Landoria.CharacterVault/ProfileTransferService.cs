@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Landoria.ModSentry;
+using Landoria.SharedLib;
 using UnityEngine;
 
 namespace Landoria.CharacterVault
@@ -100,7 +100,7 @@ namespace Landoria.CharacterVault
 
         internal bool ApproveGuest(ZRpc rpc)
         {
-            if (!GuestAdmissions.IsGuest(rpc))
+            if (!TemporaryGuestMarker.IsMarked(rpc))
             {
                 return Approve(rpc);
             }

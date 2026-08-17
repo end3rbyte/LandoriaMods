@@ -1,5 +1,5 @@
 using HarmonyLib;
-using Landoria.ModSentry;
+using Landoria.SharedLib;
 using Splatform;
 using TMPro;
 using UnityEngine;
@@ -85,7 +85,7 @@ namespace Landoria.CharacterVault
             Platform ___m_steamPlatform,
             bool __result)
         {
-            if (GuestAdmissions.IsGuest(hostName))
+            if (TemporaryGuestMarker.IsMarked(hostName))
             {
                 CharacterVaultPlugin.Log.LogDebug(
                     "Ignoring permitted-list validation for a ModSentry temporary guest.");
