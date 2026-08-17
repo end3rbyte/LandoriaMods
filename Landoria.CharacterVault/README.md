@@ -46,6 +46,7 @@ the receipt acknowledgement, `Failed` replaces the status for three seconds.
 - Requires matching CharacterVault DLLs on client and server through ModSentry.
 - Supports local and Steam Cloud profiles on stable and public-test Valheim.
 - Grants configured starting items once, during initial enrollment.
+- Skips validation, vault session creation, profile import, and every save for temporary guests explicitly admitted by ModSentry.
 
 An acknowledgement for an ordinary or voluntary-disconnect save means the complete
 profile was received and validated. The durable write follows asynchronously; a

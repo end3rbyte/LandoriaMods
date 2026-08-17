@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Landoria.ModSentry;
 using UnityEngine;
 
 namespace Landoria.CharacterVault
@@ -95,6 +96,19 @@ namespace Landoria.CharacterVault
 
             session.State.Admitted = AdmitEnrollment(rpc, session);
             return session.State.Admitted;
+        }
+
+        internal bool ApproveGuest(ZRpc rpc)
+        {
+            if (!GuestAdmissions.IsGuest(rpc))
+            {
+                return Approve(rpc);
+            }
+
+            CharacterVaultPlugin.Log.LogInfo(
+                "Recognized a ModSentry temporary guest; skipping character validation, " +
+                "vault session creation, profile import, and persistence.");
+            return true;
         }
 
         internal void RecordPermission(string hostName, bool permitted)

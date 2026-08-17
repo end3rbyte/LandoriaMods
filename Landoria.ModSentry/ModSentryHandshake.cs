@@ -50,9 +50,22 @@ namespace Landoria.ModSentry
                 return true;
             }
 
-            ValidationResult rejection = HandshakeState.RejectionFor(rpc) ??
-                ValidationResult.Reject("Mod verification did not complete. Please try again.",
-                    "PeerInfo arrived before an accepted ModSentry inventory.");
+            ValidationResult rejection = HandshakeState.RejectionFor(rpc);
+            if (rejection == null && ModSentryPlugin.AllowUnverifiedGuests.Value)
+            {
+                GuestAdmissions.Add(rpc);
+                ModSentryPlugin.Log.LogWarning(
+                    "Admitting a client without a ModSentry inventory as a temporary guest.");
+                return true;
+            }
+            if (rejection == null)
+            {
+                ModSentryPlugin.Log.LogWarning(
+                    "Rejecting a client without a ModSentry inventory because temporary guests are disabled.");
+            }
+            rejection = rejection ?? ValidationResult.Reject(
+                "Mod verification did not complete. Please try again.",
+                "PeerInfo arrived before an accepted ModSentry inventory.");
             rpc.Invoke(ModSentryPlugin.RejectionRpc, rejection.PlayerMessage);
             ModSentryPlugin.Log.LogWarning(rejection.TechnicalMessage);
             PendingDisconnects.Schedule(rpc);
@@ -69,6 +82,12 @@ namespace Landoria.ModSentry
                     "Disconnecting the rejected pre-admission peer directly.");
                 ZNet.instance.Disconnect(peer);
             }
+        }
+
+        internal static string Describe(ZNetPeer peer)
+        {
+            return string.IsNullOrWhiteSpace(peer?.m_playerName)
+                ? "with an unavailable player name" : $"'{peer.m_playerName}'";
         }
 
         private static void ReceiveRejectionAck(ZRpc rpc)

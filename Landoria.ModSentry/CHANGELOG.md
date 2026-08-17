@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.9
+
+- Optionally admit clients without ModSentry for 30 seconds, show a configurable registration message, and then disconnect them.
+
 ## 1.0.8
 
 - Accept non-BepInEx DLLs when explicitly listed in optional or required policy entries.

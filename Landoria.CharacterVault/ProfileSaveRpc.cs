@@ -69,7 +69,7 @@ namespace Landoria.CharacterVault
                 return true;
             }
 
-            return CharacterVaultPlugin.Transfers?.Approve(rpc) == true;
+            return CharacterVaultPlugin.Transfers?.ApproveGuest(rpc) == true;
         }
     }
 

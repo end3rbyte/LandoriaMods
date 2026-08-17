@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.22
+
+- Update ModSentry to 1.0.9 and CharacterVault to 1.0.13.
+
 ## 1.0.21
 
 - Update Socialize to 1.0.11 and StructureProtection to 1.0.1.
