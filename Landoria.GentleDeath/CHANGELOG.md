@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.10
+
+- Rebuild the test draft with the current shared build dependencies.
+
 ## 1.0.9
 
 - Add the GentleDeath video demo.

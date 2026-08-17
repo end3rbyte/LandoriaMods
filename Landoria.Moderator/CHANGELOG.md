@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.7
+
+- Rebuild the test draft with the current shared build dependencies.
+
 ## 1.0.6
 
 - Request administrator authorization after the local player spawns.

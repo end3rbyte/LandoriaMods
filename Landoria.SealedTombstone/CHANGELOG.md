@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.7
+
+- Add the SealedTombstone video demo to the package documentation.
+
 ## 1.0.6
 
 - Clarify tombstone protection and trusted-player access.
