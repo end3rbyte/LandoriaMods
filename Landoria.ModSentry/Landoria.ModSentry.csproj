@@ -26,7 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientMessage.cs" /><Compile Include="ClientRejectionState.cs" /><Compile Include="ConnectionPatches.cs" /><Compile Include="HandshakeRegistry.cs" /><Compile Include="HandshakeState.cs" />
-    <Compile Include="GuestAdmissionMessages.cs" /><Compile Include="GuestAdmissionRegistry.cs" /><Compile Include="GuestAdmissions.cs" /><Compile Include="GuestPermissionPolicy.cs" />
+    <Compile Include="GuestAdmissionMessages.cs" /><Compile Include="GuestAdmissionRegistry.cs" /><Compile Include="GuestAdmissions.cs" /><Compile Include="GuestPermissionPolicy.cs" /><Compile Include="GuestPrisonPosition.cs" />
     <Compile Include="ModSentryHandshake.cs" /><Compile Include="ModSentryPlugin.cs" /><Compile Include="PluginDescriptor.cs" />
     <Compile Include="PendingDisconnectRegistry.cs" /><Compile Include="PendingDisconnects.cs" />
     <Compile Include="PluginInventory.cs" /><Compile Include="PluginPolicy.cs" /><Compile Include="PluginPolicyLoader.cs" /><Compile Include="PolicyValidator.cs" />

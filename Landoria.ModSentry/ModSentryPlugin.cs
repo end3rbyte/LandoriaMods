@@ -19,6 +19,7 @@ namespace Landoria.ModSentry
         internal static PluginPolicy Policy { get; private set; }
         internal static ConfigEntry<bool> AllowUnverifiedGuests { get; private set; }
         internal static ConfigEntry<string> GuestMessage { get; private set; }
+        internal static ConfigEntry<string> GuestPrison { get; private set; }
 
         private void Awake()
         {
@@ -34,6 +35,39 @@ namespace Landoria.ModSentry
             GuestMessage = Config.Bind("Guest admission", "Message",
                 GuestAdmissionMessages.DefaultRegistration,
                 "Message shown to an unverified guest before disconnection.");
+            GuestPrison = Config.Bind("Guest admission", "Prison position", "",
+                "Optional X,Y,Z world position; empty uses the world's Stone Temple.");
+        }
+
+        internal static bool TryGetGuestPrison(out UnityEngine.Vector3 position)
+        {
+            position = default;
+            if (string.IsNullOrWhiteSpace(GuestPrison?.Value))
+            {
+                return TryGetStoneTemple(out position);
+            }
+            if (!GuestPrisonPosition.TryParse(GuestPrison?.Value,
+                    out float x, out float y, out float z))
+            {
+                return false;
+            }
+
+            position = new UnityEngine.Vector3(x, y, z);
+            return true;
+        }
+
+        private static bool TryGetStoneTemple(out UnityEngine.Vector3 position)
+        {
+            position = default;
+            if (Game.instance == null || ZoneSystem.instance == null ||
+                !ZoneSystem.instance.GetLocationIcon(Game.instance.m_StartLocation,
+                    out UnityEngine.Vector3 temple))
+            {
+                return false;
+            }
+
+            position = temple + UnityEngine.Vector3.up * 2f;
+            return true;
         }
 
         internal static PluginPolicy EnsurePolicy()
@@ -65,6 +99,7 @@ namespace Landoria.ModSentry
             Policy = null;
             AllowUnverifiedGuests = null;
             GuestMessage = null;
+            GuestPrison = null;
             ShutdownPlugin();
             Log = null;
         }

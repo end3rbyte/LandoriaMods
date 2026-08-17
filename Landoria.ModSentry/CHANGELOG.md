@@ -2,7 +2,7 @@
 
 ## 1.0.9
 
-- Optionally admit clients without ModSentry for 30 seconds, show a configurable registration message, and then disconnect them.
+- Optionally confine clients without ModSentry at a configured spawn and respawn position for two minutes, show a configurable registration message, and then disconnect them.
 - Let temporary guests bypass the permitted list while continuing to enforce bans.
 
 ## 1.0.8
