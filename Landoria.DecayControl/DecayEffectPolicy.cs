@@ -5,11 +5,11 @@ namespace Landoria.DecayControl
         internal static bool ShouldApplyEnvironmentalWear(bool isVanillaRainTick,
             bool isPlayerBuilt, DecayControlMode mode, float activityMultiplier)
         {
-            if (!isVanillaRainTick || !isPlayerBuilt || mode == DecayControlMode.Default)
+            if (!isVanillaRainTick || !isPlayerBuilt || mode != DecayControlMode.PlayerOnline)
             {
                 return true;
             }
-            return mode == DecayControlMode.PlayerOnline && activityMultiplier > 0f;
+            return activityMultiplier > 0f;
         }
 
         internal static bool ShouldPauseFuel(bool isPlayerBuilt, bool firstUpdate,
@@ -19,8 +19,20 @@ namespace Landoria.DecayControl
             {
                 return false;
             }
-            return mode == DecayControlMode.Disabled || firstUpdate ||
-                activityMultiplier <= 0f;
+            return mode == DecayControlMode.PlayerOnline && (firstUpdate ||
+                activityMultiplier <= 0f);
+        }
+
+        internal static bool ShouldUseNativeInfiniteFuel(bool isPlayerBuilt,
+            DecayControlMode mode)
+        {
+            return isPlayerBuilt && mode == DecayControlMode.Disabled;
+        }
+
+        internal static bool ShouldDisableNativeRoofWear(bool isPlayerBuilt,
+            DecayControlMode mode)
+        {
+            return isPlayerBuilt && mode == DecayControlMode.Disabled;
         }
     }
 }

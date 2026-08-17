@@ -14,6 +14,12 @@ namespace Landoria.DecayControl
             new ConditionalWeakTable<Fireplace, object>();
         private static bool hasServerState;
 
+        private struct FireplaceState
+        {
+            internal float SecondsPerFuel;
+            internal bool InfiniteFuel;
+        }
+
         internal static void Reset()
         {
             ActiveCreators.Clear();
@@ -110,12 +116,37 @@ namespace Landoria.DecayControl
             }
         }
 
+        [HarmonyPatch(typeof(WearNTear), "UpdateWear")]
+        private static class NativeWearPatch
+        {
+            private static void Prefix(WearNTear __instance, out bool __state)
+            {
+                __state = __instance.m_noRoofWear;
+                Piece piece = __instance.GetComponent<Piece>();
+                bool isPlayerBuilt = piece != null && piece.IsPlacedByPlayer();
+                if (DecayEffectPolicy.ShouldDisableNativeRoofWear(isPlayerBuilt,
+                    DecayControlPlugin.Settings.EnvironmentalBuildingWear))
+                {
+                    __instance.m_noRoofWear = false;
+                }
+            }
+
+            private static void Postfix(WearNTear __instance, bool __state)
+            {
+                __instance.m_noRoofWear = __state;
+            }
+        }
+
         [HarmonyPatch(typeof(Fireplace), "UpdateFireplace")]
         private static class FireplaceFuelPatch
         {
-            private static void Prefix(Fireplace __instance, out float __state)
+            private static void Prefix(Fireplace __instance, out FireplaceState __state)
             {
-                __state = __instance.m_secPerFuel;
+                __state = new FireplaceState
+                {
+                    SecondsPerFuel = __instance.m_secPerFuel,
+                    InfiniteFuel = __instance.m_infiniteFuel
+                };
                 Piece piece = __instance.GetComponent<Piece>();
                 bool isPlayerBuilt = piece != null && piece.IsPlacedByPlayer();
                 bool firstUpdate = isPlayerBuilt &&
@@ -125,16 +156,22 @@ namespace Landoria.DecayControl
                     initializedFireplaces.Add(__instance, new object());
                 }
                 float activity = GetActivityMultiplier(piece);
-                if (DecayEffectPolicy.ShouldPauseFuel(isPlayerBuilt, firstUpdate,
-                    DecayControlPlugin.Settings.FuelConsumption, activity))
+                DecayControlMode mode = DecayControlPlugin.Settings.FuelConsumption;
+                if (DecayEffectPolicy.ShouldUseNativeInfiniteFuel(isPlayerBuilt, mode))
+                {
+                    __instance.m_infiniteFuel = true;
+                }
+                else if (DecayEffectPolicy.ShouldPauseFuel(isPlayerBuilt, firstUpdate,
+                    mode, activity))
                 {
                     __instance.m_secPerFuel = float.PositiveInfinity;
                 }
             }
 
-            private static void Postfix(Fireplace __instance, float __state)
+            private static void Postfix(Fireplace __instance, FireplaceState __state)
             {
-                __instance.m_secPerFuel = __state;
+                __instance.m_secPerFuel = __state.SecondsPerFuel;
+                __instance.m_infiniteFuel = __state.InfiniteFuel;
             }
         }
     }
