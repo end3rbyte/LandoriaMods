@@ -4,6 +4,7 @@
 
 - Remember whether a connection sent an approved plugin list or joined as a guest.
 - Allow a client without a plugin list (guest) to join only when a ready server controller accepts it and chooses its destination.
+- Let the server controller send a client without ModSentry to a lobby.
 
 ## 1.0.8
 
