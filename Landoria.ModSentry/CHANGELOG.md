@@ -4,7 +4,6 @@
 
 - Remember whether a connection sent an approved plugin list or joined as a temporary guest.
 - Allow a client without a plugin list to join only when a ready server controller accepts it and chooses its destination.
-- Keep banned players blocked and restore the server's trusted connection status after player-data synchronization.
 
 ## 1.0.8
 
