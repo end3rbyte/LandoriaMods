@@ -2,7 +2,8 @@
 
 ## 1.0.22
 
-- Update ModSentry to 1.0.9 for VanillaLobby guest controller compatibility.
+- Update ModSentry to 1.0.9 and CharacterVault to 1.0.13 for VanillaLobby
+  guest controller compatibility.
 
 ## 1.0.21
 
