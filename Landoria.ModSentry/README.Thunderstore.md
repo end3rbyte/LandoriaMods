@@ -16,6 +16,15 @@ Guarantees that every player uses the same approved mods, versions, and files, s
 
 All other client mods are rejected. If a mod does not match, Valheim returns to the main menu and explains what must be updated instead of remaining on a black loading screen.
 
+## Temporary guests
+
+| Stage | What happens |
+|---|---|
+| A client sends no ModSentry inventory | A compatible server controller may admit the connection as a temporary guest. |
+| The guest enters | Landoria sends the guest to its protected onboarding lobby. |
+| CharacterVault handles the session | It skips character validation, profile loading, and every save. |
+| The inventory is invalid or the controller is unavailable | ModSentry rejects the connection normally. |
+
 ## Installation
 
 | Client required | Server required (dedicated) | Player-hosted server |
