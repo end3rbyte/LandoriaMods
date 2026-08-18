@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.22
+
+- Update ModSentry to 1.0.9 for VanillaLobby guest controller compatibility.
+
 ## 1.0.21
 
 - Update Socialize to 1.0.11, DecayControl to 1.0.1,
