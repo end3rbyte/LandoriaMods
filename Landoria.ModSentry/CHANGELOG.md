@@ -2,8 +2,8 @@
 
 ## 1.0.9
 
-- Remember whether a connection sent an approved plugin list or joined as a temporary guest.
-- Allow a client without a plugin list to join only when a ready server controller accepts it and chooses its destination.
+- Remember whether a connection sent an approved plugin list or joined as a guest.
+- Allow a client without a plugin list (guest) to join only when a ready server controller accepts it and chooses its destination.
 
 ## 1.0.8
 
