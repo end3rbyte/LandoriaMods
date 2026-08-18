@@ -1,11 +1,11 @@
 {
   "name": "LandoriaModPack",
-  "version_number": "1.0.21",
+  "version_number": "1.0.22",
   "website_url": "https://valheim.landoria-gaming.com/",
   "description": "Installs the mods required to join the Landoria Valheim server.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333",
-    "Landoria-ModSentry-1.0.8",
+    "Landoria-ModSentry-1.0.9",
     "Landoria-AfkDetector-1.0.5",
     "Landoria-HammerFreedom-1.0.3",
     "Landoria-FreeFlyCommand-1.0.6",
