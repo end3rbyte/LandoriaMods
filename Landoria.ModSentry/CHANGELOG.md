@@ -1,11 +1,8 @@
 # Changelog
 
-## 1.0.10
-
-- Mark connections whose client plugin inventory was accepted.
-
 ## 1.0.9
 
+- Mark connections whose client plugin inventory was accepted.
 - Add a fail-closed registration API for a private server-only guest controller.
 - Enable guest admission from controller presence instead of a command-line switch.
 - Let temporary guests bypass the permitted list while continuing to enforce bans.
