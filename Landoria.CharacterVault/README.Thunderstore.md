@@ -19,7 +19,7 @@ with another save or a restored backup.
 | Graceful server stop or restart (optional) | Saves all connected characters before the final world save and shutdown. Requires Linux server configuration. |
 | Client crash or lost network | Cannot request a final save because the connection is already lost. |
 
-## What players should know
+## Features
 
 - The server loads its latest trusted copy before your character enters the world; local saves still work normally.
 - A status below the minimap shows when the character is saving and confirms when the save is complete.
