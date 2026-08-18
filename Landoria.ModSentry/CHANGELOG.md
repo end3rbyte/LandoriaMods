@@ -2,7 +2,7 @@
 
 ## 1.0.9
 
-- Mark accepted modpack and temporary guest sessions for server-side consumers.
+- Mark accepted client plugin inventories and temporary guest sessions for server-side consumers.
 - Let a ready server-only controller admit clients without an inventory and choose their destination; fail closed otherwise.
 - Preserve bans and restore server-owned admission markers after player-data synchronization.
 
