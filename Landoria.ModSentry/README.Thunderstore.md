@@ -15,7 +15,7 @@ Guarantees that every player uses the same approved mods, versions, and files, s
 - Allows only the exact mods, versions, and files approved by the server.
 - Returns the player to the main menu with a clear explanation when a mod must be updated.
 - Gives server administrators complete diagnostics for resolving mismatches.
-- Lets a server controller send clients without ModSentry to a lobby.
+- Supports optional lobby routing for clients without ModSentry through a server controller.
 
 All other client mods are rejected. If a mod does not match, Valheim returns to the main menu and explains what must be updated instead of remaining on a black loading screen.
 

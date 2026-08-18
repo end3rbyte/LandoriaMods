@@ -18,7 +18,7 @@ server consumers retain the authoritative guest and verified-ModPack state.
 - Allows only the exact plugins, versions, and files approved by the server.
 - Returns the player to the main menu with a clear explanation when a plugin must be updated.
 - Gives server administrators complete diagnostics for resolving mismatches.
-- Lets a server controller send clients without ModSentry to a lobby.
+- Supports optional lobby routing for clients without ModSentry through a server controller.
 
 The server defines two explicit directories under `BepInEx/config`:
 
