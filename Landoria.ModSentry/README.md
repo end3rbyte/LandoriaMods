@@ -12,6 +12,14 @@ server consumers retain the authoritative guest and verified-ModPack state.
 | Current release | `0.221.12` | Compatible |
 | Public Test | `0.221.13` | Compatible |
 
+## Features
+
+- Checks every player's complete plugin list before they enter the world.
+- Allows only the exact plugins, versions, and files approved by the server.
+- Returns the player to the main menu with a clear explanation when a plugin must be updated.
+- Gives server administrators complete diagnostics for resolving mismatches.
+- Lets a server controller send clients without ModSentry to a lobby.
+
 The server defines two explicit directories under `BepInEx/config`:
 
 - `ModSentry_Required`: every DLL must be installed by the client.
