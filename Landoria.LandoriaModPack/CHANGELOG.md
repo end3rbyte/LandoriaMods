@@ -2,8 +2,10 @@
 
 ## 1.0.21
 
-- Update Socialize to 1.0.11 and StructureProtection to 1.0.1.
-- Update ModSentry to 1.0.9 and CharacterVault to 1.0.13.
+- Update Socialize to 1.0.11, DecayControl to 1.0.1,
+  StructureProtection to 1.0.1, and SealedTombstone to 1.0.7.
+- Align all other Landoria dependencies with their released Thunderstore
+  versions.
 
 ## 1.0.20
 
