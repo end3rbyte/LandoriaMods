@@ -2,13 +2,9 @@
 
 ## 1.0.9
 
-- Mark connections whose client plugin inventory was accepted.
-- Add a fail-closed registration API for a private server-only guest controller.
-- Enable guest admission from controller presence instead of a command-line switch.
-- Let temporary guests bypass the permitted list while continuing to enforce bans.
-- Mark admitted guest connections with a generic temporary-session marker for optional consumers.
-- Restore server-owned admission markers after Valheim replaces client-synchronized
-  player data, and discard client attempts to supply those reserved markers.
+- Mark accepted modpack and temporary guest sessions for server-side consumers.
+- Let a ready server-only controller admit clients without an inventory and choose their destination; fail closed otherwise.
+- Preserve bans and restore server-owned admission markers after player-data synchronization.
 
 ## 1.0.8
 

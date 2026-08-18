@@ -2,7 +2,7 @@
 
 ## 1.0.13
 
-- Allow temporary ModSentry guests to enter without character validation or persistence.
+- Let temporary ModSentry guests enter their server-controlled destination without character validation or persistence.
 
 ## 1.0.12
 
