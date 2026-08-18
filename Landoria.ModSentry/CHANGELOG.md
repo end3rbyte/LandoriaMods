@@ -7,6 +7,8 @@
 - Enable guest admission from controller presence instead of a command-line switch.
 - Let temporary guests bypass the permitted list while continuing to enforce bans.
 - Mark admitted guest connections with a generic temporary-session marker for optional consumers.
+- Restore server-owned admission markers after Valheim replaces client-synchronized
+  player data, and discard client attempts to supply those reserved markers.
 
 ## 1.0.8
 

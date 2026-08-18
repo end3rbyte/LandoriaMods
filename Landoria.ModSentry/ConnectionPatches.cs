@@ -70,6 +70,36 @@ namespace Landoria.ModSentry
         }
     }
 
+    [HarmonyPatch(typeof(ZNet), "RPC_ServerSyncedPlayerData")]
+    internal static class RestoreServerAdmissionMarkersPatch
+    {
+        private static void Postfix(ZRpc rpc)
+        {
+            SetGuestMarker(rpc, GuestAdmissions.IsGuest(rpc));
+            SetVerifiedMarker(rpc, HandshakeState.IsAccepted(rpc));
+        }
+
+        private static void SetGuestMarker(ZRpc rpc, bool marked)
+        {
+            if (marked)
+            {
+                TemporaryGuestMarker.Mark(rpc);
+                return;
+            }
+            TemporaryGuestMarker.Unmark(rpc);
+        }
+
+        private static void SetVerifiedMarker(ZRpc rpc, bool marked)
+        {
+            if (marked)
+            {
+                VerifiedModpackMarker.Mark(rpc);
+                return;
+            }
+            VerifiedModpackMarker.Unmark(rpc);
+        }
+    }
+
     [HarmonyPatch(typeof(ZNet), "Disconnect")]
     internal static class ClearHandshakePatch
     {

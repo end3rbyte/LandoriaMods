@@ -2,6 +2,9 @@
 
 ModSentry validates the complete client plugin inventory before the Valheim peer handshake is accepted.
 
+Server-side admission markers are restored after each Valheim player-data sync so
+server consumers retain the authoritative guest and verified-ModPack state.
+
 ## Valheim compatibility
 
 | Valheim channel | Version | Compatibility |
