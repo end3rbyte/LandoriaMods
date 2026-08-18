@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Landoria.SharedLib;
 
 namespace Landoria.ModSentry
 {
@@ -119,6 +120,7 @@ namespace Landoria.ModSentry
             if (result.Accepted)
             {
                 HandshakeState.Accept(rpc);
+                VerifiedModpackMarker.Mark(rpc);
                 ModSentryPlugin.Log.LogInfo(result.TechnicalMessage);
                 return;
             }

@@ -1,5 +1,6 @@
 using System;
 using HarmonyLib;
+using Landoria.SharedLib;
 using Splatform;
 using TMPro;
 using UnityEngine;
@@ -77,6 +78,7 @@ namespace Landoria.ModSentry
             if (peer?.m_rpc != null)
             {
                 HandshakeState.Remove(peer.m_rpc);
+                VerifiedModpackMarker.Unmark(peer.m_rpc);
                 PendingDisconnects.Remove(peer.m_rpc);
                 GuestAdmissions.Remove(peer.m_rpc);
             }

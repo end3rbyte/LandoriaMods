@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.10
+
+- Mark connections whose client plugin inventory was accepted.
+
 ## 1.0.9
 
 - Add a fail-closed registration API for a private server-only guest controller.
