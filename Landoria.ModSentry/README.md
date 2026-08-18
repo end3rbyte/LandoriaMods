@@ -19,6 +19,15 @@ The server defines two explicit directories under `BepInEx/config`:
 
 Every other client plugin is rejected. Matching uses the BepInEx GUID, complete plugin version, and exact DLL SHA-256. The client confirms receipt of a specific rejection reason before the server disconnects it, with a short fallback timeout for incompatible clients that cannot acknowledge the message. A rejected client returns to the main menu, where Valheim displays the reason instead of remaining in the loading scene. Player messages identify the affected mod and expected version; client and server logs retain the diagnostic.
 
+## Temporary guest flow
+
+| Condition or stage | Behavior |
+|---|---|
+| No ModSentry inventory and a compatible server guest controller is ready | Admit the connection as a temporary guest. |
+| Guest destination | Let the server controller choose it; Landoria sends the guest to its protected onboarding lobby. |
+| Character data | Mark the temporary session so CharacterVault skips validation, profile loading, and persistence. |
+| Invalid inventory or unavailable guest controller | Reject the connection normally. |
+
 ## Installation
 
 | Client required | Server required (dedicated) | Player-hosted server |

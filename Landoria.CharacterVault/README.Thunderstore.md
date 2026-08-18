@@ -9,6 +9,7 @@ with another save or a restored backup.
 | Event | What CharacterVault does |
 |---|---|
 | First enrollment | Validates and saves the new character after they safely enter the world. |
+| Temporary guest admitted by ModSentry | Does not validate, load, or save the character while the server sends the guest to its configured destination. |
 | Automatic world save | Saves every connected character with the world. |
 | Manual `save` command | Saves the world and every connected character. |
 | Pause-menu Save button | Saves the trusted server copy while keeping the familiar Valheim save behavior. |

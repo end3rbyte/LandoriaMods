@@ -9,6 +9,7 @@ local backups or characters from other servers from replacing trusted state.
 | Event | Character save | Completion rule |
 |---|---|---|
 | Initial enrollment | Yes | Server uploads are blocked until the local player's `Player.OnSpawned()` completes, then the new profile is validated and committed. |
+| Temporary guest admitted by ModSentry | No | CharacterVault skips validation, profile loading, session creation, and persistence while the server guest controller redirects the player to its configured destination. |
 | World save, `save` command, or pause-menu Save button | Yes | The server acknowledges after complete receipt and validation, then commits asynchronously. The pause-menu action retains its vanilla behavior. |
 | Voluntary logout | Yes | The server acknowledges after complete receipt and validation, then commits asynchronously. |
 | In-game Quit action | Yes | After entering the world, `Menu.QuitGame` waits at most 10 seconds for the voluntary-save acknowledgement. |
