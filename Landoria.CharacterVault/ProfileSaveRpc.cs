@@ -85,13 +85,6 @@ namespace Landoria.CharacterVault
             Platform ___m_steamPlatform,
             bool __result)
         {
-            if (TemporaryGuestMarker.IsMarked(hostName))
-            {
-                CharacterVaultPlugin.Log.LogDebug(
-                    "Ignoring permitted-list validation for a temporary guest session.");
-                return;
-            }
-
             CharacterVaultPlugin.Transfers?.RecordPermission(hostName, __result);
             if (__result || IsListed(___m_bannedList, hostName, ___m_steamPlatform) ||
                 ___m_bannedList.Contains(playerName) || ___m_permittedList.Count() == 0 ||
