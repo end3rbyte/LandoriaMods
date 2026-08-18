@@ -2,9 +2,9 @@
 
 ## 1.0.9
 
-- Mark accepted client plugin inventories and temporary guest sessions for server-side consumers.
-- Let a ready server-only controller admit clients without an inventory and choose their destination; fail closed otherwise.
-- Preserve bans and restore server-owned admission markers after player-data synchronization.
+- Remember whether a connection sent an approved plugin list or joined as a temporary guest.
+- Allow a client without a plugin list to join only when a ready server controller accepts it and chooses its destination.
+- Keep banned players blocked and restore the server's trusted connection status after player-data synchronization.
 
 ## 1.0.8
 
