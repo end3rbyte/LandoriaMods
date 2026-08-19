@@ -2,7 +2,7 @@
 
 ## 1.0.7
 
-- Rebuild the test draft with the current shared build dependencies.
+- Remove the obsolete Steam game-server patch that prevented the mod from loading with current Valheim versions.
 
 ## 1.0.6
 
