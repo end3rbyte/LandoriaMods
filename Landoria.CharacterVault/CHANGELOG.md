@@ -3,7 +3,6 @@
 ## 1.0.14
 
 - Add Xbox support alongside Steam.
-- Preserve platform player IDs exactly as Valheim provides them and use platform-neutral admission messages.
 
 ## 1.0.13
 
