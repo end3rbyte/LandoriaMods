@@ -64,6 +64,8 @@ wait for the durable commit internally.
 | Current release | `0.221.12` | Compatible |
 | Public Test | `0.221.13` | Compatible |
 
+CharacterVault supports players using Valheim on Steam and Xbox.
+
 ## Installation
 
 | Client required | Server required (dedicated) | Player-hosted server |
