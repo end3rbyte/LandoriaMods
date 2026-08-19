@@ -2,6 +2,8 @@
 
 ## 1.0.10
 
+- Add Xbox support alongside Steam.
+
 ## 1.0.9
 
 - Add the GentleDeath video demo.

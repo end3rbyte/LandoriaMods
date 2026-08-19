@@ -2,6 +2,7 @@
 
 ## 1.0.7
 
+- Add Xbox support alongside Steam.
 - Remove the obsolete Steam game-server patch that prevented the mod from loading with current Valheim versions.
 
 ## 1.0.6
