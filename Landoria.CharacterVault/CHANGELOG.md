@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.17
+
+- Kick rejected pre-spawn clients and preserve the custom rejection message without forcing a local logout.
+
 ## 1.0.16
 
 - Log local save failures after a rejection and continue to the menu without retrying the save.

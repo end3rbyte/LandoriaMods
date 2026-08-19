@@ -157,16 +157,6 @@ namespace Landoria.CharacterVault
                 ___m_connectionFailedError.text = message;
                 ___m_connectionFailedPanel.SetActive(true);
             }
-            CharacterVaultRejection.CompleteMenuReturn();
-        }
-    }
-
-    [HarmonyPatch(typeof(Game), "SavePlayerProfile")]
-    internal static class CharacterVaultRejectedLocalSaveFailurePatch
-    {
-        private static System.Exception Finalizer(System.Exception __exception)
-        {
-            return CharacterVaultRejection.HandleLocalSaveFailure(__exception);
         }
     }
 

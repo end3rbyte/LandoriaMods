@@ -25,7 +25,7 @@ namespace Landoria.ModSentry
 
         internal static void Tick()
         {
-            Registry.Tick(ModSentryHandshake.Disconnect);
+            Registry.Tick(ModSentryHandshake.Kick);
         }
 
         internal static void Clear()

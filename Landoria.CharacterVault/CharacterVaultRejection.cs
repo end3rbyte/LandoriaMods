@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -16,9 +15,6 @@ namespace Landoria.CharacterVault
             new HashSet<string>();
         private static readonly CharacterRejectionMessageState ClientMessage =
             new CharacterRejectionMessageState();
-        private static float _clientDeadline;
-        private static bool _returnToMenu;
-        private static bool _returningAfterRejection;
 
         internal static void RegisterServer(ZRpc rpc)
         {
@@ -58,24 +54,6 @@ namespace Landoria.CharacterVault
             return ClientMessage.TryGet(out message);
         }
 
-        internal static Exception HandleLocalSaveFailure(Exception exception)
-        {
-            if (exception == null || !_returningAfterRejection)
-            {
-                return exception;
-            }
-
-            CharacterVaultPlugin.Log.LogError(
-                $"Local character save failed while returning from a CharacterVault rejection; " +
-                $"continuing to the main menu without retrying. {exception}");
-            return null;
-        }
-
-        internal static void CompleteMenuReturn()
-        {
-            _returningAfterRejection = false;
-        }
-
         internal static void Remove(ZRpc rpc)
         {
             Deadlines.Remove(rpc);
@@ -84,7 +62,6 @@ namespace Landoria.CharacterVault
         internal static void Tick()
         {
             DisconnectExpired();
-            ReturnClientToMenu();
         }
 
         internal static void Clear()
@@ -97,19 +74,17 @@ namespace Landoria.CharacterVault
         private static void ReceiveMessage(ZRpc rpc, string message)
         {
             ClientMessage.Receive(message);
-            _returnToMenu = true;
-            _returningAfterRejection = true;
-            _clientDeadline = Time.unscaledTime + DisconnectFallbackSeconds;
             CharacterVaultPlugin.Log.LogWarning($"Server rejected the character: {message}");
             rpc.Invoke(AckRpc);
-            CharacterVaultPlugin.Log.LogDebug("Acknowledged the CharacterVault rejection.");
+            CharacterVaultPlugin.Log.LogDebug(
+                "Acknowledged the CharacterVault rejection; waiting for the server kick.");
         }
 
         private static void ReceiveAck(ZRpc rpc)
         {
             if (Deadlines.Remove(rpc))
             {
-                Disconnect(rpc);
+                Kick(rpc);
             }
         }
 
@@ -122,45 +97,29 @@ namespace Landoria.CharacterVault
             foreach (ZRpc rpc in expired)
             {
                 Deadlines.Remove(rpc);
-                Disconnect(rpc);
+                Kick(rpc);
             }
         }
 
-        private static void Disconnect(ZRpc rpc)
+        private static void Kick(ZRpc rpc)
         {
             ZNetPeer peer = ZNet.instance?.GetPeers()
                 .FirstOrDefault(candidate => ReferenceEquals(candidate.m_rpc, rpc));
             if (peer != null)
             {
-                ZNet.instance.Disconnect(peer);
+                string platformPlayerId = peer.m_socket?.GetHostName();
+                if (!string.IsNullOrWhiteSpace(platformPlayerId))
+                {
+                    CharacterVaultPlugin.Log.LogDebug(
+                        "Kicking the rejected pre-spawn peer after delivering the rejection reason.");
+                    ZNet.instance.Kick(platformPlayerId);
+                }
             }
-        }
-
-        private static void ReturnClientToMenu()
-        {
-            if (!_returnToMenu || Game.instance == null || !ClientCanLeave())
-            {
-                return;
-            }
-
-            _returnToMenu = false;
-            ZNet.SetExternalError(ZNet.ConnectionStatus.ErrorConnectFailed);
-            CharacterVaultPlugin.Log.LogInfo(
-                "Returning to the main menu to display the CharacterVault rejection reason.");
-            Game.instance.Logout(false, true);
-        }
-
-        private static bool ClientCanLeave()
-        {
-            return ZNet.GetConnectionStatus() != ZNet.ConnectionStatus.Connecting ||
-                   Time.unscaledTime >= _clientDeadline;
         }
 
         private static void ClearClient()
         {
             ClientMessage.Clear();
-            _returnToMenu = false;
-            CompleteMenuReturn();
         }
     }
 }
