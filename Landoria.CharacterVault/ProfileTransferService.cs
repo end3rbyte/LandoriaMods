@@ -114,7 +114,7 @@ namespace Landoria.CharacterVault
         internal void RecordPermission(string hostName, bool permitted)
         {
             foreach (VaultSession session in _sessions.Values.Where(candidate =>
-                string.Equals(candidate.AccountId, NormalizeAccount(hostName),
+                string.Equals(candidate.AccountId, hostName,
                     StringComparison.Ordinal)))
             {
                 session.State.RecordPermission(permitted);
@@ -328,7 +328,7 @@ namespace Landoria.CharacterVault
             long characterId = package.ReadLong();
             string name = package.ReadString();
             bool newCharacter = package.ReadBool();
-            string accountId = NormalizeAccount(rpc.GetSocket().GetHostName());
+            string accountId = rpc.GetSocket().GetHostName();
             _sessions[rpc] = new VaultSession(accountId, characterId, name, newCharacter);
         }
 
@@ -664,11 +664,6 @@ namespace Landoria.CharacterVault
             {
                 _enrollments.Remove(account);
             }
-        }
-
-        private static string NormalizeAccount(string host)
-        {
-            return host.All(char.IsDigit) ? "Steam_" + host : host;
         }
 
         private static void Reject(ZRpc rpc, string message)

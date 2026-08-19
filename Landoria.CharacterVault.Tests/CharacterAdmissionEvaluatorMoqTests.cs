@@ -86,7 +86,7 @@ public sealed class CharacterAdmissionEvaluatorMoqTests
 
     // A new profile rejected by the permitted list remains unsaved and receives the server reason.
     [Fact]
-    public void NewProfileWithDeniedSteamIdReceivesPermittedListMessage()
+    public void NewProfileWithDeniedPlatformAccountReceivesPermittedListMessage()
     {
         Mock<ICharacterProfileCatalog> profiles = new(MockBehavior.Strict);
         profiles.Setup(catalog => catalog.HasProfile("Steam_1")).Returns(false);
@@ -103,14 +103,14 @@ public sealed class CharacterAdmissionEvaluatorMoqTests
         Assert.Equal(CharacterAdmission.NewEnrollment, admission);
         Assert.False(session.CanSave);
         Assert.True(clientMessage.TryGet(out string message));
-        Assert.Equal("Steam account not registered for this server.", message);
+        Assert.Equal("This platform account is not allowed to join this server.", message);
         profiles.Verify(catalog => catalog.HasProfile("Steam_1"), Times.Once);
         profiles.VerifyNoOtherCalls();
     }
 
     // An existing profile rejected by the permitted list receives the same server reason.
     [Fact]
-    public void ExistingProfileWithDeniedSteamIdReceivesPermittedListMessage()
+    public void ExistingProfileWithDeniedPlatformAccountReceivesPermittedListMessage()
     {
         Mock<ICharacterProfileCatalog> profiles = new(MockBehavior.Strict);
         CharacterAdmissionEvaluator evaluator = new(profiles.Object);
@@ -126,7 +126,7 @@ public sealed class CharacterAdmissionEvaluatorMoqTests
         Assert.Equal(CharacterAdmission.ExistingProfile, admission);
         Assert.False(session.CanSave);
         Assert.True(clientMessage.TryGet(out string message));
-        Assert.Equal("Steam account not registered for this server.", message);
+        Assert.Equal("This platform account is not allowed to join this server.", message);
         profiles.VerifyNoOtherCalls();
     }
 
@@ -146,7 +146,7 @@ public sealed class CharacterAdmissionEvaluatorMoqTests
 
         Assert.Equal(CharacterAdmission.RejectAdditionalCharacter, admission);
         Assert.True(clientMessage.TryGet(out string message));
-        Assert.Equal("This Steam account already has a character.", message);
+        Assert.Equal("This platform account already has a character.", message);
         profiles.Verify(catalog => catalog.HasProfile("Steam_1"), Times.Once);
         profiles.VerifyNoOtherCalls();
     }
