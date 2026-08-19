@@ -49,10 +49,6 @@
             <HintPath>$(ValheimGamePath)\valheim_Data\Managed\assembly_valheim.dll</HintPath>
             <Private>false</Private>
         </Reference>
-        <Reference Include="com.rlabrecque.steamworks.net">
-            <HintPath>$(ValheimGamePath)\valheim_Data\Managed\com.rlabrecque.steamworks.net.dll</HintPath>
-            <Private>false</Private>
-        </Reference>
         <Reference Include="PlayFab">
             <HintPath>$(ValheimGamePath)\valheim_Data\Managed\PlayFab.dll</HintPath>
             <Private>false</Private>
@@ -77,7 +73,6 @@
     <ItemGroup>
         <Compile Include="ExpandedServerPlugin.cs" />
         <Compile Include="PlayFabPatches.cs" />
-        <Compile Include="SteamPatches.cs" />
         <Compile Include="ZNetPatches.cs" />
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>

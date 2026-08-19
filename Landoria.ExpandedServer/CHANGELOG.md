@@ -3,6 +3,7 @@
 ## 1.0.7
 
 - Add Xbox support alongside Steam.
+- Avoid loading Steam-only matchmaking types on Xbox.
 
 ## 1.0.6
 
