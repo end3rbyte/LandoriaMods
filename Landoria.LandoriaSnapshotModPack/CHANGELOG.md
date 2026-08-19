@@ -1,5 +1,5 @@
 # Changelog
 
-## 1.0.0
+## 1.0.25
 
-- Initial version.
+- Include the latest test mod drafts.
