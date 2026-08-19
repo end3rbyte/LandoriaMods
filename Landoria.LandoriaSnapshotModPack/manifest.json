@@ -1,6 +1,6 @@
 {
   "name": "LandoriaSnapshotModPack",
-  "version_number": "1.0.24",
+  "version_number": "1.0.25",
   "website_url": "https://valheim.landoria-gaming.com/",
   "description": "Installs the latest test drafts required to test Landoria Valheim mods.",
   "dependencies": [
