@@ -59,17 +59,13 @@ namespace Landoria.CharacterVault
             else if (action == KickAction.AllowWithoutSave)
             {
                 CharacterVaultPlugin.Log.LogInfo(
-                    $"Allowing kick for rejected player {peer.m_playerName} without a character save.");
+                    $"Allowing kick for {peer.m_playerName} without a character save because no " +
+                    "save-eligible CharacterVault session exists.");
             }
             else if (action == KickAction.WaitForPendingSave)
             {
                 CharacterVaultPlugin.Log.LogWarning(
                     $"Ignored another kick for {peer.m_playerName} while its final save is pending.");
-            }
-            else if (action == KickAction.Block)
-            {
-                CharacterVaultPlugin.Log.LogError(
-                    $"Canceled kick for {peer.m_playerName}: no save-eligible session exists.");
             }
             return action != KickAction.RequestSave;
         }
