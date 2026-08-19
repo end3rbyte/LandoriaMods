@@ -1,9 +1,12 @@
 # Changelog
 
+## 1.0.15
+
+- Allow vanilla kicks without a character save when no save-eligible CharacterVault session exists.
+
 ## 1.0.14
 
 - Add Xbox support alongside Steam.
-- Allow vanilla kicks without a character save when no save-eligible CharacterVault session exists.
 
 ## 1.0.13
 
