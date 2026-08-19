@@ -7,6 +7,6 @@ namespace Landoria.LandoriaSnapshotModPack
     {
         private const string PluginGuid = "Landoria.LandoriaSnapshotModPack";
         private const string PluginName = "Landoria.LandoriaSnapshotModPack";
-        private const string PluginVersion = "1.0.24";
+        private const string PluginVersion = "1.0.25";
     }
 }
