@@ -2,7 +2,7 @@
 
 ## 1.0.15
 
-- Allow vanilla kicks without a character save when no save-eligible CharacterVault session exists.
+- Allow vanilla kicks for players without a CharacterVault session.
 
 ## 1.0.14
 
