@@ -1,12 +1,9 @@
 # Changelog
 
-## 1.0.8
-
-- Resolve administrator platform identities from the connected peer when Valheim omits them from its player list.
-
 ## 1.0.7
 
 - Rebuild the test draft with the current shared build dependencies.
+- Resolve administrator platform identities from the connected peer when Valheim omits them from its player list.
 
 ## 1.0.6
 
