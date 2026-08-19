@@ -34,6 +34,7 @@ with another save or a restored backup.
 | Current release | `0.221.12` | Compatible |
 | Public Test | `0.221.13` | Compatible |
 
+CharacterVault supports players using Valheim on Steam and Xbox.
 CharacterVault supports local and Steam Cloud characters.
 
 ## Installation
