@@ -2,6 +2,8 @@
 
 ## 1.0.6
 
+- Add Xbox support alongside Steam.
+
 ## 1.0.5
 
 - Configure AFK detection exclusively through dedicated-server command-line settings.

@@ -2,6 +2,8 @@
 
 ## 1.0.4
 
+- Add Xbox support alongside Steam.
+
 ## 1.0.3
 
 - Add the HammerFreedom Fly video demo to the package documentation.

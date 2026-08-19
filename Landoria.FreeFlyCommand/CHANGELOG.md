@@ -2,6 +2,8 @@
 
 ## 1.0.7
 
+- Add Xbox support alongside Steam.
+
 ## 1.0.6
 
 - Add the FreeFlyCommand video demo to the package documentation.
