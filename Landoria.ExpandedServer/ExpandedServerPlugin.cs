@@ -9,7 +9,7 @@ namespace Landoria.ExpandedServer
     {
         private const string PluginGuid = "Landoria.ExpandedServer";
         private const string PluginName = "Landoria.ExpandedServer";
-        private const string PluginVersion = "1.0.7";
+        private const string PluginVersion = "1.0.8";
         private const int DefaultMaxPlayers = 20;
         private const int MaximumMaxPlayers = 100;
 
