@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.16
+
+- Log local save failures after a rejection and continue to the menu without retrying the save.
+
 ## 1.0.15
 
 - Allow vanilla kicks for temporary guest players.
