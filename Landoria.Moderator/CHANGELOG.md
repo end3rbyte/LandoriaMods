@@ -3,7 +3,6 @@
 ## 1.0.7
 
 - Add Xbox support alongside Steam.
-- Resolve administrator platform identities from the connected peer when Valheim omits them from its player list.
 
 ## 1.0.6
 
