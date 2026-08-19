@@ -3,9 +3,9 @@ namespace Landoria.CharacterVault
     internal static class CharacterRejectionMessages
     {
         internal const string PermittedListDenied =
-            "Steam account not registered for this server.";
+            "This platform account is not allowed to join this server.";
         internal const string AdditionalCharacterDenied =
-            "This Steam account already has a character.";
+            "This platform account already has a character.";
     }
 
     internal sealed class CharacterRejectionMessageState

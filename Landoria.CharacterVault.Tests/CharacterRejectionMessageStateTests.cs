@@ -13,6 +13,6 @@ public sealed class CharacterRejectionMessageStateTests
         state.Receive(CharacterRejectionMessages.PermittedListDenied);
 
         Assert.True(state.TryGet(out string message));
-        Assert.Equal("Steam account not registered for this server.", message);
+        Assert.Equal("This platform account is not allowed to join this server.", message);
     }
 }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.14
+
+- Preserve platform player IDs exactly as Valheim provides them and use platform-neutral admission messages.
+
 ## 1.0.13
 
 - Let temporary ModSentry guests enter their server-controlled destination without character validation or persistence.

@@ -32,9 +32,12 @@ the receipt acknowledgement, `Failed` replaces the status for three seconds.
 ## Guarantees
 
 - Validates bounded fragmented transfers with SHA-256 and profile identity checks.
-- Writes every save in the instance `characters_local` directory as
-  `Steam_<id>_<character>.fch` and simultaneously archives it under
-  `characters_local/backups/Steam_<id>_<character>_<UTC timestamp>.fch`.
+- Writes every save in the instance `characters_local` directory using the
+  canonical platform player ID: `<platform>_<player-id>_<character>.fch`. For
+  example, `Steam_76561198000000000_Hero.fch` uses `Steam_` as the platform
+  prefix. IDs from other platforms retain their own platform prefix. Each save
+  is simultaneously archived as
+  `characters_local/backups/<platform>_<player-id>_<character>_<UTC timestamp>.fch`.
 - Retains at most 15 backups per character: the 5 most recent saves, then the
   earliest save from each of the next 10 distinct UTC days before the day of
   the fifth save.
