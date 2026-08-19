@@ -2,8 +2,6 @@
 
 ## 1.0.6
 
-- Rebuild the test draft with the current shared build dependencies.
-
 ## 1.0.5
 
 - Configure AFK detection exclusively through dedicated-server command-line settings.

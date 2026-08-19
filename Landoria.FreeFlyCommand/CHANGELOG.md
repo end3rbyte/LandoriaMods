@@ -2,8 +2,6 @@
 
 ## 1.0.7
 
-- Rebuild the test draft with the current shared build dependencies.
-
 ## 1.0.6
 
 - Add the FreeFlyCommand video demo to the package documentation.
