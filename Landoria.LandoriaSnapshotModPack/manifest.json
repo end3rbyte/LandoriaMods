@@ -4,7 +4,20 @@
   "website_url": "https://valheim.landoria-gaming.com/",
   "description": "Installs the latest test drafts required to test Landoria Valheim mods.",
   "dependencies": [
-    "denikson-BepInExPack_Valheim-5.4.2333"
+    "denikson-BepInExPack_Valheim-5.4.2333",
+    "Landoria-ModSentry-1.0.9",
+    "Landoria-AfkDetector-1.0.6",
+    "Landoria-HammerFreedom-1.0.4",
+    "Landoria-FreeFlyCommand-1.0.7",
+    "Landoria-FirstPerson-1.0.4",
+    "Landoria-Moderator-1.0.7",
+    "Landoria-GetMyTrophyBack-1.0.7",
+    "Landoria-ExpandedServer-1.0.7",
+    "Landoria-CharacterVault-1.0.14",
+    "Landoria-Socialize-1.0.11",
+    "Landoria-DecayControl-1.0.1",
+    "Landoria-StructureProtection-1.0.1",
+    "Landoria-SealedTombstone-1.0.7"
   ],
   "categories": [
     "ai-generated",
