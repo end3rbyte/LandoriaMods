@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.24
+
+- Update AfkDetector, HammerFreedom, FreeFlyCommand, FirstPerson,
+  GetMyTrophyBack, and ExpandedServer to their latest released versions.
+
 ## 1.0.23
 
 - Update CharacterVault to 1.0.14 for platform-neutral player identities and admission messages.
