@@ -20,6 +20,7 @@ namespace Landoria.CharacterVault
     internal enum KickSaveEligibility
     {
         Unmanaged,
+        TemporaryGuest,
         Rejected,
         SaveRequired
     }
@@ -28,8 +29,10 @@ namespace Landoria.CharacterVault
     {
         Allow,
         AllowWithoutSave,
+        AllowTemporaryGuestWithoutSave,
         WaitForPendingSave,
-        RequestSave
+        RequestSave,
+        Block
     }
 
     internal static class KickSavePolicy
@@ -45,12 +48,16 @@ namespace Landoria.CharacterVault
             {
                 return KickAction.AllowWithoutSave;
             }
+            if (eligibility == KickSaveEligibility.TemporaryGuest)
+            {
+                return KickAction.AllowTemporaryGuestWithoutSave;
+            }
             if (savePending)
             {
                 return KickAction.WaitForPendingSave;
             }
             return eligibility == KickSaveEligibility.SaveRequired
-                ? KickAction.RequestSave : KickAction.AllowWithoutSave;
+                ? KickAction.RequestSave : KickAction.Block;
         }
     }
 

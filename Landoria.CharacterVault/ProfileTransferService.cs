@@ -167,6 +167,10 @@ namespace Landoria.CharacterVault
 
         internal KickSaveEligibility GetKickSaveEligibility(ZNetPeer peer)
         {
+            if (peer?.m_rpc != null && TemporaryGuestMarker.IsMarked(peer.m_rpc))
+            {
+                return KickSaveEligibility.TemporaryGuest;
+            }
             if (peer?.m_rpc == null || !_sessions.TryGetValue(peer.m_rpc, out VaultSession session))
             {
                 return KickSaveEligibility.Unmanaged;
