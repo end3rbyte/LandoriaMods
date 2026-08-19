@@ -1,0 +1,13 @@
+{
+  "name": "LandoriaSnapshotModPack",
+  "version_number": "1.0.0",
+  "website_url": "https://valheim.landoria-gaming.com/",
+  "description": "Installs the latest test drafts required to test Landoria Valheim mods.",
+  "dependencies": [
+    "denikson-BepInExPack_Valheim-5.4.2333"
+  ],
+  "categories": [
+    "ai-generated",
+    "modpacks"
+  ]
+}
