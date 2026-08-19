@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -17,6 +18,7 @@ namespace Landoria.CharacterVault
             new CharacterRejectionMessageState();
         private static float _clientDeadline;
         private static bool _returnToMenu;
+        private static bool _returningAfterRejection;
 
         internal static void RegisterServer(ZRpc rpc)
         {
@@ -56,6 +58,24 @@ namespace Landoria.CharacterVault
             return ClientMessage.TryGet(out message);
         }
 
+        internal static Exception HandleLocalSaveFailure(Exception exception)
+        {
+            if (exception == null || !_returningAfterRejection)
+            {
+                return exception;
+            }
+
+            CharacterVaultPlugin.Log.LogError(
+                $"Local character save failed while returning from a CharacterVault rejection; " +
+                $"continuing to the main menu without retrying. {exception}");
+            return null;
+        }
+
+        internal static void CompleteMenuReturn()
+        {
+            _returningAfterRejection = false;
+        }
+
         internal static void Remove(ZRpc rpc)
         {
             Deadlines.Remove(rpc);
@@ -78,6 +98,7 @@ namespace Landoria.CharacterVault
         {
             ClientMessage.Receive(message);
             _returnToMenu = true;
+            _returningAfterRejection = true;
             _clientDeadline = Time.unscaledTime + DisconnectFallbackSeconds;
             CharacterVaultPlugin.Log.LogWarning($"Server rejected the character: {message}");
             rpc.Invoke(AckRpc);
@@ -139,6 +160,7 @@ namespace Landoria.CharacterVault
         {
             ClientMessage.Clear();
             _returnToMenu = false;
+            CompleteMenuReturn();
         }
     }
 }
