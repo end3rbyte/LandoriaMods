@@ -1,6 +1,6 @@
 {
   "name": "Moderator",
-  "version_number": "1.0.7",
+  "version_number": "1.0.8",
   "website_url": "https://valheim.landoria-gaming.com/",
   "description": "Adds multiplayer moderation, teleportation, spawning, map, and player commands.",
   "dependencies": [

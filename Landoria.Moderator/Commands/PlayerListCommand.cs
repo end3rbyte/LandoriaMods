@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Landoria.SharedLib;
 
 namespace Landoria.Moderator
 {
@@ -36,13 +37,18 @@ namespace Landoria.Moderator
 
         private static bool IsAdmin(ZNet.PlayerInfo player)
         {
-            if (ZNet.instance.PlayerIsAdmin(player.m_userInfo.m_id))
+            string platformPlayerId = PlatformPlayerIdentity.Resolve(player);
+            if (string.IsNullOrWhiteSpace(platformPlayerId))
+            {
+                return false;
+            }
+            if (ZNet.instance.IsAdmin(platformPlayerId))
             {
                 return true;
             }
 
             return ZNet.instance.IsServer() &&
-                   player.m_userInfo.m_id == UserInfo.GetLocalUser().UserId;
+                   platformPlayerId == UserInfo.GetLocalUser().UserId.ToString();
         }
     }
 }

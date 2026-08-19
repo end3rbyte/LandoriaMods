@@ -57,10 +57,15 @@
             <HintPath>$(ValheimGamePath)\valheim_Data\Managed\assembly_valheim.dll</HintPath>
             <Private>false</Private>
         </Reference>
+        <Reference Include="Splatform">
+            <HintPath>$(ValheimGamePath)\valheim_Data\Managed\Splatform.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
         <Compile Include="LandoriaPlugin.cs"/>
         <Compile Include="ModLog.cs"/>
+        <Compile Include="PlatformPlayerIdentity.cs"/>
         <Compile Include="ServerRole.cs"/>
         <Compile Include="TemporaryGuestMarker.cs"/>
         <Compile Include="VerifiedModpackMarker.cs"/>
