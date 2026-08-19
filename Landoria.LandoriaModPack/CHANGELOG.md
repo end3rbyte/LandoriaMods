@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.23
+
+- Update CharacterVault to 1.0.14 for platform-neutral player identities and admission messages.
+
 ## 1.0.22
 
 - Update ModSentry to 1.0.9 and CharacterVault to 1.0.13 for VanillaLobby
