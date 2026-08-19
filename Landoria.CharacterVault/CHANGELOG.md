@@ -2,7 +2,7 @@
 
 ## 1.0.15
 
-- Allow vanilla kicks for players without a CharacterVault session.
+- Allow vanilla kicks for temporary guest players.
 
 ## 1.0.14
 
