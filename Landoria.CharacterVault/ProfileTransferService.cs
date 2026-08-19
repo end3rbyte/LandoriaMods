@@ -171,6 +171,10 @@ namespace Landoria.CharacterVault
             {
                 return KickSaveEligibility.TemporaryGuest;
             }
+            if (peer?.m_rpc != null && !peer.IsReady())
+            {
+                return KickSaveEligibility.Rejected;
+            }
             if (peer?.m_rpc == null || !_sessions.TryGetValue(peer.m_rpc, out VaultSession session))
             {
                 return KickSaveEligibility.Unmanaged;

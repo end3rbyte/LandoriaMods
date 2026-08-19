@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.10
+
+- Kick rejected pre-spawn clients and preserve the custom rejection message without forcing a local logout.
+
 ## 1.0.9
 
 - Remember whether a connection sent an approved plugin list or joined as a guest.

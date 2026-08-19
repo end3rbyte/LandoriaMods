@@ -1,11 +1,11 @@
 {
   "name": "CharacterVault",
-  "version_number": "1.0.16",
+  "version_number": "1.0.17",
   "website_url": "https://valheim.landoria-gaming.com/",
   "description": "CharacterVault saves character profiles on the server to prevent item duplication.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333",
-    "Landoria-ModSentry-1.0.9"
+    "Landoria-ModSentry-1.0.10"
   ],
   "categories": [
     "ai-generated",
