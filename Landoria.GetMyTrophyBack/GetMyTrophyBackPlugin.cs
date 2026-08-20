@@ -15,6 +15,7 @@ namespace Landoria.GetMyTrophyBack
         private void Awake()
         {
             Log = InitializePlugin(PluginGuid);
+            Log.LogInfo("This is a test");
             Log.LogInfo($"{PluginName} {PluginVersion} is loaded.");
         }
 
