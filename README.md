@@ -6,18 +6,15 @@ Each mod directory includes a technical `README.md`, a player-oriented
 
 ## Server-driven configuration
 
-Multiplayer rules are controlled by the server, so players never need to copy or
-maintain a separate server configuration on their clients. When a client needs a
-setting to behave consistently, the mod requests the effective value from the
-server after connecting. For example, HammerFreedom asks the server which creative
-capabilities are enabled before allowing Fly, while AfkDetector applies the
-server's inactivity timeout without any client-side setting. Preferences that
-affect only the local player, such as camera options, remain local.
+- The server controls multiplayer rules and sends effective settings to clients.
+- Players do not need to copy server configuration files.
+- Personal settings, such as camera preferences, remain local.
 
 | Mod | Installation side | Description |
 |---|---|---|
 | [AfkDetector](Landoria.AfkDetector/) | Both | Disconnects players who remain motionless and silent, with a clear inactivity message. |
 | [CharacterVault](Landoria.CharacterVault/) | Both | Stores authoritative server profiles and checkpoints characters with world saves. |
+| [DecayControl](Landoria.DecayControl/) | Both | Controls rain damage and fuel use for player-built structures. |
 | [GentleDeath](Landoria.GentleDeath/) | Client; server when required by a game mode | Keeps equipable gear on the player after death and moves other items to the tombstone. |
 | [GetMyTrophyBack](Landoria.GetMyTrophyBack/) | Both | Drops a mounted boss trophy five seconds after its guardian power is selected. |
 | [HammerFreedom](Landoria.HammerFreedom/) | Both | Adds server-authorized creative freedoms to Hammer worlds. |
