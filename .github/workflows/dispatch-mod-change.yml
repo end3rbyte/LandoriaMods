@@ -1,0 +1,37 @@
+---
+name: Notify mod automation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - Landoria.*/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: notify-mod-automation-public
+  cancel-in-progress: true
+
+jobs:
+  notify:
+    runs-on: [self-hosted, Linux, X64, mods-dispatch]
+    timeout-minutes: 5
+    steps:
+      - name: Dispatch the source revision
+        shell: bash
+        env:
+          SOURCE_REPOSITORY: ${{ github.repository }}
+          SOURCE_REVISION: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          GH_TOKEN="$(sudo cat /var/lib/landoria-secrets/github-token)"
+          export GH_TOKEN
+          gh api --method POST \
+            repos/landoria-gaming/LandoriaModsAutomation/dispatches \
+            --field event_type=mod-source-changed \
+            --field "client_payload[repository]=$SOURCE_REPOSITORY" \
+            --field "client_payload[revision]=$SOURCE_REVISION"
+          unset GH_TOKEN
