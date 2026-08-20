@@ -25,6 +25,7 @@ jobs:
         env:
           SOURCE_REPOSITORY: ${{ github.repository }}
           SOURCE_REVISION: ${{ github.sha }}
+          SOURCE_BEFORE: ${{ github.event.before }}
         run: |
           set -euo pipefail
           GH_TOKEN="$(sudo cat /var/lib/landoria-secrets/github-token)"
@@ -33,5 +34,6 @@ jobs:
             repos/landoria-gaming/LandoriaModsAutomation/dispatches \
             --field event_type=mod-source-changed \
             --field "client_payload[repository]=$SOURCE_REPOSITORY" \
-            --field "client_payload[revision]=$SOURCE_REVISION"
+            --field "client_payload[revision]=$SOURCE_REVISION" \
+            --field "client_payload[before]=$SOURCE_BEFORE"
           unset GH_TOKEN
