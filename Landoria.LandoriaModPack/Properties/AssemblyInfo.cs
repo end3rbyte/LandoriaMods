@@ -11,4 +11,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("1.0.25.*")]
 [assembly: AssemblyFileVersion("1.0.25")]
 
-[assembly: AssemblyInformationalVersion("1.0.25-draft")]
+[assembly: AssemblyInformationalVersion("1.0.25")]
