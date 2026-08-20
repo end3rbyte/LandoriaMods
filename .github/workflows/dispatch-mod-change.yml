@@ -26,8 +26,13 @@ jobs:
           SOURCE_REPOSITORY: ${{ github.repository }}
           SOURCE_REVISION: ${{ github.sha }}
           SOURCE_BEFORE: ${{ github.event.before }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         run: |
           set -euo pipefail
+          if [[ "$COMMIT_MESSAGE" == *'[skip mod test]'* ]]; then
+            echo "Skipping the automatic test deployment requested by the release workflow."
+            exit 0
+          fi
           GH_TOKEN="$(sudo cat /var/lib/landoria-secrets/github-token)"
           export GH_TOKEN
           gh api --method POST \
