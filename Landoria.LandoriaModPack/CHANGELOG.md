@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.25
+
+- Update ModSentry to 1.0.10 and CharacterVault to 1.0.17.
+
 ## 1.0.24
 
 - Update AfkDetector, HammerFreedom, FreeFlyCommand, FirstPerson,
