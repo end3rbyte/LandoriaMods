@@ -1,9 +1,5 @@
 # Changelog
 
-## 1.0.27
-
-- Update ExpandedServer from 1.0.8 to 1.0.9-draft.
-- Add NoServerPassword 1.0.6-draft.
 ## 1.0.26
 
 - Add BepInExPack_Valheim 5.4.2333.
@@ -14,7 +10,8 @@
 - Add FirstPerson 1.0.4.
 - Add Moderator 1.0.7.
 - Add GetMyTrophyBack 1.0.7.
-- Add ExpandedServer 1.0.8.
+- Add ExpandedServer 1.0.9-draft.
+- Add NoServerPassword 1.0.6-draft.
 - Add CharacterVault 1.0.18.
 - Add Socialize 1.0.11.
 - Add DecayControl 1.0.1.
