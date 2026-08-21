@@ -102,13 +102,13 @@ namespace Landoria.CharacterVault
 
         internal bool ApproveGuest(ZRpc rpc)
         {
-            if (!TemporaryGuestMarker.IsMarked(rpc))
+            if (!ModSentryGuestMarker.IsMarked(rpc))
             {
                 return Approve(rpc);
             }
 
             CharacterVaultPlugin.Log.LogInfo(
-                "Recognized a temporary guest session; skipping character validation, " +
+                "Recognized a ModSentry guest session; skipping character validation, " +
                 "vault session creation, profile import, and persistence.");
             return true;
         }
@@ -169,9 +169,9 @@ namespace Landoria.CharacterVault
 
         internal KickSaveEligibility GetKickSaveEligibility(ZNetPeer peer)
         {
-            if (peer?.m_rpc != null && TemporaryGuestMarker.IsMarked(peer.m_rpc))
+            if (peer?.m_rpc != null && ModSentryGuestMarker.IsMarked(peer.m_rpc))
             {
-                return KickSaveEligibility.TemporaryGuest;
+                return KickSaveEligibility.ModSentryGuest;
             }
             if (peer?.m_rpc != null && !peer.IsReady())
             {

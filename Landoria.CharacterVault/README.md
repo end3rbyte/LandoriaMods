@@ -22,7 +22,7 @@ Characters are saved:
 - before a graceful server stop or restart (when configured on the server).
 
 Characters are not saved after a client crash or network loss because the
-connection is already unavailable. Temporary guests are not saved (see ModSentry).
+connection is already unavailable. Guests are not saved (see ModSentry).
 
 ## Installation
 
@@ -46,8 +46,9 @@ Example:
 --charactervault-starting-items Hammer:1,PickaxeAntler:1
 ```
 
-Graceful server stop and restart support is optional and requires configuration
-on the Linux server.
+Graceful server stop and restart support is optional on dedicated servers and
+requires integration with the service that stops Valheim. See the
+[graceful server stop and restart guide](https://github.com/landoria-gaming/LandoriaMods/blob/main/Landoria.CharacterVault/GRACEFUL_SERVER_STOP.md).
 
 ## Contact
 

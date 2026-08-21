@@ -11,14 +11,14 @@ namespace Landoria.ModSentry
         internal static bool TryAdd(ZRpc rpc, out string failure)
         {
             failure = null;
-            TemporaryGuestMarker.Mark(rpc);
+            ModSentryGuestMarker.Mark(rpc);
             Guests.Add(rpc);
             if (UnverifiedGuestControllerRegistry.NotifyAdmitted(rpc, out failure))
             {
                 return true;
             }
             Guests.Remove(rpc);
-            TemporaryGuestMarker.Unmark(rpc);
+            ModSentryGuestMarker.Unmark(rpc);
             return false;
         }
 
@@ -37,7 +37,7 @@ namespace Landoria.ModSentry
                 return;
             }
             UnverifiedGuestControllerRegistry.NotifyDisconnected(rpc);
-            TemporaryGuestMarker.Unmark(rpc);
+            ModSentryGuestMarker.Unmark(rpc);
         }
 
         internal static void Clear()

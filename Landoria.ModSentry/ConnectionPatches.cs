@@ -32,8 +32,8 @@ namespace Landoria.ModSentry
                 ___m_bannedList.Contains(playerName);
             __result = GuestPermissionPolicy.Resolve(__result, true, banned);
             ModSentryPlugin.Log.LogInfo(banned
-                ? "Preserved the banned-list rejection for a temporary guest."
-                : "Allowed a temporary guest past the server permitted list.");
+                ? "Preserved the banned-list rejection for a guest."
+                : "Allowed a guest past the server permitted list.");
         }
 
         private static bool IsListed(SyncedList list, string value, Platform platform)
@@ -83,10 +83,10 @@ namespace Landoria.ModSentry
         {
             if (marked)
             {
-                TemporaryGuestMarker.Mark(rpc);
+                ModSentryGuestMarker.Mark(rpc);
                 return;
             }
-            TemporaryGuestMarker.Unmark(rpc);
+            ModSentryGuestMarker.Unmark(rpc);
         }
 
         private static void SetVerifiedMarker(ZRpc rpc, bool marked)

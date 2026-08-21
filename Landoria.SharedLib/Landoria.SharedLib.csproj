@@ -67,7 +67,7 @@
         <Compile Include="ModLog.cs"/>
         <Compile Include="PlatformPlayerIdentity.cs"/>
         <Compile Include="ServerRole.cs"/>
-        <Compile Include="TemporaryGuestMarker.cs"/>
+        <Compile Include="ModSentryGuestMarker.cs"/>
         <Compile Include="VerifiedModpackMarker.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>

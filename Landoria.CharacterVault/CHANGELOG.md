@@ -15,7 +15,7 @@
 
 ## 1.0.15
 
-- Allow vanilla kicks for temporary guest players.
+- Allow vanilla kicks for guest players.
 
 ## 1.0.14
 

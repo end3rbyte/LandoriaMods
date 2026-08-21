@@ -2,9 +2,9 @@ using System.Linq;
 
 namespace Landoria.SharedLib
 {
-    public static class TemporaryGuestMarker
+    public static class ModSentryGuestMarker
     {
-        private const string Key = "landoria.temporary_guest";
+        private const string Key = "landoria.modsentry_guest";
         private const string Value = "1";
 
         public static void Mark(ZRpc rpc)

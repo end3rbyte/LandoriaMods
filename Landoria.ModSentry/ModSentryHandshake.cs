@@ -57,7 +57,7 @@ namespace Landoria.ModSentry
                 GuestAdmissions.TryAdd(rpc, out failure))
             {
                 ModSentryPlugin.Log.LogWarning(
-                    "Admitting a client without a ModSentry inventory as a temporary guest.");
+                    "Admitting a client without a ModSentry inventory as a guest.");
                 return true;
             }
             if (rejection == null && !string.IsNullOrEmpty(failure))
