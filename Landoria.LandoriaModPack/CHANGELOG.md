@@ -2,7 +2,7 @@
 
 ## 1.0.26
 
-- Update ModSentry from 1.0.10 to 1.0.11-draft.
+- Update CharacterVault from 1.0.17 to 1.0.18-draft.
 ## 1.0.25
 
 - Update ModSentry to 1.0.10 and CharacterVault to 1.0.17.
