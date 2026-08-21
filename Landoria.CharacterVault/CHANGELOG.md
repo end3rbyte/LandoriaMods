@@ -2,8 +2,7 @@
 
 ## 1.0.18
 
-- Disconnect rejected pre-spawn clients and preserve the custom rejection message without forcing a local logout.
-- Accept a new character after restarting Valheim when it has never joined a world.
+- Minor fix
 
 ## 1.0.17
 
