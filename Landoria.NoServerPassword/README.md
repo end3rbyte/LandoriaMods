@@ -1,12 +1,6 @@
 # NoServerPassword
 
-Allows public and crossplay Valheim servers to run without a password.
-
-## Features
-
-- Allows a public server to start without a password.
-- Lets players join without entering a password.
-- Shows password-free PlayFab servers without the password icon.
+Allows Valheim servers to run without a password, including crossplay servers.
 
 ## Installation
 
@@ -18,5 +12,4 @@ Install the same version on the server and every client.
 
 ## Contact
 
-Report bugs through [GitHub Issues](https://github.com/landoria-gaming/LandoriaMods/issues).
-For questions and feedback, use [GitHub Discussions](https://github.com/landoria-gaming/LandoriaMods/discussions).
+[Report a bug](https://github.com/landoria-gaming/LandoriaMods/issues) or [start a discussion](https://github.com/landoria-gaming/LandoriaMods/discussions).

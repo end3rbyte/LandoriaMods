@@ -2,11 +2,11 @@
 
 ## 1.0.9
 
-- Report the configured player capacity correctly.
+- Bug fix
 
 ## 1.0.8
 
-- Bug fix.
+- Bug fix
 
 ## 1.0.7
 

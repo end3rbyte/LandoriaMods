@@ -1,30 +1,17 @@
 # ExpandedServer
 
-Lets larger communities play together by raising Valheim's server capacity to a configurable player limit.
-
-## Valheim compatibility
-
-| Valheim channel | Version | Compatibility |
-|---|---:|---|
-| Current release | `0.221.12` | Compatible |
-| Public Test | `0.221.13` | Compatible |
+Raises dedicated-server capacity to a configurable limit of up to 100 players.
 
 ## Features
 
-- Increases server capacity to up to 100 players, with a default limit of 20.
-- Shows the expanded capacity correctly through PlayFab and admits players up to the configured limit.
-- Applies its expanded capacity on dedicated servers.
-- Caps the configured limit at 100 players.
+- Uses a default limit of 20 players.
+- Reports the configured capacity through PlayFab.
 
-## Valheim.exe Command Switches
+## Configuration
 
 | Switch | Default | Purpose |
 |---|---:|---|
-| `--maxplayer <1-100>` | `20` | Sets dedicated-server capacity. Joining clients do not use it. |
-
-- Every connecting player needs a compatible mod setup.
-- Larger populations increase server, network, and simulation load.
-- PlayFab Party may impose a lower backend capacity.
+| `--maxplayer <1-100>` | `20` | Sets the server capacity. |
 
 ## Installation
 
@@ -32,8 +19,6 @@ Lets larger communities play together by raising Valheim's server capacity to a 
 |---|---|---|
 | Yes | Yes | Not Supported |
 
-
 ## Contact
 
-Report bugs through [GitHub Issues](https://github.com/landoria-gaming/LandoriaMods/issues).
-For questions, feedback, and other discussions, use [GitHub Discussions](https://github.com/landoria-gaming/LandoriaMods/discussions).
+[Report a bug](https://github.com/landoria-gaming/LandoriaMods/issues) or [start a discussion](https://github.com/landoria-gaming/LandoriaMods/discussions).
