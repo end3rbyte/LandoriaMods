@@ -59,6 +59,20 @@ namespace GuestLobbyExample
             return parts.Length == 3 && TryParse(parts, out position);
         }
 
+        /// <summary>Resolves a safe fallback outside the Guest Lobby.</summary>
+        internal static bool TryGetNormalPosition(out Vector3 position)
+        {
+            position = default;
+            if (Game.instance == null || ZoneSystem.instance == null ||
+                !ZoneSystem.instance.GetLocationIcon(
+                    Game.instance.m_StartLocation, out position))
+            {
+                return false;
+            }
+            position.y = ZoneSystem.instance.GetGroundHeight(position) + 1f;
+            return true;
+        }
+
         private static void Generate()
         {
             ZoneSystem.instance.GenerateLocationsCompleted -= Generate;

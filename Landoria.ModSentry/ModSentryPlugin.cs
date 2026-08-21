@@ -9,6 +9,9 @@ namespace Landoria.ModSentry
         internal const string InventoryRpc = "Landoria_ModSentry_Inventory";
         internal const string RejectionRpc = "Landoria_ModSentry_Rejection";
         internal const string RejectionAckRpc = "Landoria_ModSentry_RejectionAck";
+        internal const string AcceptanceRpc = "Landoria_ModSentry_Acceptance";
+        internal const string CharacterPositionRpc =
+            "Landoria_ModSentry_CharacterPosition";
         internal const int ProtocolVersion = 1;
         public const int GuestControllerProtocolVersion =
             UnverifiedGuestControllerRegistry.ProtocolVersion;
@@ -36,6 +39,12 @@ namespace Landoria.ModSentry
             Log?.LogInfo("Unregistered the server-only unverified guest controller.");
         }
 
+        public static bool TryGetLastVerifiedPosition(ZRpc rpc,
+            out UnityEngine.Vector3 position)
+        {
+            return VerifiedCharacterPositions.TryGet(rpc, out position);
+        }
+
         private void Awake()
         {
             Log = InitializePlugin(PluginGuid);
@@ -57,6 +66,7 @@ namespace Landoria.ModSentry
         private void Update()
         {
             PendingDisconnects.Tick();
+            ClientVerificationState.Update();
         }
 
         private void OnDestroy()
@@ -66,6 +76,8 @@ namespace Landoria.ModSentry
             PendingDisconnects.Clear();
             GuestAdmissions.Clear();
             ClientMessage.Clear();
+            ClientVerificationState.Clear();
+            VerifiedCharacterPositions.Clear();
             UnverifiedGuestControllerRegistry.Clear();
             Policy = null;
             ShutdownPlugin();

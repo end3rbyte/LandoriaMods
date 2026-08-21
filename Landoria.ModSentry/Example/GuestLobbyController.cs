@@ -15,6 +15,8 @@ namespace GuestLobbyExample
         private const string WelcomeMessage = "Welcome to the Guest Lobby";
         private static readonly Dictionary<ZRpc, GuestState> Guests =
             new Dictionary<ZRpc, GuestState>();
+        private static readonly Dictionary<ZRpc, VerifiedState> VerifiedPlayers =
+            new Dictionary<ZRpc, VerifiedState>();
 
         /// <summary>Gets the ModSentry guest-controller protocol version.</summary>
         public int ProtocolVersion =>
@@ -84,7 +86,70 @@ namespace GuestLobbyExample
                     ConfineWhenReady(rpc, state, lobby);
                 }
             }
+            KeepVerifiedPlayersOut(lobby);
             GuestLobbyProtection.TickSign();
+        }
+
+        private static void KeepVerifiedPlayersOut(Vector3 lobby)
+        {
+            HashSet<ZRpc> connected = new HashSet<ZRpc>();
+            foreach (ZNetPeer peer in ZNet.instance?.GetPeers() ??
+                     Enumerable.Empty<ZNetPeer>())
+            {
+                if (peer?.m_rpc == null)
+                {
+                    continue;
+                }
+                connected.Add(peer.m_rpc);
+                if (Guests.ContainsKey(peer.m_rpc))
+                {
+                    VerifiedPlayers.Remove(peer.m_rpc);
+                    continue;
+                }
+                KeepVerifiedPlayerOut(peer, lobby);
+            }
+            foreach (ZRpc rpc in VerifiedPlayers.Keys
+                         .Where(rpc => !connected.Contains(rpc)).ToArray())
+            {
+                VerifiedPlayers.Remove(rpc);
+            }
+        }
+
+        private static void KeepVerifiedPlayerOut(ZNetPeer peer, Vector3 lobby)
+        {
+            if (!peer.IsReady() || peer.m_characterID.IsNone())
+            {
+                return;
+            }
+            ZDO character = ZDOMan.instance?.GetZDO(peer.m_characterID);
+            if (character == null || !character.IsValid())
+            {
+                return;
+            }
+            VerifiedState state = GetVerifiedState(peer.m_rpc);
+            Vector3 position = character.GetPosition();
+            if (!GuestLobbyProtection.IsInsideLobby(position, lobby))
+            {
+                state.SetSafePosition(position);
+                return;
+            }
+            if (state.TryGetReturnPosition(out Vector3 target) ||
+                ModSentryPlugin.TryGetLastVerifiedPosition(peer.m_rpc,
+                    out target) ||
+                GuestLobbyGenerator.TryGetNormalPosition(out target))
+            {
+                SendTeleport(peer, state, target);
+            }
+        }
+
+        private static VerifiedState GetVerifiedState(ZRpc rpc)
+        {
+            if (!VerifiedPlayers.TryGetValue(rpc, out VerifiedState state))
+            {
+                state = new VerifiedState();
+                VerifiedPlayers[rpc] = state;
+            }
+            return state;
         }
 
         private static bool DisconnectWhenExpired(ZRpc rpc, GuestState state)
@@ -140,7 +205,7 @@ namespace GuestLobbyExample
             SendTeleport(peer, state, lobby);
         }
 
-        private static void SendTeleport(ZNetPeer peer, GuestState state,
+        private static void SendTeleport(ZNetPeer peer, ITeleportState state,
             Vector3 lobby)
         {
             float now = Time.unscaledTime;
@@ -161,6 +226,7 @@ namespace GuestLobbyExample
         }
 
         private sealed class GuestState
+            : ITeleportState
         {
             private bool _arrivalConfirmed;
             private bool _welcomeSent;
@@ -171,7 +237,7 @@ namespace GuestLobbyExample
                 DisconnectAt = admittedAt + GuestDurationSeconds;
             }
 
-            internal float NextTeleportAt { get; set; }
+            public float NextTeleportAt { get; set; }
             internal bool IsInside { get; set; }
             internal float DisconnectAt { get; }
             internal bool DisconnectSent { get; private set; }
@@ -213,6 +279,31 @@ namespace GuestLobbyExample
                 _welcomeSent = true;
                 GuestLobbyUtility.ShowCenterMessage(peer, WelcomeMessage);
             }
+        }
+
+        private sealed class VerifiedState : ITeleportState
+        {
+            private Vector3 _safePosition;
+            private bool _hasSafePosition;
+
+            public float NextTeleportAt { get; set; }
+
+            internal void SetSafePosition(Vector3 position)
+            {
+                _safePosition = position;
+                _hasSafePosition = true;
+            }
+
+            internal bool TryGetReturnPosition(out Vector3 position)
+            {
+                position = _safePosition;
+                return _hasSafePosition;
+            }
+        }
+
+        private interface ITeleportState
+        {
+            float NextTeleportAt { get; set; }
         }
     }
 }

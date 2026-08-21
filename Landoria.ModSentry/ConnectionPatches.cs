@@ -111,7 +111,21 @@ namespace Landoria.ModSentry
                 VerifiedModpackMarker.Unmark(peer.m_rpc);
                 PendingDisconnects.Remove(peer.m_rpc);
                 GuestAdmissions.Remove(peer.m_rpc);
+                VerifiedCharacterPositions.Remove(peer.m_rpc);
             }
+            if (ZNet.instance?.IsServer() != true)
+            {
+                ClientVerificationState.Clear();
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(Player), nameof(Player.Save))]
+    internal static class RememberVerifiedCharacterPositionPatch
+    {
+        private static void Prefix(Player __instance)
+        {
+            CharacterPositionMemory.Save(__instance);
         }
     }
 

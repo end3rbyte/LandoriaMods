@@ -13,11 +13,16 @@ namespace Landoria.ModSentry
             {
                 peer.m_rpc.Register<ZPackage>(ModSentryPlugin.InventoryRpc, ReceiveInventory);
                 peer.m_rpc.Register(ModSentryPlugin.RejectionAckRpc, ReceiveRejectionAck);
+                peer.m_rpc.Register<ZPackage>(ModSentryPlugin.CharacterPositionRpc,
+                    VerifiedCharacterPositions.Receive);
             }
             else
             {
                 ClientMessage.Clear();
+                ClientVerificationState.Begin(peer.m_rpc);
                 peer.m_rpc.Register<string>(ModSentryPlugin.RejectionRpc, ClientMessage.Receive);
+                peer.m_rpc.Register(ModSentryPlugin.AcceptanceRpc,
+                    ClientVerificationState.Accept);
             }
         }
 
@@ -121,6 +126,7 @@ namespace Landoria.ModSentry
             {
                 HandshakeState.Accept(rpc);
                 VerifiedModpackMarker.Mark(rpc);
+                rpc.Invoke(ModSentryPlugin.AcceptanceRpc);
                 ModSentryPlugin.Log.LogInfo(result.TechnicalMessage);
                 return;
             }

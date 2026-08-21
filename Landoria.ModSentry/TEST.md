@@ -21,6 +21,8 @@ Use Valheim `0.221.12` and `start_server_hammer.bat`.
 | Test | Action | Expected result |
 | --- | --- | --- |
 | Matching plugins | Join with matching required plugins. | Player joins normally. |
+| Guest Lobby exclusion | Enter the Guest Lobby after joining normally. | Player returns to the last position outside the lobby. |
+| Saved return position | Save outside the lobby, reconnect once as a Guest, then reconnect with ModSentry. | Player returns to the position stored in the character. |
 | Missing plugin | Remove a required plugin and join. | Connection is rejected; missing plugin is named. |
 | Outdated plugin | Use a different required-plugin version. | Connection is rejected; outdated plugin is named. |
 | Unexpected plugin | Add a plugin not listed as required or optional. | Connection is rejected; unexpected plugin is named. |
