@@ -2,7 +2,10 @@
 
 ## 1.0.26
 
-- Update ExpandedServer from 1.0.9-draft to 1.0.9.
+- Update ModSentry from 1.0.10 to 1.0.11.
+- Update ExpandedServer from 1.0.8 to 1.0.9.
+- Add NoServerPassword 1.0.6.
+- Update CharacterVault from 1.0.17 to 1.0.18.
 ## 1.0.25
 
 - Update ModSentry to 1.0.10 and CharacterVault to 1.0.17.
