@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Landoria.SharedLib;
 
 namespace Landoria.ModSentry
 {

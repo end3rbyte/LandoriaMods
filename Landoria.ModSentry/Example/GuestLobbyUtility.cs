@@ -19,5 +19,17 @@ namespace GuestLobbyExample
             }
             return first + (second * 1566083941);
         }
+
+        /// <summary>Shows a centered HUD message to one player.</summary>
+        internal static void ShowCenterMessage(ZNetPeer peer, string message)
+        {
+            if (peer == null || ZRoutedRpc.instance == null ||
+                string.IsNullOrEmpty(message))
+            {
+                return;
+            }
+            ZRoutedRpc.instance.InvokeRoutedRPC(peer.m_uid, "ShowMessage",
+                (int)MessageHud.MessageType.Center, message);
+        }
     }
 }

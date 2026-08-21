@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace Landoria.SharedLib
+namespace Landoria.ModSentry
 {
     public static class ModSentryGuestMarker
     {
@@ -26,17 +26,6 @@ namespace Landoria.SharedLib
         public static void Unmark(ZRpc rpc)
         {
             FindPeer(rpc)?.m_serverSyncedPlayerData.Remove(Key);
-        }
-
-        public static bool IsMarked(string hostName)
-        {
-            return ZNet.instance?.GetPeers().Any(peer => IsHost(peer, hostName) &&
-                IsMarked(peer.m_rpc)) == true;
-        }
-
-        private static bool IsHost(ZNetPeer peer, string hostName)
-        {
-            return peer?.m_rpc != null && peer.m_socket?.GetHostName() == hostName;
         }
 
         private static ZNetPeer FindPeer(ZRpc rpc)

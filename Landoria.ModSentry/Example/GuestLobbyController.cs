@@ -9,6 +9,10 @@ namespace GuestLobbyExample
     internal sealed class GuestLobbyController : IUnverifiedGuestController
     {
         private const float RetrySeconds = 0.25f;
+        private const float WelcomeDelaySeconds = 6f;
+        private const float GuestDurationSeconds = 15f * 60f;
+        private const float ForcedDisconnectDelaySeconds = 2f;
+        private const string WelcomeMessage = "Welcome to the Guest Lobby";
         private static readonly Dictionary<ZRpc, GuestState> Guests =
             new Dictionary<ZRpc, GuestState>();
 
@@ -28,7 +32,7 @@ namespace GuestLobbyExample
                 throw new System.InvalidOperationException(
                     "The guest lobby is unavailable.");
             }
-            Guests[rpc] = new GuestState();
+            Guests[rpc] = new GuestState(Time.unscaledTime);
             GuestLobbyPlugin.Log.LogInfo("Started tracking an admitted guest.");
         }
 
@@ -74,9 +78,36 @@ namespace GuestLobbyExample
             }
             foreach (ZRpc rpc in Guests.Keys.ToArray())
             {
-                ConfineWhenReady(rpc, Guests[rpc], lobby);
+                GuestState state = Guests[rpc];
+                if (!DisconnectWhenExpired(rpc, state))
+                {
+                    ConfineWhenReady(rpc, state, lobby);
+                }
             }
             GuestLobbyProtection.TickSign();
+        }
+
+        private static bool DisconnectWhenExpired(ZRpc rpc, GuestState state)
+        {
+            float now = Time.unscaledTime;
+            if (!state.DisconnectSent && now >= state.DisconnectAt)
+            {
+                state.SendDisconnect(rpc, now);
+                return true;
+            }
+            if (!state.DisconnectSent || now < state.ForceDisconnectAt)
+            {
+                return state.DisconnectSent;
+            }
+            ZNetPeer peer = FindPeer(rpc);
+            if (peer != null)
+            {
+                GuestLobbyPlugin.Log.LogWarning(
+                    "Guest did not disconnect; closing the server connection.");
+                ZNet.instance?.Disconnect(peer);
+            }
+            Guests.Remove(rpc);
+            return true;
         }
 
         private static void ConfineWhenReady(ZRpc rpc, GuestState state,
@@ -92,12 +123,20 @@ namespace GuestLobbyExample
             {
                 return;
             }
-            state.IsInside = GuestLobbyProtection.IsInsideLobby(
+            bool isInside = GuestLobbyProtection.IsInsideLobby(
                 character.GetPosition(), lobby);
-            if (state.IsInside)
+            if (isInside)
             {
+                state.IsInside = true;
+                state.ConfirmArrival();
+                state.ShowWelcomeWhenReady(peer);
                 return;
             }
+            if (state.IsInside)
+            {
+                state.ResetArrival();
+            }
+            state.IsInside = false;
             SendTeleport(peer, state, lobby);
         }
 
@@ -123,8 +162,57 @@ namespace GuestLobbyExample
 
         private sealed class GuestState
         {
+            private bool _arrivalConfirmed;
+            private bool _welcomeSent;
+            private float _welcomeAt;
+
+            internal GuestState(float admittedAt)
+            {
+                DisconnectAt = admittedAt + GuestDurationSeconds;
+            }
+
             internal float NextTeleportAt { get; set; }
             internal bool IsInside { get; set; }
+            internal float DisconnectAt { get; }
+            internal bool DisconnectSent { get; private set; }
+            internal float ForceDisconnectAt { get; private set; }
+
+            internal void SendDisconnect(ZRpc rpc, float now)
+            {
+                DisconnectSent = true;
+                ForceDisconnectAt = now + ForcedDisconnectDelaySeconds;
+                GuestLobbyPlugin.Log.LogInfo(
+                    "Guest session expired; requesting client disconnection.");
+                rpc?.Invoke("Disconnect");
+            }
+
+            internal void ConfirmArrival()
+            {
+                if (_arrivalConfirmed)
+                {
+                    return;
+                }
+                _arrivalConfirmed = true;
+                _welcomeAt = Time.unscaledTime + WelcomeDelaySeconds;
+            }
+
+            internal void ResetArrival()
+            {
+                _arrivalConfirmed = false;
+                _welcomeSent = false;
+                _welcomeAt = 0f;
+            }
+
+            internal void ShowWelcomeWhenReady(ZNetPeer peer)
+            {
+                if (!_arrivalConfirmed || _welcomeSent ||
+                    Time.unscaledTime < _welcomeAt)
+                {
+                    return;
+                }
+                _welcomeSent = true;
+                GuestLobbyUtility.ShowCenterMessage(peer, WelcomeMessage);
+            }
         }
     }
 }
