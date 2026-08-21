@@ -2,7 +2,20 @@
 
 ## 1.0.26
 
-- Update CharacterVault from 1.0.18-draft to 1.0.18.
+- Add BepInExPack_Valheim 5.4.2333.
+- Add ModSentry 1.0.11.
+- Add AfkDetector 1.0.6.
+- Add HammerFreedom 1.0.4.
+- Add FreeFlyCommand 1.0.7.
+- Add FirstPerson 1.0.4.
+- Add Moderator 1.0.7.
+- Add GetMyTrophyBack 1.0.7.
+- Add ExpandedServer 1.0.8.
+- Add CharacterVault 1.0.18.
+- Add Socialize 1.0.11.
+- Add DecayControl 1.0.1.
+- Add StructureProtection 1.0.1.
+- Add SealedTombstone 1.0.7.
 ## 1.0.25
 
 - Update ModSentry to 1.0.10 and CharacterVault to 1.0.17.

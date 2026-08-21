@@ -1,6 +1,6 @@
 {
   "name": "LandoriaModPack",
-  "version_number": "1.0.26-draft",
+  "version_number": "1.0.26",
   "website_url": "https://valheim.landoria-gaming.com/",
   "description": "Installs the mods required to join the Landoria Valheim server.",
   "dependencies": [
