@@ -5,6 +5,8 @@ This directory contains the files for a complete minimal guest lobby implementat
 The lobby is placed 40 metres from the Start Temple and 70 metres above the
 highest terrain measured within 40 metres of its target position.
 
+![Guest Lobby above the Start Temple](./guest-lobby.jpg)
+
 | File | Purpose |
 |---|---|
 | `GuestLobbyPlugin.cs` | Starts the server-only integration and handles cleanup. |
