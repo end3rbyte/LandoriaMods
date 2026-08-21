@@ -77,14 +77,14 @@ namespace Landoria.CharacterVault
             CharacterVaultPlugin.Log.LogWarning($"Server rejected the character: {message}");
             rpc.Invoke(AckRpc);
             CharacterVaultPlugin.Log.LogDebug(
-                "Acknowledged the CharacterVault rejection; waiting for the server kick.");
+                "Acknowledged the CharacterVault rejection; waiting for the server disconnect.");
         }
 
         private static void ReceiveAck(ZRpc rpc)
         {
             if (Deadlines.Remove(rpc))
             {
-                Kick(rpc);
+                Disconnect(rpc);
             }
         }
 
@@ -97,23 +97,19 @@ namespace Landoria.CharacterVault
             foreach (ZRpc rpc in expired)
             {
                 Deadlines.Remove(rpc);
-                Kick(rpc);
+                Disconnect(rpc);
             }
         }
 
-        private static void Kick(ZRpc rpc)
+        private static void Disconnect(ZRpc rpc)
         {
             ZNetPeer peer = ZNet.instance?.GetPeers()
                 .FirstOrDefault(candidate => ReferenceEquals(candidate.m_rpc, rpc));
-            if (peer != null)
+            if (peer?.m_rpc != null)
             {
-                string platformPlayerId = peer.m_socket?.GetHostName();
-                if (!string.IsNullOrWhiteSpace(platformPlayerId))
-                {
-                    CharacterVaultPlugin.Log.LogDebug(
-                        "Kicking the rejected pre-spawn peer after delivering the rejection reason.");
-                    ZNet.instance.Kick(platformPlayerId);
-                }
+                CharacterVaultPlugin.Log.LogDebug(
+                    "Disconnecting the rejected pre-spawn peer after delivering the rejection reason.");
+                peer.m_rpc.Invoke("Disconnect");
             }
         }
 

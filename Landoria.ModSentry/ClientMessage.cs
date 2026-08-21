@@ -10,7 +10,7 @@ namespace Landoria.ModSentry
             ModSentryPlugin.Log.LogWarning($"Server rejected the connection: {message}");
             rpc.Invoke(ModSentryPlugin.RejectionAckRpc);
             ModSentryPlugin.Log.LogDebug(
-                "Acknowledged the rejection; waiting for the server kick.");
+                "Acknowledged the rejection; waiting for the server disconnect.");
         }
 
         internal static bool TryGet(out string message)

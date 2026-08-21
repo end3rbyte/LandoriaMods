@@ -2,7 +2,7 @@
 
 ## 1.0.17
 
-- Kick rejected pre-spawn clients and preserve the custom rejection message without forcing a local logout.
+- Disconnect rejected pre-spawn clients and preserve the custom rejection message without forcing a local logout.
 
 ## 1.0.16
 

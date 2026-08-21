@@ -89,19 +89,15 @@ namespace Landoria.ModSentry
                 $"Rejecting a client without a ModSentry inventory because {reason}.");
         }
 
-        internal static void Kick(ZRpc rpc)
+        internal static void Disconnect(ZRpc rpc)
         {
             ZNetPeer peer = ZNet.instance.GetPeers()
                 .FirstOrDefault(candidate => ReferenceEquals(candidate.m_rpc, rpc));
-            if (peer != null)
+            if (peer?.m_rpc != null)
             {
-                string platformPlayerId = peer.m_socket?.GetHostName();
-                if (!string.IsNullOrWhiteSpace(platformPlayerId))
-                {
-                    ModSentryPlugin.Log.LogDebug(
-                        "Kicking the rejected pre-spawn peer after delivering the rejection reason.");
-                    ZNet.instance.Kick(platformPlayerId);
-                }
+                ModSentryPlugin.Log.LogDebug(
+                    "Disconnecting the rejected pre-spawn peer after delivering the rejection reason.");
+                peer.m_rpc.Invoke("Disconnect");
             }
         }
 
@@ -115,7 +111,7 @@ namespace Landoria.ModSentry
         {
             if (PendingDisconnects.Acknowledge(rpc))
             {
-                Kick(rpc);
+                Disconnect(rpc);
             }
         }
 
