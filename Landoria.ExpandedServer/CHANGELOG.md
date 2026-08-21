@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.9
+
+- Report the configured player capacity correctly.
+
 ## 1.0.8
 
 - Bug fix.

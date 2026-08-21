@@ -94,15 +94,22 @@ namespace Landoria.ModSentry
                 $"Rejecting a client without a ModSentry inventory because {reason}.");
         }
 
-        internal static void Disconnect(ZRpc rpc)
+        internal static void RequestDisconnect(ZRpc rpc)
         {
-            ZNetPeer peer = ZNet.instance.GetPeers()
+            ModSentryPlugin.Log.LogDebug(
+                "Requesting rejected pre-spawn client disconnection.");
+            rpc?.Invoke("Disconnect");
+        }
+
+        internal static void ForceDisconnect(ZRpc rpc)
+        {
+            ZNetPeer peer = ZNet.instance?.GetPeers()
                 .FirstOrDefault(candidate => ReferenceEquals(candidate.m_rpc, rpc));
-            if (peer?.m_rpc != null)
+            if (peer != null)
             {
-                ModSentryPlugin.Log.LogDebug(
-                    "Disconnecting the rejected pre-spawn peer after delivering the rejection reason.");
-                peer.m_rpc.Invoke("Disconnect");
+                ModSentryPlugin.Log.LogWarning(
+                    "Rejected client did not disconnect; closing the server connection.");
+                ZNet.instance.Disconnect(peer);
             }
         }
 
@@ -114,10 +121,7 @@ namespace Landoria.ModSentry
 
         private static void ReceiveRejectionAck(ZRpc rpc)
         {
-            if (PendingDisconnects.Acknowledge(rpc))
-            {
-                Disconnect(rpc);
-            }
+            PendingDisconnects.Acknowledge(rpc);
         }
 
         private static void Record(ZRpc rpc, ValidationResult result)

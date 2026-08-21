@@ -11,6 +11,8 @@ namespace Landoria.CharacterVault
         private const float DisconnectFallbackSeconds = 2f;
         private static readonly Dictionary<ZRpc, float> Deadlines =
             new Dictionary<ZRpc, float>();
+        private static readonly HashSet<ZRpc> DisconnectRequested =
+            new HashSet<ZRpc>();
         private static readonly HashSet<string> PermittedListRejections =
             new HashSet<string>();
         private static readonly CharacterRejectionMessageState ClientMessage =
@@ -57,6 +59,7 @@ namespace Landoria.CharacterVault
         internal static void Remove(ZRpc rpc)
         {
             Deadlines.Remove(rpc);
+            DisconnectRequested.Remove(rpc);
         }
 
         internal static void Tick()
@@ -67,6 +70,7 @@ namespace Landoria.CharacterVault
         internal static void Clear()
         {
             Deadlines.Clear();
+            DisconnectRequested.Clear();
             PermittedListRejections.Clear();
             ClearClient();
         }
@@ -82,9 +86,9 @@ namespace Landoria.CharacterVault
 
         private static void ReceiveAck(ZRpc rpc)
         {
-            if (Deadlines.Remove(rpc))
+            if (Deadlines.ContainsKey(rpc))
             {
-                Disconnect(rpc);
+                RequestDisconnect(rpc);
             }
         }
 
@@ -96,20 +100,37 @@ namespace Landoria.CharacterVault
                 .ToArray();
             foreach (ZRpc rpc in expired)
             {
-                Deadlines.Remove(rpc);
-                Disconnect(rpc);
+                if (DisconnectRequested.Contains(rpc))
+                {
+                    ForceDisconnect(rpc);
+                }
+                else
+                {
+                    RequestDisconnect(rpc);
+                }
             }
         }
 
-        private static void Disconnect(ZRpc rpc)
+        private static void RequestDisconnect(ZRpc rpc)
         {
+            DisconnectRequested.Add(rpc);
+            Deadlines[rpc] = Time.unscaledTime + DisconnectFallbackSeconds;
+            CharacterVaultPlugin.Log.LogDebug(
+                "Requesting rejected pre-spawn client disconnection.");
+            rpc.Invoke("Disconnect");
+        }
+
+        private static void ForceDisconnect(ZRpc rpc)
+        {
+            Deadlines.Remove(rpc);
+            DisconnectRequested.Remove(rpc);
             ZNetPeer peer = ZNet.instance?.GetPeers()
                 .FirstOrDefault(candidate => ReferenceEquals(candidate.m_rpc, rpc));
-            if (peer?.m_rpc != null)
+            if (peer != null)
             {
-                CharacterVaultPlugin.Log.LogDebug(
-                    "Disconnecting the rejected pre-spawn peer after delivering the rejection reason.");
-                peer.m_rpc.Invoke("Disconnect");
+                CharacterVaultPlugin.Log.LogWarning(
+                    "Rejected client did not disconnect; closing the server connection.");
+                ZNet.instance.Disconnect(peer);
             }
         }
 

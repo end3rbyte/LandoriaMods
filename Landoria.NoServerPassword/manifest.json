@@ -1,8 +1,8 @@
 {
-  "name": "ExpandedServer",
-  "version_number": "1.0.9-draft",
+  "name": "NoServerPassword",
+  "version_number": "1.0.6-draft",
   "website_url": "https://valheim.landoria-gaming.com/",
-  "description": "Increases server capacity to up to 100 players",
+  "description": "Host a public or crossplay Valheim server without requiring a password.",
   "dependencies": [
     "denikson-BepInExPack_Valheim-5.4.2333"
   ],

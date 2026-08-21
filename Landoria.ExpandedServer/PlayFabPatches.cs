@@ -11,10 +11,12 @@ namespace Landoria.ExpandedServer
         private static void Prefix(CreateLobbyRequest request)
         {
             if (request != null && ExpandedServerPlugin.IsLocalServer &&
-                request.MaxPlayers != ExpandedServerPlugin.MaxPlayers)
+                request.MaxPlayers != ExpandedServerPlugin.PlayFabCapacity)
             {
-                request.MaxPlayers = (uint)ExpandedServerPlugin.MaxPlayers;
-                ExpandedServerPlugin.Log.LogDebug($"PlayFab lobby capacity set to {request.MaxPlayers} players.");
+                request.MaxPlayers = ExpandedServerPlugin.PlayFabCapacity;
+                ExpandedServerPlugin.Log.LogDebug(
+                    $"PlayFab lobby capacity set to {request.MaxPlayers} network members " +
+                    $"for {ExpandedServerPlugin.MaxPlayers} players.");
             }
         }
     }
@@ -26,11 +28,12 @@ namespace Landoria.ExpandedServer
         private static void Prefix(PlayFabNetworkConfiguration networkConfiguration)
         {
             if (networkConfiguration != null && ExpandedServerPlugin.IsLocalServer &&
-                networkConfiguration.MaxPlayerCount != ExpandedServerPlugin.MaxPlayers)
+                networkConfiguration.MaxPlayerCount != ExpandedServerPlugin.PlayFabCapacity)
             {
-                networkConfiguration.MaxPlayerCount = (uint)ExpandedServerPlugin.MaxPlayers;
+                networkConfiguration.MaxPlayerCount = ExpandedServerPlugin.PlayFabCapacity;
                 ExpandedServerPlugin.Log.LogDebug(
-                    $"PlayFab network capacity set to {networkConfiguration.MaxPlayerCount} players.");
+                    $"PlayFab network capacity set to {networkConfiguration.MaxPlayerCount} network members " +
+                    $"for {ExpandedServerPlugin.MaxPlayers} players.");
             }
         }
     }
