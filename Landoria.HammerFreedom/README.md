@@ -1,7 +1,7 @@
 # HammerFreedom
 
-Adds creative freedoms to authorized Hammer worlds without enabling debug mode,
-developer commands, or administrator access.
+Lets players build freely in authorized Hammer worlds with flight, unlimited stamina,
+fall protection, lasting equipment, and material recovery—without granting administrator access.
 
 ## Video demo
 
@@ -14,50 +14,32 @@ developer commands, or administrator access.
 | Current release | `0.221.12` | Compatible |
 | Public Test | `0.221.13` | Compatible |
 
-## Authorization
-
-- The client starts denied and explicitly requests authorization from the connected server.
-- The dedicated server controls flight with `--hammerfreedom-fly true|false`.
-- The dedicated server controls fall damage immunity with `--hammerfreedom-fall-damage-immunity true|false`.
-- The dedicated server controls unlimited stamina with `--hammerfreedom-unlimited-stamina true|false`.
-- The dedicated server controls durability loss with `--hammerfreedom-no-durability-loss true|false`.
-- The dedicated server controls material recovery while `NoBuildCost` is active with
-  `--hammerfreedom-no-build-cost-recover-materials true|false`.
-- Each switch defaults to `false`.
-- The server authorizes capabilities only while both `NoBuildCost` and `PassiveMobs` are active.
-- No response, an explicit denial, or a server change immediately removes every capability.
-- The `fly` command is hidden and invalid until the server explicitly authorizes it.
-- The mod is required on the server and every participating client.
-
 ## Features
 
-- Any fall deals zero damage when fall damage immunity is authorized.
-- No action consumes stamina when unlimited stamina is authorized, including
-  running, building, gardening, combat, jumping, swimming, and dodging.
-- Tools, weapons, shields, armor, and other durable equipment do not lose durability when
-  durability protection is authorized. Existing wear is preserved rather than repaired.
-- Hammer dismantling returns the vanilla recoverable materials when recovery is authorized
-  and `NoBuildCost` is active. `NoCraftCost` and other destruction retain vanilla behavior.
-
-## Controls
-
-| Control | Action |
-|---|---|
-| `fly`, `fly on`, `fly off` | Toggle, enable, or disable authorized flight. |
-| `Z` | Toggle flight. |
-| Movement keys | Fly horizontally at up to 4 metres per second. |
-| Jump / Space | Ascend. |
-| Left Control | Descend. |
-| Run / Shift | Fly at up to 7 metres per second. |
-
-The `Z` shortcut is fixed to match Valheim's native debug-flight control.
-While flying, ascent does not trigger a jump and descent does not trigger crouching.
+- Makes every creative ability available only when the connected server authorizes it.
+- Provides separate `--hammerfreedom-fly`, `--hammerfreedom-fall-damage-immunity`, and
+  `--hammerfreedom-unlimited-stamina` server switches, plus
+  `--hammerfreedom-no-durability-loss` and
+  `--hammerfreedom-no-build-cost-recover-materials`; each is disabled by default.
+- Works only in worlds using the required Hammer modifiers.
+- Prevents all fall damage, regardless of fall height, when authorized.
+- Prevents all stamina use when authorized, regardless of the action.
+- Prevents durability loss for tools, weapons, shields, armor, and other durable equipment.
+- Returns vanilla recoverable materials when a piece is dismantled with a hammer while
+  authorized `NoBuildCost` material recovery is active.
+- Removes these creative abilities when moving to a server that does not authorize them.
+- Shows the `fly` command only when it is available.
+- Supports `fly`, `fly on`, `fly off`, and the fixed native `Z` toggle shortcut.
+- Limits flight to 4 metres per second normally and 7 metres per second while sprinting.
+- Keeps vanilla movement: Space ascends, Left Control descends, and Shift increases speed.
+- Prevents Space from jumping and Left Control from crouching while flying.
 
 ## Installation
 
 | Client required | Server required (dedicated) | Player-hosted server |
 |---|---|---|
 | Yes | Yes | Not Supported |
+
 
 ## Contact
 

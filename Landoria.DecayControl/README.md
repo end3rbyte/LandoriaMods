@@ -1,29 +1,26 @@
 # DecayControl
 
-DecayControl controls rain wear and fuel consumption on player-built pieces.
+Controls how rain affects player-built structures and how quickly their fires and torches consume fuel.
 
 ## Features
 
-- Independently controls fuel consumption and environmental wear for player-built pieces.
-- Can preserve vanilla behavior, apply an effect only while the creator is connected, or
-  disable the effect entirely.
-- In `player-online` mode, considers only the creator's connection state; group membership
-  has no effect.
-- Preserves vanilla behavior for natural pieces and pieces without an identifiable creator.
-- Prevents paused fuel consumption from catching up retroactively after loading.
+- Controls building wear and fuel use independently.
+- Can keep the original Valheim behavior, pause each effect while the builder is offline,
+  or disable it entirely for player-built structures.
+- In `player-online` mode, only the original builder's connection matters; joining a group
+  does not change the behavior.
 
 ## Dedicated server settings
-
-Settings are read once from dedicated-server command-line switches and sent to clients
-after their local player spawns. They are not BepInEx settings.
 
 | Switch | Values | Default |
 |---|---|---|
 | `--decay-control-fuel-consumption` | `default`, `player-online`, `disabled` | `default` |
 | `--decay-control-environmental-building-wear` | `default`, `player-online`, `disabled` | `default` |
 
-`default` preserves vanilla behavior. `player-online` applies the effect only while the
-piece creator is connected. `disabled` stops the effect for player-built pieces.
+Settings are read once by the dedicated server and sent to clients after player spawn.
+They are not BepInEx settings. `default` keeps the original Valheim behavior,
+`player-online` requires the builder to be connected, and `disabled` stops the effect
+for player-built structures.
 
 ## Installation
 
@@ -33,6 +30,7 @@ piece creator is connected. `disabled` stops the effect for player-built pieces.
 
 Install matching versions of DecayControl on the server and every participating client.
 DecayControl has no dependency on Socialize.
+
 
 ## Contact
 

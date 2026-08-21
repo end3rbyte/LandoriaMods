@@ -1,8 +1,8 @@
 # Landoria Mods
 
 This repository contains the public source code for Landoria's Valheim mods.
-Each mod directory includes a technical `README.md`, a player-oriented
-`README.Thunderstore.md`, and its changelog.
+Each mod directory includes one player-focused `README.md` used on GitHub and
+Thunderstore. A mod may also include a changelog.
 
 ## Server-driven configuration
 

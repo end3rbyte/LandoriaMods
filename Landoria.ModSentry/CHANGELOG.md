@@ -1,8 +1,13 @@
 # Changelog
 
-## 1.0.10
+## 1.0.11
 
 - Disconnect rejected pre-spawn clients and preserve the custom rejection message without forcing a local logout.
+- Verify required plugin dependency DLLs by version and SHA-256.
+
+## 1.0.10
+
+- Kick rejected pre-spawn clients and preserve the custom rejection message without forcing a local logout.
 
 ## 1.0.9
 

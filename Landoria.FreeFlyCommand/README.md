@@ -1,6 +1,6 @@
 # FreeFlyCommand
 
-Allows Valheim's native `freefly` and `ffsmooth` camera commands after explicit authorization from the connected server. It does not enable `devcommands` or `debugmode`.
+Gives authorized players a controlled free camera for exploring and filming Valheim without opening developer or debug modes.
 
 ## Video demo
 
@@ -13,28 +13,21 @@ Allows Valheim's native `freefly` and `ffsmooth` camera commands after explicit 
 | Current release | `0.221.12` | Compatible |
 | Public Test | `0.221.13` | Compatible |
 
-## Authorization
+## Features
 
-- The client starts denied and requests authorization once after the local player spawns.
-- The dedicated server controls authorization with `--freeflycommand true|false`; the default is `true`.
-- No response, an explicit denial, or a server change immediately disables free camera mode.
-- The mod is required on the server and every participating client.
-
-## Camera behavior
-
-- `freefly` toggles Valheim's native free camera.
-- Enabling free camera also applies native smoothing equivalent to `ffsmooth 1` when smoothing is disabled.
-- `ffsmooth <0-1>` remains available while authorized.
-- Valheim's vanilla `fov <degrees>` command can adjust the field of view while using `freefly`; `fov` by itself reports the current value.
-- Free-camera movement is limited to 20 metres per second.
-- A one-metre-radius free-camera collision sphere blocks terrain, mountains, solid objects, and player-built pieces.
-- The free camera is clamped to 50 metres from the local player.
+- Keeps the free camera unavailable until the connected server authorizes it.
+- Smooths camera movement automatically when free camera mode starts.
+- Lets authorized players adjust smoothing with `ffsmooth` and field of view with Valheim's `fov <degrees>` command.
+- Limits free-camera movement to 20 metres per second.
+- Uses a one-metre-radius collision sphere to prevent the free camera from passing through terrain and solid objects.
+- Limits the camera to 50 metres from the player.
 
 ## Installation
 
 | Client required | Server required (dedicated) | Player-hosted server |
 |---|---|---|
 | Yes | Yes | Not Supported |
+
 
 ## Contact
 

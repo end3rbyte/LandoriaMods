@@ -30,21 +30,28 @@ namespace Landoria.ModSentry
                 .ToList();
         }
 
-        private static PluginDescriptor ReadDescriptor(string path)
+        internal static PluginDescriptor ReadDescriptor(string path)
         {
-            using (AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly(path))
+            try
             {
-                CustomAttribute attribute = assembly.MainModule.Types
-                    .SelectMany(type => type.CustomAttributes)
-                    .SingleOrDefault(item =>
-                        item.AttributeType.FullName == typeof(BepInPlugin).FullName);
-
-                if (attribute == null || attribute.ConstructorArguments.Count < 3)
+                using (AssemblyDefinition assembly = AssemblyDefinition.ReadAssembly(path))
                 {
-                    return CreateFallbackDescriptor(assembly, path);
-                }
+                    CustomAttribute attribute = assembly.MainModule.Types
+                        .SelectMany(type => type.CustomAttributes)
+                        .SingleOrDefault(item =>
+                            item.AttributeType.FullName == typeof(BepInPlugin).FullName);
 
-                return CreateDescriptor(path, attribute);
+                    if (attribute == null || attribute.ConstructorArguments.Count < 3)
+                    {
+                        return CreateFallbackDescriptor(assembly, path);
+                    }
+
+                    return CreateDescriptor(path, attribute);
+                }
+            }
+            catch (BadImageFormatException)
+            {
+                return CreateFallbackDescriptor(null, path);
             }
         }
 

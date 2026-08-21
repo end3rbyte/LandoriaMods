@@ -1,6 +1,6 @@
 # SealedTombstone
 
-Protects recent tombstones from unauthorized players while allowing owner-approved access.
+Keeps your recent tombstone safe from other players while letting you approve someone you trust to recover it.
 
 ## Video demo
 
@@ -15,26 +15,22 @@ Protects recent tombstones from unauthorized players while allowing owner-approv
 
 ## Features
 
-- Locks each recent tombstone to its owner.
-- Sends the online owner a vanilla Yes/No access request.
-- Permanently unlocks the tombstone after owner approval.
-- Expires unanswered requests after 30 seconds.
-- Applies a two-minute request cooldown.
+- Keeps recent tombstones locked to their owners.
+- Uses a vanilla Yes/No popup for access requests.
+- Permanently unlocks a tombstone after approval.
+- Expires requests after 30 seconds and applies a two-minute cooldown.
 - Makes tombstones public after ten in-game days.
-- Permanently blocks players who hurt or killed the owner during the two minutes before death.
+- Blocks recent attackers from requesting access permanently.
 
 ## Access Rules
 
 | Situation | Result |
 |---|---|
-| Owner selects Yes | The tombstone permanently unlocks. |
-| Owner selects No | Access remains denied. |
+| Owner approves | Tombstone permanently unlocks. |
 | Owner is offline | The requester is informed immediately and no cooldown starts. |
-| Request times out | Access remains denied. |
-| Tombstone reaches ten days | It becomes publicly accessible. |
-| Requester is on the deny list | No request is sent to the owner. |
-
-Tombstones created before a lock day was recorded remain protected until their owner approves access.
+| Owner denies or request expires | Tombstone remains locked. |
+| Tombstone reaches ten days | Tombstone becomes public. |
+| Requester attacked the owner before death | The request is blocked. |
 
 ## Installation
 
@@ -42,7 +38,8 @@ Tombstones created before a lock day was recorded remain protected until their o
 |---|---|---|
 | Yes | Yes | Not Supported |
 
-Every participating client and the server must install matching versions.
+Install matching versions on the server and every participating client.
+
 
 ## Contact
 

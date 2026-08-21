@@ -15,11 +15,6 @@ namespace Landoria.ModSentry
 
             foreach (PluginDescriptor expected in policy.Required)
             {
-                if (!expected.IsBepInPlugin)
-                {
-                    continue;
-                }
-
                 if (!installed.TryGetValue(expected.Guid, out PluginDescriptor found))
                 {
                     return Missing(expected);
@@ -70,21 +65,22 @@ namespace Landoria.ModSentry
         private static ValidationResult Compare(PluginDescriptor expected,
             PluginDescriptor actual, bool optional)
         {
-            string kind = optional ? "optional" : "required";
+            string kind = $"{(optional ? "optional" : "required")} " +
+                (expected.IsBepInPlugin ? "plugin" : "library");
             if (!string.Equals(expected.Version, actual.Version, StringComparison.Ordinal))
             {
                 return ValidationResult.Reject(
                     optional
                         ? UpdateMessage("Optional mod mismatch", expected)
                         : UpdateMessage("Mod update required", expected),
-                    $"{kind} plugin {expected.Guid} version mismatch: expected {expected.Version}, received {actual.Version}.");
+                    $"{kind} {expected.Guid} version mismatch: expected {expected.Version}, received {actual.Version}.");
             }
 
             if (!string.Equals(expected.Hash, actual.Hash, StringComparison.OrdinalIgnoreCase))
             {
                 return ValidationResult.Reject(
                     UpdateMessage("Mod mismatch", expected),
-                    $"{kind} plugin {expected.Guid} SHA-256 mismatch: expected {expected.Hash}, received {actual.Hash}.");
+                    $"{kind} {expected.Guid} SHA-256 mismatch: expected {expected.Hash}, received {actual.Hash}.");
             }
 
             return null;
@@ -97,16 +93,18 @@ namespace Landoria.ModSentry
 
         private static ValidationResult Missing(PluginDescriptor expected)
         {
+            string kind = expected.IsBepInPlugin ? "mod" : "library";
             return ValidationResult.Reject(
-                UpdateMessage("Required mod missing", expected),
-                $"Required plugin {expected.Guid} {expected.Version} is missing.");
+                UpdateMessage($"Required {kind} missing", expected),
+                $"Required {kind} {expected.Guid} {expected.Version} is missing.");
         }
 
         private static ValidationResult Unexpected(PluginDescriptor actual)
         {
+            string kind = actual.IsBepInPlugin ? "mod" : "library";
             return ValidationResult.Reject(
-                $"Unsupported mod detected: {actual.Name}. Remove it before reconnecting.",
-                $"Unexpected plugin {actual.Guid} {actual.Version} with SHA-256 {actual.Hash}.");
+                $"Unsupported {kind} detected: {actual.Name}. Remove it before reconnecting.",
+                $"Unexpected {kind} {actual.Guid} {actual.Version} with SHA-256 {actual.Hash}.");
         }
     }
 }

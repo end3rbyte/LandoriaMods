@@ -1,6 +1,6 @@
 # GetMyTrophyBack
 
-Returns a boss trophy after its Sacrificial Stone power is selected.
+Returns a mounted boss trophy after you claim its Forsaken power at the Sacrificial Stones.
 
 ## Valheim compatibility
 
@@ -11,27 +11,19 @@ Returns a boss trophy after its Sacrificial Stone power is selected.
 
 ## Features
 
-- Starts a five-second return timer when a player selects a guardian power.
-- Drops the mounted trophy as a recoverable world item.
-- Preserves the trophy's stored item data.
-- Uses the stone's network owner for an authoritative synchronized drop.
-- Prevents simultaneous requests from duplicating a trophy.
-- Supports modded guardian stones built on vanilla `ItemStand` powers.
+- Returns the mounted trophy as a collectible world item after five seconds.
+- Keeps the chosen Forsaken power active.
+- Preserves stored trophy data.
+- Prevents duplicate drops from simultaneous requests.
 
-## Behavior
-
-| Event | Result |
-|---|---|
-| Trophy mounted | Its guardian power remains available. |
-| Power selected | The five-second return timer starts. |
-| Timer completed | The trophy drops into the world. |
-| Trophy already absent | No additional trophy is created. |
+Install the same version for everyone so the trophy returns correctly in multiplayer.
 
 ## Installation
 
 | Client required | Server required (dedicated) | Player-hosted server |
 |---|---|---|
 | Yes | Yes | Not Supported |
+
 
 ## Contact
 

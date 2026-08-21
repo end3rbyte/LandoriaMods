@@ -11,13 +11,13 @@ Disconnects players who remain motionless and silent beyond a configurable timeo
 
 ## Features
 
-- Performs authoritative inactivity detection on the server.
-- Samples the private server-side reference position instead of relying on public map visibility.
-- Treats nearby, shout, private, and Landoria group messages as activity.
-- Ignores empty map-ping chat messages.
-- Filters normal position jitter through a configurable movement tolerance.
-- Shows a specific inactivity reason after disconnecting the client.
-- Lets CharacterVault delay the kick for a confirmed final save when it is installed.
+- Lets the server decide when a player is inactive.
+- Resets the timer when the player moves or chats.
+- Ignores tiny position changes so harmless character jitter does not count as activity.
+- Clearly explains when a player was disconnected for inactivity.
+- Defaults to a 30-minute timeout.
+- Reads `--afktimeout <minutes>` from the server command line; `-1` disables detection.
+- Works with CharacterVault to finish saving the character before an inactive player disconnects.
 
 ## Installation
 
@@ -25,20 +25,7 @@ Disconnects players who remain motionless and silent beyond a configurable timeo
 |---|---|---|
 | Yes | Yes | Not Supported |
 
-The client component only receives the disconnect reason and replaces Valheim's
-generic kick message. Detection, configuration, and the decision to disconnect
-remain server-authoritative. CharacterVault is optional. When installed, it
-intercepts the normal Valheim kick and waits for a confirmed final save.
-
-## Configuration
-
-The server reads `--afktimeout <minutes>` once when its network session starts.
-The default is `30` minutes, and `-1` disables AFK detection. Other values must be
-at least one minute. Movement tolerance is fixed at `0.75` metres.
-
-## Detection limits
-
-AfkDetector observes movement and chat that the server can verify. Inventory use, camera rotation, and local menu interactions are not visible to a server-authoritative mod and do not reset the timer. A player carried by a moving ship may appear active because their network position changes.
+The client component only displays the server-provided disconnect reason.
 
 ## Contact
 

@@ -26,13 +26,10 @@ namespace Landoria.CharacterVault
         private readonly Dictionary<ZRpc, VaultSession> _sessions = new Dictionary<ZRpc, VaultSession>();
         private readonly Dictionary<ZRpc, IncomingTransfer> _uploads = new Dictionary<ZRpc, IncomingTransfer>();
         private readonly Dictionary<string, ZRpc> _enrollments = new Dictionary<string, ZRpc>(StringComparer.Ordinal);
-        private readonly Queue<PendingCommit> _commits = new Queue<PendingCommit>();
-        private readonly object _commitLock = new object();
         private readonly ClientSaveLifecycle _clientLifecycle = new ClientSaveLifecycle();
-        private bool _commitWorkerRunning;
-        private readonly SynchronizationContext _unityContext;
         private readonly VaultStorage _storage = new VaultStorage();
         private readonly CharacterAdmissionEvaluator _admission;
+        private readonly ProfileCommitQueue _commits;
         private IncomingTransfer _download;
         private bool _clientUploadBusy;
         private bool _suppressNextClientUpload;
@@ -42,8 +39,13 @@ namespace Landoria.CharacterVault
 
         internal ProfileTransferService(SynchronizationContext unityContext)
         {
-            _unityContext = unityContext ?? throw new ArgumentNullException(nameof(unityContext));
+            if (unityContext == null)
+            {
+                throw new ArgumentNullException(nameof(unityContext));
+            }
             _admission = new CharacterAdmissionEvaluator(_storage);
+            _commits = new ProfileCommitQueue(_storage, unityContext,
+                ConfirmBackgroundCommit);
         }
 
         internal void Register(ZNet network, ZNetPeer peer)
@@ -69,7 +71,7 @@ namespace Landoria.CharacterVault
             ZPackage package = new ZPackage();
             package.Write(profile.GetPlayerID());
             package.Write(profile.GetName());
-            package.Write(NewCharacterTracker.WasCreatedThisSession(profile.GetPlayerID()));
+            package.Write(NewCharacterPolicy.HasNeverJoinedAWorld(profile));
             serverRpc.Invoke(HelloRpc, package);
         }
 
@@ -572,58 +574,24 @@ namespace Landoria.CharacterVault
 
         private void QueueCommit(ZRpc rpc, VaultSession session, string requestId, byte[] data)
         {
-            lock (_commitLock)
-            {
-                _commits.Enqueue(new PendingCommit(rpc, session, requestId, data));
-                if (!_commitWorkerRunning)
-                {
-                    _commitWorkerRunning = true;
-                    ThreadPool.QueueUserWorkItem(_ => ProcessCommits());
-                }
-            }
+            _commits.Enqueue(new PendingCommit(rpc, session, requestId, data));
         }
 
-        private void ProcessCommits()
-        {
-            while (TryDequeueCommit(out PendingCommit commit))
-            {
-                try
-                {
-                    _storage.Commit(commit.Session.AccountId, commit.Session.Name, commit.Data);
-                    _unityContext.Post(_ => ConfirmBackgroundCommit(
-                        commit.Rpc, commit.Session, commit.RequestId), null);
-                }
-                catch (Exception exception)
-                {
-                    CharacterVaultPlugin.Log.LogError($"Character vault commit failed: {exception}");
-                }
-            }
-        }
-
-        private bool TryDequeueCommit(out PendingCommit commit)
-        {
-            lock (_commitLock)
-            {
-                commit = _commits.Count > 0 ? _commits.Dequeue() : null;
-                if (commit == null)
-                {
-                    _commitWorkerRunning = false;
-                }
-                return commit != null;
-            }
-        }
-
-        private void ConfirmBackgroundCommit(ZRpc rpc, VaultSession session, string requestId)
+        private void ConfirmBackgroundCommit(PendingCommit commit)
         {
             CharacterVaultPlugin.Log.LogMessage(
-                $"Committed character profile for {session.Name} for request {requestId}.");
-            if (!_sessions.TryGetValue(rpc, out VaultSession current) || current != session)
+                $"Committed character profile for {commit.Session.Name} " +
+                $"for request {commit.RequestId}.");
+            if (!_sessions.TryGetValue(commit.Rpc, out VaultSession current) ||
+                current != commit.Session)
             {
                 return;
             }
-            rpc.Invoke(CommitAckRpc, requestId);
-            CharacterVaultPlugin.Coordinator?.RecordSaveCommitted(rpc, requestId);
-            CharacterVaultPlugin.ServerDisconnects?.RecordCommitted(rpc, requestId);
+            commit.Rpc.Invoke(CommitAckRpc, commit.RequestId);
+            CharacterVaultPlugin.Coordinator?.RecordSaveCommitted(
+                commit.Rpc, commit.RequestId);
+            CharacterVaultPlugin.ServerDisconnects?.RecordCommitted(
+                commit.Rpc, commit.RequestId);
         }
 
         private void ConfirmCommit(ZRpc rpc, VaultSession session, string requestId)

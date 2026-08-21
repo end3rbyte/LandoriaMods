@@ -1,6 +1,6 @@
 # Moderator
 
-Provides server-authorized commands and tools for Valheim administrators.
+Gives trusted Valheim moderators server-authorized tools for helping players and managing the world.
 
 ## Valheim compatibility
 
@@ -11,28 +11,28 @@ Provides server-authorized commands and tools for Valheim administrators.
 
 ## Features
 
-- Adds an administrator-validated moderator mode that starts disabled.
-- Enables god and ghost modes while moderator mode is active.
-- Hides and blocks vanilla cheat commands and `devcommands`.
-- Tracks connected players on the map after `exploremap`.
-- Supports Shift-click map teleportation for active moderators.
-- Displays a replicated green `[Moderator]` name suffix.
-- Records every Moderator command invocation at Info level.
+- Adds a protected moderator mode that starts disabled until an administrator activates it.
+- Enables god and ghost modes for active moderators.
+- Hides and blocks vanilla cheats and `devcommands`.
+- Tracks connected players after revealing the map.
+- Supports Shift-click map teleportation.
+- Shows a green `[Moderator]` label beside active moderators' names.
+- Records every moderator command for accountability.
 
 ## Commands
 
-| Command | Purpose | Access |
-|---|---|---|
-| `moderator` | Enables or disables moderator mode for the session. | Administrator |
-| `exploremap` | Reveals the map and continuously displays connected players. | Active moderator |
-| `goto <player>` | Teleports to another player. | Active moderator |
-| `itemset <biome>` | Replaces current items with the selected vanilla biome item set. | Active moderator |
-| `playerlist` | Lists online players and identifies administrators. | Active moderator |
-| `summon <player>` | Teleports another player to the moderator. | Active moderator |
-| `resetmap` | Clears local map exploration and player tracking. | Active moderator |
-| `spawn <prefab> [amount] [level] [radius]` | Spawns a Valheim prefab. | Active moderator |
+| Command | Purpose |
+|---|---|
+| `moderator` | Toggles moderator mode. |
+| `exploremap` | Reveals the map and tracks players. |
+| `goto <player>` | Teleports to a player. |
+| `itemset <biome>` | Applies a vanilla biome item set. |
+| `playerlist` | Lists players and administrators. |
+| `summon <player>` | Teleports a player to you. |
+| `resetmap` | Clears exploration and tracking. |
+| `spawn <prefab> [amount] [level] [radius]` | Spawns a Valheim prefab. |
 
-`itemset` supports `meadows`, `blackforest`, `swamp`, `mountain`, and `plains`. Existing items are placed in a tombstone.
+All commands except `moderator` require active moderator mode. The server validates access against `adminlist.txt`.
 
 ## Installation
 
@@ -41,6 +41,7 @@ Provides server-authorized commands and tools for Valheim administrators.
 | Yes | Yes | Not Supported |
 
 Matching versions must be installed on the server and every client.
+
 
 ## Contact
 

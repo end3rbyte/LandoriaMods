@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using BepInEx;
 using BepInEx.Bootstrap;
 
 namespace Landoria.ModSentry
@@ -11,9 +12,21 @@ namespace Landoria.ModSentry
     {
         internal static IReadOnlyList<PluginDescriptor> Capture()
         {
-            return Chainloader.PluginInfos.Values
+            List<PluginDescriptor> plugins = Chainloader.PluginInfos.Values
                 .Select(info => Create(info.Metadata.GUID, info.Metadata.Name,
                     info.Metadata.Version.ToString(), info.Location))
+                .ToList();
+            HashSet<string> pluginPaths = new HashSet<string>(
+                Chainloader.PluginInfos.Values.Select(info => Path.GetFullPath(info.Location)),
+                StringComparer.OrdinalIgnoreCase);
+            if (Directory.Exists(Paths.PluginPath))
+            {
+                plugins.AddRange(Directory.GetFiles(Paths.PluginPath, "*.dll",
+                        SearchOption.AllDirectories)
+                    .Where(path => !pluginPaths.Contains(Path.GetFullPath(path)))
+                    .Select(PluginPolicyLoader.ReadDescriptor));
+            }
+            return plugins
                 .OrderBy(plugin => plugin.Guid, StringComparer.Ordinal)
                 .ToList();
         }
@@ -79,8 +92,10 @@ namespace Landoria.ModSentry
 
         private static PluginDescriptor Read(ZPackage package)
         {
-            return new PluginDescriptor(package.ReadString(), package.ReadString(),
-                package.ReadString(), package.ReadString());
+            string guid = package.ReadString();
+            return new PluginDescriptor(guid, package.ReadString(), package.ReadString(),
+                package.ReadString(), !guid.StartsWith("Landoria.NonBepInPlugin.",
+                    StringComparison.Ordinal));
         }
     }
 }

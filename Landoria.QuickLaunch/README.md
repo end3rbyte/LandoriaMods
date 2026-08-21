@@ -1,6 +1,6 @@
 # QuickLaunch
 
-Automatically resumes the last local or multiplayer Valheim session.
+Gets you back into Valheim faster by automatically resuming your last local or multiplayer session.
 
 ## Video demo
 
@@ -15,24 +15,24 @@ Automatically resumes the last local or multiplayer Valheim session.
 
 ## Features
 
-- Selects the remembered character automatically.
-- Reopens the remembered world for local sessions.
-- Reconnects to the first valid recent server for multiplayer sessions.
-- Falls back to the main menu when required data is unavailable.
-- Never stores or enters server passwords.
-- Remembers whether the last manually started session was local or multiplayer.
+- Selects the remembered character.
+- Reopens the last local world.
+- Reconnects to a valid recent multiplayer server.
+- Safely returns to the menu when remembered data is unavailable.
+- Never stores or enters passwords.
 
 ## Valheim.exe Command Switches
 
 | Switch | Default | Purpose |
 |---|---:|---|
-| `--quicklaunch <true or false>` | `true` | Enables automatic resume. Use `--quicklaunch false` to stop at the menu. |
+| `--quicklaunch <true or false>` | `true` | Controls automatic session resume. |
 
 ## Installation
 
 | Client required | Server required (dedicated) | Player-hosted server |
 |---|---|---|
 | Yes | No | Not Supported |
+
 
 ## Contact
 
