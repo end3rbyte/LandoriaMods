@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.27
+
+- Update ExpandedServer from 1.0.8 to 1.0.9-draft.
+- Add NoServerPassword 1.0.6-draft.
 ## 1.0.26
 
 - Add BepInExPack_Valheim 5.4.2333.
