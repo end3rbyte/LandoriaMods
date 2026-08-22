@@ -20,7 +20,6 @@ Thunderstore. A mod may also include a changelog.
 | [HammerFreedom](Landoria.HammerFreedom/) | Both | Adds server-authorized creative freedoms to Hammer worlds. |
 | [FreeFlyCommand](Landoria.FreeFlyCommand/) | Both | Allows server-authorized native free-camera commands within 50 metres of the player. |
 | [First Person](Landoria.FirstPerson/) | Client-only | Adds first-person view at the closest camera zoom level. |
-| [LandoriaModPack](Landoria.LandoriaModPack/) | Both | Installs the mods required to join the Landoria Valheim server. |
 | [ModSentry](Landoria.ModSentry/) | Both | Validates the exact client mod inventory before a server accepts a connection. |
 | [Moderator](Landoria.Moderator/) | Both | Adds multiplayer moderation commands gated by server-validated administrator access. |
 | [QuickLaunch](Landoria.QuickLaunch/) | Client-only | Automatically resumes the last local or multiplayer session by default. |

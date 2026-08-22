@@ -2,10 +2,10 @@
   <PropertyGroup>
     <LangVersion>10</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(MSBuildProjectName)' != 'Landoria.SharedLib' and '$(MSBuildProjectName)' != 'Landoria.LandoriaModPack' and '$(MSBuildProjectName)' != 'DllMetadataVersion' and '$(MSBuildProjectName)' != 'GuestLobbyExample'">
+  <PropertyGroup Condition="'$(MSBuildProjectName)' != 'Landoria.SharedLib' and '$(MSBuildProjectName)' != 'DllMetadataVersion' and '$(MSBuildProjectName)' != 'GuestLobbyExample'">
     <ILRepackTargetsFile>$(MSBuildThisFileDirectory)Landoria.SharedLib\ILRepack.targets</ILRepackTargetsFile>
   </PropertyGroup>
-  <ItemGroup Condition="'$(MSBuildProjectName)' != 'Landoria.SharedLib' and '$(MSBuildProjectName)' != 'Landoria.LandoriaModPack' and '$(MSBuildProjectName)' != 'DllMetadataVersion' and '$(MSBuildProjectName)' != 'GuestLobbyExample'">
+  <ItemGroup Condition="'$(MSBuildProjectName)' != 'Landoria.SharedLib' and '$(MSBuildProjectName)' != 'DllMetadataVersion' and '$(MSBuildProjectName)' != 'GuestLobbyExample'">
     <ProjectReference Include="$(MSBuildThisFileDirectory)Landoria.SharedLib\Landoria.SharedLib.csproj">
       <Private>false</Private>
     </ProjectReference>
