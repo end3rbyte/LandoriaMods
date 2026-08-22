@@ -56,6 +56,11 @@ namespace Landoria.CharacterVault
             return ClientMessage.TryGet(out message);
         }
 
+        internal static void AcknowledgeClientMessage()
+        {
+            ClearClient();
+        }
+
         internal static void Remove(ZRpc rpc)
         {
             Deadlines.Remove(rpc);

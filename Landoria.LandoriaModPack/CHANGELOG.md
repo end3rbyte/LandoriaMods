@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.27
+
+- Show non-guest players a link to the Landoria website after the intro.
+
 ## 1.0.26
 
 - Update ModSentry from 1.0.10 to 1.0.11.

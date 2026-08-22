@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.19
+
+- Stop showing an acknowledged character rejection again after returning to the menu.
+
 ## 1.0.18
 
 - Minor fix

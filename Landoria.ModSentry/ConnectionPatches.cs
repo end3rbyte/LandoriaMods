@@ -155,4 +155,13 @@ namespace Landoria.ModSentry
             }
         }
     }
+
+    [HarmonyPatch(typeof(FejdStartup), nameof(FejdStartup.OnConnectionFailedOk))]
+    internal static class AcknowledgeRejectionPatch
+    {
+        private static void Postfix()
+        {
+            ClientMessage.Acknowledge();
+        }
+    }
 }

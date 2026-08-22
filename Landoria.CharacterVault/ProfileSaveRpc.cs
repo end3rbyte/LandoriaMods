@@ -160,6 +160,15 @@ namespace Landoria.CharacterVault
         }
     }
 
+    [HarmonyPatch(typeof(FejdStartup), nameof(FejdStartup.OnConnectionFailedOk))]
+    internal static class CharacterVaultAcknowledgeRejectionPatch
+    {
+        private static void Postfix()
+        {
+            CharacterVaultRejection.AcknowledgeClientMessage();
+        }
+    }
+
     [HarmonyPatch(typeof(ZNet), "InternalKick", new[] { typeof(ZNetPeer) })]
     internal static class CharacterVaultKickBarrierPatch
     {

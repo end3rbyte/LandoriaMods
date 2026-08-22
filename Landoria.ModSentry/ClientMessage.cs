@@ -18,6 +18,11 @@ namespace Landoria.ModSentry
             return State.TryGet(out message);
         }
 
+        internal static void Acknowledge()
+        {
+            Clear();
+        }
+
         internal static void Clear()
         {
             State.Clear();
